@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Jiafan / 调参笔记
+  pageTitle: Fan Jia / 调参blog
   pageTitleSuffix: " · AI 与生成模型"
   enableSPA: true
   enablePopovers: true
@@ -180,7 +180,12 @@ plugins:
     layout:
       position: left
       priority: 10
-  - source: github:quartz-community/darkmode
+  - source: ./plugins/author-profile
+    enabled: true
+    layout:
+      position: left
+      priority: 15
+  - source: ./plugins/darkmode-default
     enabled: true
     layout:
       position: left

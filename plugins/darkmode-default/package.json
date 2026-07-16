@@ -1,0 +1,29 @@
+{
+  "name": "@jiafan/darkmode-default",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./components": "./src/index.js"
+  },
+  "main": "./src/index.js",
+  "quartz": {
+    "name": "darkmode-default",
+    "displayName": "Dark Mode Default",
+    "description": "Provides a theme toggle with dark mode as the first-visit default.",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "components": {
+      "DarkmodeDefault": {
+        "displayName": "Dark Mode Default",
+        "defaultPosition": "left",
+        "defaultPriority": 30
+      }
+    }
+  }
+}

@@ -73,12 +73,6 @@
       "commit": "c003199fb842969d43ee9e0f54120a85e588260e",
       "installedAt": "2026-07-16T09:09:07.834Z"
     },
-    "darkmode": {
-      "source": "github:quartz-community/darkmode",
-      "resolved": "https://github.com/quartz-community/darkmode.git",
-      "commit": "c6484f72ebc6ea89339be7cf86ad14b40c47dcc7",
-      "installedAt": "2026-07-16T09:09:13.975Z"
-    },
     "description": {
       "source": "github:quartz-community/description",
       "resolved": "https://github.com/quartz-community/description.git",

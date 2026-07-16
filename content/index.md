@@ -1,5 +1,5 @@
 ---
-title: Jiafan / 调参笔记
+title: Fan Jia / 调参blog
 description: 关于生成模型、AI 系统与工程实践的长篇技术写作。
 ---
 

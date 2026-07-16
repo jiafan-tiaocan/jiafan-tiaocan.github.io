@@ -1,0 +1,29 @@
+{
+  "name": "@jiafan/author-profile",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./components": "./src/index.js"
+  },
+  "main": "./src/index.js",
+  "quartz": {
+    "name": "author-profile",
+    "displayName": "Author Profile",
+    "description": "Displays the author biography and contact information.",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "components": {
+      "AuthorProfile": {
+        "displayName": "Author Profile",
+        "defaultPosition": "left",
+        "defaultPriority": 15
+      }
+    }
+  }
+}
