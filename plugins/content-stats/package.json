@@ -1,0 +1,29 @@
+{
+  "name": "@jiafan/content-stats",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./components": "./src/index.js"
+  },
+  "main": "./src/index.js",
+  "quartz": {
+    "name": "content-stats",
+    "displayName": "Content Stats",
+    "description": "Displays the article date and word count.",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "components": {
+      "ContentStats": {
+        "displayName": "Content Stats",
+        "defaultPosition": "beforeBody",
+        "defaultPriority": 20
+      }
+    }
+  }
+}

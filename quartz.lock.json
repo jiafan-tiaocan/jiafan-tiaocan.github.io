@@ -55,12 +55,6 @@
       "commit": "c3d4f5c85311712c3355cd71da46b28e2d8eba71",
       "installedAt": "2026-07-16T09:09:10.891Z"
     },
-    "content-meta": {
-      "source": "github:quartz-community/content-meta",
-      "resolved": "https://github.com/quartz-community/content-meta.git",
-      "commit": "dd6e94b5ca1cb195104a2b5e624a43ee6aa0a324",
-      "installedAt": "2026-07-16T09:09:13.653Z"
-    },
     "content-page": {
       "source": "github:quartz-community/content-page",
       "resolved": "https://github.com/quartz-community/content-page.git",

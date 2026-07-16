@@ -163,7 +163,7 @@ plugins:
       position: beforeBody
       priority: 10
       condition: not-index
-  - source: github:quartz-community/content-meta
+  - source: ./plugins/content-stats
     enabled: true
     layout:
       position: beforeBody
