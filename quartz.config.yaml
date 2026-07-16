@@ -190,6 +190,13 @@ plugins:
     layout:
       position: left
       priority: 15
+      condition: not-index
+  - source: ./plugins/author-profile
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 10
+      condition: index
   - source: ./plugins/darkmode-default
     enabled: true
     layout:

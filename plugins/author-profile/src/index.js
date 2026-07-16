@@ -8,11 +8,11 @@ function AuthorProfile() {
       "aside",
       { class: className, "aria-label": "作者简介" },
       h("p", { class: "author-profile__label" }, "ABOUT"),
-      h("p", null, "调参是作者在蚂蚁的花名。"),
+      h("p", null, "为什么叫调参blog：调参是作者在蚂蚁的花名。"),
       h(
         "p",
         { class: "author-profile__fields" },
-        "AIGC、智能体、具身智能、推荐与用户增长、全栈工程师、量化交易。",
+        "什么都想做，何必：AIGC、智能体、具身智能、推荐与用户增长、全栈工程师、量化交易。",
       ),
       h("p", null, "还有很多爱好，希望可以保持深度思考，欢迎沟通。"),
       h(
