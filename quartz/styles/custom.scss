@@ -253,11 +253,11 @@ body[data-slug="index"] {
 }
 
 .home-intro {
-  padding: 5.5rem 0 3.5rem;
+  padding: 4.5rem 0 3.25rem;
   border-bottom: 1px solid var(--lightgray);
 
   .home-eyebrow {
-    margin: 0 0 1.35rem;
+    margin: 0;
     color: var(--tertiary);
     font-family: var(--codeFont);
     font-size: 0.66rem;
@@ -265,24 +265,16 @@ body[data-slug="index"] {
     letter-spacing: 0.14em;
   }
 
-  h1 {
-    max-width: none;
-    margin: 0;
-    font-size: clamp(2.45rem, 4.5vw, 3.45rem);
-    line-height: 1.22;
-    letter-spacing: -0.045em;
-  }
-
   > p:not(.home-eyebrow):not(.home-nav) {
     max-width: 38rem;
-    margin: 1.8rem 0 0;
+    margin: 1rem 0 0;
     color: var(--darkgray);
     font-size: 1.02rem;
     line-height: 1.85;
   }
 
   .home-nav {
-    margin: 2rem 0 0;
+    margin: 1.5rem 0 0;
   }
 
   .home-nav a.internal {
@@ -421,11 +413,7 @@ body[data-slug="index"] {
   }
 
   .home-intro {
-    padding: 3.5rem 0 3rem;
-
-    h1 {
-      font-size: clamp(2.2rem, 10vw, 3rem);
-    }
+    padding: 3rem 0 2.75rem;
   }
 
   .recent-notes {
