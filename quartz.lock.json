@@ -13,12 +13,6 @@
       "commit": "e608ca815e137e22b598094f735bcd8a481dafaa",
       "installedAt": "2026-07-16T09:09:13.063Z"
     },
-    "backlinks": {
-      "source": "github:quartz-community/backlinks",
-      "resolved": "https://github.com/quartz-community/backlinks.git",
-      "commit": "7490f921b7bd974c3f2f985ad3744b06160827d6",
-      "installedAt": "2026-07-16T09:09:13.105Z"
-    },
     "bases-page": {
       "source": "github:quartz-community/bases-page",
       "resolved": "https://github.com/quartz-community/bases-page.git",
@@ -109,12 +103,6 @@
       "commit": "4afb630a1cc9034267beb93c928e81d0fa2f4d4b",
       "installedAt": "2026-07-16T09:09:09.321Z"
     },
-    "explorer": {
-      "source": "github:quartz-community/explorer",
-      "resolved": "https://github.com/quartz-community/explorer.git",
-      "commit": "a2dfd1373abe58ace461ebea0b4e94cb287f894e",
-      "installedAt": "2026-07-16T09:09:12.898Z"
-    },
     "favicon": {
       "source": "github:quartz-community/favicon",
       "resolved": "https://github.com/quartz-community/favicon.git",
@@ -144,12 +132,6 @@
       "resolved": "https://github.com/quartz-community/github-flavored-markdown.git",
       "commit": "3eabbaa252ce175665ab3f62e1af25948a83e8b6",
       "installedAt": "2026-07-16T09:09:08.741Z"
-    },
-    "graph": {
-      "source": "github:quartz-community/graph",
-      "resolved": "https://github.com/quartz-community/graph.git",
-      "commit": "46f0ba1c3c0cc484697572e7bcf315fa384d80d2",
-      "installedAt": "2026-07-16T09:09:12.589Z"
     },
     "hard-line-breaks": {
       "source": "github:quartz-community/hard-line-breaks",

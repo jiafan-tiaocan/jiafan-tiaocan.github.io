@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Jiafan 的技术笔记
-  pageTitleSuffix: " · 长篇技术沉淀"
+  pageTitle: Jiafan / 调参笔记
+  pageTitleSuffix: " · AI 与生成模型"
   enableSPA: true
   enablePopovers: true
   analytics: null
@@ -15,30 +15,31 @@ configuration:
     fontOrigin: local
     cdnCaching: false
     typography:
-      header: Noto Serif SC
-      body: Noto Sans SC
+      title: Noto Sans SC
+      header: Noto Sans SC
+      body: Noto Serif SC
       code: IBM Plex Mono
     colors:
       lightMode:
-        light: "#faf8f8"
-        lightgray: "#e5e5e5"
-        gray: "#b8b8b8"
-        darkgray: "#4e4e4e"
-        dark: "#2b2b2b"
-        secondary: "#284b63"
-        tertiary: "#84a59d"
-        highlight: rgba(143, 159, 169, 0.15)
-        textHighlight: "#fff23688"
+        light: "#f7f5ef"
+        lightgray: "#e4e0d5"
+        gray: "#97978f"
+        darkgray: "#474b46"
+        dark: "#1f2421"
+        secondary: "#2f6657"
+        tertiary: "#c3683e"
+        highlight: rgba(47, 102, 87, 0.12)
+        textHighlight: "#f0cc5b66"
       darkMode:
-        light: "#161618"
-        lightgray: "#393639"
-        gray: "#646464"
-        darkgray: "#d4d4d4"
-        dark: "#ebebec"
-        secondary: "#7b97aa"
-        tertiary: "#84a59d"
-        highlight: rgba(143, 159, 169, 0.15)
-        textHighlight: "#b3aa0288"
+        light: "#171a18"
+        lightgray: "#2d322e"
+        gray: "#7b817a"
+        darkgray: "#d6d8d1"
+        dark: "#f0eee7"
+        secondary: "#8dc5b0"
+        tertiary: "#e29a73"
+        highlight: rgba(141, 197, 176, 0.13)
+        textHighlight: "#c9a94d66"
 plugins:
   - source: github:quartz-community/created-modified-date
     enabled: true
@@ -72,6 +73,7 @@ plugins:
     layout:
       position: right
       priority: 30
+      condition: has-toc
   - source: github:quartz-community/crawl-links
     enabled: true
     options:
@@ -102,6 +104,14 @@ plugins:
     order: 92
   - source: github:quartz-community/fonts
     enabled: true
+    options:
+      useThemeFonts: false
+      fontOrigin: local
+      title: '"Noto Sans SC", "PingFang SC", sans-serif'
+      header: '"Noto Sans SC", "PingFang SC", sans-serif'
+      body: '"Noto Serif SC", "Songti SC", serif'
+      interface: '"Noto Sans SC", "PingFang SC", sans-serif'
+      code: '"IBM Plex Mono", "SFMono-Regular", monospace'
   - source: github:quartz-community/remove-draft
     enabled: true
   - source: github:quartz-community/explicit-publish
@@ -132,23 +142,13 @@ plugins:
   - source: github:quartz-community/cname
     enabled: true
   - source: github:quartz-community/canvas-page
-    enabled: true
+    enabled: false
   - source: github:quartz-community/content-page
     enabled: true
   - source: github:quartz-community/folder-page
-    enabled: true
+    enabled: false
   - source: github:quartz-community/tag-page
     enabled: true
-  - source: github:quartz-community/explorer
-    enabled: true
-    layout:
-      position: left
-      priority: 50
-  - source: github:quartz-community/graph
-    enabled: true
-    layout:
-      position: right
-      priority: 10
   - source: github:quartz-community/search
     enabled: true
     layout:
@@ -157,26 +157,24 @@ plugins:
       group: toolbar
       groupOptions:
         grow: true
-  - source: github:quartz-community/backlinks
-    enabled: true
-    layout:
-      position: right
-      priority: 50
   - source: github:quartz-community/article-title
     enabled: true
     layout:
       position: beforeBody
       priority: 10
+      condition: not-index
   - source: github:quartz-community/content-meta
     enabled: true
     layout:
       position: beforeBody
       priority: 20
+      condition: not-index
   - source: github:quartz-community/tag-list
-    enabled: false
+    enabled: true
     layout:
       position: beforeBody
       priority: 30
+      condition: has-tags
   - source: github:quartz-community/page-title
     enabled: true
     layout:
@@ -189,13 +187,13 @@ plugins:
       priority: 30
       group: toolbar
   - source: github:quartz-community/reader-mode
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 35
       group: toolbar
   - source: github:quartz-community/breadcrumbs
-    enabled: true
+    enabled: false
     layout:
       position: beforeBody
       priority: 5
@@ -228,13 +226,16 @@ plugins:
   - source: github:quartz-community/recent-notes
     enabled: true
     options:
-      title: 最新文章
-      limit: 8
+      title: 最近写下的
+      limit: 6
       linkToMore: false
       showTags: true
+      hideTagPages: true
+      hideFolderPages: true
     layout:
-      position: left
-      priority: 25
+      position: afterBody
+      priority: 20
+      condition: index
   - source: github:quartz-community/spacer
     enabled: true
     options: {}
@@ -244,7 +245,7 @@ plugins:
       priority: 25
       display: mobile-only
   - source: github:quartz-community/bases-page
-    enabled: true
+    enabled: false
     options: {}
     order: 50
   - source: github:quartz-community/note-properties
@@ -256,7 +257,7 @@ plugins:
         - tags
         - aliases
       excludedProperties: []
-      hidePropertiesView: false
+      hidePropertiesView: true
       delimiters: ---
       language: yaml
     order: 5
