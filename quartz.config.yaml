@@ -169,6 +169,11 @@ plugins:
       position: beforeBody
       priority: 20
       condition: not-index
+  - source: ./plugins/new-tab-links
+    enabled: true
+    layout:
+      position: afterBody
+      priority: 100
   - source: github:quartz-community/tag-list
     enabled: true
     layout:
