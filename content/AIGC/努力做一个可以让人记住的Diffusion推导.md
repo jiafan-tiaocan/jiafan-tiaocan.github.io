@@ -135,162 +135,38 @@ $$p_\theta(x_{0:T})=p(x_T)\prod^T_{t=1}p_\theta(x_{t-1}|x_t)$$
 DDPM论文将模型描述为受非平衡热力学启发的潜变量模型，并把变分下界与去噪score matching联系起来。它与VAE都使用变分思想，但潜变量结构和具体ELBO分解并不相同。
 
 # 让加噪和去噪过程神经网络可训练：Diffusion的ELBO求解
-## 从最大似然到KL散度
-我们希望最大化单个样本的对数似然：$$\log p_\theta(x_0)$$
-它表示模型给真实图片$x_0$分配的概率密度；最大化它，就是希望模型认为真实数据更合理。
-生成模型的目标是学习数据分布，最大似然是其中最经典、最有原则的一类目标，但并不是所有生成模型唯一可能的训练目标。
-
-由于生成x_0的路径其实会有很多，这里需要引入积分。
-$$p_\theta(x_0) = \int p_\theta (x_{0:T})dx_1\cdots dx_T$$
-将整个潜变量链积分掉，可以看到这个积分维度极高，简写为：
-$$p_\theta(x_0)=\int p_\theta (x_{0:T})dx_{1:T}$$
-这个积分计算极其困难，但是前向加噪过程$$q(x_{1:T}|x_0)$$是已知的。
-因此我们引入该部分，看看能否降低原先公式的求解难度：
-$$p_\theta(x_0)=\int q(x_{1:T}|x_0)\frac {p_\theta (x_{0:T})}{q(x_{1:T}|x_0)}dx_{1:T}$$
-
-这里我们进行一个等价的转换，本质上和之前保持一致：
-
-$$p_\theta(x_0)=\mathbb E_{q(x_{1:T}|x_0)}\left [\frac {p_\theta (x_{0:T})}{q(x_{1:T}|x_0)}\right ]$$
-
-补充：事实上这一步只用了期望的定义
-$$\mathbb E_{z\sim q(z)}[f(z)]=\int q(z)f(z)dz$$
-转换成期望之后就可以使用jensen不等式。这里对jensen不等式进行简单的复习，不进行过多推导，jensen不等式的本质是，先平均再经过函数，先经过函数再取平均，两者并不均等，大小由函数的凹凸性决定。
-对于凸函数$f$：
-$$f(\mathbb E[X])\leq\mathbb E[f(X)]$$
-对于凹函数方向相反。$\log$是典型的凹函数，因此：
-$$\log(\mathbb E[Y])\geq \mathbb E[\log(Y)]$$
-
-
-继续刚刚的推导：
-$$\log p_\theta(x_0)=\log \mathbb E_{q(x_{1:T}|x_0)}\left [\frac {p_\theta (x_{0:T})}{q(x_{1:T}|x_0)}\right ]\geq\mathbb E_{q(x_{1:T}|x_0)}\left [\log \frac {p_\theta (x_{0:T})}{q(x_{1:T}|x_0)}\right ]$$
-
-最右边的式子我们就叫它ELBO，及Evidence Lower Bound：
-$$ELBO=\mathbb E_{q(x_{1:T}|x_0)}\left [\log \frac {p_\theta (x_{0:T})}{q(x_{1:T}|x_0)}\right ]$$
-
-那么具体ELBO又怎么用呢？我们先简化问题到$$x_0\rightarrow x_1 \rightarrow x_2$$
-这里的ELBO为（取负号方便最小化）：
-$$\mathcal L_{ELBO} = -ELBO = \mathbb E_{q(x_1,x_2\mid x_0)} \left [ \log q(x_1,x_2|x_0) - \log p_\theta (x_0,x_1,x_2) \right ] $$
-
-这里我们拆解到每一层：
-$$\mathcal L_{ELBO} = \mathbb E \left [ \log q(x_2|x_0)+\log q(x_1|x_0,x_2) - \log p(x_2) - \log p_\theta(x_1|x_2) - \log p_\theta(x_0|x_1)\right ]$$
-我们再对这个公式重新配对：
-$$\mathcal L_{ELBO} = \mathbb E \left [ \log \frac{q(x_2|x_0)}{p(x_2)}+\log \frac{ q(x_1|x_0,x_2)}{p_\theta(x_1|x_2)}  - \log p_\theta(x_0|x_1)\right ]$$
-
-前两项如何理解：对于对数分布比值的期望，也就是KL散度，于是：
-$$\mathcal L_{ELBO} = D_{KL}(q(x_2|x_0)||p(x_2))+\mathbb E_{q(x_2|x_0)}D_{KL}(q(x_1|x_2,x_0)||p_\theta(x_1|x_2))-\mathbb E_{q(x_1|x_0)}\log p_\theta(x_0|x_1)$$
-这里我们简单复习一下KL散度：它衡量用一个分布近似另一个分布时产生的信息损失，并且始终非负；需要注意它通常不对称。
-
-
-这个是简化后的场景，实际T步中，以上也是一样的。这里不写具体的推导过程，其实是一致的。
-$$\mathcal L_{ELBO} = D_{KL}(q(x_T|x_0)||p(x_T))+\sum _{t=2}^T \mathbb E_{q(x_t|x_0)}D_{KL}(q(x_{t-1}|x_t,x_0)||p_\theta(x_{t-1}|x_t))-\mathbb E_{q(x_1|x_0)}\log p_\theta(x_0|x_1)$$
-
-这三项其实有实际的体感含义：
+## 从最大似然到 KL 散度
+训练生成模型最自然的出发点，是让真实样本的对数似然 $\log p_\theta(x_0)$ 尽可能大。但在 Diffusion 中，生成路径包含整条潜变量链，计算样本概率需要把所有中间状态积分掉：
 
 $$
-\boxed{
-\mathcal L_{\mathrm{VLB}}
-=
-\underbrace{
-D_{\mathrm{KL}}
-\left(q(x_T\mid x_0)\Vert p(x_T)\right)
-}_{L_T:\text{终点是否接近高斯}}
-+
-\sum_{t=2}^{T}
-\underbrace{
-\mathbb E_{q(x_t\mid x_0)}
-D_{\mathrm{KL}}
-\left(
-q(x_{t-1}\mid x_t,x_0)
-\Vert
-p_\theta(x_{t-1}\mid x_t)
-\right)
-}_{L_{t-1}:\text{每一步反向是否正确}}
--
-\underbrace{
-\mathbb E_{q(x_1\mid x_0)}
-\log p_\theta(x_0\mid x_1)
-}_{L_0:\text{最后的数据重建}}
-}
+p_\theta(x_0)=\int p_\theta(x_{0:T})\,dx_{1:T}
 $$
 
-
-第一部分：终点匹配
-第二部分：逐步反向匹配，将每一步累加起来
-第三部分：最终的数据重建，不能将数据推理停留在x_1，必须完成到x_0
-
-整个ELBO过程发生了什么呢：
-直接最大似然：边缘似然包含高维积分，难以精确计算和直接优化
-ELBO下界（KL散度最终到MSE）：可采样、可梯度优化
-
-这三部分中，第二和第三部分需要神经网络。（其实是有$\theta$的地方就需要有神经网络，q则是每次训练中的已知值），第一部分由前向加噪过程决定，不涉及任何训练；
-
-这里解释为什么$q$可以精确计算。
-但训练时知道原图 \(x_0\)，于是：
+这个高维积分通常无法直接计算。好在前向加噪分布 $q(x_{1:T}\mid x_0)$ 已知，可以用它重写似然，再利用 $\log$ 的凹性得到一个可优化的下界：
 
 $$
-q(x_{t-1}\mid x_t,x_0)
-\propto
-q(x_t\mid x_{t-1})q(x_{t-1}\mid x_0)
+\log p_\theta(x_0)
+\ge
+\mathbb E_{q(x_{1:T}\mid x_0)}
+\left[
+\log\frac{p_\theta(x_{0:T})}{q(x_{1:T}\mid x_0)}
+\right]
+=\mathrm{ELBO}
 $$
 
-右侧两项都是高斯：
+这里不必纠结每一步代数。关键是：原本难算的边缘似然，被换成了可以从已知前向过程采样估计的目标。期望中的对数分布比值正是 KL 散度的形式；它衡量模型反向分布与真实反向后验之间还有多大差距。
+
+对完整的 $T$ 步过程，负 ELBO 可以概括成：
 
 $$
-q(x_t\mid x_{t-1})
-=
-\mathcal N(\sqrt{\alpha_t}x_{t-1},\beta_t I)
+-\mathrm{ELBO}=L_T+\sum_{t=2}^{T}L_{t-1}+L_0
 $$
 
-$$
-q(x_{t-1}\mid x_0)
-=
-\mathcal N
-\left(
-\sqrt{\bar\alpha_{t-1}}x_0,
-(1-\bar\alpha_{t-1})I
-\right)
-$$
+- $L_T$：终点分布是否接近预设的标准高斯。
+- $L_{t-1}$：模型的每一步反向转移，是否接近真实反向后验。
+- $L_0$：最后一步能否重建回数据 $x_0$。
 
-两个关于 \(x_{t-1}\) 的高斯相乘，仍然得到高斯：
-
-$$
-\boxed{
-q(x_{t-1}\mid x_t,x_0)
-=
-\mathcal N
-\left(
-x_{t-1};
-\tilde\mu_t(x_t,x_0),
-\tilde\beta_t I
-\right)
-}
-$$
-
-其中：
-
-$$
-\boxed{
-\tilde\beta_t
-=
-\frac{1-\bar\alpha_{t-1}}
-{1-\bar\alpha_t}
-\beta_t
-}
-$$
-
-$$
-\boxed{
-\tilde\mu_t(x_t,x_0)
-=
-\frac{\sqrt{\bar\alpha_{t-1}}\beta_t}
-{1-\bar\alpha_t}x_0
-+
-\frac{\sqrt{\alpha_t}(1-\bar\alpha_{t-1})}
-{1-\bar\alpha_t}x_t
-}
-$$
-
-这个均值非常有直觉：它是在 \(x_0\) 与 \(x_t\) 之间做一个由噪声日程决定的线性组合。
+第一项由前向噪声日程决定，训练主要作用于后两类包含模型参数的项。因此主线可以记成：**最大似然难以直接计算 → 优化 ELBO → 匹配每一步反向分布 → 在高斯假设下进一步化成 MSE。**
 
 ## 从KL散度到MSE
 这里我们做一个设定，用一个高斯分布描述从$x_t$到x_{t-1}的随机过程
