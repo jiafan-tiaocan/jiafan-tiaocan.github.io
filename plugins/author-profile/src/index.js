@@ -8,7 +8,7 @@ function AuthorProfile() {
       "aside",
       { class: className, "aria-label": "作者简介" },
       h("p", { class: "author-profile__label" }, "ABOUT"),
-      h("p", null, "为什么叫调参blog：调参是作者在蚂蚁的花名。"),
+      h("p", null, "为什么叫调参blog：调参是作者之前在蚂蚁的花名。"),
       h(
         "p",
         { class: "author-profile__fields" },

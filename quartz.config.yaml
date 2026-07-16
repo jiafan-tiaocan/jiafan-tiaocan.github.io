@@ -240,15 +240,13 @@ plugins:
       links:
         GitHub: https://github.com/jiafan-tiaocan
         RSS: https://jiafan-tiaocan.github.io/index.xml
-  - source: github:quartz-community/recent-notes
+  - source: ./plugins/recent-notes-summary
     enabled: true
     options:
       title: 最近写下的
       limit: 6
-      linkToMore: false
       showTags: true
-      hideTagPages: true
-      hideFolderPages: true
+      excerptLength: 120
     layout:
       position: afterBody
       priority: 20

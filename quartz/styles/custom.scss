@@ -429,6 +429,18 @@ body[data-slug="index"] {
   }
 }
 
+body[data-slug="index"] .recent-notes.with-summary {
+  .note-summary {
+    max-width: 42rem;
+    margin: 0.7rem 0 0;
+    color: var(--gray);
+    font-family: var(--bodyFont);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.75;
+  }
+}
+
 .left.sidebar > .recent-notes {
   min-width: 0;
   padding: 1.25rem 0 0;

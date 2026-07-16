@@ -1,0 +1,49 @@
+{
+  "name": "@jiafan/recent-notes-summary",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./components": "./src/index.js"
+  },
+  "main": "./src/index.js",
+  "quartz": {
+    "name": "recent-notes-summary",
+    "displayName": "Recent Notes with Summary",
+    "description": "Displays recently published notes with frontmatter descriptions and text excerpts as fallback.",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "defaultOptions": {
+      "title": "最近写下的",
+      "limit": 6,
+      "showTags": true,
+      "excerptLength": 120
+    },
+    "components": {
+      "RecentNotesSummary": {
+        "displayName": "Recent Notes with Summary",
+        "defaultPosition": "afterBody",
+        "defaultPriority": 20
+      }
+    },
+    "optionSchema": {
+      "title": {
+        "type": "string"
+      },
+      "limit": {
+        "type": "number"
+      },
+      "showTags": {
+        "type": "boolean"
+      },
+      "excerptLength": {
+        "type": "number"
+      }
+    }
+  }
+}
