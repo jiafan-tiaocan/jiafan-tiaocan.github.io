@@ -12,9 +12,9 @@ function AuthorProfile() {
       h(
         "p",
         { class: "author-profile__fields" },
-        "什么都想做，何必：AIGC、智能体、具身智能、推荐与用户增长、全栈工程师、量化交易。",
+        "AIGC、智能体、具身智能、推荐与用户增长、全栈工程师。",
       ),
-      h("p", null, "还有很多爱好，希望可以保持深度思考，欢迎沟通。"),
+      h("p", null, "还有很多爱好，希望可以保持深度思考，欢迎沟通！"),
       h(
         "a",
         { class: "author-profile__email", href: "mailto:jiafan.jf@qq.com" },
