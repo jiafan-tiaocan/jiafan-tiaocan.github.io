@@ -40,18 +40,9 @@ $$
 3. **软件交付 Loop，小时到天级**：Issue、worktree、分支、PR、CI、review、merge、deploy、rollback。
 4. **系统改进 Loop，天到周级**：线上用户 case 与 trace 进入失败聚类，转化为 eval，进而修改 prompt、skill、工具、runtime 或产品代码，再经过回归和灰度验证。
 
-```mermaid
-flowchart LR
-  A["生产反馈与用户 case"] --> B["失败聚类与 Eval"]
-  B --> C["Harness / Agent / Product 改进"]
-  C --> D["Issue 与交付任务"]
-  D --> E["工程任务状态机"]
-  E --> F["模型—工具循环"]
-  F --> E
-  E --> D
-  D --> G["上线与监控"]
-  G --> A
-```
+[![AI Coding 研发中的四层 Loop](assets/ai-coding-four-loops.svg)](assets/ai-coding-four-loops.svg)
+
+*图 1：四层 Loop 共享证据，却有不同的时间尺度与终止条件。外层不是让内层无限运行，而是用生产反馈、交付结果和独立验证不断重设下一轮任务。*
 
 如果只实现最内层，得到的是会不停调用工具的模型；四层都闭环，才得到一套研发系统。
 
@@ -69,6 +60,10 @@ Harness 不是一条超长 system prompt，也不是给 agent 安装尽可能多
 - **验证系统**：lint、类型、单测、集成测试、端到端测试、grader、人工验收和上线监控。
 - **可观测性**：trace、log、metric、artifact、成本、等待时间、失败类型和决策依据。
 - **控制面**：排队、依赖、并发、优先级、暂停、取消、接管、合并和回滚。
+
+[![Harness 的最小可恢复控制闭环](assets/ai-coding-harness-control-loop.svg)](assets/ai-coding-harness-control-loop.svg)
+
+*图 2：Harness 把上下文、工具、权限、状态、证据和 verifier 组织成一个可恢复闭环。执行 agent 提议动作，但完成判定、权限边界与任务终止位于 agent 外部。*
 
 其中最关键的设计原则是：
 
@@ -229,17 +224,9 @@ stateDiagram-v2
 
 真实企业研发很少只有一个代码库。一条看似简单的用户需求，往往会同时穿过：
 
-```mermaid
-flowchart LR
-  U["Web / App 用户"] --> FE["前端"]
-  FE --> BFF["BFF / API Gateway"]
-  BFF --> J["Java 领域服务"]
-  BFF --> P["Python 算法或 Agent 服务"]
-  J --> DB[("数据库 / 缓存 / MQ")]
-  P --> DB
-  J --> X["外部与遗留系统"]
-  P --> X
-```
+[![企业多系统中的 Change Set 交付](assets/ai-coding-enterprise-change-set.svg)](assets/ai-coding-enterprise-change-set.svg)
+
+*图 3：企业研发的最小交付单元不是一个仓库，而是一组由契约、不可变制品、数据库迁移和 Feature Flag 共同绑定的 Change Set；环境与测试证据必须引用同一个 manifest revision。*
 
 这些系统可能位于不同仓库，使用不同语言、构建工具、发布频率和 owner。此时“一任务一 worktree”仍然成立，但任务的最小交付单元已经不是单个 worktree，而是一个跨仓库的 **change set**：
 

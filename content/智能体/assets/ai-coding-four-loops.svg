@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="930" viewBox="0 0 1600 930" role="img" aria-labelledby="title desc">
+  <title id="title">AI Coding 研发中的四层 Loop</title>
+  <desc id="desc">从秒级模型工具循环，到工程任务、软件交付和系统改进循环，展示各层输入、步骤、证据和独立终止条件。</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#15324a"/>
+      <stop offset="1" stop-color="#245d72"/>
+    </linearGradient>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#2a6f97"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#287a63"/></marker>
+    <marker id="arrow-gold" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc7c2a"/></marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#7b68a7"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#18374b" flood-opacity="0.12"/></filter>
+    <style>
+      .title { font: 700 33px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #fff; }
+      .subtitle { font: 400 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #dceaf0; }
+      .layer { font: 700 19px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .time { font: 600 14px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #607485; }
+      .node-title { font: 700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .node-body { font: 400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #526979; }
+      .exit-title { font: 700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .exit-body { font: 400 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #526979; }
+      .note { font: 600 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #435b6d; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="930" rx="18" fill="#f8fafc"/>
+  <rect width="1600" height="108" rx="18" fill="url(#header)"/>
+  <rect y="90" width="1600" height="18" fill="url(#header)"/>
+  <text class="title" x="54" y="49">AI Coding 研发不是一个 Loop，而是四个时间尺度</text>
+  <text class="subtitle" x="56" y="80">内层负责行动，外层负责交付、校准与改变系统；每一层都有独立证据和终止条件</text>
+
+  <rect x="32" y="132" width="1536" height="164" rx="15" fill="#edf3f8" stroke="#b7ccd9"/>
+  <rect x="32" y="310" width="1536" height="164" rx="15" fill="#edf5f2" stroke="#b7d3c9"/>
+  <rect x="32" y="488" width="1536" height="164" rx="15" fill="#fbf5ed" stroke="#dfc9a9"/>
+  <rect x="32" y="666" width="1536" height="164" rx="15" fill="#f3eff8" stroke="#cbbfe0"/>
+
+  <g>
+    <text class="layer" x="58" y="178">1　模型—工具</text><text class="time" x="58" y="204">秒级 · 单次上下文</text>
+    <text class="layer" x="58" y="356">2　工程任务</text><text class="time" x="58" y="382">分钟—小时</text>
+    <text class="layer" x="58" y="534">3　软件交付</text><text class="time" x="58" y="560">小时—天</text>
+    <text class="layer" x="58" y="712">4　系统改进</text><text class="time" x="58" y="738">天—周</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(274 158)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#76a4bf" stroke-width="2"/><text class="node-title" x="18" y="32">理解当前状态</text><text class="node-body" x="18" y="58">上下文 · 目标 · 约束</text></g>
+    <g transform="translate(520 158)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#76a4bf" stroke-width="2"/><text class="node-title" x="18" y="32">生成工具调用</text><text class="node-body" x="18" y="58">选择动作与参数</text></g>
+    <g transform="translate(766 158)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#76a4bf" stroke-width="2"/><text class="node-title" x="18" y="32">Runtime 执行</text><text class="node-body" x="18" y="58">工具结果 · 错误 · 日志</text></g>
+    <g transform="translate(1012 158)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#76a4bf" stroke-width="2"/><text class="node-title" x="18" y="32">结果进入上下文</text><text class="node-body" x="18" y="58">继续推理或输出</text></g>
+  </g>
+  <line x1="479" y1="204" x2="518" y2="204" stroke="#2a6f97" stroke-width="3" marker-end="url(#arrow-blue)"/><line x1="725" y1="204" x2="764" y2="204" stroke="#2a6f97" stroke-width="3" marker-end="url(#arrow-blue)"/><line x1="971" y1="204" x2="1010" y2="204" stroke="#2a6f97" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <path d="M1115 251 C1115 283 380 283 380 252" fill="none" stroke="#2a6f97" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow-blue)"/>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(274 336)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#64a18d" stroke-width="2"/><text class="node-title" x="18" y="32">Orient</text><text class="node-body" x="18" y="58">仓库 · 基线 · 依赖</text></g>
+    <g transform="translate(520 336)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#64a18d" stroke-width="2"/><text class="node-title" x="18" y="32">Implement</text><text class="node-body" x="18" y="58">一个 ready 工作单元</text></g>
+    <g transform="translate(766 336)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#64a18d" stroke-width="2"/><text class="node-title" x="18" y="32">Verify</text><text class="node-body" x="18" y="58">测试 · grader · diff</text></g>
+    <g transform="translate(1012 336)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#64a18d" stroke-width="2"/><text class="node-title" x="18" y="32">Checkpoint</text><text class="node-body" x="18" y="58">状态 · 证据 · 恢复点</text></g>
+  </g>
+  <line x1="479" y1="382" x2="518" y2="382" stroke="#287a63" stroke-width="3" marker-end="url(#arrow-green)"/><line x1="725" y1="382" x2="764" y2="382" stroke="#287a63" stroke-width="3" marker-end="url(#arrow-green)"/><line x1="971" y1="382" x2="1010" y2="382" stroke="#287a63" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <path d="M1115 429 C1115 461 626 461 626 430" fill="none" stroke="#287a63" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow-green)"/>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(274 514)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#c6924e" stroke-width="2"/><text class="node-title" x="18" y="32">Issue / Change Set</text><text class="node-body" x="18" y="58">范围 · 契约 · 依赖图</text></g>
+    <g transform="translate(520 514)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#c6924e" stroke-width="2"/><text class="node-title" x="18" y="32">Branch / Worktree</text><text class="node-body" x="18" y="58">隔离实现与制品</text></g>
+    <g transform="translate(766 514)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#c6924e" stroke-width="2"/><text class="node-title" x="18" y="32">PR / CI / Review</text><text class="node-body" x="18" y="58">独立检查与审批</text></g>
+    <g transform="translate(1012 514)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#c6924e" stroke-width="2"/><text class="node-title" x="18" y="32">Deploy / Observe</text><text class="node-body" x="18" y="58">灰度 · 监控 · 回滚</text></g>
+  </g>
+  <line x1="479" y1="560" x2="518" y2="560" stroke="#bc7c2a" stroke-width="3" marker-end="url(#arrow-gold)"/><line x1="725" y1="560" x2="764" y2="560" stroke="#bc7c2a" stroke-width="3" marker-end="url(#arrow-gold)"/><line x1="971" y1="560" x2="1010" y2="560" stroke="#bc7c2a" stroke-width="3" marker-end="url(#arrow-gold)"/>
+  <path d="M1115 607 C1115 639 380 639 380 608" fill="none" stroke="#bc7c2a" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow-gold)"/>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(274 692)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#9583b9" stroke-width="2"/><text class="node-title" x="18" y="32">生产 Case / Trace</text><text class="node-body" x="18" y="58">真实失败与人工修正</text></g>
+    <g transform="translate(520 692)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#9583b9" stroke-width="2"/><text class="node-title" x="18" y="32">失败聚类</text><text class="node-body" x="18" y="58">最小复现与根因</text></g>
+    <g transform="translate(766 692)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#9583b9" stroke-width="2"/><text class="node-title" x="18" y="32">Eval / Regression</text><text class="node-body" x="18" y="58">独立 grader 与多 trial</text></g>
+    <g transform="translate(1012 692)"><rect width="205" height="92" rx="11" fill="#fff" stroke="#9583b9" stroke-width="2"/><text class="node-title" x="18" y="32">改变 Harness</text><text class="node-body" x="18" y="58">规则 · 工具 · Runtime</text></g>
+  </g>
+  <line x1="479" y1="738" x2="518" y2="738" stroke="#7b68a7" stroke-width="3" marker-end="url(#arrow-purple)"/><line x1="725" y1="738" x2="764" y2="738" stroke="#7b68a7" stroke-width="3" marker-end="url(#arrow-purple)"/><line x1="971" y1="738" x2="1010" y2="738" stroke="#7b68a7" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <path d="M1115 785 C1115 817 380 817 380 786" fill="none" stroke="#7b68a7" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow-purple)"/>
+
+  <g>
+    <rect x="1280" y="158" width="250" height="92" rx="11" fill="#fff" stroke="#76a4bf" stroke-width="2"/><text class="exit-title" x="1300" y="187">终止：本轮答复成立</text><text class="exit-body" x="1300" y="214">或交还外层任务状态</text>
+    <rect x="1280" y="336" width="250" height="92" rx="11" fill="#fff" stroke="#64a18d" stroke-width="2"/><text class="exit-title" x="1300" y="365">终止：DoD 被证明</text><text class="exit-body" x="1300" y="392">测试和证据全部通过</text>
+    <rect x="1280" y="514" width="250" height="92" rx="11" fill="#fff" stroke="#c6924e" stroke-width="2"/><text class="exit-title" x="1300" y="543">终止：生产已验证</text><text class="exit-body" x="1300" y="570">可回滚且观察窗口完成</text>
+    <rect x="1280" y="692" width="250" height="92" rx="11" fill="#fff" stroke="#9583b9" stroke-width="2"/><text class="exit-title" x="1300" y="721">终止：回归改善成立</text><text class="exit-body" x="1300" y="748">收益跨 case 且无新退化</text>
+  </g>
+  <line x1="1217" y1="204" x2="1278" y2="204" stroke="#2a6f97" stroke-width="3" marker-end="url(#arrow-blue)"/><line x1="1217" y1="382" x2="1278" y2="382" stroke="#287a63" stroke-width="3" marker-end="url(#arrow-green)"/><line x1="1217" y1="560" x2="1278" y2="560" stroke="#bc7c2a" stroke-width="3" marker-end="url(#arrow-gold)"/><line x1="1217" y1="738" x2="1278" y2="738" stroke="#7b68a7" stroke-width="3" marker-end="url(#arrow-purple)"/>
+
+  <rect x="272" y="860" width="1258" height="42" rx="8" fill="#eaf0f4"/>
+  <text class="note" x="300" y="886">关键原则：Loop 之间传递的是可验证 evidence 与持久状态，不是执行 agent 对“已经完成”的自我叙述。</text>
+</svg>

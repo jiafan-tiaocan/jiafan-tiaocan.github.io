@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="940" viewBox="0 0 1560 940" role="img" aria-labelledby="title desc">
+  <title id="title">AI Coding Harness 的最小可恢复控制闭环</title>
+  <desc id="desc">任务契约经过上下文组装、模型规划、工具网关和受控执行产生证据，由独立 verifier 判定状态转换，并通过状态存储、策略权限和控制面支持恢复与人类接管。</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#15324a"/><stop offset="1" stop-color="#245d72"/></linearGradient>
+    <linearGradient id="runtime" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8f1f6"/><stop offset="1" stop-color="#dcebe8"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#3b6278"/></marker>
+    <marker id="arrow-accent" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#b66a2c"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#287a63"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#19384d" flood-opacity="0.12"/></filter>
+    <style>
+      .title { font: 700 33px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #fff; }
+      .subtitle { font: 400 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #dceaf0; }
+      .zone { font: 700 19px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .box-title { font: 700 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .box-body { font: 400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #536979; }
+      .label { font: 600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #4b6373; }
+      .small { font: 500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #607888; }
+      .principle { font: 700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #7c5428; }
+    </style>
+  </defs>
+
+  <rect width="1560" height="940" rx="18" fill="#f8fafc"/>
+  <rect width="1560" height="108" rx="18" fill="url(#header)"/><rect y="90" width="1560" height="18" fill="url(#header)"/>
+  <text class="title" x="54" y="49">Harness：让 AI Coding 可恢复、可验证、可接管</text>
+  <text class="subtitle" x="56" y="80">模型位于闭环内部；策略、权限、状态、验证和完成判定构成它外部的工程控制系统</text>
+
+  <rect x="45" y="132" width="1470" height="94" rx="15" fill="#f3eff8" stroke="#c7b9dd" stroke-width="2"/>
+  <text class="zone" x="74" y="166">策略与权限边界</text>
+  <text class="box-body" x="74" y="194">允许的工具 · 网络 allowlist · 临时凭证 · 审批点 · 风险等级 · sandbox · 保护分支</text>
+  <rect x="1180" y="151" width="300" height="55" rx="10" fill="#fff" stroke="#967fb7" stroke-width="2"/>
+  <text class="box-title" x="1200" y="184">PreToolUse / Policy Engine</text>
+
+  <rect x="45" y="252" width="1110" height="462" rx="18" fill="url(#runtime)" stroke="#87a9b6" stroke-width="2.5"/>
+  <text class="zone" x="76" y="290">Agent Runtime / 执行平面</text>
+  <text class="small" x="304" y="290">每个动作都产生结构化事件；任务状态不依赖某一次模型会话仍在内存</text>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(80 330)"><rect width="220" height="132" rx="13" fill="#fff" stroke="#739cb4" stroke-width="2"/><text class="box-title" x="20" y="34">① 任务契约</text><text class="box-body" x="20" y="64">目标 · 范围 · DoD</text><text class="box-body" x="20" y="88">预算 · 风险 · 依赖</text><text class="box-body" x="20" y="112">基线 commit / task id</text></g>
+    <g transform="translate(342 330)"><rect width="220" height="132" rx="13" fill="#fff" stroke="#739cb4" stroke-width="2"/><text class="box-title" x="20" y="34">② 上下文组装</text><text class="box-body" x="20" y="64">AGENTS.md · 架构</text><text class="box-body" x="20" y="88">代码搜索 · 历史证据</text><text class="box-body" x="20" y="112">只加载当前所需事实</text></g>
+    <g transform="translate(604 330)"><rect width="220" height="132" rx="13" fill="#fff" stroke="#739cb4" stroke-width="2"/><text class="box-title" x="20" y="34">③ Model / Planner</text><text class="box-body" x="20" y="64">选择一个 ready 单元</text><text class="box-body" x="20" y="88">提出工具调用与修改</text><text class="box-body" x="20" y="112">不拥有最终完成判定</text></g>
+    <g transform="translate(866 330)"><rect width="220" height="132" rx="13" fill="#fff" stroke="#739cb4" stroke-width="2"/><text class="box-title" x="20" y="34">④ Tool Gateway</text><text class="box-body" x="20" y="64">文件 · Shell · Browser</text><text class="box-body" x="20" y="88">MCP · API · 数据库</text><text class="box-body" x="20" y="112">幂等键 · 超时 · 审计</text></g>
+  </g>
+
+  <line x1="300" y1="396" x2="340" y2="396" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/><line x1="562" y1="396" x2="602" y2="396" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/><line x1="824" y1="396" x2="864" y2="396" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(80 522)"><rect width="300" height="142" rx="13" fill="#fff" stroke="#4c9981" stroke-width="2"/><text class="box-title" x="20" y="34">⑦ State Store / Checkpoint</text><text class="box-body" x="20" y="64">状态机 · lease · retry budget</text><text class="box-body" x="20" y="89">events.jsonl · snapshot · decisions</text><text class="box-body" x="20" y="114">会话可结束，任务仍可恢复</text></g>
+    <g transform="translate(428 522)"><rect width="300" height="142" rx="13" fill="#fff" stroke="#4c9981" stroke-width="2"/><text class="box-title" x="20" y="34">⑥ Evidence Collector</text><text class="box-body" x="20" y="64">diff · exit code · test report</text><text class="box-body" x="20" y="89">trace · screenshot · artifact hash</text><text class="box-body" x="20" y="114">叙述只是索引，不是证据</text></g>
+    <g transform="translate(776 522)"><rect width="310" height="142" rx="13" fill="#fff8ed" stroke="#c48842" stroke-width="2.5"/><text class="box-title" x="20" y="34">⑤ Independent Verifier</text><text class="box-body" x="20" y="64">lint · test · grader · E2E</text><text class="box-body" x="20" y="89">guard + evidence 决定 transition</text><text class="box-body" x="20" y="114">通过 / 重试 / 阻塞 / 隔离</text></g>
+  </g>
+  <path d="M976 463 L976 520" stroke="#b66a2c" stroke-width="3" marker-end="url(#arrow-accent)"/>
+  <line x1="776" y1="593" x2="730" y2="593" stroke="#287a63" stroke-width="3" marker-end="url(#arrow-green)"/><line x1="428" y1="593" x2="382" y2="593" stroke="#287a63" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <path d="M230 521 C230 486 690 498 690 464" fill="none" stroke="#287a63" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow-green)"/>
+  <text class="label" x="345" y="493">下一 episode 从持久状态重新定向</text>
+
+  <rect x="1195" y="252" width="320" height="462" rx="18" fill="#f4f1fa" stroke="#9d8fbd" stroke-width="2.5"/>
+  <text class="zone" x="1228" y="292">控制面</text>
+  <g transform="translate(1228 330)"><rect width="254" height="88" rx="11" fill="#fff" stroke="#9d8fbd"/><text class="box-title" x="18" y="31">Scheduler / Queue</text><text class="box-body" x="18" y="57">依赖 · 优先级 · 并发 · WIP</text></g>
+  <g transform="translate(1228 438)"><rect width="254" height="88" rx="11" fill="#fff" stroke="#9d8fbd"/><text class="box-title" x="18" y="31">Watchdog / Budget</text><text class="box-body" x="18" y="57">heartbeat · 成本 · 重试风暴</text></g>
+  <g transform="translate(1228 546)"><rect width="254" height="124" rx="11" fill="#fff4e8" stroke="#c67a38" stroke-width="2"/><text class="box-title" x="18" y="31">Human Handoff</text><text class="box-body" x="18" y="58">暂停 · 取消 · 接管 · 审批</text><text class="box-body" x="18" y="82">从 checkpoint 恢复</text><text class="box-body" x="18" y="106">高风险动作必须显式授权</text></g>
+  <line x1="1155" y1="398" x2="1193" y2="398" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/><line x1="1193" y1="610" x2="1088" y2="610" stroke="#b66a2c" stroke-width="3" marker-end="url(#arrow-accent)"/>
+
+  <rect x="45" y="750" width="1470" height="130" rx="15" fill="#fff" stroke="#cbd7df" stroke-width="2"/>
+  <text class="zone" x="76" y="788">外部完成契约</text>
+  <text class="box-body" x="76" y="820">代码状态（Git）　·　测试与构建 artifact　·　环境 digest　·　grader 结果　·　必要的人类审批　·　部署与线上监控</text>
+  <text class="principle" x="76" y="854">只有这些条件共同成立，任务才允许进入 Done；执行 agent 的“我已经完成”不能单独触发终止。</text>
+  <path d="M930 664 C930 716 780 716 780 748" fill="none" stroke="#b66a2c" stroke-width="3" marker-end="url(#arrow-accent)"/>
+  <text class="label" x="942" y="705">提交证据包</text>
+  <path d="M370 748 C370 716 230 716 230 666" fill="none" stroke="#287a63" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <text class="label" x="90" y="716">失败则保持可恢复状态</text>
+</svg>
