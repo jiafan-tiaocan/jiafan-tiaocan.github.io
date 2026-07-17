@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="840" viewBox="0 0 1500 840" role="img" aria-labelledby="title desc">
+  <title id="title">具身 World Model 的完整闭环</title>
+  <desc id="desc">多模态观测进入状态估计和动作条件动力学，生成反事实未来，经价值约束与规划器选择动作，作用于物理世界并通过新观测校正。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#3b6278"/>
+    </marker>
+    <marker id="arrow-accent" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#b66a2c"/>
+    </marker>
+    <linearGradient id="wm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8f1f6"/>
+      <stop offset="1" stop-color="#dcebe8"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 31px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #15324a; }
+      .subtitle { font: 400 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #5a6f7f; }
+      .box-title { font: 700 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .box-body { font: 400 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #536979; }
+      .label { font: 600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #4b6373; }
+      .small { font: 500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #607888; }
+    </style>
+  </defs>
+
+  <rect width="1500" height="840" rx="18" fill="#f8fafc"/>
+  <text class="title" x="55" y="58">具身 World Model 的最小完整闭环</text>
+  <text class="subtitle" x="57" y="86">它不是一台离线“未来视频机”，而是被新观测持续纠正的反事实决策系统</text>
+
+  <rect x="43" y="130" width="300" height="520" rx="18" fill="#f2f5f7" stroke="#cbd7df" stroke-width="2"/>
+  <text class="box-title" x="74" y="171">现实接口</text>
+
+  <g transform="translate(73 210)">
+    <rect width="240" height="125" rx="13" fill="#ffffff" stroke="#8ca5b5" stroke-width="2"/>
+    <text class="box-title" x="20" y="33">多模态观测  oₜ</text>
+    <text class="box-body" x="20" y="60">RGB / 深度 / 触觉 / 力觉</text>
+    <text class="box-body" x="20" y="83">本体感觉 / 语言 / 音频</text>
+    <text class="box-body" x="20" y="106">只看到世界的一部分</text>
+  </g>
+
+  <g transform="translate(73 465)">
+    <rect width="240" height="130" rx="13" fill="#fff5e8" stroke="#c98a48" stroke-width="2"/>
+    <text class="box-title" x="20" y="34">物理世界</text>
+    <text class="box-body" x="20" y="62">接触 · 摩擦 · 遮挡 · 延迟</text>
+    <text class="box-body" x="20" y="85">他人行为 · 长尾事件</text>
+    <text class="box-body" x="20" y="108">执行有成本且可能不可逆</text>
+  </g>
+
+  <rect x="395" y="130" width="660" height="520" rx="18" fill="url(#wm)" stroke="#87a9b6" stroke-width="2.5"/>
+  <text class="box-title" x="430" y="171">内部 World Model</text>
+  <text class="small" x="623" y="171">学习一个对当前查询足够的世界抽象，而非复制全部现实</text>
+
+  <g transform="translate(432 215)">
+    <rect width="250" height="128" rx="13" fill="#ffffff" stroke="#5890aa" stroke-width="2"/>
+    <text class="box-title" x="18" y="31">① 状态估计 / Belief</text>
+    <text class="box-body" x="18" y="58">q(zₜ | o≤ₜ, a&lt;ₜ)</text>
+    <text class="box-body" x="18" y="82">记忆、对象、几何、速度</text>
+    <text class="box-body" x="18" y="105">遮挡后的持久状态</text>
+  </g>
+
+  <g transform="translate(766 215)">
+    <rect width="250" height="128" rx="13" fill="#ffffff" stroke="#5890aa" stroke-width="2"/>
+    <text class="box-title" x="18" y="31">② 动作条件动力学</text>
+    <text class="box-body" x="18" y="58">p(zₜ₊₁ | zₜ, aₜ, embodiment)</text>
+    <text class="box-body" x="18" y="82">世界自演化 + 动作干预</text>
+    <text class="box-body" x="18" y="105">随机性与模型不确定性</text>
+  </g>
+
+  <g transform="translate(432 437)">
+    <rect width="250" height="128" rx="13" fill="#ffffff" stroke="#4c9981" stroke-width="2"/>
+    <text class="box-title" x="18" y="31">④ 价值与约束</text>
+    <text class="box-body" x="18" y="58">reward / cost / reachability</text>
+    <text class="box-body" x="18" y="82">目标距离、碰撞、能耗</text>
+    <text class="box-body" x="18" y="105">尾部风险与置信度</text>
+  </g>
+
+  <g transform="translate(766 437)">
+    <rect width="250" height="128" rx="13" fill="#ffffff" stroke="#b8893d" stroke-width="2"/>
+    <text class="box-title" x="18" y="31">③ 多个反事实未来</text>
+    <text class="box-body" x="18" y="58">rollout 1：抓稳</text>
+    <text class="box-body" x="18" y="82">rollout 2：滑落</text>
+    <text class="box-body" x="18" y="105">rollout 3：碰撞 / 未知</text>
+  </g>
+
+  <rect x="1110" y="230" width="340" height="310" rx="18" fill="#f4f1fa" stroke="#9d8fbd" stroke-width="2.5"/>
+  <text class="box-title" x="1145" y="273">决策层</text>
+
+  <g transform="translate(1145 310)">
+    <rect width="270" height="95" rx="12" fill="#ffffff" stroke="#8d7eb2" stroke-width="2"/>
+    <text class="box-title" x="18" y="30">⑤ Planner / Policy</text>
+    <text class="box-body" x="18" y="56">MPC · MCTS · actor–critic</text>
+    <text class="box-body" x="18" y="78">在支持集内比较未来</text>
+  </g>
+
+  <g transform="translate(1145 433)">
+    <rect width="270" height="75" rx="12" fill="#fff4e8" stroke="#c67a38" stroke-width="2"/>
+    <text class="box-title" x="18" y="29">动作  aₜ</text>
+    <text class="box-body" x="18" y="54">只执行一步，再观察</text>
+  </g>
+
+  <line x1="313" y1="272" x2="430" y2="272" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/>
+  <text class="label" x="336" y="255">编码</text>
+  <line x1="682" y1="279" x2="764" y2="279" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="891" y1="344" x2="891" y2="435" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="765" y1="501" x2="684" y2="501" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="1017" y1="501" x2="1108" y2="405" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="682" y1="501" x2="1108" y2="365" stroke="#3b6278" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+  <path d="M1144 345 C1095 325 1060 298 1018 280" fill="none" stroke="#8d7eb2" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+  <text class="small" x="1032" y="315">候选动作</text>
+  <line x1="1280" y1="407" x2="1280" y2="431" stroke="#b66a2c" stroke-width="3" marker-end="url(#arrow-accent)"/>
+  <path d="M1144 472 C970 680 540 752 313 548" fill="none" stroke="#b66a2c" stroke-width="4" marker-end="url(#arrow-accent)"/>
+  <text class="label" x="703" y="720">真实执行：动作改变世界</text>
+  <path d="M193 463 C193 412 193 375 193 337" fill="none" stroke="#3b6278" stroke-width="3" marker-end="url(#arrow)"/>
+  <text class="label" x="208" y="408">新观测</text>
+
+  <rect x="395" y="685" width="660" height="102" rx="14" fill="#ffffff" stroke="#c7d5dd" stroke-width="2"/>
+  <text class="box-title" x="425" y="720">训练信号</text>
+  <text class="box-body" x="425" y="748">表征预测 · 观测重建 · 奖励/成本 · 动作对齐 · 对比学习 · 真实 rollout 误差</text>
+  <text class="box-body" x="425" y="772">关键原则：生成质量、动作忠实、物理一致与决策效用必须分别验证</text>
+</svg>

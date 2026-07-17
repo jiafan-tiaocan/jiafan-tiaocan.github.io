@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="900" viewBox="0 0 1450 900" role="img" aria-labelledby="title desc">
+  <title id="title">World Model 方法空间</title>
+  <desc id="desc">以动作闭环与决策可用性为纵轴、显式观测生成与空间保真为横轴，概念性比较五类世界模型。</desc>
+  <defs>
+    <marker id="axis-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#405b6b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#19384d" flood-opacity="0.13"/>
+    </filter>
+    <style>
+      .title { font: 700 31px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #15324a; }
+      .subtitle { font: 400 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #617585; }
+      .axis { font: 700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #2c4859; }
+      .quad { font: 700 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #7a8b97; }
+      .bubble-title { font: 700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .bubble-body { font: 500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #415d6e; }
+      .note { font: 500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #5f7382; }
+    </style>
+  </defs>
+
+  <rect width="1450" height="900" rx="18" fill="#f8fafc"/>
+  <text class="title" x="55" y="58">World Model 方法空间：生成保真与决策闭环是两条不同的轴</text>
+  <text class="subtitle" x="57" y="87">位置表示典型设计取向；同一系列的具体模型可能跨越多个区域</text>
+
+  <rect x="155" y="130" width="1165" height="640" fill="#ffffff" stroke="#cbd8e0" stroke-width="2"/>
+  <rect x="155" y="130" width="582.5" height="320" fill="#edf5f2"/>
+  <rect x="737.5" y="130" width="582.5" height="320" fill="#edf3f8"/>
+  <rect x="155" y="450" width="582.5" height="320" fill="#f7f9fb"/>
+  <rect x="737.5" y="450" width="582.5" height="320" fill="#fbf5ed"/>
+
+  <line x1="155" y1="450" x2="1320" y2="450" stroke="#b9c9d3" stroke-width="1.5" stroke-dasharray="7 7"/>
+  <line x1="737.5" y1="130" x2="737.5" y2="770" stroke="#b9c9d3" stroke-width="1.5" stroke-dasharray="7 7"/>
+
+  <line x1="155" y1="770" x2="1350" y2="770" stroke="#405b6b" stroke-width="3" marker-end="url(#axis-arrow)"/>
+  <line x1="155" y1="770" x2="155" y2="105" stroke="#405b6b" stroke-width="3" marker-end="url(#axis-arrow)"/>
+  <text class="axis" x="1010" y="822">显式观测生成与空间保真 →</text>
+  <text class="axis" transform="translate(78 505) rotate(-90)">动作闭环、反事实与决策可用性 →</text>
+
+  <text class="quad" x="186" y="166">高决策 / 紧凑表征</text>
+  <text class="quad" x="1015" y="166">具身目标区</text>
+  <text class="quad" x="186" y="746">被动表征</text>
+  <text class="quad" x="1050" y="746">视觉生成</text>
+
+  <g transform="translate(240 220)" filter="url(#shadow)">
+    <ellipse cx="160" cy="105" rx="160" ry="105" fill="#d8ebe4" stroke="#40856f" stroke-width="2.5"/>
+    <text class="bubble-title" x="83" y="66">决策中心隐式模型</text>
+    <text class="bubble-body" x="80" y="92">MuZero · TD-MPC2</text>
+    <text class="bubble-body" x="51" y="119">奖励 / 价值 / 策略相关状态</text>
+    <text class="bubble-body" x="53" y="146">高效，但不还原完整世界</text>
+  </g>
+
+  <g transform="translate(470 350)" filter="url(#shadow)">
+    <ellipse cx="165" cy="105" rx="165" ry="105" fill="#dfeef5" stroke="#4d88a7" stroke-width="2.5"/>
+    <text class="bubble-title" x="85" y="65">重建式潜空间动力学</text>
+    <text class="bubble-body" x="59" y="92">World Models · PlaNet · Dreamer</text>
+    <text class="bubble-body" x="53" y="119">潜空间想象 + MPC / actor–critic</text>
+    <text class="bubble-body" x="62" y="146">闭环强，空间细节受压缩</text>
+  </g>
+
+  <g transform="translate(360 560)" filter="url(#shadow)">
+    <ellipse cx="155" cy="90" rx="155" ry="90" fill="#e8f1ec" stroke="#65a18d" stroke-width="2.5"/>
+    <text class="bubble-title" x="88" y="55">联合嵌入预测</text>
+    <text class="bubble-body" x="85" y="82">V-JEPA · V-JEPA 2</text>
+    <text class="bubble-body" x="47" y="109">抽象、稳定、适合无标注预训练</text>
+    <text class="bubble-body" x="63" y="134">动作适配决定闭环上限</text>
+  </g>
+
+  <g transform="translate(815 500)" filter="url(#shadow)">
+    <ellipse cx="175" cy="105" rx="175" ry="105" fill="#f7e8d4" stroke="#c48842" stroke-width="2.5"/>
+    <text class="bubble-title" x="95" y="66">生成式视频模型</text>
+    <text class="bubble-body" x="61" y="93">通用 T2V / I2V · 部分 GAIA</text>
+    <text class="bubble-body" x="48" y="120">视觉强，但可能忽略精确动作</text>
+    <text class="bubble-body" x="64" y="147">逼真不自动等于物理正确</text>
+  </g>
+
+  <g transform="translate(1015 375)" filter="url(#shadow)">
+    <ellipse cx="145" cy="92" rx="145" ry="92" fill="#eee8f6" stroke="#8b75ad" stroke-width="2.5"/>
+    <text class="bubble-title" x="74" y="57">几何 / 数字孪生</text>
+    <text class="bubble-body" x="54" y="84">NeRF · 3DGS · 4D 场景</text>
+    <text class="bubble-body" x="50" y="111">持久空间与多视角一致</text>
+    <text class="bubble-body" x="62" y="136">复杂物理仍需补充</text>
+  </g>
+
+  <g transform="translate(820 175)" filter="url(#shadow)">
+    <ellipse cx="200" cy="112" rx="200" ry="112" fill="#dcebf2" stroke="#286b8d" stroke-width="3"/>
+    <text class="bubble-title" x="95" y="62">动作条件 World Foundation Model</text>
+    <text class="bubble-body" x="64" y="91">Genie · Cosmos · Dreamer 4 · IRASim</text>
+    <text class="bubble-body" x="64" y="120">视频先验 + 动作控制 + 长时记忆</text>
+    <text class="bubble-body" x="55" y="149">目标：理解、生成、模拟、策略一体化</text>
+    <text class="bubble-body" x="80" y="176">仍需真实闭环证明物理可信度</text>
+  </g>
+
+  <path d="M670 640 C770 560 825 480 890 383" fill="none" stroke="#678494" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#axis-arrow)"/>
+  <path d="M930 515 C900 470 915 420 955 384" fill="none" stroke="#678494" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#axis-arrow)"/>
+  <path d="M690 322 C760 285 790 272 820 270" fill="none" stroke="#678494" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#axis-arrow)"/>
+  <text class="note" x="735" y="526">动作适配</text>
+  <text class="note" x="835" y="478">强化可控性</text>
+  <text class="note" x="716" y="268">规模化与生成能力</text>
+
+  <rect x="155" y="842" width="1165" height="36" rx="8" fill="#edf2f5"/>
+  <text class="note" x="180" y="865">关键判断：具身 World Model 的目标不是右上角的视觉演示本身，而是生成保真、动作忠实、物理一致和闭环效用同时成立。</text>
+</svg>

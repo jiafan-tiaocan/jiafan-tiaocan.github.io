@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920" role="img" aria-labelledby="title desc">
+  <title id="title">具身智能 World Model 演进总览</title>
+  <desc id="desc">控制与决策、生成式模拟、预测表征三条技术路线从1948年到2026年的关键工作与汇合趋势。</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#15324a"/>
+      <stop offset="1" stop-color="#245d72"/>
+    </linearGradient>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2a6f97"/>
+    </marker>
+    <marker id="arrow-gold" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#bc7c2a"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#287a63"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #ffffff; }
+      .subtitle { font: 400 16px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #dceaf0; }
+      .lane { font: 700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; }
+      .era { font: 700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #405568; }
+      .year { font: 700 15px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #233746; }
+      .node-title { font: 700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .node-body { font: 400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #4b6273; }
+      .axis { font: 500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #607485; }
+      .note { font: 500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #435b6d; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1600" height="920" rx="18"/>
+  <rect x="0" y="0" width="1600" height="105" rx="18" fill="url(#header)"/>
+  <rect x="0" y="87" width="1600" height="18" fill="url(#header)"/>
+  <text class="title" x="56" y="48">具身智能 World Model 演进：三条支流，一次汇合</text>
+  <text class="subtitle" x="58" y="78">从状态估计与模型式控制，到潜空间想象、可交互视频与多模态世界基础模型</text>
+
+  <rect x="250" y="126" width="255" height="626" fill="#edf3f8"/>
+  <rect x="505" y="126" width="410" height="626" fill="#f7f9fb"/>
+  <rect x="915" y="126" width="320" height="626" fill="#edf3f8"/>
+  <rect x="1235" y="126" width="305" height="626" fill="#f7f9fb"/>
+  <line x1="505" y1="126" x2="505" y2="792" stroke="#d4dee6"/>
+  <line x1="915" y1="126" x2="915" y2="792" stroke="#d4dee6"/>
+  <line x1="1235" y1="126" x2="1235" y2="792" stroke="#d4dee6"/>
+
+  <text class="era" x="278" y="151">I. 内部状态与规划</text>
+  <text class="era" x="540" y="151">II. 潜空间想象与决策充分性</text>
+  <text class="era" x="950" y="151">III. 生成式交互环境</text>
+  <text class="era" x="1268" y="151">IV. 世界基础模型</text>
+
+  <text class="lane" x="38" y="245" fill="#2a6f97">控制与决策</text>
+  <text class="lane" x="38" y="445" fill="#bc7c2a">生成式模拟</text>
+  <text class="lane" x="38" y="645" fill="#287a63">预测表征</text>
+
+  <line x1="183" y1="240" x2="1508" y2="240" stroke="#2a6f97" stroke-width="4" marker-end="url(#arrow-blue)"/>
+  <line x1="183" y1="440" x2="1508" y2="440" stroke="#bc7c2a" stroke-width="4" marker-end="url(#arrow-gold)"/>
+  <line x1="183" y1="640" x2="1508" y2="640" stroke="#287a63" stroke-width="4" marker-end="url(#arrow-green)"/>
+
+  <g transform="translate(262 177)">
+    <rect width="215" height="108" rx="10" fill="#ffffff" stroke="#8bb2c9" stroke-width="2"/>
+    <text class="year" x="15" y="24">1948 / 1960 / 1990</text>
+    <text class="node-title" x="15" y="49">认知地图 · Kalman · Dyna</text>
+    <text class="node-body" x="15" y="72">不可见状态、递归估计</text>
+    <text class="node-body" x="15" y="91">学习—规划—行动闭环</text>
+  </g>
+
+  <g transform="translate(527 177)">
+    <rect width="168" height="108" rx="10" fill="#ffffff" stroke="#8bb2c9" stroke-width="2"/>
+    <text class="year" x="14" y="24">2015 / 2018</text>
+    <text class="node-title" x="14" y="49">E2C · World Models</text>
+    <text class="node-body" x="14" y="72">从像素学习潜状态</text>
+    <text class="node-body" x="14" y="91">在“梦境”中训练</text>
+  </g>
+
+  <g transform="translate(718 177)">
+    <rect width="174" height="108" rx="10" fill="#ffffff" stroke="#8bb2c9" stroke-width="2"/>
+    <text class="year" x="14" y="24">2019—2021</text>
+    <text class="node-title" x="14" y="48">PlaNet · Dreamer</text>
+    <text class="node-title" x="14" y="68">MuZero</text>
+    <text class="node-body" x="14" y="89">潜空间与隐式动力学</text>
+  </g>
+
+  <g transform="translate(937 177)">
+    <rect width="274" height="108" rx="10" fill="#ffffff" stroke="#8bb2c9" stroke-width="2"/>
+    <text class="year" x="14" y="24">2022—2023</text>
+    <text class="node-title" x="14" y="48">DayDreamer · DreamerV3</text>
+    <text class="node-title" x="14" y="68">TD-MPC2</text>
+    <text class="node-body" x="14" y="89">真实机器人与跨域扩展</text>
+  </g>
+
+  <g transform="translate(1260 177)">
+    <rect width="249" height="108" rx="10" fill="#e9f2f7" stroke="#2a6f97" stroke-width="2.5"/>
+    <text class="year" x="14" y="24">2025—2026</text>
+    <text class="node-title" x="14" y="49">Dreamer 4 · Cosmos Policy</text>
+    <text class="node-body" x="14" y="72">大规模视频先验接入动作</text>
+    <text class="node-body" x="14" y="91">内部模拟与策略共同扩展</text>
+  </g>
+
+  <g transform="translate(528 377)">
+    <rect width="180" height="108" rx="10" fill="#ffffff" stroke="#d4ad72" stroke-width="2"/>
+    <text class="year" x="14" y="24">2018—2022</text>
+    <text class="node-title" x="14" y="49">视频预测 / Diffusion</text>
+    <text class="node-body" x="14" y="72">更清晰、更长的视频</text>
+    <text class="node-body" x="14" y="91">但动作接口仍然薄弱</text>
+  </g>
+
+  <g transform="translate(742 377)">
+    <rect width="150" height="108" rx="10" fill="#ffffff" stroke="#d4ad72" stroke-width="2"/>
+    <text class="year" x="14" y="24">2023</text>
+    <text class="node-title" x="14" y="49">GAIA-1 · UniSim</text>
+    <text class="node-body" x="14" y="72">视频 + 文本 + 动作</text>
+    <text class="node-body" x="14" y="91">面向驾驶与机器人</text>
+  </g>
+
+  <g transform="translate(938 377)">
+    <rect width="273" height="108" rx="10" fill="#ffffff" stroke="#d4ad72" stroke-width="2"/>
+    <text class="year" x="14" y="24">2024—2025</text>
+    <text class="node-title" x="14" y="49">Genie 1/2/3 · IRASim · Cosmos</text>
+    <text class="node-body" x="14" y="72">可交互环境、潜动作学习</text>
+    <text class="node-body" x="14" y="91">合成数据与策略评测</text>
+  </g>
+
+  <g transform="translate(1260 377)">
+    <rect width="249" height="108" rx="10" fill="#fbf1e3" stroke="#bc7c2a" stroke-width="2.5"/>
+    <text class="year" x="14" y="24">2026</text>
+    <text class="node-title" x="14" y="49">Cosmos 3 · 交互式 Physical AI</text>
+    <text class="node-body" x="14" y="72">理解、生成、模拟、动作</text>
+    <text class="node-body" x="14" y="91">共享多模态基础骨干</text>
+  </g>
+
+  <g transform="translate(528 577)">
+    <rect width="180" height="108" rx="10" fill="#ffffff" stroke="#7db6a6" stroke-width="2"/>
+    <text class="year" x="14" y="24">2022</text>
+    <text class="node-title" x="14" y="49">Masked World Models</text>
+    <text class="node-body" x="14" y="72">表征学习与动力学解耦</text>
+    <text class="node-body" x="14" y="91">保护小物体交互细节</text>
+  </g>
+
+  <g transform="translate(742 577)">
+    <rect width="150" height="108" rx="10" fill="#ffffff" stroke="#7db6a6" stroke-width="2"/>
+    <text class="year" x="14" y="24">2024</text>
+    <text class="node-title" x="14" y="49">V-JEPA</text>
+    <text class="node-body" x="14" y="72">预测抽象表征</text>
+    <text class="node-body" x="14" y="91">不重建全部像素</text>
+  </g>
+
+  <g transform="translate(938 577)">
+    <rect width="273" height="108" rx="10" fill="#ffffff" stroke="#7db6a6" stroke-width="2"/>
+    <text class="year" x="14" y="24">2025</text>
+    <text class="node-title" x="14" y="48">V-JEPA 2</text>
+    <text class="node-body" x="14" y="69">大规模无动作视频预训练</text>
+    <text class="node-body" x="14" y="90">少量动作数据接入规划</text>
+  </g>
+
+  <g transform="translate(1260 577)">
+    <rect width="249" height="108" rx="10" fill="#e8f3ef" stroke="#287a63" stroke-width="2.5"/>
+    <text class="year" x="14" y="24">下一阶段</text>
+    <text class="node-title" x="14" y="49">可查询、分层、可校准</text>
+    <text class="node-body" x="14" y="72">空间 + 物理 + 语义 + 价值</text>
+    <text class="node-body" x="14" y="91">主动实验并闭环纠错</text>
+  </g>
+
+  <path d="M1120 286 C1175 320 1190 350 1258 403" fill="none" stroke="#6f8a9b" stroke-width="2" stroke-dasharray="6 6"/>
+  <path d="M1118 578 C1170 548 1194 510 1258 468" fill="none" stroke="#6f8a9b" stroke-width="2" stroke-dasharray="6 6"/>
+  <text class="note" x="1155" y="341">路线汇合</text>
+
+  <line x1="250" y1="792" x2="1540" y2="792" stroke="#506575" stroke-width="2"/>
+  <g class="axis">
+    <line x1="250" y1="784" x2="250" y2="800" stroke="#506575"/>
+    <text x="229" y="823">1948</text>
+    <line x1="505" y1="784" x2="505" y2="800" stroke="#506575"/>
+    <text x="485" y="823">2015</text>
+    <line x1="700" y1="784" x2="700" y2="800" stroke="#506575"/>
+    <text x="680" y="823">2019</text>
+    <line x1="915" y1="784" x2="915" y2="800" stroke="#506575"/>
+    <text x="895" y="823">2022</text>
+    <line x1="1050" y1="784" x2="1050" y2="800" stroke="#506575"/>
+    <text x="1030" y="823">2023</text>
+    <line x1="1155" y1="784" x2="1155" y2="800" stroke="#506575"/>
+    <text x="1135" y="823">2024</text>
+    <line x1="1235" y1="784" x2="1235" y2="800" stroke="#506575"/>
+    <text x="1215" y="823">2025</text>
+    <line x1="1508" y1="784" x2="1508" y2="800" stroke="#506575"/>
+    <text x="1488" y="823">2026</text>
+  </g>
+
+  <rect x="250" y="850" width="1290" height="42" rx="8" fill="#edf3f7"/>
+  <text class="note" x="270" y="876">总趋势：人工状态 → 学习潜状态　|　单一未来 → 概率分布　|　被动预测 → 动作干预　|　单任务动力学 → 多模态世界底座</text>
+</svg>
