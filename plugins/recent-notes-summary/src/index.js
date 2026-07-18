@@ -5,7 +5,7 @@ import { resolveRelative, slugTag } from "@quartz-community/utils/path"
 
 const defaults = {
   title: "最近写下的",
-  initialLimit: 4,
+  initialLimit: 10,
   batchSize: 4,
   showTags: true,
   excerptLength: 120,
