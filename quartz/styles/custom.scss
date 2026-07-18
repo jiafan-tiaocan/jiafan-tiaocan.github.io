@@ -636,12 +636,12 @@ body[data-note-type="thought"] {
     letter-spacing: 0.15em;
   }
 
-  .center > article {
+  .center > article > .markdown-preview-view {
     display: grid;
     gap: 1rem;
   }
 
-  .center > article > p {
+  .center > article > .markdown-preview-view > p {
     margin: 0;
     padding: 1.25rem 1.35rem;
     border: 1px solid color-mix(in srgb, var(--thought-block-accent) 32%, var(--lightgray));
@@ -649,19 +649,19 @@ body[data-note-type="thought"] {
     background: color-mix(in srgb, var(--thought-block-accent) 14%, var(--light));
   }
 
-  .center > article > p:nth-of-type(4n + 1) {
+  .center > article > .markdown-preview-view > p:nth-of-type(4n + 1) {
     --thought-block-accent: #7faa87;
   }
 
-  .center > article > p:nth-of-type(4n + 2) {
+  .center > article > .markdown-preview-view > p:nth-of-type(4n + 2) {
     --thought-block-accent: #d2a349;
   }
 
-  .center > article > p:nth-of-type(4n + 3) {
+  .center > article > .markdown-preview-view > p:nth-of-type(4n + 3) {
     --thought-block-accent: #cf7867;
   }
 
-  .center > article > p:nth-of-type(4n) {
+  .center > article > .markdown-preview-view > p:nth-of-type(4n) {
     --thought-block-accent: #6f9cc0;
   }
 }
