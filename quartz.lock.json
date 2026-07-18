@@ -223,12 +223,6 @@
       "commit": "c48324e2ba768e2a0a5c4c17cd0661b190d075c5",
       "installedAt": "2026-07-16T09:09:13.760Z"
     },
-    "tag-page": {
-      "source": "github:quartz-community/tag-page",
-      "resolved": "https://github.com/quartz-community/tag-page.git",
-      "commit": "eabf3eec55c0bab7f49e69957341f34d2ae3c5a1",
-      "installedAt": "2026-07-16T09:09:12.482Z"
-    },
     "unlisted-pages": {
       "source": "github:quartz-community/unlisted-pages",
       "resolved": "https://github.com/quartz-community/unlisted-pages.git",

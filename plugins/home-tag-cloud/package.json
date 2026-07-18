@@ -1,0 +1,41 @@
+{
+  "name": "@jiafan/home-tag-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./components": "./src/index.js"
+  },
+  "main": "./src/index.js",
+  "quartz": {
+    "name": "home-tag-cloud",
+    "displayName": "Home Tag Cloud",
+    "description": "Displays the most-used tags on the home page with an expandable remainder.",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "defaultOptions": {
+      "title": "热门标签",
+      "limit": 20
+    },
+    "components": {
+      "HomeTagCloud": {
+        "displayName": "Home Tag Cloud",
+        "defaultPosition": "afterBody",
+        "defaultPriority": 15
+      }
+    },
+    "optionSchema": {
+      "title": {
+        "type": "string"
+      },
+      "limit": {
+        "type": "number"
+      }
+    }
+  }
+}

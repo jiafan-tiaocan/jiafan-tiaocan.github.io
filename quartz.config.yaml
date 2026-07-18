@@ -141,7 +141,7 @@ plugins:
     enabled: true
   - source: github:quartz-community/folder-page
     enabled: false
-  - source: github:quartz-community/tag-page
+  - source: ./plugins/compact-tag-page
     enabled: true
   - source: github:quartz-community/search
     enabled: true
@@ -237,6 +237,15 @@ plugins:
     layout:
       position: afterBody
       priority: 20
+      condition: index
+  - source: ./plugins/home-tag-cloud
+    enabled: true
+    options:
+      title: 热门标签
+      limit: 20
+    layout:
+      position: afterBody
+      priority: 15
       condition: index
   - source: github:quartz-community/recent-notes
     enabled: true

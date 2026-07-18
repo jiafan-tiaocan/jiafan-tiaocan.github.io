@@ -268,7 +268,7 @@ footer {
   font-size: 0.68rem;
 }
 
-/* Home: one introduction and a tag-driven article list. */
+/* Home: introduction, popular tags, and a tag-driven article list. */
 body[data-slug="index"] {
   .page > #quartz-body {
     grid-template-columns: var(--side-width) minmax(0, var(--article-width));
@@ -294,8 +294,7 @@ body[data-slug="index"] {
 }
 
 .home-intro {
-  padding: 4.5rem 0 3.25rem;
-  border-bottom: 1px solid var(--lightgray);
+  padding: 4.5rem 0 2.5rem;
 
   .home-eyebrow {
     margin: 0;
@@ -306,24 +305,207 @@ body[data-slug="index"] {
     letter-spacing: 0.14em;
   }
 
-  > p:not(.home-eyebrow):not(.home-nav) {
+  > p:not(.home-eyebrow) {
     max-width: 38rem;
     margin: 1rem 0 0;
     color: var(--darkgray);
     font-size: 1.02rem;
     line-height: 1.85;
   }
+}
 
-  .home-nav {
-    margin: 1.5rem 0 0;
+.home-tag-cloud {
+  padding: 2.25rem 0 2.5rem;
+  border-bottom: 1px solid var(--lightgray);
+
+  &__header {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.15rem;
+
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h3 {
+      font-size: 1.08rem;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      color: var(--gray);
+      font-family: var(--codeFont);
+      font-size: 0.62rem;
+    }
   }
 
-  .home-nav a.internal {
+  &__extra {
+    margin-top: 0.55rem;
+  }
+
+  &__extra[hidden] {
+    display: none;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    align-items: center;
+    margin-top: 1.25rem;
+
+    button,
+    a.internal {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--secondary);
+      font-family: var(--headerFont);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, var(--secondary) 45%, transparent);
+      text-underline-offset: 0.25em;
+      cursor: pointer;
+    }
+
+    button:hover,
+    a.internal:hover {
+      color: var(--dark);
+    }
+  }
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    margin: 0;
+  }
+
+  a.internal.tag-cloud__link {
+    display: inline-flex;
+    gap: 0.28rem;
+    align-items: flex-start;
+    padding: 0.38rem 0.62rem;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--lightgray) 68%, transparent);
+    color: var(--darkgray);
+    font-family: var(--headerFont);
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  a.internal.tag-cloud__link:hover {
+    border-color: color-mix(in srgb, var(--secondary) 38%, transparent);
+    background: var(--highlight);
+    color: var(--secondary);
+  }
+
+  &__count {
+    position: relative;
+    top: -0.08rem;
+    color: var(--gray);
+    font-family: var(--codeFont);
+    font-size: 0.55rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+}
+
+body[data-slug="tags/index"] {
+  .page > #quartz-body {
+    grid-template-columns: var(--side-width) minmax(0, var(--article-width));
+    grid-template-areas:
+      "grid-sidebar-left grid-header"
+      "grid-sidebar-left grid-center"
+      "grid-sidebar-left grid-footer";
+  }
+
+  .right.sidebar {
+    display: none;
+  }
+}
+
+.tag-index__description,
+.tag-detail__summary {
+  margin: 0 0 1.5rem;
+  color: var(--gray);
+  font-size: 0.88rem;
+}
+
+.tag-cloud--index {
+  gap: 0.75rem 0.65rem;
+
+  a.internal.tag-cloud__link {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.84rem;
+  }
+}
+
+.tag-detail__articles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    margin: 0;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--lightgray);
+  }
+}
+
+.tag-detail__article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  align-items: baseline;
+
+  h2 {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.5;
+  }
+
+  h2 > a.internal {
+    padding: 0;
+    background: transparent;
+    color: var(--dark);
+  }
+
+  h2 > a.internal:hover {
+    color: var(--secondary);
+  }
+
+  time {
+    color: var(--gray);
+    font-family: var(--codeFont);
+    font-size: 0.66rem;
+    white-space: nowrap;
+  }
+}
+
+.tag-detail__back {
+  margin-top: 1.5rem;
+
+  a.internal {
     padding: 0;
     border-radius: 0;
     background: transparent;
     font-family: var(--headerFont);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
+    font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 0.25em;
   }
