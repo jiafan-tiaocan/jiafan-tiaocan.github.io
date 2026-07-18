@@ -1,6 +1,6 @@
 {
   "name": "@jiafan/recent-notes-summary",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -13,14 +13,15 @@
     "displayName": "Recent Notes with Summary",
     "description": "Displays recently published notes with frontmatter descriptions and text excerpts as fallback.",
     "category": "component",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
     "defaultOrder": 50,
     "defaultEnabled": true,
     "defaultOptions": {
       "title": "最近写下的",
-      "limit": 6,
+      "initialLimit": 4,
+      "batchSize": 4,
       "showTags": true,
       "excerptLength": 120
     },
@@ -35,7 +36,10 @@
       "title": {
         "type": "string"
       },
-      "limit": {
+      "initialLimit": {
+        "type": "number"
+      },
+      "batchSize": {
         "type": "number"
       },
       "showTags": {

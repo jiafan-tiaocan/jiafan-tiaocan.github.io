@@ -231,7 +231,8 @@ plugins:
     enabled: true
     options:
       title: 最近写下的
-      limit: 6
+      initialLimit: 4
+      batchSize: 4
       showTags: true
       excerptLength: 120
     layout:

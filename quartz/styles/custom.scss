@@ -618,6 +618,54 @@ body[data-slug="index"] .recent-notes.with-summary {
     border-radius: 1px;
     background: color-mix(in srgb, var(--content-entry-accent) 72%, var(--lightgray));
   }
+
+  .recent-notes__loader {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+    padding: 1.25rem 0 0.5rem;
+    text-align: center;
+  }
+
+  .recent-notes__loader.is-complete {
+    padding-top: 1rem;
+  }
+
+  .recent-notes__status {
+    margin: 0;
+    color: var(--gray);
+    font-family: var(--codeFont);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+  }
+
+  .recent-notes__more {
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--lightgray);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--darkgray);
+    font-family: var(--headerFont);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .recent-notes__more:hover,
+  .recent-notes__more:focus-visible {
+    border-color: var(--secondary);
+    color: var(--secondary);
+  }
+
+  .recent-notes__sentinel {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    pointer-events: none;
+  }
 }
 
 .left.sidebar > .recent-notes {
