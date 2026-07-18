@@ -41,14 +41,8 @@ configuration:
         highlight: rgba(141, 197, 176, 0.13)
         textHighlight: "#c9a94d66"
 plugins:
-  - source: github:quartz-community/created-modified-date
+  - source: ./plugins/frontmatter-date
     enabled: true
-    options:
-      defaultDateType: modified
-      priority:
-        - frontmatter
-        - git
-        - filesystem
     order: 10
   - source: github:quartz-community/syntax-highlighting
     enabled: true
