@@ -645,7 +645,8 @@ body[data-slug="index"] .recent-notes.with-summary {
 
 @media all and (max-width: 800px) {
   .page > #quartz-body,
-  body[data-slug="index"] .page > #quartz-body {
+  body[data-slug="index"] .page > #quartz-body,
+  body[data-slug="tags/index"] .page > #quartz-body {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
