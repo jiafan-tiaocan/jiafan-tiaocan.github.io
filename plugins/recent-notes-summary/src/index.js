@@ -10,6 +10,8 @@ const defaults = {
   excerptLength: 120,
 }
 
+const thoughtCardTones = ["sage", "amber", "coral", "sky"]
+
 function normalizeText(value) {
   return typeof value === "string" ? value.replace(/\s+/g, " ").trim() : ""
 }
@@ -33,6 +35,12 @@ function datedPage(page, cfg) {
 
 function pageDate(page, cfg) {
   return page.dates ? getDate(datedPage(page, cfg)) : undefined
+}
+
+function thoughtCardTone(page) {
+  const slug = Array.from(String(page.slug ?? ""))
+  const hash = slug.reduce((value, character) => (value * 31 + character.codePointAt(0)) >>> 0, 0)
+  return thoughtCardTones[hash % thoughtCardTones.length]
 }
 
 function RecentNotesSummary(userOptions = {}) {
@@ -68,16 +76,25 @@ function RecentNotesSummary(userOptions = {}) {
           const tags = page.frontmatter?.tags ?? []
           const date = pageDate(page, cfg)
           const summary = excerptFor(page, options.excerptLength)
+          const isThoughtCard = page.frontmatter?.noteType === "thought"
+          const itemClass = [
+            "recent-li",
+            isThoughtCard && "thought-card",
+            isThoughtCard && `thought-card--${thoughtCardTone(page)}`,
+          ]
+            .filter(Boolean)
+            .join(" ")
 
           return h(
             "li",
-            { class: "recent-li", key: page.slug },
+            { class: itemClass, key: page.slug },
             h(
               "div",
               { class: "section" },
               h(
                 "div",
                 { class: "desc" },
+                isThoughtCard && h("span", { class: "thought-card__label" }, "思考卡片"),
                 h(
                   "h3",
                   null,

@@ -586,6 +586,84 @@ body[data-slug="index"] .recent-notes.with-summary {
     font-weight: 400;
     line-height: 1.75;
   }
+
+  .recent-ul > .thought-card {
+    --thought-card-accent: #7faa87;
+
+    margin: 1rem 0;
+    padding: 1.35rem 1.5rem;
+    border: 1px solid color-mix(in srgb, var(--thought-card-accent) 34%, var(--lightgray));
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--thought-card-accent) 16%, var(--light));
+
+    &:last-child {
+      border-bottom: 1px solid color-mix(in srgb, var(--thought-card-accent) 34%, var(--lightgray));
+    }
+  }
+
+  .thought-card--amber {
+    --thought-card-accent: #d2a349;
+  }
+
+  .thought-card--coral {
+    --thought-card-accent: #cf7867;
+  }
+
+  .thought-card--sky {
+    --thought-card-accent: #6f9cc0;
+  }
+
+  .thought-card__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: color-mix(in srgb, var(--thought-card-accent) 72%, var(--dark));
+    font-family: var(--codeFont);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+}
+
+body[data-note-type="thought"] {
+  .article-title::before {
+    content: "THOUGHT CARD";
+    display: block;
+    margin-bottom: 0.8rem;
+    color: var(--tertiary);
+    font-family: var(--codeFont);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+  }
+
+  .center > article {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .center > article > p {
+    margin: 0;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid color-mix(in srgb, var(--thought-block-accent) 32%, var(--lightgray));
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--thought-block-accent) 14%, var(--light));
+  }
+
+  .center > article > p:nth-of-type(4n + 1) {
+    --thought-block-accent: #7faa87;
+  }
+
+  .center > article > p:nth-of-type(4n + 2) {
+    --thought-block-accent: #d2a349;
+  }
+
+  .center > article > p:nth-of-type(4n + 3) {
+    --thought-block-accent: #cf7867;
+  }
+
+  .center > article > p:nth-of-type(4n) {
+    --thought-block-accent: #6f9cc0;
+  }
 }
 
 .left.sidebar > .recent-notes {

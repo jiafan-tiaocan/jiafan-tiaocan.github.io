@@ -337,6 +337,8 @@ export function renderPage(
 
   const lang = componentData.fileData.frontmatter?.lang ?? cfg.locale?.split("-")[0] ?? "en"
   const direction = i18n(cfg.locale).direction ?? "ltr"
+  const frontmatterNoteType = componentData.fileData.frontmatter?.noteType
+  const noteType = typeof frontmatterNoteType === "string" ? frontmatterNoteType : undefined
   // During local dev (--serve), the dev server serves from root without the
   // baseUrl subpath, so basePath must be empty to avoid broken links.
   const basePath =
@@ -346,7 +348,7 @@ export function renderPage(
   const doc = (
     <html lang={lang} dir={direction}>
       <Head {...componentData} />
-      <body data-slug={slug} data-basepath={basePath}>
+      <body data-slug={slug} data-basepath={basePath} data-note-type={noteType}>
         {frame.css && <style dangerouslySetInnerHTML={{ __html: frame.css }} />}
         <div id="quartz-root" class="page" data-frame={frame.name}>
           <Body {...componentData}>
