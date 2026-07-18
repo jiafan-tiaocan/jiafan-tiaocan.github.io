@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">StreamingTalker 的自回归扩散闭环</title>
+  <desc id="desc">历史面部运动、当前音频和说话人身份进入条件预测器，条件指导轻量扩散头从噪声恢复下一步动作 latent，VQ-VAE 解码为面部网格并反馈到历史窗口。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5DD39E"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="760" rx="28" fill="#0B1220"/>
+  <text x="60" y="58" fill="#E6EDF7" font-size="30" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">AR 管“接下来该怎么动”，Diffusion 管“从合理解里选哪一个”</text>
+  <text x="60" y="91" fill="#9FB0C6" font-size="18" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">用动画帧索引 n 与扩散步索引 s 分开记，避免把两条时间轴混在一起。</text>
+
+  <rect x="55" y="125" width="340" height="440" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="85" y="165" fill="#E6EDF7" font-size="22" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">1. 构造动态条件</text>
+  <text x="85" y="202" fill="#A78BFA" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">已生成运动 xₙ₋ₕ:ₙ₋₁</text>
+  <g fill="#A78BFA">
+    <rect x="85" y="218" width="45" height="36" rx="8"/>
+    <rect x="138" y="218" width="45" height="36" rx="8"/>
+    <rect x="191" y="218" width="45" height="36" rx="8"/>
+    <rect x="244" y="218" width="45" height="36" rx="8"/>
+    <rect x="297" y="218" width="45" height="36" rx="8"/>
+  </g>
+  <text x="85" y="292" fill="#46D9E8" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">音频特征 aₙ₋ₕ:ₙ</text>
+  <path d="M87 325 C103 298,119 352,135 319 S167 337,183 314 S215 342,231 313 S263 334,279 316 S311 339,341 309" fill="none" stroke="#46D9E8" stroke-width="5"/>
+  <text x="85" y="374" fill="#F6C85F" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">说话人身份 sₖ</text>
+  <rect x="85" y="391" width="105" height="38" rx="9" fill="#F6C85F"/>
+  <text x="137" y="416" text-anchor="middle" fill="#0B1220" font-size="16" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">style</text>
+  <line x1="225" y1="440" x2="225" y2="466" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="82" y="470" width="286" height="68" rx="16" fill="#1B2940" stroke="#46D9E8" stroke-width="2"/>
+  <text x="225" y="498" text-anchor="middle" fill="#46D9E8" font-size="19" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">Cₙ = TransformerDecoder(·)</text>
+  <text x="225" y="522" text-anchor="middle" fill="#9FB0C6" font-size="15" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">因果自注意力 + 音频交叉注意力</text>
+
+  <line x1="397" y1="350" x2="439" y2="350" stroke="#46D9E8" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="445" y="125" width="360" height="440" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="475" y="165" fill="#E6EDF7" font-size="22" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">2. 条件扩散恢复动作 latent</text>
+  <circle cx="510" cy="240" r="42" fill="#FF6B6B" opacity="0.9"/>
+  <circle cx="500" cy="232" r="7" fill="#E6EDF7" opacity="0.8"/>
+  <circle cx="522" cy="253" r="5" fill="#E6EDF7" opacity="0.7"/>
+  <circle cx="535" cy="223" r="4" fill="#E6EDF7" opacity="0.7"/>
+  <text x="510" y="304" text-anchor="middle" fill="#FF6B6B" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">高斯噪声 zₛ</text>
+  <line x1="558" y1="240" x2="595" y2="240" stroke="#A78BFA" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="600" y="198" width="164" height="86" rx="17" fill="#1B2940" stroke="#A78BFA" stroke-width="2"/>
+  <text x="682" y="229" text-anchor="middle" fill="#A78BFA" font-size="20" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">单层 MLP</text>
+  <text x="682" y="255" text-anchor="middle" fill="#9FB0C6" font-size="15" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">输入 zₛ, Cₙ, E(s)</text>
+  <text x="682" y="275" text-anchor="middle" fill="#9FB0C6" font-size="14" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">直接预测 clean z₀</text>
+  <path d="M682 295 C760 305,760 390,682 401 C604 390,604 321,653 305" fill="none" stroke="#A78BFA" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+  <text x="682" y="355" text-anchor="middle" fill="#A78BFA" font-size="18" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">DDIM 50 步</text>
+  <rect x="562" y="416" width="240" height="80" rx="18" fill="#17263A" stroke="#5DD39E" stroke-width="2"/>
+  <text x="682" y="448" text-anchor="middle" fill="#5DD39E" font-size="21" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">新动作 latent zₙ</text>
+  <text x="682" y="477" text-anchor="middle" fill="#9FB0C6" font-size="15" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">不是在 3V 顶点空间直接扩散</text>
+
+  <line x1="807" y1="350" x2="849" y2="350" stroke="#46D9E8" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="855" y="125" width="290" height="440" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="885" y="165" fill="#E6EDF7" font-size="22" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">3. 解码、交付、回填</text>
+  <rect x="904" y="211" width="192" height="66" rx="16" fill="#1B2940" stroke="#A78BFA" stroke-width="2"/>
+  <text x="1000" y="239" text-anchor="middle" fill="#A78BFA" font-size="20" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">VQ-VAE Decoder</text>
+  <text x="1000" y="262" text-anchor="middle" fill="#9FB0C6" font-size="14" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">latent → V × 3 顶点位移</text>
+  <line x1="1000" y1="280" x2="1000" y2="316" stroke="#5DD39E" stroke-width="3" marker-end="url(#arrowGreen)"/>
+  <rect x="935" y="322" width="130" height="74" rx="18" fill="#5DD39E"/>
+  <text x="1000" y="353" text-anchor="middle" fill="#0B1220" font-size="23" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">mesh xₙ</text>
+  <text x="1000" y="379" text-anchor="middle" fill="#0B1220" font-size="14" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">立即进入渲染队列</text>
+  <path d="M1000 407 C1000 518,930 532,885 516" fill="none" stroke="#5DD39E" stroke-width="3" marker-end="url(#arrowGreen)"/>
+  <text x="1002" y="484" text-anchor="middle" fill="#5DD39E" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">反馈为下一步历史</text>
+  <path d="M887 515 C790 650,216 650,216 554" fill="none" stroke="#5DD39E" stroke-width="4" stroke-dasharray="10 8" marker-end="url(#arrowGreen)"/>
+
+  <rect x="55" y="602" width="1090" height="112" rx="20" fill="#17263A" stroke="#31445F"/>
+  <text x="85" y="638" fill="#E6EDF7" font-size="19" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">两条时间轴</text>
+  <text x="85" y="670" fill="#9FB0C6" font-size="17" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">动画时间 n：窗口每次右移一帧；扩散时间 s：为了当前窗口内部的 latent，从噪声走 50 次 DDIM。</text>
+  <text x="85" y="699" fill="#F6C85F" font-size="17" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">因此“自回归”解决序列长度与连续性，“扩散”保留局部生成能力，两者不是同一个循环。</text>
+</svg>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">StreamingTalker 的 BIWI 消融证据</title>
+  <desc id="desc">以完整模型为一倍误差，对比移除扩散头、VQ-VAE、交叉注意力、自注意力以及使用全部历史时 LVE、FDD 和 MOD 的相对恶化。</desc>
+  <rect width="1200" height="760" rx="28" fill="#0B1220"/>
+  <text x="60" y="58" fill="#E6EDF7" font-size="30" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">哪一个部件到底负责什么？看误差恶化，而不是只看总分</text>
+  <text x="60" y="91" fill="#9FB0C6" font-size="18" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">BIWI 消融，完整模型归一化为 1.00×；条越长，移除该部件的伤害越大。</text>
+
+  <rect x="55" y="125" width="1090" height="525" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="80" y="169" fill="#9FB0C6" font-size="17" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">变体</text>
+  <text x="450" y="169" text-anchor="middle" fill="#E6EDF7" font-size="19" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">LVE：嘴唇顶点误差</text>
+  <text x="755" y="169" text-anchor="middle" fill="#E6EDF7" font-size="19" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">FDD：上半脸动态</text>
+  <text x="1060" y="169" text-anchor="middle" fill="#E6EDF7" font-size="19" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">MOD：张嘴幅度</text>
+  <g stroke="#9FB0C6" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.7">
+    <line x1="415" y1="185" x2="415" y2="603"/>
+    <line x1="720" y1="185" x2="720" y2="603"/>
+    <line x1="1025" y1="185" x2="1025" y2="603"/>
+  </g>
+  <g fill="#9FB0C6" font-size="13" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="415" y="621" text-anchor="middle">1×</text>
+    <text x="720" y="621" text-anchor="middle">1×</text>
+    <text x="1025" y="621" text-anchor="middle">1×</text>
+  </g>
+
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="70" y="190" width="1060" height="58" rx="12" fill="#17263A"/>
+    <text x="80" y="225" fill="#46D9E8" font-size="17" font-weight="700">无 Diffusion Head</text>
+    <rect x="345" y="207" width="73" height="24" rx="7" fill="#46D9E8"/>
+    <text x="426" y="225" fill="#E6EDF7" font-size="15" font-weight="700">1.04×</text>
+    <rect x="650" y="207" width="103" height="24" rx="7" fill="#46D9E8"/>
+    <text x="761" y="225" fill="#E6EDF7" font-size="15" font-weight="700">1.47×</text>
+    <rect x="955" y="207" width="102" height="24" rx="7" fill="#46D9E8"/>
+    <text x="1065" y="225" fill="#E6EDF7" font-size="15" font-weight="700">1.46×</text>
+
+    <rect x="70" y="258" width="1060" height="58" rx="12" fill="#17263A"/>
+    <text x="80" y="293" fill="#A78BFA" font-size="17" font-weight="700">无 VQ-VAE latent</text>
+    <rect x="345" y="275" width="139" height="24" rx="7" fill="#A78BFA"/>
+    <text x="492" y="293" fill="#E6EDF7" font-size="15" font-weight="700">1.99×</text>
+    <rect x="650" y="275" width="186" height="24" rx="7" fill="#A78BFA"/>
+    <text x="844" y="293" fill="#E6EDF7" font-size="15" font-weight="700">2.66×</text>
+    <rect x="955" y="275" width="76" height="24" rx="7" fill="#A78BFA"/>
+    <text x="1039" y="293" fill="#E6EDF7" font-size="15" font-weight="700">1.09×</text>
+
+    <rect x="70" y="326" width="1060" height="58" rx="12" fill="#17263A"/>
+    <text x="80" y="361" fill="#F6C85F" font-size="17" font-weight="700">使用全部历史</text>
+    <rect x="345" y="343" width="78" height="24" rx="7" fill="#F6C85F"/>
+    <text x="431" y="361" fill="#E6EDF7" font-size="15" font-weight="700">1.12×</text>
+    <rect x="650" y="343" width="76" height="24" rx="7" fill="#F6C85F"/>
+    <text x="734" y="361" fill="#E6EDF7" font-size="15" font-weight="700">1.09×</text>
+    <rect x="955" y="343" width="71" height="24" rx="7" fill="#F6C85F"/>
+    <text x="1034" y="361" fill="#E6EDF7" font-size="15" font-weight="700">1.02×</text>
+
+    <rect x="70" y="394" width="1060" height="58" rx="12" fill="#17263A"/>
+    <text x="80" y="429" fill="#FF6B6B" font-size="17" font-weight="700">无 Cross-Attention</text>
+    <rect x="345" y="411" width="193" height="24" rx="7" fill="#FF6B6B"/>
+    <text x="546" y="429" fill="#E6EDF7" font-size="15" font-weight="700">2.76×</text>
+    <rect x="650" y="411" width="133" height="24" rx="7" fill="#FF6B6B"/>
+    <text x="791" y="429" fill="#E6EDF7" font-size="15" font-weight="700">1.90×</text>
+    <rect x="955" y="411" width="174" height="24" rx="7" fill="#FF6B6B"/>
+    <text x="1082" y="429" text-anchor="end" fill="#0B1220" font-size="15" font-weight="800">2.49×</text>
+
+    <rect x="70" y="462" width="1060" height="58" rx="12" fill="#17263A"/>
+    <text x="80" y="497" fill="#5DD39E" font-size="17" font-weight="700">无 Self-Attention</text>
+    <rect x="345" y="479" width="71" height="24" rx="7" fill="#5DD39E"/>
+    <text x="424" y="497" fill="#E6EDF7" font-size="15" font-weight="700">1.01×</text>
+    <rect x="650" y="479" width="78" height="24" rx="7" fill="#5DD39E"/>
+    <text x="736" y="497" fill="#E6EDF7" font-size="15" font-weight="700">1.12×</text>
+    <rect x="955" y="479" width="127" height="24" rx="7" fill="#5DD39E"/>
+    <text x="1090" y="497" fill="#E6EDF7" font-size="15" font-weight="700">1.82×</text>
+
+    <rect x="70" y="530" width="1060" height="58" rx="12" fill="#17263A"/>
+    <text x="80" y="565" fill="#9FB0C6" font-size="17" font-weight="700">VAE 替代 VQ-VAE</text>
+    <rect x="345" y="547" width="70" height="24" rx="7" fill="#9FB0C6"/>
+    <text x="423" y="565" fill="#E6EDF7" font-size="15" font-weight="700">1.00×</text>
+    <rect x="650" y="547" width="71" height="24" rx="7" fill="#9FB0C6"/>
+    <text x="729" y="565" fill="#E6EDF7" font-size="15" font-weight="700">1.01×</text>
+    <rect x="955" y="547" width="73" height="24" rx="7" fill="#9FB0C6"/>
+    <text x="1036" y="565" fill="#E6EDF7" font-size="15" font-weight="700">1.04×</text>
+  </g>
+
+  <rect x="55" y="674" width="1090" height="56" rx="17" fill="#17263A" stroke="#31445F"/>
+  <text x="600" y="698" text-anchor="middle" fill="#E6EDF7" font-size="17" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">读法：交叉注意力决定“是否听懂音频”；latent 空间决定“能否稳定生成”；扩散头主要补动态细节；</text>
+  <text x="600" y="721" text-anchor="middle" fill="#F6C85F" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">VAE 替代几乎不掉点，说明关键是压缩 latent，而不一定非要离散码本。</text>
+</svg>

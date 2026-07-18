@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">StreamingTalker 的实时延迟预算</title>
+  <desc id="desc">区分首帧延迟、逐帧推理时间和端到端对话延迟。论文报告模型首帧 25 毫秒，稳态逐帧 20 毫秒，但不包含语音识别、大模型、语音合成和网络时间。</desc>
+  <rect width="1200" height="680" rx="28" fill="#0B1220"/>
+  <text x="60" y="58" fill="#E6EDF7" font-size="30" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">“实时”至少要拆成三个不同问题</text>
+  <text x="60" y="91" fill="#9FB0C6" font-size="18" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">25 ms 是模型级首帧时间，不是用户说完话到数字人开口的完整对话延迟。</text>
+
+  <rect x="55" y="128" width="530" height="225" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="85" y="169" fill="#E6EDF7" font-size="23" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">① 首帧延迟：多久能拿到 x₁？</text>
+  <text x="85" y="200" fill="#9FB0C6" font-size="16" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">论文附录在 RTX 4090 上的模型分解</text>
+  <rect x="85" y="229" width="88" height="54" rx="12" fill="#46D9E8"/>
+  <text x="129" y="251" text-anchor="middle" fill="#0B1220" font-size="16" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">HuBERT</text>
+  <text x="129" y="273" text-anchor="middle" fill="#0B1220" font-size="17" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">5 ms</text>
+  <text x="190" y="263" fill="#9FB0C6" font-size="22" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">+</text>
+  <rect x="220" y="229" width="230" height="54" rx="12" fill="#A78BFA"/>
+  <text x="335" y="251" text-anchor="middle" fill="#0B1220" font-size="16" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">第一帧模型推理</text>
+  <text x="335" y="273" text-anchor="middle" fill="#0B1220" font-size="17" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">20 ms</text>
+  <text x="467" y="263" fill="#9FB0C6" font-size="22" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">=</text>
+  <text x="515" y="259" text-anchor="middle" fill="#5DD39E" font-size="31" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">25 ms</text>
+  <text x="85" y="319" fill="#5DD39E" font-size="17" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">关键性质：随整段音频从 3 s 增长到 27 s，首帧时间近似保持不变。</text>
+
+  <rect x="615" y="128" width="530" height="225" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="645" y="169" fill="#E6EDF7" font-size="23" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">② 稳态吞吐：能否追上播放速度？</text>
+  <text x="645" y="200" fill="#9FB0C6" font-size="16" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">每个后续动画帧的推理时间</text>
+  <rect x="645" y="229" width="116" height="54" rx="12" fill="#A78BFA"/>
+  <text x="703" y="251" text-anchor="middle" fill="#0B1220" font-size="15" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">VAE</text>
+  <text x="703" y="273" text-anchor="middle" fill="#0B1220" font-size="17" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">5 ms</text>
+  <rect x="769" y="229" width="116" height="54" rx="12" fill="#46D9E8"/>
+  <text x="827" y="251" text-anchor="middle" fill="#0B1220" font-size="15" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">AR 条件</text>
+  <text x="827" y="273" text-anchor="middle" fill="#0B1220" font-size="17" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">3 ms</text>
+  <rect x="893" y="229" width="116" height="54" rx="12" fill="#F6C85F"/>
+  <text x="951" y="251" text-anchor="middle" fill="#0B1220" font-size="15" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">Diffusion</text>
+  <text x="951" y="273" text-anchor="middle" fill="#0B1220" font-size="17" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">12 ms</text>
+  <text x="1040" y="263" fill="#9FB0C6" font-size="22" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">=</text>
+  <text x="1090" y="259" text-anchor="middle" fill="#5DD39E" font-size="30" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">20 ms</text>
+  <text x="645" y="319" fill="#5DD39E" font-size="17" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">理论模型吞吐约 50 FPS；论文的完整生成与渲染 demo 报告最高 40 FPS。</text>
+
+  <rect x="55" y="383" width="1090" height="226" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="85" y="425" fill="#E6EDF7" font-size="23" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">③ 端到端对话延迟：论文中的 25 ms 没有覆盖什么？</text>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="85" y="460" width="170" height="58" rx="14" fill="#251D2A" stroke="#FF6B6B"/>
+    <text x="170" y="485" text-anchor="middle" fill="#FF6B6B" font-size="17" font-weight="700">STT / 收音结束</text>
+    <text x="170" y="507" text-anchor="middle" fill="#9FB0C6" font-size="14">何时知道用户说完？</text>
+    <rect x="276" y="460" width="170" height="58" rx="14" fill="#251D2A" stroke="#FF6B6B"/>
+    <text x="361" y="485" text-anchor="middle" fill="#FF6B6B" font-size="17" font-weight="700">LLM 首 token</text>
+    <text x="361" y="507" text-anchor="middle" fill="#9FB0C6" font-size="14">回答生成时间</text>
+    <rect x="467" y="460" width="170" height="58" rx="14" fill="#251D2A" stroke="#FF6B6B"/>
+    <text x="552" y="485" text-anchor="middle" fill="#FF6B6B" font-size="17" font-weight="700">TTS 首音频块</text>
+    <text x="552" y="507" text-anchor="middle" fill="#9FB0C6" font-size="14">是否真正增量合成？</text>
+    <rect x="658" y="460" width="170" height="58" rx="14" fill="#251D2A" stroke="#FF6B6B"/>
+    <text x="743" y="485" text-anchor="middle" fill="#FF6B6B" font-size="17" font-weight="700">网络与排队</text>
+    <text x="743" y="507" text-anchor="middle" fill="#9FB0C6" font-size="14">客户端 ↔ 服务端</text>
+    <rect x="849" y="460" width="260" height="58" rx="14" fill="#251D2A" stroke="#FF6B6B"/>
+    <text x="979" y="485" text-anchor="middle" fill="#FF6B6B" font-size="17" font-weight="700">增量 HuBERT / 音频分块</text>
+    <text x="979" y="507" text-anchor="middle" fill="#9FB0C6" font-size="14">公开 demo 先得到整段 TTS 音频</text>
+  </g>
+  <text x="85" y="560" fill="#F6C85F" font-size="17" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">产品结论：StreamingTalker 解决了“动画模型的输出屏障”，但完整数字人还要单独优化上游首包、分块与调度。</text>
+  <rect x="55" y="630" width="1090" height="26" rx="10" fill="#17263A"/>
+  <text x="600" y="649" text-anchor="middle" fill="#9FB0C6" font-size="15" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">论文事实：25 ms / 20 ms / 40 FPS；端到端边界：结合公开 demo 代码得到的工程解释。</text>
+</svg>

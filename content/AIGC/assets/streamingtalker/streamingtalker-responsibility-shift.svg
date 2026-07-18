@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">全序列扩散与 StreamingTalker 的责任转移</title>
+  <desc id="desc">左侧全序列扩散必须等待整段音频并一次性去噪，右侧 StreamingTalker 用固定历史窗口逐步生成新帧，把连续性责任移入自回归状态。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrowMuted" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9FB0C6"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="680" rx="28" fill="#0B1220"/>
+  <text x="60" y="58" fill="#E6EDF7" font-size="30" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">StreamingTalker 改变的不是扩散公式，而是“何时允许输出”</text>
+  <text x="60" y="90" fill="#9FB0C6" font-size="18" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">旧方法把整段时序交给一个全序列去噪器；新方法把连续性放进固定窗口的自回归状态。</text>
+
+  <rect x="55" y="125" width="510" height="445" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="85" y="168" fill="#E6EDF7" font-size="24" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">全序列扩散：先收齐，再统一生成</text>
+  <text x="85" y="202" fill="#9FB0C6" font-size="17" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">音频长度 T 直接进入模型的时间轴</text>
+  <g fill="#46D9E8">
+    <rect x="88" y="225" width="40" height="28" rx="6"/>
+    <rect x="136" y="225" width="40" height="28" rx="6"/>
+    <rect x="184" y="225" width="40" height="28" rx="6"/>
+    <rect x="232" y="225" width="40" height="28" rx="6"/>
+    <rect x="280" y="225" width="40" height="28" rx="6"/>
+    <rect x="328" y="225" width="40" height="28" rx="6"/>
+    <rect x="376" y="225" width="40" height="28" rx="6"/>
+    <rect x="424" y="225" width="40" height="28" rx="6"/>
+    <rect x="472" y="225" width="40" height="28" rx="6"/>
+  </g>
+  <text x="87" y="279" fill="#9FB0C6" font-size="16" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">a₁</text>
+  <text x="480" y="279" fill="#9FB0C6" font-size="16" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">aₜ</text>
+  <line x1="300" y1="285" x2="300" y2="320" stroke="#9FB0C6" stroke-width="2" marker-end="url(#arrowMuted)"/>
+  <rect x="118" y="326" width="384" height="92" rx="18" fill="#1B2940" stroke="#A78BFA" stroke-width="2"/>
+  <text x="310" y="363" text-anchor="middle" fill="#A78BFA" font-size="21" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">Transformer / U-Net 全序列去噪</text>
+  <text x="310" y="393" text-anchor="middle" fill="#9FB0C6" font-size="16" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">输出屏障：整段完成前，x₁ 也不能交付</text>
+  <line x1="310" y1="420" x2="310" y2="455" stroke="#FF6B6B" stroke-width="3" marker-end="url(#arrowMuted)"/>
+  <g fill="#FF6B6B">
+    <rect x="88" y="464" width="40" height="28" rx="6"/>
+    <rect x="136" y="464" width="40" height="28" rx="6"/>
+    <rect x="184" y="464" width="40" height="28" rx="6"/>
+    <rect x="232" y="464" width="40" height="28" rx="6"/>
+    <rect x="280" y="464" width="40" height="28" rx="6"/>
+    <rect x="328" y="464" width="40" height="28" rx="6"/>
+    <rect x="376" y="464" width="40" height="28" rx="6"/>
+    <rect x="424" y="464" width="40" height="28" rx="6"/>
+    <rect x="472" y="464" width="40" height="28" rx="6"/>
+  </g>
+  <text x="87" y="518" fill="#9FB0C6" font-size="16" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">x₁</text>
+  <text x="480" y="518" fill="#9FB0C6" font-size="16" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">xₜ</text>
+  <text x="85" y="548" fill="#FF6B6B" font-size="17" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">启动延迟随 T 增长；测试长度越过训练 horizon</text>
+
+  <rect x="595" y="125" width="550" height="445" rx="24" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="625" y="168" fill="#E6EDF7" font-size="24" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">AR Diffusion：固定记忆，逐帧交付</text>
+  <text x="625" y="202" fill="#9FB0C6" font-size="17" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">每一步只回答同一个局部问题：下一帧应该怎样动？</text>
+
+  <text x="625" y="243" fill="#A78BFA" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">历史窗口 h</text>
+  <g fill="#A78BFA">
+    <rect x="625" y="258" width="42" height="30" rx="7"/>
+    <rect x="675" y="258" width="42" height="30" rx="7"/>
+    <rect x="725" y="258" width="42" height="30" rx="7"/>
+    <rect x="775" y="258" width="42" height="30" rx="7"/>
+  </g>
+  <text x="841" y="279" fill="#46D9E8" font-size="18" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">+</text>
+  <text x="877" y="243" fill="#46D9E8" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">当前音频</text>
+  <g fill="#46D9E8">
+    <rect x="868" y="258" width="42" height="30" rx="7"/>
+    <rect x="918" y="258" width="42" height="30" rx="7"/>
+    <rect x="968" y="258" width="42" height="30" rx="7"/>
+  </g>
+  <line x1="827" y1="302" x2="827" y2="333" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="672" y="338" width="310" height="70" rx="17" fill="#1B2940" stroke="#46D9E8" stroke-width="2"/>
+  <text x="827" y="368" text-anchor="middle" fill="#46D9E8" font-size="20" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">AR Condition Predictor</text>
+  <text x="827" y="392" text-anchor="middle" fill="#9FB0C6" font-size="15" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">历史运动 + 音频 + 说话人 → 动态条件 Cₙ</text>
+  <line x1="827" y1="410" x2="827" y2="439" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="700" y="444" width="254" height="58" rx="15" fill="#1B2940" stroke="#A78BFA" stroke-width="2"/>
+  <text x="827" y="480" text-anchor="middle" fill="#A78BFA" font-size="19" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">轻量扩散头 → 新帧 xₙ</text>
+  <line x1="958" y1="473" x2="1054" y2="473" stroke="#5DD39E" stroke-width="3" marker-end="url(#arrowMuted)"/>
+  <rect x="1060" y="450" width="48" height="48" rx="10" fill="#5DD39E"/>
+  <text x="1084" y="481" text-anchor="middle" fill="#0B1220" font-size="18" font-weight="800" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">xₙ</text>
+  <path d="M1084 507 C1084 548, 650 548, 650 300" fill="none" stroke="#5DD39E" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrowMuted)"/>
+  <text x="856" y="542" text-anchor="middle" fill="#5DD39E" font-size="16" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">新帧回填历史，窗口向右滑动</text>
+
+  <rect x="55" y="598" width="1090" height="52" rx="16" fill="#17263A" stroke="#31445F"/>
+  <text x="600" y="631" text-anchor="middle" fill="#E6EDF7" font-size="19" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">责任转移：从“全序列网络一次性维持时间一致性”，转为“固定状态在每一步把连续性传给下一帧”。</text>
+</svg>
