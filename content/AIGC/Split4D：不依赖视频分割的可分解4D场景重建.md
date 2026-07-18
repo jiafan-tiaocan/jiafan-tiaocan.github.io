@@ -7,7 +7,7 @@ tags:
   - 3DGS
   - 场景分解
   - 计算机视觉
-date: 2026-07-17
+date: 2025-12-28
 publish: true
 ---
 # Split4D：不依赖视频分割的可分解 4D 场景重建
