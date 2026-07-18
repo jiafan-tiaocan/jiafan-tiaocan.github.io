@@ -10,7 +10,11 @@ const defaults = {
   excerptLength: 120,
 }
 
-const thoughtCardTones = ["sage", "amber", "coral", "sky"]
+const contentTypes = {
+  technical: { label: "技术长文" },
+  thought: { label: "思考卡片" },
+  life: { label: "生活与爱好" },
+}
 
 function normalizeText(value) {
   return typeof value === "string" ? value.replace(/\s+/g, " ").trim() : ""
@@ -37,10 +41,9 @@ function pageDate(page, cfg) {
   return page.dates ? getDate(datedPage(page, cfg)) : undefined
 }
 
-function thoughtCardTone(page) {
-  const slug = Array.from(String(page.slug ?? ""))
-  const hash = slug.reduce((value, character) => (value * 31 + character.codePointAt(0)) >>> 0, 0)
-  return thoughtCardTones[hash % thoughtCardTones.length]
+function contentTypeFor(page) {
+  const requestedType = page.frontmatter?.noteType
+  return Object.hasOwn(contentTypes, requestedType) ? requestedType : "technical"
 }
 
 function RecentNotesSummary(userOptions = {}) {
@@ -76,14 +79,8 @@ function RecentNotesSummary(userOptions = {}) {
           const tags = page.frontmatter?.tags ?? []
           const date = pageDate(page, cfg)
           const summary = excerptFor(page, options.excerptLength)
-          const isThoughtCard = page.frontmatter?.noteType === "thought"
-          const itemClass = [
-            "recent-li",
-            isThoughtCard && "thought-card",
-            isThoughtCard && `thought-card--${thoughtCardTone(page)}`,
-          ]
-            .filter(Boolean)
-            .join(" ")
+          const contentType = contentTypeFor(page)
+          const itemClass = `recent-li content-entry content-entry--${contentType}`
 
           return h(
             "li",
@@ -94,7 +91,7 @@ function RecentNotesSummary(userOptions = {}) {
               h(
                 "div",
                 { class: "desc" },
-                isThoughtCard && h("span", { class: "thought-card__label" }, "思考卡片"),
+                h("span", { class: "content-entry__label" }, contentTypes[contentType].label),
                 h(
                   "h3",
                   null,
