@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">随机抽帧与流式训练的特征传播差异</title>
+  <desc id="desc">随机抽帧时，同一对象在远隔时间可能收敛到不同特征簇；流式训练利用相邻帧共享的 Gaussian 和局部交接，将同一身份逐帧传递。</desc>
+  <defs>
+    <marker id="arrowBad" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF6B6B"/></marker>
+    <marker id="arrowGood" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#5DD39E"/></marker>
+    <style>
+      .bg{fill:#0B1220}.panel{fill:#111C2E;stroke:#31445F;stroke-width:2}.badPanel{fill:#1D1722;stroke:#693544;stroke-width:2}.goodPanel{fill:#10231F;stroke:#285E4A;stroke-width:2}
+      .title{fill:#E6EDF7;font:700 30px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.sub{fill:#9FB0C6;font:17px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .label{fill:#E6EDF7;font:700 20px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.body{fill:#9FB0C6;font:16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .bad{fill:#FF9B9B;font:700 18px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.good{fill:#7EE8B7;font:700 18px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .time{fill:#9FB0C6;font:700 16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.cluster{fill:#E6EDF7;font:700 19px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="700" rx="24"/>
+  <text class="title" x="56" y="58">Streaming 的本质：让“同一个人”沿局部重叠接力</text>
+  <text class="sub" x="56" y="88">单帧对比损失只要求“这一帧可分”，并不会自动给远隔帧选择同一个特征坐标</text>
+
+  <rect class="badPanel" x="56" y="128" width="1088" height="212" rx="22"/>
+  <text class="bad" x="82" y="164">随机抽帧｜每个时间块都能独立找到一个低损失解</text>
+  <path d="M164 228 C310 172 420 290 570 218 S850 180 1032 232" stroke="#693544" stroke-width="3" fill="none" stroke-dasharray="7 9"/>
+
+  <text class="time" x="166" y="310" text-anchor="middle">t₁</text>
+  <text class="time" x="382" y="310" text-anchor="middle">t₂₀</text>
+  <text class="time" x="598" y="310" text-anchor="middle">t₆₀</text>
+  <text class="time" x="814" y="310" text-anchor="middle">t₁₂₀</text>
+  <text class="time" x="1030" y="310" text-anchor="middle">t₂₀₀</text>
+
+  <circle cx="166" cy="232" r="42" fill="#A78BFA"/><text class="cluster" x="166" y="239" text-anchor="middle">A</text>
+  <circle cx="382" cy="232" r="42" fill="#46D9E8"/><text class="cluster" x="382" y="239" text-anchor="middle">F</text>
+  <circle cx="598" cy="232" r="42" fill="#F6C85F"/><text class="cluster" x="598" y="239" text-anchor="middle">C</text>
+  <circle cx="814" cy="232" r="42" fill="#FF6B6B"/><text class="cluster" x="814" y="239" text-anchor="middle">B</text>
+  <circle cx="1030" cy="232" r="42" fill="#5DD39E"/><text class="cluster" x="1030" y="239" text-anchor="middle">D</text>
+  <text class="body" x="600" y="324" text-anchor="middle">对象相同，但各时间块的特征簇方向可以任意置换</text>
+
+  <rect class="goodPanel" x="56" y="374" width="1088" height="252" rx="22"/>
+  <text class="good" x="82" y="412">按时间训练｜相邻帧共享 primitive，旧 Gaussian 消失时再把特征交给新近邻</text>
+
+  <line x1="166" y1="505" x2="1030" y2="505" stroke="#285E4A" stroke-width="12" stroke-linecap="round"/>
+  <path d="M208 505 H330" stroke="#5DD39E" stroke-width="4" marker-end="url(#arrowGood)"/>
+  <path d="M424 505 H546" stroke="#5DD39E" stroke-width="4" marker-end="url(#arrowGood)"/>
+  <path d="M640 505 H762" stroke="#5DD39E" stroke-width="4" marker-end="url(#arrowGood)"/>
+  <path d="M856 505 H978" stroke="#5DD39E" stroke-width="4" marker-end="url(#arrowGood)"/>
+
+  <circle cx="166" cy="505" r="42" fill="#A78BFA"/><text class="cluster" x="166" y="512" text-anchor="middle">A</text>
+  <circle cx="382" cy="505" r="42" fill="#A78BFA"/><text class="cluster" x="382" y="512" text-anchor="middle">A</text>
+  <circle cx="598" cy="505" r="42" fill="#A78BFA"/><text class="cluster" x="598" y="512" text-anchor="middle">A</text>
+  <circle cx="814" cy="505" r="42" fill="#A78BFA"/><text class="cluster" x="814" y="512" text-anchor="middle">A</text>
+  <circle cx="1030" cy="505" r="42" fill="#A78BFA"/><text class="cluster" x="1030" y="512" text-anchor="middle">A</text>
+
+  <text class="time" x="166" y="579" text-anchor="middle">t₁</text>
+  <text class="time" x="382" y="579" text-anchor="middle">t₂₀</text>
+  <text class="time" x="598" y="579" text-anchor="middle">t₆₀</text>
+  <text class="time" x="814" y="579" text-anchor="middle">t₁₂₀</text>
+  <text class="time" x="1030" y="579" text-anchor="middle">t₂₀₀</text>
+  <text class="body" x="600" y="610" text-anchor="middle">远隔帧不必共享同一个 Gaussian；只要局部交接链不断，全局身份就能保持</text>
+
+  <rect x="334" y="648" width="532" height="36" rx="18" fill="#18233A"/>
+  <text class="good" x="600" y="672" text-anchor="middle">优化顺序本身，就是建立全局一致性的归纳偏置</text>
+</svg>

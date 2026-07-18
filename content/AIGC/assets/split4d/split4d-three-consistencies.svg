@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Split4D 从三类局部约束得到 4D 一致实例特征</title>
+  <desc id="desc">逐图对比学习、跨视角参数共享、邻近时间的运动复用与 3D 交接共同约束 Freetime FeatureGS，最终形成可聚类的 4D 实例特征场。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7F93AE"/>
+    </marker>
+    <style>
+      .bg{fill:#0B1220}.card{fill:#111C2E;stroke:#31445F;stroke-width:2}.amber{fill:#271F14;stroke:#F6C85F;stroke-width:2}.cyan{fill:#10252A;stroke:#46D9E8;stroke-width:2}.violet{fill:#1D1830;stroke:#A78BFA;stroke-width:2}.green{fill:#12271F;stroke:#5DD39E;stroke-width:2}
+      .title{fill:#E6EDF7;font:700 30px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.sub{fill:#9FB0C6;font:17px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .label{fill:#E6EDF7;font:700 20px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.body{fill:#9FB0C6;font:16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .tagA{fill:#F6C85F;font:700 16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.tagC{fill:#46D9E8;font:700 16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.tagV{fill:#C4B5FD;font:700 16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.tagG{fill:#7EE8B7;font:700 16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .arrow{stroke:#7F93AE;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="700" rx="24"/>
+  <text class="title" x="56" y="58">三类局部一致性，拼出一个全局 4D 身份</text>
+  <text class="sub" x="56" y="88">没有任何一条监督边直接跨越整段视频；全局结果来自约束图的连通</text>
+
+  <rect class="amber" x="56" y="132" width="318" height="138" rx="18"/>
+  <text class="tagA" x="82" y="164">① 单图内：谁和谁同组？</text>
+  <text class="label" x="82" y="202">SAM mask + InfoNCE</text>
+  <text class="body" x="82" y="232">同一 mask 内特征靠近</text>
+  <text class="body" x="82" y="256">不同 mask 之间特征分开</text>
+
+  <rect class="cyan" x="56" y="302" width="318" height="138" rx="18"/>
+  <text class="tagC" x="82" y="334">② 同一时刻：跨视角是谁？</text>
+  <text class="label" x="82" y="372">共享 Gaussian 参数</text>
+  <text class="body" x="82" y="402">不同相机投影回同一批 primitive</text>
+  <text class="body" x="82" y="426">特征无需额外匹配天然一致</text>
+
+  <rect class="violet" x="56" y="472" width="318" height="150" rx="18"/>
+  <text class="tagV" x="82" y="504">③ 相邻时刻：身份如何交接？</text>
+  <text class="label" x="82" y="542">运动复用 + 3D 对齐</text>
+  <text class="body" x="82" y="572">旧 Gaussian 携带特征向前移动</text>
+  <text class="body" x="82" y="596">消失时与新近邻完成特征交接</text>
+
+  <rect class="card" x="487" y="226" width="312" height="298" rx="24"/>
+  <text class="tagV" x="643" y="268" text-anchor="middle">共享的学习对象</text>
+  <ellipse cx="584" cy="340" rx="34" ry="18" fill="#A78BFA" opacity="0.85" transform="rotate(-22 584 340)"/>
+  <ellipse cx="655" cy="322" rx="38" ry="20" fill="#46D9E8" opacity="0.82" transform="rotate(18 655 322)"/>
+  <ellipse cx="707" cy="370" rx="32" ry="17" fill="#F6C85F" opacity="0.84" transform="rotate(-8 707 370)"/>
+  <ellipse cx="617" cy="402" rx="36" ry="19" fill="#5DD39E" opacity="0.80" transform="rotate(25 617 402)"/>
+  <circle cx="584" cy="340" r="4" fill="#E6EDF7"/>
+  <circle cx="655" cy="322" r="4" fill="#E6EDF7"/>
+  <circle cx="707" cy="370" r="4" fill="#E6EDF7"/>
+  <circle cx="617" cy="402" r="4" fill="#E6EDF7"/>
+  <text class="label" x="643" y="456" text-anchor="middle">Freetime FeatureGS</text>
+  <text class="body" x="643" y="484" text-anchor="middle">每个 primitive 持有 32D 实例特征</text>
+
+  <rect class="green" x="908" y="250" width="236" height="248" rx="24"/>
+  <text class="tagG" x="1026" y="292" text-anchor="middle">全局结果</text>
+  <circle cx="973" cy="354" r="24" fill="#A78BFA"/>
+  <circle cx="1030" cy="332" r="24" fill="#46D9E8"/>
+  <circle cx="1082" cy="373" r="24" fill="#F6C85F"/>
+  <circle cx="1018" cy="404" r="24" fill="#5DD39E"/>
+  <text class="label" x="1026" y="454" text-anchor="middle">可聚类的 4D 实例</text>
+  <text class="body" x="1026" y="480" text-anchor="middle">分割 · 删除 · 复制 · 平移</text>
+
+  <path class="arrow" d="M374 201 C430 201 438 302 477 330"/>
+  <path class="arrow" d="M374 371 H477"/>
+  <path class="arrow" d="M374 547 C430 547 438 450 477 423"/>
+  <path class="arrow" d="M799 374 H898"/>
+
+  <rect x="454" y="576" width="378" height="68" rx="34" fill="#18233A" stroke="#31445F" stroke-width="2"/>
+  <text class="label" x="643" y="607" text-anchor="middle">局部约束 + 时序连通</text>
+  <text class="body" x="643" y="632" text-anchor="middle">替代一个脆弱的全局视频 ID</text>
+</svg>

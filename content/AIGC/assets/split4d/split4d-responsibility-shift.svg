@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Split4D 将跨时间身份一致性的责任从视频标签移到 4D 表示</title>
+  <desc id="desc">上半部分展示传统视频分割一旦发生 ID 切换，错误会被提升到 4D；下半部分展示 Split4D 允许逐图标签不一致，由运动 Gaussian 和流式学习建立全局实例。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7F93AE"/>
+    </marker>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#46D9E8"/>
+    </marker>
+    <style>
+      .bg{fill:#0B1220}.card{fill:#111C2E;stroke:#31445F;stroke-width:2}.bad{fill:#241725;stroke:#FF6B6B;stroke-width:2}.good{fill:#10252A;stroke:#46D9E8;stroke-width:2}
+      .title{fill:#E6EDF7;font:700 30px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.sub{fill:#9FB0C6;font:17px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .label{fill:#E6EDF7;font:700 20px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.body{fill:#9FB0C6;font:16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .old{fill:#FF9B9B;font:700 18px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.new{fill:#72E7F1;font:700 18px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .arrow{stroke:#7F93AE;stroke-width:3;fill:none;marker-end:url(#arrow)}.arrow2{stroke:#46D9E8;stroke-width:3;fill:none;marker-end:url(#arrowCyan)}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="700" rx="24"/>
+  <text class="title" x="56" y="58">难点不在“每帧分开”，而在“身份能否穿过时间”</text>
+  <text class="sub" x="56" y="88">两条路线的根本区别：谁负责建立跨视角、跨时间的实例一致性？</text>
+
+  <text class="old" x="56" y="140">传统路线｜责任在 2D 视频标签</text>
+  <rect class="card" x="56" y="164" width="190" height="112" rx="16"/>
+  <text class="label" x="151" y="202" text-anchor="middle">多视角视频</text>
+  <text class="body" x="151" y="232" text-anchor="middle">遮挡 · 快速运动</text>
+  <text class="body" x="151" y="256" text-anchor="middle">多人交互</text>
+
+  <rect class="bad" x="303" y="164" width="244" height="112" rx="16"/>
+  <text class="label" x="425" y="201" text-anchor="middle">视频分割 / Tracker</text>
+  <text class="body" x="425" y="231" text-anchor="middle">先产出全局一致 ID</text>
+  <text class="old" x="425" y="257" text-anchor="middle">ID switch 在这里发生</text>
+
+  <rect class="card" x="604" y="164" width="202" height="112" rx="16"/>
+  <text class="label" x="705" y="202" text-anchor="middle">提升到 4D</text>
+  <text class="body" x="705" y="232" text-anchor="middle">可微渲染写入</text>
+  <text class="body" x="705" y="256" text-anchor="middle">特征场</text>
+
+  <rect class="bad" x="863" y="164" width="281" height="112" rx="16"/>
+  <text class="label" x="1003" y="202" text-anchor="middle">错误被结构化</text>
+  <text class="body" x="1003" y="232" text-anchor="middle">换 ID · 丢目标 · 跨视角冲突</text>
+  <text class="old" x="1003" y="258" text-anchor="middle">直接进入 4D 结果</text>
+
+  <path class="arrow" d="M246 220 H293"/>
+  <path class="arrow" d="M547 220 H594"/>
+  <path class="arrow" d="M806 220 H853"/>
+
+  <line x1="56" y1="326" x2="1144" y2="326" stroke="#31445F" stroke-width="2" stroke-dasharray="8 10"/>
+
+  <text class="new" x="56" y="374">Split4D｜责任移到 4D 表示与优化路径</text>
+  <rect class="card" x="56" y="398" width="215" height="122" rx="16"/>
+  <text class="label" x="163" y="436" text-anchor="middle">逐图 SAM mask</text>
+  <text class="body" x="163" y="468" text-anchor="middle">只要求单图内分组正确</text>
+  <text class="new" x="163" y="496" text-anchor="middle">ID 可以每图都不同</text>
+
+  <rect class="good" x="326" y="398" width="273" height="122" rx="16"/>
+  <text class="label" x="462" y="436" text-anchor="middle">Freetime FeatureGS</text>
+  <text class="body" x="462" y="468" text-anchor="middle">运动 Gaussian 携带实例特征</text>
+  <text class="body" x="462" y="494" text-anchor="middle">跨视角共享 · 邻帧复用</text>
+
+  <rect class="good" x="654" y="398" width="218" height="122" rx="16"/>
+  <text class="label" x="763" y="436" text-anchor="middle">Streaming</text>
+  <text class="body" x="763" y="468" text-anchor="middle">按时间顺序训练</text>
+  <text class="body" x="763" y="494" text-anchor="middle">局部一致性逐段接力</text>
+
+  <rect class="good" x="927" y="398" width="217" height="122" rx="16"/>
+  <text class="label" x="1035" y="436" text-anchor="middle">全局 4D 实例</text>
+  <text class="body" x="1035" y="468" text-anchor="middle">时空一致分解</text>
+  <text class="new" x="1035" y="496" text-anchor="middle">不依赖全局 2D ID</text>
+
+  <path class="arrow2" d="M271 459 H316"/>
+  <path class="arrow2" d="M599 459 H644"/>
+  <path class="arrow2" d="M872 459 H917"/>
+
+  <rect x="204" y="574" width="792" height="70" rx="35" fill="#18233A" stroke="#A78BFA" stroke-width="2"/>
+  <text class="label" x="600" y="604" text-anchor="middle">核心转移</text>
+  <text class="body" x="600" y="630" text-anchor="middle">时序对应没有消失；它从“预处理标签”迁移到了“运动表示 + 流式优化”</text>
+</svg>

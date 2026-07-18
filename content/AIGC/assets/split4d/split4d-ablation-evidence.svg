@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Split4D 在 Multi-Human Juggle 序列上的组件消融</title>
+  <desc id="desc">完整模型 mIoU 为 0.895。去掉流式学习下降到 0.552，去掉运动建模下降到 0.644，去掉 3D tracking 和 DINOv2 对齐分别为 0.866 和 0.858。</desc>
+  <defs>
+    <style>
+      .bg{fill:#0B1220}.plot{fill:#111C2E;stroke:#31445F;stroke-width:2}.grid{stroke:#31445F;stroke-width:1;stroke-dasharray:5 7}
+      .title{fill:#E6EDF7;font:700 30px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.sub{fill:#9FB0C6;font:17px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .label{fill:#E6EDF7;font:700 18px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.axis{fill:#7F93AE;font:15px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .value{fill:#E6EDF7;font:700 17px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.drop{fill:#FF9B9B;font:700 16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+      .note{fill:#9FB0C6;font:16px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}.key{fill:#72E7F1;font:700 18px Inter,PingFang SC,Microsoft YaHei,Arial,sans-serif}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="700" rx="24"/>
+  <text class="title" x="56" y="58">消融给出的因果排序：先是“流式顺序”，再是“运动载体”</text>
+  <text class="sub" x="56" y="88">Multi-Human / Juggle，指标为 mIoU；下降值相对完整模型 0.895</text>
+
+  <rect class="plot" x="56" y="124" width="1088" height="456" rx="22"/>
+
+  <line class="grid" x1="530" y1="160" x2="530" y2="540"/>
+  <line class="grid" x1="650" y1="160" x2="650" y2="540"/>
+  <line class="grid" x1="770" y1="160" x2="770" y2="540"/>
+  <line class="grid" x1="890" y1="160" x2="890" y2="540"/>
+  <line class="grid" x1="1010" y1="160" x2="1010" y2="540"/>
+  <text class="axis" x="530" y="562" text-anchor="middle">0.5</text>
+  <text class="axis" x="650" y="562" text-anchor="middle">0.6</text>
+  <text class="axis" x="770" y="562" text-anchor="middle">0.7</text>
+  <text class="axis" x="890" y="562" text-anchor="middle">0.8</text>
+  <text class="axis" x="1010" y="562" text-anchor="middle">0.9</text>
+
+  <text class="label" x="88" y="202">完整 Split4D</text>
+  <rect x="350" y="176" width="704" height="38" rx="9" fill="#5DD39E"/>
+  <text class="value" x="1068" y="201">0.895</text>
+
+  <text class="label" x="88" y="272">去掉 Streaming</text>
+  <rect x="350" y="246" width="440" height="38" rx="9" fill="#FF6B6B"/>
+  <text class="value" x="804" y="271">0.552</text>
+  <text class="drop" x="892" y="271">−34.3 个百分点</text>
+
+  <text class="label" x="88" y="342">去掉 Motion</text>
+  <rect x="350" y="316" width="514" height="38" rx="9" fill="#F6C85F"/>
+  <text class="value" x="878" y="341">0.644</text>
+  <text class="drop" x="952" y="341">−25.1</text>
+
+  <text class="label" x="88" y="412">去掉 3D Tracking</text>
+  <rect x="350" y="386" width="680" height="38" rx="9" fill="#A78BFA"/>
+  <text class="value" x="1044" y="411">0.866</text>
+  <text class="drop" x="1098" y="411">−2.9</text>
+
+  <text class="label" x="88" y="482">去掉 DINOv2 对齐</text>
+  <rect x="350" y="456" width="674" height="38" rx="9" fill="#46D9E8"/>
+  <text class="value" x="1038" y="481">0.858</text>
+  <text class="drop" x="1092" y="481">−3.7</text>
+
+  <text class="note" x="88" y="530">注：3D Tracking 与 DINOv2 是稳态增强项；去掉任一项只有小幅下降。</text>
+
+  <rect x="146" y="610" width="908" height="58" rx="29" fill="#18233A" stroke="#46D9E8" stroke-width="2"/>
+  <text class="key" x="600" y="646" text-anchor="middle">真正让方法成立的骨架 = 可传递身份的运动 Gaussian + 沿时间推进的优化顺序</text>
+</svg>
