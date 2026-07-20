@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Agent OS 的安全进化闭环</title>
+  <desc id="desc">线上任务经过事件与产物采集、失败分类、回放评测、候选版本、影子流量和灰度发布，再进入生产；质量下降则回滚。</desc>
+  <defs><style>
+    text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}.h1{font-size:34px;font-weight:750}.h2{font-size:22px;font-weight:700}.body{font-size:16px}.small{font-size:14px;fill:#666176}.box{fill:#fff;stroke:#d6d2e4;stroke-width:2}.accent{fill:#f1eeff;stroke:#7568dc;stroke-width:2.5}.data{fill:#eef8ff;stroke:#5e9dcc;stroke-width:2.4}.ok{fill:#edf8f1;stroke:#58a077;stroke-width:2.4}.risk{fill:#fff1ea;stroke:#d17f56;stroke-width:2.4}.arrow{stroke:#766e8e;stroke-width:2.6;fill:none;marker-end:url(#a)}.rollback{stroke:#d17f56;stroke-width:2.5;stroke-dasharray:8 6;fill:none;marker-end:url(#b)}
+  </style><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#766e8e"/></marker><marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#d17f56"/></marker></defs>
+  <rect width="1200" height="800" rx="30" fill="#faf9fd"/><text x="600" y="58" text-anchor="middle" class="h1">进化不是“把成功对话写进 Memory”，而是受控的软件发布</text>
+  <rect x="55" y="125" width="190" height="105" rx="18" class="accent"/><text x="150" y="165" text-anchor="middle" class="h2">线上 Task</text><text x="150" y="197" text-anchor="middle" class="body">多路径、真实副作用</text>
+  <rect x="290" y="125" width="190" height="105" rx="18" class="data"/><text x="385" y="165" text-anchor="middle" class="h2">证据采集</text><text x="385" y="197" text-anchor="middle" class="body">Event · Trace · Artifact</text>
+  <rect x="525" y="125" width="190" height="105" rx="18" class="data"/><text x="620" y="165" text-anchor="middle" class="h2">失败分类</text><text x="620" y="197" text-anchor="middle" class="body">路由 · Tool · 权限 · 恢复</text>
+  <rect x="760" y="125" width="190" height="105" rx="18" class="box"/><text x="855" y="165" text-anchor="middle" class="h2">回放与 Eval</text><text x="855" y="197" text-anchor="middle" class="body">结果 + 过程 + 业务 KPI</text>
+  <rect x="955" y="315" width="190" height="105" rx="18" class="accent"/><text x="1050" y="355" text-anchor="middle" class="h2">候选版本</text><text x="1050" y="387" text-anchor="middle" class="body">Prompt · Skill · Policy</text>
+  <rect x="720" y="510" width="190" height="105" rx="18" class="ok"/><text x="815" y="550" text-anchor="middle" class="h2">Shadow / Canary</text><text x="815" y="582" text-anchor="middle" class="body">对照、灰度、预算门禁</text>
+  <rect x="450" y="510" width="190" height="105" rx="18" class="ok"/><text x="545" y="550" text-anchor="middle" class="h2">发布或回滚</text><text x="545" y="582" text-anchor="middle" class="body">版本可追踪、可恢复</text>
+  <rect x="180" y="510" width="190" height="105" rx="18" class="accent"/><text x="275" y="550" text-anchor="middle" class="h2">下一批 Task</text><text x="275" y="582" text-anchor="middle" class="body">新版本继续被观测</text>
+  <path d="M245 177L280 177" class="arrow"/><path d="M480 177L515 177" class="arrow"/><path d="M715 177L750 177" class="arrow"/><path d="M950 190C1010 220 1040 255 1050 305" class="arrow"/><path d="M1050 420C1010 485 950 535 920 552" class="arrow"/><path d="M720 562L650 562" class="arrow"/><path d="M450 562L380 562" class="arrow"/><path d="M275 510C220 420 180 330 160 240" class="arrow"/>
+  <path d="M815 510C790 430 820 390 955 370" class="rollback"/><text x="830" y="447" class="small">质量或成本退化：回滚候选</text>
+  <rect x="210" y="690" width="780" height="70" rx="17" class="risk"/><text x="600" y="718" text-anchor="middle" class="h2">长期 Memory 只保存有来源、作用域、置信度和删除机制的稳定事实</text><text x="600" y="745" text-anchor="middle" class="small">单条成功轨迹不能直接升级为策略，更不能绕过评测发布 Skill</text>
+</svg>

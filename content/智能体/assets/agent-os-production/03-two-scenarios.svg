@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">两类业务场景塑造两种 Agent OS</title>
+  <desc id="desc">持续运营型智能体与素材生产型智能体在触发、时间、工作对象、拓扑、托管和完成定义方面不同，但共享可靠性内核。</desc>
+  <defs><style>
+    text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}.h1{font-size:34px;font-weight:750}.h2{font-size:26px;font-weight:700}.body{font-size:18px}.small{font-size:16px;fill:#666176}.ops{fill:#eef7ff;stroke:#5e9dcc;stroke-width:2.5}.creative{fill:#fff4ec;stroke:#d58b57;stroke-width:2.5}.card{fill:#fff;stroke:#d8d4e8;stroke-width:2}.kernel{fill:#f1eeff;stroke:#7568dc;stroke-width:2.5}.arrow{stroke:#7c7493;stroke-width:2.6;fill:none;marker-end:url(#a)}
+  </style><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#7c7493"/></marker></defs>
+  <rect width="1200" height="800" rx="30" fill="#faf9fd"/><text x="600" y="58" text-anchor="middle" class="h1">OS 的形态由“工作”决定，不由 Agent 数量决定</text>
+  <rect x="55" y="105" width="500" height="500" rx="24" class="ops"/><text x="305" y="150" text-anchor="middle" class="h2">持续运营型 Profile</text>
+  <rect x="90" y="185" width="430" height="66" rx="13" class="card"/><text x="115" y="214" class="small">触发</text><text x="495" y="225" text-anchor="end" class="body">7×24 定时 / 事件 / 用户意图</text>
+  <rect x="90" y="268" width="430" height="66" rx="13" class="card"/><text x="115" y="297" class="small">对象</text><text x="495" y="308" text-anchor="end" class="body">账户、计划、指标、线上配置</text>
+  <rect x="90" y="351" width="430" height="66" rx="13" class="card"/><text x="115" y="380" class="small">拓扑</text><text x="495" y="391" text-anchor="end" class="body">主 Agent 强意图路由 + 专业执行单元</text>
+  <rect x="90" y="434" width="430" height="66" rx="13" class="card"/><text x="115" y="463" class="small">托管</text><text x="495" y="474" text-anchor="end" class="body">无人在线仍可受控持续工作</text>
+  <rect x="90" y="517" width="430" height="66" rx="13" class="card"/><text x="115" y="546" class="small">完成</text><text x="495" y="557" text-anchor="end" class="body">外部状态回读 + 效果继续观察</text>
+  <rect x="645" y="105" width="500" height="500" rx="24" class="creative"/><text x="895" y="150" text-anchor="middle" class="h2">素材生产型 Profile</text>
+  <rect x="680" y="185" width="430" height="66" rx="13" class="card"/><text x="705" y="214" class="small">触发</text><text x="1085" y="225" text-anchor="end" class="body">用户任务 / 定时生产计划</text>
+  <rect x="680" y="268" width="430" height="66" rx="13" class="card"/><text x="705" y="297" class="small">对象</text><text x="1085" y="308" text-anchor="end" class="body">项目、脚本、镜头、图片、视频</text>
+  <rect x="680" y="351" width="430" height="66" rx="13" class="card"/><text x="705" y="380" class="small">拓扑</text><text x="1085" y="391" text-anchor="end" class="body">导演 / 编剧 / 生成角色的灵活 Loop</text>
+  <rect x="680" y="434" width="430" height="66" rx="13" class="card"/><text x="705" y="463" class="small">托管</text><text x="1085" y="474" text-anchor="end" class="body">项目级任务运行时 + 人机接力</text>
+  <rect x="680" y="517" width="430" height="66" rx="13" class="card"/><text x="705" y="546" class="small">完成</text><text x="1085" y="557" text-anchor="end" class="body">产物存在、可打开、审核通过</text>
+  <rect x="220" y="665" width="760" height="92" rx="20" class="kernel"/><text x="600" y="704" text-anchor="middle" class="h2">共享可靠性内核</text><text x="600" y="736" text-anchor="middle" class="body">任务协议 · 状态机 · 幂等 · 租约 · 人工等待 · 观测 · 评测</text>
+  <path d="M305 605C340 635 410 645 475 658" class="arrow"/><path d="M895 605C860 635 790 645 725 658" class="arrow"/>
+</svg>

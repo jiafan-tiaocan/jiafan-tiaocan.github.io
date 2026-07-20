@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="780" viewBox="0 0 1200 780" role="img" aria-labelledby="title desc">
+  <title id="title">Completion Contract 完成证明</title>
+  <desc id="desc">模型输出只是候选说明，系统需检查必需产物、工具操作、外部回读、风险告警和人工门禁，才能进入完成态。</desc>
+  <defs><style>
+    text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}.h1{font-size:34px;font-weight:750}.h2{font-size:23px;font-weight:700}.body{font-size:17px}.small{font-size:15px;fill:#666176}.candidate{fill:#fff;stroke:#c7c2d9;stroke-width:2.3}.gate{fill:#f1eeff;stroke:#7568dc;stroke-width:2.6}.check{fill:#edf8f1;stroke:#58a077;stroke-width:2.3}.fail{fill:#fff1eb;stroke:#d17f56;stroke-width:2.3}.arrow{stroke:#766e8e;stroke-width:2.6;fill:none;marker-end:url(#a)}.back{stroke:#d17f56;stroke-width:2.4;stroke-dasharray:8 6;fill:none;marker-end:url(#b)}
+  </style><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#766e8e"/></marker><marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#d17f56"/></marker></defs>
+  <rect width="1200" height="780" rx="30" fill="#faf9fd"/><text x="600" y="58" text-anchor="middle" class="h1">“没有 Tool Call 了”不等于业务完成</text>
+  <rect x="60" y="135" width="235" height="115" rx="20" class="candidate"/><text x="178" y="177" text-anchor="middle" class="h2">Runtime Finished</text><text x="178" y="209" text-anchor="middle" class="body">模型给出最终文本</text><text x="178" y="234" text-anchor="middle" class="small">只代表本次 Turn 结束</text>
+  <rect x="375" y="115" width="330" height="155" rx="23" class="gate"/><text x="540" y="158" text-anchor="middle" class="h2">Completion Service</text><text x="540" y="192" text-anchor="middle" class="body">读取合同、事件、操作记录与外部事实</text><text x="540" y="225" text-anchor="middle" class="small">验证发生在 Agent Loop 外</text>
+  <rect x="790" y="110" width="350" height="70" rx="16" class="check"/><text x="815" y="152" class="body">✓ 必需 Artifact 已存在且可读取</text>
+  <rect x="790" y="195" width="350" height="70" rx="16" class="check"/><text x="815" y="237" class="body">✓ 必需 Operation 已成功且可去重</text>
+  <rect x="790" y="280" width="350" height="70" rx="16" class="check"/><text x="815" y="322" class="body">✓ 外部状态回读符合预期</text>
+  <rect x="790" y="365" width="350" height="70" rx="16" class="check"/><text x="815" y="407" class="body">✓ 无未处理高风险告警</text>
+  <rect x="790" y="450" width="350" height="70" rx="16" class="check"/><text x="815" y="492" class="body">✓ 必要人工审批 / 验收已通过</text>
+  <path d="M295 192L365 192" class="arrow"/><path d="M705 192C745 190 760 155 780 145" class="arrow"/>
+  <rect x="420" y="430" width="240" height="105" rx="19" class="check"/><text x="540" y="470" text-anchor="middle" class="h2">Proof Valid</text><text x="540" y="503" text-anchor="middle" class="body">Task → COMPLETED</text><path d="M790 485C730 485 700 485 670 485" class="arrow"/>
+  <rect x="90" y="430" width="240" height="105" rx="19" class="fail"/><text x="210" y="470" text-anchor="middle" class="h2">Missing Evidence</text><text x="210" y="503" text-anchor="middle" class="body">续跑 / 等待 / 失败</text><path d="M420 482L340 482" class="back"/>
+  <path d="M210 430C210 345 315 315 430 270" class="back"/><text x="245" y="342" class="small">只携带缺失项生成 continuation</text>
+  <rect x="170" y="630" width="860" height="95" rx="20" class="candidate"/><text x="600" y="668" text-anchor="middle" class="h2">完成合同必须按 Task Type 版本化</text><text x="600" y="699" text-anchor="middle" class="body">投放写入看配置回读；素材生产看素材 ID、链接、协议保存、审核状态和用户验收</text>
+</svg>

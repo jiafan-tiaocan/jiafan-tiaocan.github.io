@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Core 与 Agent OS 的边界</title>
+  <desc id="desc">Agent Core 提供模型、循环、工具与会话机制；Agent OS 根据业务拥有路由、权限、恢复、预算和完成判定策略。</desc>
+  <defs>
+    <style>
+      text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}.h1{font-size:34px;font-weight:750}.h2{font-size:26px;font-weight:700}.body{font-size:19px}.small{font-size:16px;fill:#666176}.core{fill:#eef7ff;stroke:#5c9dce;stroke-width:2.5}.os{fill:#f2efff;stroke:#7568dc;stroke-width:2.5}.card{fill:#fff;stroke:#d8d4e8;stroke-width:2}.arrow{stroke:#746bd1;stroke-width:3;fill:none;marker-end:url(#a)}
+    </style>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#746bd1"/></marker>
+  </defs>
+  <rect width="1200" height="720" rx="30" fill="#faf9fd"/>
+  <text x="600" y="58" text-anchor="middle" class="h1">同一个能力，机制属于 Core，策略属于 OS</text>
+  <rect x="70" y="105" width="450" height="525" rx="24" class="core"/>
+  <text x="295" y="155" text-anchor="middle" class="h2">Agent Core：让一次执行跑起来</text>
+  <rect x="105" y="195" width="380" height="72" rx="14" class="card"/><text x="295" y="225" text-anchor="middle" class="body">模型协议与流式事件</text><text x="295" y="250" text-anchor="middle" class="small">provider / message / usage / stop reason</text>
+  <rect x="105" y="288" width="380" height="72" rx="14" class="card"/><text x="295" y="318" text-anchor="middle" class="body">Agent Loop</text><text x="295" y="343" text-anchor="middle" class="small">model → tool → result → model</text>
+  <rect x="105" y="381" width="380" height="72" rx="14" class="card"/><text x="295" y="411" text-anchor="middle" class="body">Tool / Skill / Hook / Session</text><text x="295" y="436" text-anchor="middle" class="small">可调用、可扩展、可保存的基础机制</text>
+  <rect x="105" y="474" width="380" height="72" rx="14" class="card"/><text x="295" y="504" text-anchor="middle" class="body">Sandbox 接口与 Subagent 原语</text><text x="295" y="529" text-anchor="middle" class="small">提供能力，但不替业务做选择</text>
+  <text x="295" y="590" text-anchor="middle" class="body">窄、稳定、可替换</text>
+  <rect x="680" y="105" width="450" height="525" rx="24" class="os"/>
+  <text x="905" y="155" text-anchor="middle" class="h2">Agent OS：让业务长期可承担</text>
+  <rect x="715" y="195" width="380" height="72" rx="14" class="card"/><text x="905" y="225" text-anchor="middle" class="body">何时路由、委派或并行</text><text x="905" y="250" text-anchor="middle" class="small">主 Agent / 子 Agent / Skill / Tool</text>
+  <rect x="715" y="288" width="380" height="72" rx="14" class="card"/><text x="905" y="318" text-anchor="middle" class="body">谁能做什么、在哪里做</text><text x="905" y="343" text-anchor="middle" class="small">权限 / 审批 / 沙箱等级 / 凭证边界</text>
+  <rect x="715" y="381" width="380" height="72" rx="14" class="card"/><text x="905" y="411" text-anchor="middle" class="body">失败后如何恢复和去重</text><text x="905" y="436" text-anchor="middle" class="small">Task / Checkpoint / Lease / Idempotency</text>
+  <rect x="715" y="474" width="380" height="72" rx="14" class="card"/><text x="905" y="504" text-anchor="middle" class="body">怎样证明完成、怎样持续进化</text><text x="905" y="529" text-anchor="middle" class="small">Evidence / Eval / Replay / Rollout</text>
+  <text x="905" y="590" text-anchor="middle" class="body">随业务场景而变化</text>
+  <path d="M530 370L665 370" class="arrow"/><text x="598" y="344" text-anchor="middle" class="small">机制被策略调用</text>
+  <text x="600" y="683" text-anchor="middle" class="h2">Core 是能力底座；OS 是业务约束下的控制系统</text>
+</svg>

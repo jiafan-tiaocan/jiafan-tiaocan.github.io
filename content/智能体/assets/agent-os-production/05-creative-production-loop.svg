@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">素材生产型 Agent OS 的灵活 Loop</title>
+  <desc id="desc">用户或定时计划进入项目任务，导演型协调单元按需委派编剧、视觉和视频智能体，产物写入资产图并经人工审核，失败或修改可回到任意专业节点。</desc>
+  <defs><style>
+    text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}.h1{font-size:34px;font-weight:750}.h2{font-size:23px;font-weight:700}.body{font-size:17px}.small{font-size:15px;fill:#666176}.card{fill:#fff;stroke:#d6d2e5;stroke-width:2}.main{fill:#f1eeff;stroke:#7568dc;stroke-width:2.6}.role{fill:#fff3eb;stroke:#d58b57;stroke-width:2.4}.asset{fill:#eef8ff;stroke:#5f9dcc;stroke-width:2.5}.human{fill:#edf8f1;stroke:#58a077;stroke-width:2.5}.arrow{stroke:#756d8e;stroke-width:2.7;fill:none;marker-end:url(#a)}.loop{stroke:#ce8057;stroke-width:2.5;fill:none;stroke-dasharray:9 7;marker-end:url(#b)}
+  </style><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#756d8e"/></marker><marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#ce8057"/></marker></defs>
+  <rect width="1200" height="820" rx="30" fill="#faf9fd"/><text x="600" y="58" text-anchor="middle" class="h1">素材生产需要“有骨架的 Loop”，而不是写死的流水线</text>
+  <rect x="55" y="120" width="230" height="105" rx="18" class="card"/><text x="170" y="160" text-anchor="middle" class="h2">任务入口</text><text x="170" y="191" text-anchor="middle" class="body">用户任务 · 定时生产</text>
+  <rect x="365" y="105" width="260" height="135" rx="22" class="main"/><text x="495" y="148" text-anchor="middle" class="h2">项目协调 / 导演</text><text x="495" y="180" text-anchor="middle" class="body">拆目标 · 看全局 · 决定下一步</text><text x="495" y="210" text-anchor="middle" class="small">可以委派，也可以直接调用 Tool/Skill</text>
+  <rect x="745" y="95" width="190" height="110" rx="18" class="role"/><text x="840" y="137" text-anchor="middle" class="h2">编剧单元</text><text x="840" y="169" text-anchor="middle" class="body">脚本 · 分镜 · 文案</text>
+  <rect x="965" y="250" width="190" height="110" rx="18" class="role"/><text x="1060" y="292" text-anchor="middle" class="h2">视觉单元</text><text x="1060" y="324" text-anchor="middle" class="body">图片 · 关键帧</text>
+  <rect x="745" y="405" width="190" height="110" rx="18" class="role"/><text x="840" y="447" text-anchor="middle" class="h2">视频单元</text><text x="840" y="479" text-anchor="middle" class="body">生成 · 编辑 · 合成</text>
+  <rect x="365" y="405" width="260" height="125" rx="20" class="asset"/><text x="495" y="447" text-anchor="middle" class="h2">Artifact Graph</text><text x="495" y="479" text-anchor="middle" class="body">脚本 → 镜头 → 图片 → 视频</text><text x="495" y="506" text-anchor="middle" class="small">Agent 传引用，不在对话中搬运全部资产</text>
+  <rect x="55" y="415" width="230" height="105" rx="18" class="human"/><text x="170" y="455" text-anchor="middle" class="h2">人工节点</text><text x="170" y="487" text-anchor="middle" class="body">补参 · 选择 · 审核 · 验收</text>
+  <path d="M285 172L355 172" class="arrow"/><path d="M625 153C680 140 700 140 735 145" class="arrow"/><path d="M930 177C980 205 1015 225 1040 240" class="arrow"/><path d="M1060 360C1035 400 975 430 945 448" class="arrow"/><path d="M745 460L635 466" class="arrow"/><path d="M365 468L295 468" class="arrow"/>
+  <path d="M170 415C175 300 270 250 390 220" class="loop"/><text x="185" y="315" class="small">回答后从 Checkpoint 恢复</text>
+  <path d="M495 405C495 330 540 300 650 285C745 272 815 280 965 300" class="loop"/><text x="640" y="265" text-anchor="middle" class="small">资产不合格时回到任意专业节点</text>
+  <path d="M840 405C820 340 820 270 840 215" class="loop"/><text x="850" y="315" class="small">角色间可循环接力</text>
+  <rect x="170" y="625" width="860" height="120" rx="22" class="card"/><text x="600" y="667" text-anchor="middle" class="h2">Loop 保持灵活，但必须有硬约束</text><text x="600" y="701" text-anchor="middle" class="body">委派深度 / Token / 时间预算 · 项目资源锁 · 长耗时 AIGC Tool · 产物血缘 · 人工可恢复等待</text>
+</svg>

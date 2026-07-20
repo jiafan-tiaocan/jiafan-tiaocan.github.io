@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="860" viewBox="0 0 1200 860" role="img" aria-labelledby="title desc">
+  <title id="title">Agent OS 状态分层</title>
+  <desc id="desc">工作上下文、会话事件、任务状态、Checkpoint、业务产物和长期记忆具有不同事实源和生命周期，不能混为一个聊天数组。</desc>
+  <defs><style>
+    text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}.h1{font-size:34px;font-weight:750}.h2{font-size:22px;font-weight:700}.body{font-size:16px}.small{font-size:14px;fill:#666176}.l1{fill:#f1eeff;stroke:#7568dc;stroke-width:2.4}.l2{fill:#eef8ff;stroke:#5e9dcc;stroke-width:2.3}.l3{fill:#edf8f1;stroke:#58a077;stroke-width:2.3}.l4{fill:#fff3eb;stroke:#d17f56;stroke-width:2.3}.arrow{stroke:#766e8e;stroke-width:2.3;fill:none;marker-end:url(#a)}
+  </style><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#766e8e"/></marker></defs>
+  <rect width="1200" height="860" rx="30" fill="#faf9fd"/><text x="600" y="58" text-anchor="middle" class="h1">上下文窗口只是 Working Set，不是系统事实源</text>
+  <rect x="330" y="105" width="540" height="90" rx="19" class="l1"/><text x="600" y="141" text-anchor="middle" class="h2">Working Context</text><text x="600" y="171" text-anchor="middle" class="body">当前 Prompt · 最近消息 · Tool Result · 可丢的摘要缓存</text>
+  <rect x="285" y="225" width="630" height="90" rx="19" class="l2"/><text x="600" y="261" text-anchor="middle" class="h2">Session / Transcript</text><text x="600" y="291" text-anchor="middle" class="body">追加式原始消息与事件；压缩不覆盖物理历史</text>
+  <rect x="240" y="345" width="720" height="90" rx="19" class="l3"/><text x="600" y="381" text-anchor="middle" class="h2">Task State / Operation Ledger</text><text x="600" y="411" text-anchor="middle" class="body">状态、责任、预算、等待点、已完成副作用与版本</text>
+  <rect x="195" y="465" width="810" height="90" rx="19" class="l4"/><text x="600" y="501" text-anchor="middle" class="h2">Checkpoint</text><text x="600" y="531" text-anchor="middle" class="body">可恢复位置 + Core/Prompt/Tool 版本 + 未确认副作用</text>
+  <rect x="150" y="585" width="900" height="90" rx="19" class="l2"/><text x="600" y="621" text-anchor="middle" class="h2">Artifact / Project Memory</text><text x="600" y="651" text-anchor="middle" class="body">报告、脚本、素材、配置快照；Agent 之间传引用与血缘</text>
+  <rect x="105" y="705" width="990" height="90" rx="19" class="l3"/><text x="600" y="741" text-anchor="middle" class="h2">Long-term Memory</text><text x="600" y="771" text-anchor="middle" class="body">有来源、时间、作用域、置信度、版本、权限与删除机制的稳定事实</text>
+  <path d="M600 195L600 215" class="arrow"/><path d="M600 315L600 335" class="arrow"/><path d="M600 435L600 455" class="arrow"/><path d="M600 555L600 575" class="arrow"/><path d="M600 675L600 695" class="arrow"/>
+  <text x="890" y="160" class="small">最短生命周期</text><text x="1110" y="758" text-anchor="end" class="small">最长生命周期，但必须可删除</text>
+</svg>

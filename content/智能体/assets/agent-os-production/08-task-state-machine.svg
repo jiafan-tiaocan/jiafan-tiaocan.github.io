@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="860" viewBox="0 0 1200 860" role="img" aria-labelledby="title desc">
+  <title id="title">Agent OS 任务状态机</title>
+  <desc id="desc">任务从提交、准入、排队、分配进入运行，可等待输入、审批、子任务或重试，最终以完成、失败或取消结束。</desc>
+  <defs><style>
+    text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}.h1{font-size:34px;font-weight:750}.state{font-size:18px;font-weight:700}.small{font-size:14px;fill:#666176}.box{fill:#fff;stroke:#bbb6d2;stroke-width:2}.run{fill:#f1eeff;stroke:#7568dc;stroke-width:2.7}.wait{fill:#fff7e8;stroke:#d4a146;stroke-width:2.3}.ok{fill:#edf8f1;stroke:#58a077;stroke-width:2.3}.bad{fill:#fff0f0;stroke:#c76d6d;stroke-width:2.3}.arrow{stroke:#77708e;stroke-width:2.2;fill:none;marker-end:url(#a)}.back{stroke:#9a79c3;stroke-width:2.2;stroke-dasharray:8 6;fill:none;marker-end:url(#b)}
+  </style><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#77708e"/></marker><marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#9a79c3"/></marker></defs>
+  <rect width="1200" height="860" rx="30" fill="#faf9fd"/><text x="600" y="58" text-anchor="middle" class="h1">任务状态必须独立于 Session、模型 Turn 和进程</text>
+  <rect x="35" y="105" width="145" height="68" rx="14" class="box"/><text x="108" y="146" text-anchor="middle" class="state">SUBMITTED</text>
+  <rect x="220" y="105" width="145" height="68" rx="14" class="box"/><text x="293" y="146" text-anchor="middle" class="state">ADMITTED</text>
+  <rect x="405" y="105" width="145" height="68" rx="14" class="box"/><text x="478" y="146" text-anchor="middle" class="state">QUEUED</text>
+  <rect x="590" y="105" width="145" height="68" rx="14" class="box"/><text x="663" y="146" text-anchor="middle" class="state">ASSIGNED</text>
+  <rect x="810" y="90" width="230" height="98" rx="18" class="run"/><text x="925" y="148" text-anchor="middle" class="state" style="font-size:25px">RUNNING</text>
+  <path d="M180 139L210 139" class="arrow"/><path d="M365 139L395 139" class="arrow"/><path d="M550 139L580 139" class="arrow"/><path d="M735 139L800 139" class="arrow"/>
+  <rect x="230" y="240" width="160" height="70" rx="14" class="bad"/><text x="310" y="283" text-anchor="middle" class="state">REJECTED</text><path d="M293 173L305 230" class="arrow"/>
+  <rect x="40" y="405" width="205" height="78" rx="14" class="wait"/><text x="143" y="452" text-anchor="middle" class="state">WAITING_INPUT</text>
+  <rect x="280" y="405" width="220" height="78" rx="14" class="wait"/><text x="390" y="452" text-anchor="middle" class="state">WAITING_APPROVAL</text>
+  <rect x="535" y="405" width="205" height="78" rx="14" class="wait"/><text x="638" y="452" text-anchor="middle" class="state">WAITING_CHILD</text>
+  <rect x="775" y="405" width="180" height="78" rx="14" class="wait"/><text x="865" y="452" text-anchor="middle" class="state">RETRYING</text>
+  <path d="M870 188C760 265 325 320 143 395" class="arrow"/><path d="M900 188C830 285 560 330 390 395" class="arrow"/><path d="M930 188C905 300 760 345 638 395" class="arrow"/><path d="M970 188C985 285 920 345 865 395" class="arrow"/>
+  <path d="M143 405C195 315 610 275 850 181" class="back"/><text x="350" y="316" class="small">回答后创建新的 Run</text>
+  <path d="M390 405C500 330 710 270 880 183" class="back"/><text x="590" y="300" class="small">审批通过</text>
+  <path d="M638 405C700 310 820 245 910 186" class="back"/><text x="745" y="286" class="small">子任务归并</text>
+  <path d="M865 405C870 315 925 235 950 190" class="back"/><text x="930" y="320" class="small">退避重试</text>
+  <rect x="105" y="650" width="180" height="82" rx="15" class="bad"/><text x="195" y="699" text-anchor="middle" class="state">CANCELED</text>
+  <rect x="375" y="650" width="180" height="82" rx="15" class="bad"/><text x="465" y="699" text-anchor="middle" class="state">FAILED</text>
+  <rect x="650" y="650" width="210" height="82" rx="15" class="ok"/><text x="755" y="699" text-anchor="middle" class="state">COMPLETED</text>
+  <path d="M865 188C750 520 450 535 195 640" class="arrow"/><path d="M920 188C855 515 650 550 465 640" class="arrow"/><path d="M980 188C1000 480 875 560 755 640" class="arrow"/>
+  <rect x="155" y="780" width="890" height="48" rx="14" class="run"/><text x="600" y="811" text-anchor="middle" class="small" style="font-size:16px">终态不可由 “模型停止输出” 直接触发；COMPLETED 必须携带 Completion Proof</text>
+</svg>
