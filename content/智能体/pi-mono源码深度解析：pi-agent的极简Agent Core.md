@@ -9,6 +9,8 @@ tags:
   - Agent架构
 date: 2026-02-02
 publish: true
+aliases:
+  - "AIGC/pi-mono源码深度解析：pi-agent的极简Agent Core"
 ---
 
 # pi-mono 源码深度解析：pi-agent 的极简 Agent Core
