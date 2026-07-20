@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="700" viewBox="0 0 1280 700" role="img" aria-labelledby="title desc">
+  <title id="title">Skill 的渐进披露</title>
+  <desc id="desc">加载阶段读取 SKILL.md；系统提示只暴露名称、描述与路径；匹配时才读取或显式注入完整正文与相对引用。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.box{fill:#fff;stroke:#c9d2df;stroke-width:2}.meta{fill:#eef6ff;stroke:#4583c2;stroke-width:2}.full{fill:#f2edff;stroke:#7c5dc7;stroke-width:2}.ref{fill:#edf8f1;stroke:#3e9464;stroke-width:2}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:20px;font-weight:700}.body{font-size:16px}.small{font-size:13px;fill:#536178}.arrow{stroke:#59677c;stroke-width:2.4;fill:none;marker-end:url(#m)}.dash{stroke-dasharray:8 7}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#59677c"/></marker>
+  </defs>
+  <rect class="bg" width="1280" height="700" rx="24"/>
+  <text class="txt h1" x="54" y="58">Skill 不是 Tool：它是按需加载的“程序性上下文”</text>
+  <rect class="box" x="54" y="120" width="270" height="230" rx="18"/>
+  <text class="txt h2" x="82" y="158">资源发现</text>
+  <text class="txt body" x="82" y="200">SKILL.md / root *.md</text>
+  <text class="txt body" x="82" y="236">递归扫描 + ignore 规则</text>
+  <text class="txt body" x="82" y="272">Frontmatter 校验</text>
+  <text class="txt small" x="82" y="312">name / description / path</text>
+
+  <rect class="meta" x="395" y="120" width="300" height="230" rx="18"/>
+  <text class="txt h2" x="423" y="158">常驻系统提示</text>
+  <text class="txt body" x="423" y="202">&lt;name&gt;</text>
+  <text class="txt body" x="423" y="238">&lt;description&gt;</text>
+  <text class="txt body" x="423" y="274">&lt;location&gt;</text>
+  <text class="txt small" x="423" y="312">不放完整 content</text>
+
+  <rect class="full" x="766" y="120" width="300" height="230" rx="18"/>
+  <text class="txt h2" x="794" y="158">匹配 / 显式调用</text>
+  <text class="txt body" x="794" y="202">read(SKILL.md)</text>
+  <text class="txt body" x="794" y="238">或 harness.skill(name)</text>
+  <text class="txt body" x="794" y="274">注入完整 content</text>
+  <text class="txt small" x="794" y="312">token 成本只在需要时发生</text>
+
+  <path class="arrow" d="M324 235H395"/><path class="arrow" d="M695 235H766"/>
+
+  <rect class="ref" x="766" y="426" width="430" height="164" rx="18"/>
+  <text class="txt h2" x="794" y="464">引用继续按需展开</text>
+  <text class="txt body" x="794" y="506">references/ · scripts/ · assets/</text>
+  <text class="txt body" x="794" y="542">相对路径以 Skill 目录解析</text>
+  <path class="arrow dash" d="M916 350V426"/>
+
+  <rect class="box" x="54" y="426" width="641" height="164" rx="18"/>
+  <text class="txt h2" x="82" y="464">在 Agent OS 中保留的原则</text>
+  <text class="txt body" x="82" y="506">OS 决定来源、信任、版本与冲突优先级</text>
+  <text class="txt body" x="82" y="542">Pi 负责格式化与运行时披露，不负责供应链信任</text>
+  <text class="txt small" x="54" y="642">“简洁”的关键不是少一个文件，而是把 metadata、content、runtime capability 分成三个不同阶段。</text>
+</svg>

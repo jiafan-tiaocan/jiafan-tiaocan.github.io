@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="860" viewBox="0 0 1280 860" role="img" aria-labelledby="title desc">
+  <title id="title">Pi Agent 双层循环</title>
+  <desc id="desc">外层循环处理 follow-up，内层循环处理 tool calls 和 steering；每轮执行 provider、工具与 turn end。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.box{fill:#fff;stroke:#c9d2df;stroke-width:2}.turn{fill:#f2edff;stroke:#785cc1;stroke-width:2}.tool{fill:#eef7ff;stroke:#3d83c5;stroke-width:2}.queue{fill:#fff3e5;stroke:#d48934;stroke-width:2}.stop{fill:#edf8f1;stroke:#3d9464;stroke-width:2}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:20px;font-weight:700}.body{font-size:16px}.small{font-size:14px;fill:#536178}.arrow{stroke:#58677c;stroke-width:2.4;fill:none;marker-end:url(#m)}.loop{stroke:#785cc1;stroke-width:3;fill:none;marker-end:url(#p)}.outer{stroke:#d48934;stroke-width:3;fill:none;stroke-dasharray:9 7;marker-end:url(#o)}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#58677c"/></marker>
+    <marker id="p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#785cc1"/></marker>
+    <marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#d48934"/></marker>
+  </defs>
+  <rect class="bg" width="1280" height="860" rx="24"/>
+  <text class="txt h1" x="54" y="58">真正的 Agent 核心：两个 while，不是一个“神秘框架”</text>
+  <rect class="queue" x="52" y="108" width="270" height="86" rx="16"/>
+  <text class="txt h2" x="78" y="143">agent_start / turn_start</text><text class="txt small" x="78" y="171">注入初始 prompt</text>
+  <rect class="turn" x="390" y="108" width="300" height="86" rx="16"/>
+  <text class="txt h2" x="416" y="143">处理 pending steering</text><text class="txt small" x="416" y="171">进入下一次 provider 前</text>
+  <rect class="turn" x="758" y="108" width="300" height="86" rx="16"/>
+  <text class="txt h2" x="784" y="143">streamAssistantResponse</text><text class="txt small" x="784" y="171">context → LLM → streaming events</text>
+  <path class="arrow" d="M322 151H390"/><path class="arrow" d="M690 151H758"/>
+
+  <rect class="box" x="758" y="246" width="300" height="98" rx="16"/>
+  <text class="txt h2" x="784" y="282">stopReason?</text>
+  <text class="txt body" x="784" y="315">error / aborted → 结束</text>
+  <path class="arrow" d="M908 194V246"/>
+
+  <rect class="tool" x="758" y="400" width="300" height="126" rx="16"/>
+  <text class="txt h2" x="784" y="436">tool calls</text>
+  <text class="txt body" x="784" y="470">length → 全部拒绝执行</text>
+  <text class="txt body" x="784" y="500">否则 → 预检 + 执行</text>
+  <path class="arrow" d="M908 344V400"/>
+
+  <rect class="turn" x="390" y="400" width="300" height="126" rx="16"/>
+  <text class="txt h2" x="416" y="436">turn_end</text>
+  <text class="txt body" x="416" y="470">flush / save point</text>
+  <text class="txt body" x="416" y="500">prepareNextTurn snapshot</text>
+  <path class="arrow" d="M758 463H690"/>
+
+  <rect class="queue" x="52" y="400" width="270" height="126" rx="16"/>
+  <text class="txt h2" x="78" y="436">drain steering</text>
+  <text class="txt body" x="78" y="470">有消息：内层循环</text>
+  <text class="txt small" x="78" y="500">tool 已先完整执行</text>
+  <path class="arrow" d="M390 463H322"/>
+
+  <path class="loop" d="M187 400V265Q187 226 226 226H540Q580 226 580 194"/>
+  <text class="txt small" x="246" y="253">INNER LOOP：tool calls / steering</text>
+
+  <rect class="queue" x="390" y="642" width="300" height="112" rx="16"/>
+  <text class="txt h2" x="416" y="678">drain follow-up</text>
+  <text class="txt body" x="416" y="712">仅在本来要停止时检查</text>
+  <path class="arrow" d="M187 526V592Q187 698 390 698"/>
+  <path class="outer" d="M540 642V590Q540 570 565 570H1130Q1170 570 1170 151H1058"/>
+  <text class="txt small" x="745" y="598">OUTER LOOP：follow-up 重新启动内层循环</text>
+
+  <rect class="stop" x="758" y="642" width="300" height="112" rx="16"/>
+  <text class="txt h2" x="784" y="682">agent_end</text>
+  <text class="txt body" x="784" y="716">无 follow-up，运行结算</text>
+  <path class="arrow" d="M690 698H758"/>
+  <text class="txt small" x="54" y="812">关键顺序：assistant message_end → tool preflight → tool execution → toolResult message_end → turn_end</text>
+</svg>

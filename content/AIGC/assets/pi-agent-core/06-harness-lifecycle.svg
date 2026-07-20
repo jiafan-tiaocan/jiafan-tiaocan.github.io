@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="850" viewBox="0 0 1280 850" role="img" aria-labelledby="title desc">
+  <title id="title">AgentHarness 一次 prompt 的完整生命周期</title>
+  <desc id="desc">调用 prompt 后，Harness 建立 turn snapshot，运行 agent loop，经 Models 调用 Provider，执行工具，持久化 message，flush 变更并发出 save point 与 settled。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.lane{fill:#fff;stroke:#c9d2df;stroke-width:2}.snap{fill:#fff2e5;stroke:#d18031;stroke-width:2}.loop{fill:#f2edff;stroke:#7c5dc7;stroke-width:2}.model{fill:#eef6ff;stroke:#4583c2;stroke-width:2}.persist{fill:#edf8f1;stroke:#3e9464;stroke-width:2}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:18px;font-weight:700}.body{font-size:14px}.small{font-size:12px;fill:#536178}.line{stroke:#93a0b2;stroke-width:2;fill:none}.arrow{stroke:#59677c;stroke-width:2.3;fill:none;marker-end:url(#m)}.event{stroke:#3e9464;stroke-width:2.2;fill:none;marker-end:url(#g)}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#59677c"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#3e9464"/></marker>
+  </defs>
+  <rect class="bg" width="1280" height="850" rx="24"/>
+  <text class="txt h1" x="54" y="58">AgentHarness 的一次 prompt：快照、执行、落盘、结算</text>
+
+  <g class="txt h2">
+    <text x="90" y="114">Caller</text><text x="292" y="114">AgentHarness</text><text x="554" y="114">Session</text><text x="748" y="114">agentLoop</text><text x="980" y="114">Models / Tool</text>
+  </g>
+  <g class="line">
+    <path d="M120 132V790"/><path d="M350 132V790"/><path d="M590 132V790"/><path d="M795 132V790"/><path d="M1050 132V790"/>
+  </g>
+
+  <path class="arrow" d="M120 172H350"/><text class="txt body" x="165" y="162">prompt(text)</text>
+  <rect class="snap" x="270" y="190" width="320" height="98" rx="15"/>
+  <text class="txt h2" x="292" y="222">createTurnState()</text>
+  <text class="txt body" x="292" y="250">buildContext + resources + model</text>
+  <text class="txt small" x="292" y="274">systemPrompt / activeTools / streamOptions 一次快照</text>
+  <path class="arrow" d="M350 304H590"/><text class="txt small" x="438" y="296">read tree</text>
+
+  <rect class="loop" x="690" y="316" width="210" height="84" rx="15"/>
+  <text class="txt h2" x="716" y="348">runAgentLoop()</text>
+  <text class="txt body" x="716" y="375">双层循环 + 事件</text>
+  <path class="arrow" d="M350 340H690"/><text class="txt small" x="458" y="330">context + config + streamFn</text>
+
+  <path class="arrow" d="M795 438H1050"/><text class="txt body" x="846" y="428">streamSimple()</text>
+  <rect class="model" x="944" y="456" width="212" height="92" rx="15"/>
+  <text class="txt h2" x="970" y="488">Provider / Tool</text>
+  <text class="txt body" x="970" y="516">stream / execute / update</text>
+  <text class="txt small" x="970" y="538">AbortSignal 贯穿</text>
+  <path class="arrow" d="M1050 566H795"/><text class="txt small" x="857" y="556">assistant / tool events</text>
+
+  <path class="event" d="M795 612H590"/><text class="txt body" x="620" y="602">message_end</text>
+  <rect class="persist" x="486" y="630" width="208" height="70" rx="14"/>
+  <text class="txt h2" x="510" y="660">appendMessage()</text>
+  <text class="txt small" x="510" y="684">先持久化，再广播事件</text>
+
+  <path class="event" d="M795 724H350"/><text class="txt body" x="514" y="714">turn_end → flush writes → save_point</text>
+  <rect class="persist" x="270" y="742" width="320" height="62" rx="14"/>
+  <text class="txt body" x="294" y="770">agent_end → phase=idle → settled</text>
+  <text class="txt small" x="294" y="792">运行结束不仅是模型停了，而是 awaited 副作用已收束</text>
+  <path class="arrow" d="M350 820H120"/><text class="txt body" x="172" y="810">AssistantMessage</text>
+</svg>

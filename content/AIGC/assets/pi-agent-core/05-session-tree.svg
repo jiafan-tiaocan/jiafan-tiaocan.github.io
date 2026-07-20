@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">Pi JSONL 会话树与 Compaction 投影</title>
+  <desc id="desc">JSONL 是追加式事件日志，parentId 形成树，当前 leaf 选择分支，buildContext 将当前路径投影为模型上下文，compaction 用摘要替代旧历史。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.panel{fill:#fff;stroke:#c9d2df;stroke-width:2}.node{fill:#eef6ff;stroke:#4583c2;stroke-width:2}.branch{fill:#fff2e5;stroke:#d18031;stroke-width:2}.leaf{fill:#edf8f1;stroke:#3e9464;stroke-width:3}.compact{fill:#f2edff;stroke:#7c5dc7;stroke-width:2}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#536178}.edge{stroke:#79869a;stroke-width:2.2;fill:none}.arrow{stroke:#59677c;stroke-width:2.4;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#59677c"/></marker>
+  </defs>
+  <rect class="bg" width="1280" height="760" rx="24"/>
+  <text class="txt h1" x="54" y="58">持久化不是 messages 数组：它是一棵追加式事件树</text>
+  <rect class="panel" x="52" y="100" width="650" height="550" rx="20"/>
+  <text class="txt h2" x="82" y="138">JSONL 物理日志</text>
+  <text class="txt small" x="82" y="166">header(version=3) + entry(id, parentId, timestamp, type)</text>
+
+  <rect class="node" x="90" y="220" width="120" height="58" rx="13"/><text class="txt body" x="120" y="255">user u1</text>
+  <rect class="node" x="270" y="220" width="150" height="58" rx="13"/><text class="txt body" x="292" y="255">assistant a1</text>
+  <rect class="node" x="480" y="220" width="150" height="58" rx="13"/><text class="txt body" x="505" y="255">toolResult t1</text>
+  <path class="edge" d="M210 249H270M420 249H480"/>
+
+  <rect class="branch" x="270" y="350" width="150" height="58" rx="13"/><text class="txt body" x="298" y="385">branch user</text>
+  <rect class="branch" x="480" y="350" width="150" height="58" rx="13"/><text class="txt body" x="501" y="385">branch answer</text>
+  <path class="edge" d="M345 278V350M420 379H480"/>
+
+  <rect class="compact" x="270" y="480" width="170" height="58" rx="13"/><text class="txt body" x="290" y="515">compaction c1</text>
+  <rect class="leaf" x="500" y="480" width="130" height="58" rx="13"/><text class="txt body" x="532" y="515">leaf → c1</text>
+  <path class="edge" d="M345 408V480M440 509H500"/>
+  <text class="txt small" x="90" y="590">leaf entry 自身也追加；targetId 决定当前活动分支</text>
+
+  <rect class="panel" x="760" y="100" width="470" height="550" rx="20"/>
+  <text class="txt h2" x="790" y="138">buildContext() 逻辑投影</text>
+  <rect class="compact" x="810" y="202" width="370" height="82" rx="15"/>
+  <text class="txt body" x="838" y="236">最新 compaction summary</text>
+  <text class="txt small" x="838" y="264">代替被压缩的旧消息</text>
+  <rect class="node" x="810" y="326" width="370" height="82" rx="15"/>
+  <text class="txt body" x="838" y="360">firstKeptEntryId 之后的最近消息</text>
+  <text class="txt small" x="838" y="388">保留完整 tool 配对与当前 turn</text>
+  <rect class="node" x="810" y="450" width="370" height="82" rx="15"/>
+  <text class="txt body" x="838" y="484">折叠 model / thinking / active tools</text>
+  <text class="txt small" x="838" y="512">状态来自当前 root→leaf 路径</text>
+  <path class="arrow" d="M995 284V326M995 408V450"/>
+  <text class="txt small" x="790" y="590">custom 默认不进模型；custom_message 可投影</text>
+  <path class="arrow" d="M702 375H760"/>
+  <text class="txt small" x="54" y="704">工程约束：一个 session 一个写入者；JSONL append 不是数据库事务，也没有跨进程锁。</text>
+</svg>

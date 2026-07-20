@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" role="img" aria-labelledby="title desc">
+  <title id="title">Pi Agent Core、Extension、Subagent 与 Sandbox 的边界</title>
+  <desc id="desc">Agent Core 只负责单个 Agent 运行。Extension 是宿主进程代码，Subagent 是示例扩展派生的独立进程，Sandbox 是包围进程与工具的外部执行边界。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.core{fill:#f2edff;stroke:#7c5dc7;stroke-width:2}.ext{fill:#fff2e5;stroke:#d18031;stroke-width:2}.sub{fill:#eef6ff;stroke:#4583c2;stroke-width:2}.safe{fill:#edf8f1;stroke:#3e9464;stroke-width:3;stroke-dasharray:10 7}.plain{fill:#fff;stroke:#c9d2df;stroke-width:2}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#536178}.arrow{stroke:#59677c;stroke-width:2.4;fill:none;marker-end:url(#m)}.risk{stroke:#d18031;stroke-width:2.4;fill:none;stroke-dasharray:8 6;marker-end:url(#o)}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#59677c"/></marker>
+    <marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#d18031"/></marker>
+  </defs>
+  <rect class="bg" width="1280" height="800" rx="24"/>
+  <text class="txt h1" x="54" y="58">三件容易误放进 Core 的事：Extension、Subagent、Sandbox</text>
+
+  <rect class="safe" x="54" y="92" width="1172" height="646" rx="26"/>
+  <text class="txt h2" x="82" y="126">外部执行边界：容器 / VM / Gondolin / OpenShell</text>
+  <text class="txt small" x="690" y="126">Sandbox 包围进程、文件、网络与凭证；它不是一个 Hook</text>
+
+  <rect class="plain" x="90" y="164" width="700" height="514" rx="22"/>
+  <text class="txt h2" x="120" y="202">宿主 Pi 进程</text>
+  <rect class="core" x="130" y="242" width="300" height="196" rx="20"/>
+  <text class="txt h2" x="160" y="282">Agent Core</text>
+  <text class="txt body" x="160" y="320">一个 Agent 的模型循环</text>
+  <text class="txt body" x="160" y="354">Tool schema / events / Session</text>
+  <text class="txt body" x="160" y="388">没有 subagent scheduler</text>
+  <text class="txt small" x="160" y="416">也没有文件/网络隔离</text>
+
+  <rect class="ext" x="480" y="242" width="270" height="196" rx="20"/>
+  <text class="txt h2" x="510" y="282">Extension runtime</text>
+  <text class="txt body" x="510" y="320">jiti 加载 TS / JS</text>
+  <text class="txt body" x="510" y="354">注册 Tool / command / hook</text>
+  <text class="txt body" x="510" y="388">与宿主同权限</text>
+  <text class="txt small" x="510" y="416">扩展性机制，不是隔离机制</text>
+  <path class="arrow" d="M430 340H480"/>
+
+  <rect class="ext" x="130" y="494" width="620" height="132" rx="18"/>
+  <text class="txt h2" x="160" y="530">示例 subagent Tool</text>
+  <text class="txt body" x="160" y="564">single / parallel / chain；每个任务 spawn `pi --mode json -p --no-session`</text>
+  <text class="txt small" x="160" y="594">它证明“子 Agent 可以作为 Tool 编排”，但没有把调度器塞进 agentLoop</text>
+  <path class="arrow" d="M280 438V494"/>
+
+  <rect class="sub" x="866" y="242" width="310" height="172" rx="20"/>
+  <text class="txt h2" x="896" y="282">独立 Pi 子进程</text>
+  <text class="txt body" x="896" y="320">独立 context / stdout JSON</text>
+  <text class="txt body" x="896" y="354">SIGTERM → SIGKILL 取消</text>
+  <text class="txt small" x="896" y="386">进程隔离 ≠ 权限隔离</text>
+  <path class="arrow" d="M750 560C842 560 820 328 866 328"/>
+
+  <rect class="plain" x="866" y="474" width="310" height="152" rx="20"/>
+  <text class="txt h2" x="896" y="514">Core 刻意不负责</text>
+  <text class="txt body" x="896" y="550">任务 DAG / 租户 / 全局预算</text>
+  <text class="txt body" x="896" y="582">宿主权限 / 网络策略 / 审批 UI</text>
+  <text class="txt small" x="896" y="608">边界清楚，才是“简洁”的来源</text>
+
+  <path class="risk" d="M615 438C615 696 1020 686 1020 626"/>
+  <text class="txt small" x="555" y="706">Extension 与子进程都必须由外部 Sandbox 约束</text>
+  <text class="txt small" x="82" y="770">结论：Subagent 是组合模式；Sandbox 是操作系统边界；二者都不是 agentLoop 应内建的概念。</text>
+</svg>
