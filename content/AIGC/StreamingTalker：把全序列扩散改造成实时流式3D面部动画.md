@@ -9,7 +9,7 @@ tags:
   - Diffusion
   - Autoregressive
   - Streaming
-date: 2026-07-18
+date: 2026-01-18
 publish: true
 ---
 # StreamingTalker：把全序列扩散改造成实时流式 3D 面部动画
