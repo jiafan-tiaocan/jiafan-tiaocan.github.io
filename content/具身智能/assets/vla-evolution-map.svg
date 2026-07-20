@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="940" viewBox="0 0 1400 940" role="img" aria-labelledby="title desc">
+  <title id="title">VLA 技术演进：模型责任如何重新分配</title>
+  <desc id="desc">从 2022 年技能组合与行为克隆，到 2023 年动作 Token，再到连续动作专家、跨本体数据、经验学习和世界模型辅助规划的演进路线。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111F"/>
+      <stop offset="1" stop-color="#101B31"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#60A5FA"/>
+      <stop offset="0.55" stop-color="#2DD4BF"/>
+      <stop offset="1" stop-color="#FBBF24"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.45"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5EEAD4"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="940" fill="url(#bg)"/>
+  <text x="70" y="72" fill="#F8FAFC" font-size="34" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">VLA 技术演进：不是模型越做越大，而是责任不断重新分配</text>
+  <text x="70" y="112" fill="#94A3B8" font-size="18" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">主线：语义迁移 → 动作表达 → 跨本体数据 → 长时程闭环 → 自主经验</text>
+
+  <line x1="110" y1="185" x2="1290" y2="185" stroke="url(#flow)" stroke-width="8" stroke-linecap="round"/>
+  <g fill="#0B1220" stroke="#5EEAD4" stroke-width="3">
+    <circle cx="160" cy="185" r="13"/><circle cx="410" cy="185" r="13"/><circle cx="680" cy="185" r="13"/><circle cx="970" cy="185" r="13"/><circle cx="1240" cy="185" r="13"/>
+  </g>
+  <g fill="#CBD5E1" font-size="18" font-weight="700" text-anchor="middle" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="160" y="158">2022</text><text x="410" y="158">2023</text><text x="680" y="158">2024</text><text x="970" y="158">2025</text><text x="1240" y="158">2026-07</text>
+  </g>
+
+  <g filter="url(#shadow)" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="65" y="230" width="230" height="265" rx="18" fill="#111C2E" stroke="#334155"/>
+    <rect x="65" y="230" width="230" height="10" rx="5" fill="#60A5FA"/>
+    <text x="88" y="278" fill="#93C5FD" font-size="22" font-weight="700">技能与数据先行</text>
+    <text x="88" y="316" fill="#F8FAFC" font-size="19" font-weight="700">SayCan · RT-1</text>
+    <text x="88" y="352" fill="#CBD5E1" font-size="14.5">
+      <tspan x="88" y="352">LLM 选技能；策略负责执行</tspan>
+      <tspan x="88" y="380">130k 示范、700+ 任务</tspan>
+      <tspan x="88" y="408">动作离散成 256 个区间</tspan>
+    </text>
+    <rect x="88" y="438" width="184" height="36" rx="18" fill="#172554"/>
+    <text x="180" y="462" fill="#BFDBFE" font-size="14" text-anchor="middle">瓶颈：语义与技能分离</text>
+
+    <rect x="315" y="230" width="230" height="265" rx="18" fill="#111C2E" stroke="#334155"/>
+    <rect x="315" y="230" width="230" height="10" rx="5" fill="#38BDF8"/>
+    <text x="338" y="278" fill="#7DD3FC" font-size="22" font-weight="700">VLM 直接输出动作</text>
+    <text x="338" y="316" fill="#F8FAFC" font-size="19" font-weight="700">RT-2 · RT-X</text>
+    <text x="338" y="352" fill="#CBD5E1" font-size="14.5">
+      <tspan x="338" y="352">动作写进语言 Token 空间</tspan>
+      <tspan x="338" y="380">网页知识迁移到闭环控制</tspan>
+      <tspan x="338" y="408">1M+ 轨迹、22 种本体</tspan>
+    </text>
+    <rect x="338" y="438" width="184" height="36" rx="18" fill="#0C4A6E"/>
+    <text x="430" y="462" fill="#BAE6FD" font-size="14" text-anchor="middle">瓶颈：低频、逐 Token 解码</text>
+
+    <rect x="565" y="230" width="250" height="265" rx="18" fill="#111C2E" stroke="#334155"/>
+    <rect x="565" y="230" width="250" height="10" rx="5" fill="#2DD4BF"/>
+    <text x="588" y="278" fill="#5EEAD4" font-size="22" font-weight="700">动作专家从语言中拆出</text>
+    <text x="588" y="316" fill="#F8FAFC" font-size="19" font-weight="700">Octo · OpenVLA · π0</text>
+    <text x="588" y="352" fill="#CBD5E1" font-size="14.5">
+      <tspan x="588" y="352">VLM 管语义，独立专家管动作</tspan>
+      <tspan x="588" y="380">Diffusion / Flow 并行动作块</tspan>
+      <tspan x="588" y="408">开放权重推动微调与复现</tspan>
+    </text>
+    <rect x="588" y="438" width="204" height="36" rx="18" fill="#134E4A"/>
+    <text x="690" y="462" fill="#99F6E4" font-size="14" text-anchor="middle">关键跃迁：语义/控制解耦</text>
+
+    <rect x="835" y="230" width="260" height="265" rx="18" fill="#111C2E" stroke="#334155"/>
+    <rect x="835" y="230" width="260" height="10" rx="5" fill="#A78BFA"/>
+    <text x="858" y="278" fill="#C4B5FD" font-size="22" font-weight="700">跨本体、层级与边缘化</text>
+    <text x="858" y="316" fill="#F8FAFC" font-size="18" font-weight="700">π0.5 · GR 1.5 · GR00T N1</text>
+    <text x="858" y="352" fill="#CBD5E1" font-size="14.5">
+      <tspan x="858" y="352">高层子任务 + 低层动作策略</tspan>
+      <tspan x="858" y="380">本体对齐、合成/人类视频</tspan>
+      <tspan x="858" y="408">OFT、SmolVLA 降低成本</tspan>
+    </text>
+    <rect x="858" y="438" width="214" height="36" rx="18" fill="#312E81"/>
+    <text x="965" y="462" fill="#DDD6FE" font-size="14" text-anchor="middle">瓶颈：长程记忆与失败恢复</text>
+
+    <rect x="1115" y="230" width="220" height="265" rx="18" fill="#111C2E" stroke="#334155"/>
+    <rect x="1115" y="230" width="220" height="10" rx="5" fill="#FBBF24"/>
+    <text x="1138" y="278" fill="#FDE68A" font-size="22" font-weight="700">经验与世界模型</text>
+    <text x="1138" y="316" fill="#F8FAFC" font-size="17" font-weight="700">π★0.6 · π0.7 · N1.7</text>
+    <text x="1138" y="350" fill="#F8FAFC" font-size="17" font-weight="700">Helix 02 · LingBot 2.0</text>
+    <text x="1138" y="386" fill="#CBD5E1" font-size="14">
+      <tspan x="1138" y="386">自主 rollout、纠错、奖励反馈</tspan>
+      <tspan x="1138" y="411">记忆、视觉子目标、全身控制</tspan>
+    </text>
+    <rect x="1138" y="438" width="174" height="36" rx="18" fill="#713F12"/>
+    <text x="1225" y="462" fill="#FEF3C7" font-size="14" text-anchor="middle">仍未解决：可靠泛化</text>
+  </g>
+
+  <text x="70" y="560" fill="#F8FAFC" font-size="24" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">五次责任迁移</text>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="70" y="590" width="1260" height="265" rx="22" fill="#0C1628" stroke="#263449"/>
+    <g fill="#172338" stroke="#334155">
+      <rect x="100" y="630" width="205" height="160" rx="14"/>
+      <rect x="345" y="630" width="205" height="160" rx="14"/>
+      <rect x="590" y="630" width="205" height="160" rx="14"/>
+      <rect x="835" y="630" width="205" height="160" rx="14"/>
+      <rect x="1080" y="630" width="220" height="160" rx="14"/>
+    </g>
+    <g font-size="17" text-anchor="middle">
+      <text x="202" y="668" fill="#93C5FD" font-weight="700">语义</text>
+      <text x="202" y="705" fill="#E2E8F0"><tspan x="202" y="705">技能选择器</tspan><tspan x="202" y="731">→ VLM 主干</tspan></text>
+      <text x="447" y="668" fill="#67E8F9" font-weight="700">动作</text>
+      <text x="447" y="705" fill="#E2E8F0"><tspan x="447" y="705">离散 Token</tspan><tspan x="447" y="731">→ 连续动作专家</tspan></text>
+      <text x="692" y="668" fill="#5EEAD4" font-weight="700">本体</text>
+      <text x="692" y="705" fill="#E2E8F0"><tspan x="692" y="705">单机数据</tspan><tspan x="692" y="731">→ 统一接口/对齐</tspan></text>
+      <text x="937" y="668" fill="#C4B5FD" font-weight="700">时间</text>
+      <text x="937" y="705" fill="#E2E8F0"><tspan x="937" y="705">单步反应</tspan><tspan x="937" y="731">→ 记忆/层级/子目标</tspan></text>
+      <text x="1190" y="668" fill="#FDE68A" font-weight="700">学习信号</text>
+      <text x="1190" y="705" fill="#E2E8F0"><tspan x="1190" y="705">离线模仿</tspan><tspan x="1190" y="731">→ 经验/奖励/纠错</tspan></text>
+    </g>
+    <g stroke="#5EEAD4" stroke-width="3" marker-end="url(#arrow)">
+      <line x1="307" y1="710" x2="335" y2="710"/>
+      <line x1="552" y1="710" x2="580" y2="710"/>
+      <line x1="797" y1="710" x2="825" y2="710"/>
+      <line x1="1042" y1="710" x2="1070" y2="710"/>
+    </g>
+  </g>
+  <text x="70" y="900" fill="#64748B" font-size="15" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">截至 2026-07-20；节点代表技术转折，不代表同一基准上的名次。</text>
+</svg>

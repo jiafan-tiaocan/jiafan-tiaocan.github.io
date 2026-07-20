@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" role="img" aria-labelledby="title desc">
+  <title id="title">现代 VLA 的动作生成栈与三类动作表示</title>
+  <desc id="desc">图示 VLA 如何把多模态上下文经语义主干、记忆或世界模型、动作生成器和底层控制器转化为机器人动作，并比较离散 Token、压缩 Token 和连续动作专家。</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111F"/>
+      <stop offset="1" stop-color="#121A2D"/>
+    </linearGradient>
+    <filter id="shadow2" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#020617" flood-opacity="0.5"/>
+    </filter>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5EEAD4"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="980" fill="url(#bg2)"/>
+  <text x="70" y="68" fill="#F8FAFC" font-size="34" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">现代 VLA 的动作生成栈：理解与控制开始解耦</text>
+  <text x="70" y="108" fill="#94A3B8" font-size="18" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">同一个“VLA”标签下，真正决定精度、频率和多峰性的往往是动作头，而不只是 VLM 大小。</text>
+
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif" filter="url(#shadow2)">
+    <rect x="70" y="155" width="220" height="145" rx="18" fill="#111C2E" stroke="#334155"/>
+    <text x="180" y="195" fill="#93C5FD" font-size="20" font-weight="700" text-anchor="middle">多模态上下文</text>
+    <text x="95" y="230" fill="#CBD5E1" font-size="16"><tspan x="95" y="230">图像 / 深度 / 触觉</tspan><tspan x="95" y="256">语言 / 本体感觉</tspan><tspan x="95" y="282">机器人本体标识</tspan></text>
+
+    <rect x="365" y="155" width="260" height="145" rx="18" fill="#10233B" stroke="#3B82F6"/>
+    <text x="495" y="195" fill="#BFDBFE" font-size="20" font-weight="700" text-anchor="middle">语义主干 VLM</text>
+    <text x="390" y="230" fill="#CBD5E1" font-size="16"><tspan x="390" y="230">识别对象、理解指令</tspan><tspan x="390" y="256">迁移互联网常识</tspan><tspan x="390" y="282">生成子任务或语义特征</tspan></text>
+
+    <rect x="700" y="155" width="280" height="145" rx="18" fill="#18213C" stroke="#8B5CF6"/>
+    <text x="840" y="195" fill="#DDD6FE" font-size="20" font-weight="700" text-anchor="middle">可选的慢思考层</text>
+    <text x="725" y="230" fill="#CBD5E1" font-size="16"><tspan x="725" y="230">历史记忆 / 高层策略</tspan><tspan x="725" y="256">工具调用 / 成功检测</tspan><tspan x="725" y="282">世界模型生成视觉子目标</tspan></text>
+
+    <rect x="1055" y="155" width="275" height="145" rx="18" fill="#18312F" stroke="#14B8A6"/>
+    <text x="1192" y="195" fill="#99F6E4" font-size="20" font-weight="700" text-anchor="middle">动作生成器</text>
+    <text x="1080" y="230" fill="#CBD5E1" font-size="16"><tspan x="1080" y="230">将语义条件变成动作块</tspan><tspan x="1080" y="256">决定精度、多峰性与吞吐</tspan><tspan x="1080" y="282">通常闭环滚动重规划</tspan></text>
+  </g>
+
+  <g stroke="#5EEAD4" stroke-width="4" fill="none" marker-end="url(#arrow2)">
+    <line x1="292" y1="228" x2="350" y2="228"/>
+    <line x1="627" y1="228" x2="685" y2="228"/>
+    <line x1="982" y1="228" x2="1040" y2="228"/>
+  </g>
+  <path d="M840 302 C840 335, 495 335, 495 305" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-dasharray="8 7"/>
+  <text x="665" y="352" fill="#A78BFA" font-size="14" text-anchor="middle" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">慢思考提供子任务、视觉子目标或纠错信号；不必每个控制周期都运行</text>
+
+  <text x="70" y="410" fill="#F8FAFC" font-size="24" font-weight="700" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">动作表示的三条路线</text>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif" filter="url(#shadow2)">
+    <rect x="70" y="445" width="390" height="300" rx="20" fill="#111C2E" stroke="#3B82F6"/>
+    <rect x="70" y="445" width="390" height="10" rx="5" fill="#60A5FA"/>
+    <text x="100" y="495" fill="#93C5FD" font-size="22" font-weight="700">A. 离散动作 Token</text>
+    <text x="100" y="528" fill="#F8FAFC" font-size="16" font-weight="700">RT-1 / RT-2 / OpenVLA</text>
+    <text x="100" y="566" fill="#CBD5E1" font-size="16"><tspan x="100" y="566">每个动作维度量化到 256 个区间</tspan><tspan x="100" y="594">按语言建模方式逐 Token 预测</tspan><tspan x="100" y="622">优点：直接复用 LLM 训练栈</tspan><tspan x="100" y="650">代价：量化误差、低频、串行解码</tspan></text>
+    <rect x="100" y="684" width="330" height="38" rx="19" fill="#172554"/>
+    <text x="265" y="709" fill="#BFDBFE" font-size="14" text-anchor="middle">适合验证“网页语义能否迁移动作”</text>
+
+    <rect x="505" y="445" width="390" height="300" rx="20" fill="#111C2E" stroke="#F59E0B"/>
+    <rect x="505" y="445" width="390" height="10" rx="5" fill="#FBBF24"/>
+    <text x="535" y="495" fill="#FDE68A" font-size="22" font-weight="700">B. 压缩动作 Token</text>
+    <text x="535" y="528" fill="#F8FAFC" font-size="16" font-weight="700">FAST / π0-FAST</text>
+    <text x="535" y="566" fill="#CBD5E1" font-size="16"><tspan x="535" y="566">DCT 压缩时间冗余，再用 BPE 编码</tspan><tspan x="535" y="594">一秒动作块通常压到 30–60 Token</tspan><tspan x="535" y="622">优点：保留自回归扩展路线</tspan><tspan x="535" y="650">代价：整段仍需串行生成</tspan></text>
+    <rect x="535" y="684" width="330" height="38" rx="19" fill="#713F12"/>
+    <text x="700" y="709" fill="#FEF3C7" font-size="14" text-anchor="middle">Token 更少 ≠ 高频控制自然解决</text>
+
+    <rect x="940" y="445" width="390" height="300" rx="20" fill="#111C2E" stroke="#14B8A6"/>
+    <rect x="940" y="445" width="390" height="10" rx="5" fill="#2DD4BF"/>
+    <text x="970" y="495" fill="#99F6E4" font-size="22" font-weight="700">C. 连续动作专家</text>
+    <text x="970" y="528" fill="#F8FAFC" font-size="16" font-weight="700">Octo / π0 / GR00T / LingBot</text>
+    <text x="970" y="566" fill="#CBD5E1" font-size="16"><tspan x="970" y="566">Diffusion / Flow 并行去噪动作块</tspan><tspan x="970" y="594">保留多峰分布与细粒度连续值</tspan><tspan x="970" y="622">优点：高吞吐、适合灵巧与全身控制</tspan><tspan x="970" y="650">代价：额外专家、去噪步数与接口设计</tspan></text>
+    <rect x="970" y="684" width="330" height="38" rx="19" fill="#134E4A"/>
+    <text x="1135" y="709" fill="#CCFBF1" font-size="14" text-anchor="middle">当前通用 VLA 的主流动作路线</text>
+  </g>
+
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <line x1="1135" y1="748" x2="1135" y2="806" stroke="#5EEAD4" stroke-width="4" marker-end="url(#arrow2)"/>
+    <rect x="890" y="815" width="440" height="105" rx="18" fill="#0C1628" stroke="#334155"/>
+    <text x="1110" y="852" fill="#F8FAFC" font-size="20" font-weight="700" text-anchor="middle">底层控制器与闭环执行</text>
+    <text x="915" y="885" fill="#CBD5E1" font-size="15"><tspan x="915" y="885">执行一小段动作 → 获取新观测 → 重规划；</tspan><tspan x="915" y="909">关节/力矩伺服可达 50–1000 Hz，VLA 无需等频运行。</tspan></text>
+    <path d="M890 870 C790 870, 780 292, 1050 292" fill="none" stroke="#64748B" stroke-width="2.5" stroke-dasharray="9 8" marker-end="url(#arrow2)"/>
+    <text x="445" y="895" fill="#94A3B8" font-size="15" text-anchor="middle">真正的鲁棒性来自反馈闭环，而不是一次性生成完整轨迹</text>
+  </g>
+  <text x="70" y="955" fill="#64748B" font-size="15" font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">概念图；频率取决于硬件、动作块长度、重规划策略与底层控制器，不能只按模型参数量推断。</text>
+</svg>
