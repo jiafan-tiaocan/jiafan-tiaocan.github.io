@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">大模型与强化学习协同演进图</title>
+  <desc id="desc">2017 到 2026 年大模型能力瓶颈与后训练算法的双时间线，展示 PPO、DPO、GRPO 及其后续算法出现的背景。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111F"/><stop offset="1" stop-color="#111B32"/>
+    </linearGradient>
+    <linearGradient id="llmLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#60A5FA"/><stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+    <linearGradient id="rlLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF"/><stop offset="1" stop-color="#FBBF24"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#020617" flood-opacity="0.42"/>
+    </filter>
+  </defs>
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="70" y="66" fill="#F8FAFC" font-size="34" font-weight="700">大模型 × 强化学习：瓶颈迁移驱动算法演进</text>
+    <text x="70" y="103" fill="#94A3B8" font-size="17">上轨是模型能力，下轨是优化方法；竖向连线表示“当时的新瓶颈 → 对应的训练回答”</text>
+
+    <rect x="66" y="145" width="1268" height="650" rx="26" fill="#0B1527" stroke="#26364D"/>
+    <text x="91" y="192" fill="#93C5FD" font-size="19" font-weight="700">MODEL CAPABILITY</text>
+    <text x="91" y="512" fill="#5EEAD4" font-size="19" font-weight="700">LEARNING SIGNAL &amp; OPTIMIZER</text>
+
+    <line x1="125" y1="260" x2="1275" y2="260" stroke="url(#llmLine)" stroke-width="7" stroke-linecap="round"/>
+    <line x1="125" y1="580" x2="1275" y2="580" stroke="url(#rlLine)" stroke-width="7" stroke-linecap="round"/>
+
+    <g fill="#0B1527" stroke-width="4">
+      <circle cx="150" cy="260" r="12" stroke="#60A5FA"/><circle cx="365" cy="260" r="12" stroke="#6F9FFB"/>
+      <circle cx="580" cy="260" r="12" stroke="#818CF8"/><circle cx="795" cy="260" r="12" stroke="#9385FA"/>
+      <circle cx="1010" cy="260" r="12" stroke="#A078FA"/><circle cx="1225" cy="260" r="12" stroke="#A78BFA"/>
+      <circle cx="150" cy="580" r="12" stroke="#2DD4BF"/><circle cx="365" cy="580" r="12" stroke="#42D2AD"/>
+      <circle cx="580" cy="580" r="12" stroke="#6DCC8E"/><circle cx="795" cy="580" r="12" stroke="#9BC56E"/>
+      <circle cx="1010" cy="580" r="12" stroke="#D0BE4C"/><circle cx="1225" cy="580" r="12" stroke="#FBBF24"/>
+    </g>
+
+    <g stroke="#334155" stroke-width="2" stroke-dasharray="5 7">
+      <line x1="150" y1="278" x2="150" y2="562"/><line x1="365" y1="278" x2="365" y2="562"/>
+      <line x1="580" y1="278" x2="580" y2="562"/><line x1="795" y1="278" x2="795" y2="562"/>
+      <line x1="1010" y1="278" x2="1010" y2="562"/><line x1="1225" y1="278" x2="1225" y2="562"/>
+    </g>
+
+    <g text-anchor="middle">
+      <g fill="#CBD5E1" font-size="16" font-weight="700">
+        <text x="150" y="232">2017–2020</text><text x="365" y="232">2021–2022</text>
+        <text x="580" y="232">2023</text><text x="795" y="232">2024</text>
+        <text x="1010" y="232">2025</text><text x="1225" y="232">2026</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="83" y="300" width="134" height="150" rx="15" fill="#111D31" stroke="#334155"/>
+        <rect x="298" y="300" width="134" height="150" rx="15" fill="#111D31" stroke="#334155"/>
+        <rect x="513" y="300" width="134" height="150" rx="15" fill="#111D31" stroke="#334155"/>
+        <rect x="728" y="300" width="134" height="150" rx="15" fill="#111D31" stroke="#334155"/>
+        <rect x="943" y="300" width="134" height="150" rx="15" fill="#111D31" stroke="#334155"/>
+        <rect x="1158" y="300" width="134" height="150" rx="15" fill="#111D31" stroke="#334155"/>
+      </g>
+      <g fill="#F8FAFC" font-size="16" font-weight="700">
+        <text x="150" y="333">通用生成策略</text><text x="365" y="333">指令型助手</text>
+        <text x="580" y="333">开放模型生态</text><text x="795" y="333">推理模型</text>
+        <text x="1010" y="333">RLVR 规模化</text><text x="1225" y="333">Agentic Model</text>
+      </g>
+      <g fill="#AFC0D5" font-size="13.5">
+        <text x="150" y="364"><tspan x="150">Transformer · GPT</tspan><tspan x="150" dy="23">GPT-3 · In-context</tspan><tspan x="150" dy="27" fill="#64748B">瓶颈：不会服从</tspan></text>
+        <text x="365" y="364"><tspan x="365">FLAN · InstructGPT</tspan><tspan x="365" dy="23">Chinchilla</tspan><tspan x="365" dy="27" fill="#64748B">瓶颈：人类反馈贵</tspan></text>
+        <text x="580" y="364"><tspan x="580">LLaMA · Llama 2</tspan><tspan x="580" dy="23">低成本微调</tspan><tspan x="580" dy="27" fill="#64748B">瓶颈：四模型系统</tspan></text>
+        <text x="795" y="364"><tspan x="795">o1 · DeepSeekMath</tspan><tspan x="795" dy="23">长 CoT / Test-time</tspan><tspan x="795" dy="27" fill="#64748B">瓶颈：critic 太贵</tspan></text>
+        <text x="1010" y="364"><tspan x="1010">DeepSeek-R1</tspan><tspan x="1010" dy="23">Math · Code verifier</tspan><tspan x="1010" dy="27" fill="#64748B">瓶颈：长度与稳定</tspan></text>
+        <text x="1225" y="364"><tspan x="1225">Browser · Code</tspan><tspan x="1225" dy="23">Long-horizon tools</tspan><tspan x="1225" dy="27" fill="#64748B">瓶颈：延迟回报</tspan></text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="83" y="620" width="134" height="126" rx="15" fill="#10211F" stroke="#285049"/>
+        <rect x="298" y="620" width="134" height="126" rx="15" fill="#10211F" stroke="#285049"/>
+        <rect x="513" y="620" width="134" height="126" rx="15" fill="#10211F" stroke="#285049"/>
+        <rect x="728" y="620" width="134" height="126" rx="15" fill="#10211F" stroke="#285049"/>
+        <rect x="943" y="620" width="134" height="126" rx="15" fill="#10211F" stroke="#285049"/>
+        <rect x="1158" y="620" width="134" height="126" rx="15" fill="#10211F" stroke="#285049"/>
+      </g>
+      <g fill="#ECFDF5" font-size="15.5" font-weight="700">
+        <text x="150" y="652">PPO · Preference LM</text><text x="365" y="652">SFT + RM + PPO</text>
+        <text x="580" y="652">RLAIF · PRM · DPO</text><text x="795" y="652">KTO · RLOO · GRPO</text>
+        <text x="1010" y="652">DAPO · VAPO · GSPO</text><text x="1225" y="652">Trajectory SFT + RL</text>
+      </g>
+      <g fill="#88A99D" font-size="13">
+        <text x="150" y="682"><tspan x="150">偏好成为奖励</tspan><tspan x="150" dy="21">在线策略优化</tspan></text>
+        <text x="365" y="682"><tspan x="365">助手三阶段范式</tspan><tspan x="365" dy="21">KL 约束漂移</tspan></text>
+        <text x="580" y="682"><tspan x="580">AI 反馈 / 离线偏好</tspan><tspan x="580" dy="21">绕过在线 RL</tspan></text>
+        <text x="795" y="682"><tspan x="795">可验证终局奖励</tspan><tspan x="795" dy="21">同题多采样</tspan></text>
+        <text x="1010" y="682"><tspan x="1010">修复采样与归一化</tspan><tspan x="1010" dy="21">序列级稳定化</tspan></text>
+        <text x="1225" y="682"><tspan x="1225">环境状态与工具反馈</tspan><tspan x="1225" dy="21">渐进式长轨迹</tspan></text>
+      </g>
+    </g>
+
+    <rect x="300" y="817" width="800" height="48" rx="24" fill="#172138" stroke="#334155"/>
+    <text x="700" y="848" text-anchor="middle" fill="#E2E8F0" font-size="16" font-weight="700">算法没有按年份互相淘汰：反馈结构决定分支，模型瓶颈决定哪条分支成为主角</text>
+  </g>
+</svg>

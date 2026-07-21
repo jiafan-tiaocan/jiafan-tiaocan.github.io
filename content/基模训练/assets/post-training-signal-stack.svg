@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">大模型训练四层责任栈</title>
+  <desc id="desc">预训练、SFT、偏好优化和在线强化学习分别承担能力、接口、价值排序和探索，并由独立评测约束。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#08111F"/><stop offset="1" stop-color="#101B31"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.45"/></filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#94A3B8"/></marker>
+    <marker id="feedback" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FBBF24"/></marker>
+  </defs>
+  <rect width="1400" height="820" fill="url(#bg)"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="70" y="65" fill="#F8FAFC" font-size="34" font-weight="700">现代大模型训练不是一层 loss，而是四层责任栈</text>
+    <text x="70" y="103" fill="#94A3B8" font-size="17">从“能生成”到“会使用”，再到“知道什么更好”和“能在环境中持续试错”</text>
+
+    <g filter="url(#shadow)">
+      <rect x="85" y="180" width="285" height="455" rx="23" fill="#101B2D" stroke="#304057"/>
+      <rect x="395" y="180" width="285" height="455" rx="23" fill="#101B2D" stroke="#304057"/>
+      <rect x="705" y="180" width="285" height="455" rx="23" fill="#101B2D" stroke="#304057"/>
+      <rect x="1015" y="180" width="300" height="455" rx="23" fill="#101B2D" stroke="#304057"/>
+    </g>
+
+    <g>
+      <rect x="85" y="180" width="285" height="10" rx="5" fill="#60A5FA"/>
+      <rect x="395" y="180" width="285" height="10" rx="5" fill="#2DD4BF"/>
+      <rect x="705" y="180" width="285" height="10" rx="5" fill="#A78BFA"/>
+      <rect x="1015" y="180" width="300" height="10" rx="5" fill="#FBBF24"/>
+    </g>
+
+    <g text-anchor="middle">
+      <text x="227" y="230" fill="#93C5FD" font-size="21" font-weight="700">01 · 预训练</text>
+      <text x="537" y="230" fill="#5EEAD4" font-size="21" font-weight="700">02 · SFT</text>
+      <text x="847" y="230" fill="#C4B5FD" font-size="21" font-weight="700">03 · 偏好优化</text>
+      <text x="1165" y="230" fill="#FDE68A" font-size="21" font-weight="700">04 · 在线 RL</text>
+
+      <g fill="#F8FAFC" font-size="25" font-weight="700">
+        <text x="227" y="286">能力底座</text><text x="537" y="286">行为接口</text>
+        <text x="847" y="286">价值排序</text><text x="1165" y="286">探索与决策</text>
+      </g>
+      <g fill="#AFC0D5" font-size="15">
+        <text x="227" y="332"><tspan x="227">文本 · 代码 · 多模态</tspan><tspan x="227" dy="25">next-token prediction</tspan></text>
+        <text x="537" y="332"><tspan x="537">指令—答案 · 专家轨迹</tspan><tspan x="537" dy="25">teacher forcing</tspan></text>
+        <text x="847" y="332"><tspan x="847">chosen / rejected</tspan><tspan x="847" dy="25">RM · DPO · KTO</tspan></text>
+        <text x="1165" y="332"><tspan x="1165">当前策略 rollout</tspan><tspan x="1165" dy="25">verifier · environment</tspan></text>
+      </g>
+
+      <g>
+        <rect x="120" y="398" width="215" height="74" rx="14" fill="#132641" stroke="#244A76"/>
+        <rect x="430" y="398" width="215" height="74" rx="14" fill="#12332E" stroke="#236358"/>
+        <rect x="740" y="398" width="215" height="74" rx="14" fill="#292146" stroke="#56418B"/>
+        <rect x="1052" y="398" width="226" height="74" rx="14" fill="#352B13" stroke="#705B1E"/>
+        <text x="227" y="426" fill="#DBEAFE" font-size="14" font-weight="700">主要写入</text>
+        <text x="537" y="426" fill="#CCFBF1" font-size="14" font-weight="700">主要写入</text>
+        <text x="847" y="426" fill="#EDE9FE" font-size="14" font-weight="700">主要写入</text>
+        <text x="1165" y="426" fill="#FEF3C7" font-size="14" font-weight="700">主要写入</text>
+        <text x="227" y="452" fill="#BFDBFE" font-size="15">知识 · 表征 · 技能先验</text>
+        <text x="537" y="452" fill="#99F6E4" font-size="15">格式 · 工具语法 · 标准解</text>
+        <text x="847" y="452" fill="#DDD6FE" font-size="15">有用 · 安全 · 风格偏好</text>
+        <text x="1165" y="452" fill="#FDE68A" font-size="15">搜索 · 恢复 · 长程策略</text>
+      </g>
+
+      <g fill="#94A3B8" font-size="14.5">
+        <text x="227" y="520"><tspan x="227">不直接保证</tspan><tspan x="227" dy="23" fill="#CBD5E1">服从指令和稳定格式</tspan></text>
+        <text x="537" y="520"><tspan x="537">不直接比较</tspan><tspan x="537" dy="23" fill="#CBD5E1">多个可行答案的优劣</tspan></text>
+        <text x="847" y="520"><tspan x="847">不擅长</tspan><tspan x="847" dy="23" fill="#CBD5E1">超出固定数据持续探索</tspan></text>
+        <text x="1165" y="520"><tspan x="1165">不负责凭空定义</tspan><tspan x="1165" dy="23" fill="#CBD5E1">正确知识与真实目标</tspan></text>
+      </g>
+    </g>
+
+    <g stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow)">
+      <line x1="370" y1="336" x2="389" y2="336"/><line x1="680" y1="336" x2="699" y2="336"/><line x1="990" y1="336" x2="1009" y2="336"/>
+    </g>
+
+    <rect x="290" y="680" width="820" height="88" rx="20" fill="#171C2A" stroke="#5B4C22"/>
+    <text x="700" y="712" text-anchor="middle" fill="#FDE68A" font-size="17" font-weight="700">独立评测与安全约束：不参与训练的 holdout 才能判断是否真的进步</text>
+    <text x="700" y="741" text-anchor="middle" fill="#CBD5E1" font-size="15">任务成功率 · 人类评测 · pass@k · reward hacking · 分布外泛化 · 权限与副作用</text>
+    <path d="M1165 635 C1165 675 1110 700 1110 715" fill="none" stroke="#FBBF24" stroke-width="3" marker-end="url(#feedback)"/>
+    <path d="M290 724 C205 724 170 680 170 640" fill="none" stroke="#FBBF24" stroke-width="3" marker-end="url(#feedback)"/>
+  </g>
+</svg>

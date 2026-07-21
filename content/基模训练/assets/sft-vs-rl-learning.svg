@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800" role="img" aria-labelledby="title desc">
+  <title id="title">SFT 与强化学习分别学习什么</title>
+  <desc id="desc">SFT 沿专家轨迹提供逐 Token 稠密监督，强化学习从自身多条 rollout 的结果中重排策略；生产配方通常将两者串联。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111F"/><stop offset="1" stop-color="#111B31"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#020617" flood-opacity="0.42"/></filter>
+    <marker id="blue" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#60A5FA"/></marker>
+    <marker id="teal" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#2DD4BF"/></marker>
+  </defs>
+  <rect width="1400" height="800" fill="url(#bg)"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="70" y="65" fill="#F8FAFC" font-size="34" font-weight="700">SFT 学“照着做”，RL 学“怎样更容易成功”</text>
+    <text x="70" y="103" fill="#94A3B8" font-size="17">一个提供稠密示范，一个在模型自己的状态分布里用结果重排轨迹</text>
+
+    <g filter="url(#shadow)">
+      <rect x="65" y="150" width="610" height="490" rx="25" fill="#0F1B2E" stroke="#2D4D72"/>
+      <rect x="725" y="150" width="610" height="490" rx="25" fill="#0E211F" stroke="#285A50"/>
+    </g>
+    <rect x="65" y="150" width="610" height="9" rx="5" fill="#60A5FA"/>
+    <rect x="725" y="150" width="610" height="9" rx="5" fill="#2DD4BF"/>
+
+    <text x="100" y="203" fill="#93C5FD" font-size="24" font-weight="700">SFT · Expert-conditioned imitation</text>
+    <text x="760" y="203" fill="#5EEAD4" font-size="24" font-weight="700">RL · On-policy exploration</text>
+
+    <!-- SFT trajectory -->
+    <g>
+      <circle cx="135" cy="330" r="18" fill="#172554" stroke="#60A5FA" stroke-width="3"/>
+      <circle cx="245" cy="285" r="18" fill="#172554" stroke="#60A5FA" stroke-width="3"/>
+      <circle cx="355" cy="350" r="18" fill="#172554" stroke="#60A5FA" stroke-width="3"/>
+      <circle cx="465" cy="270" r="18" fill="#172554" stroke="#60A5FA" stroke-width="3"/>
+      <circle cx="575" cy="320" r="18" fill="#172554" stroke="#60A5FA" stroke-width="3"/>
+      <path d="M153 322 C190 305 205 292 227 287" fill="none" stroke="#60A5FA" stroke-width="5" marker-end="url(#blue)"/>
+      <path d="M263 293 C300 305 318 333 337 343" fill="none" stroke="#60A5FA" stroke-width="5" marker-end="url(#blue)"/>
+      <path d="M373 340 C408 322 430 290 447 278" fill="none" stroke="#60A5FA" stroke-width="5" marker-end="url(#blue)"/>
+      <path d="M483 277 C520 285 540 306 557 314" fill="none" stroke="#60A5FA" stroke-width="5" marker-end="url(#blue)"/>
+      <g fill="#DBEAFE" font-size="13" text-anchor="middle">
+        <text x="135" y="335">x</text><text x="245" y="290">y*₁</text><text x="355" y="355">y*₂</text><text x="465" y="275">y*₃</text><text x="575" y="325">EOS</text>
+      </g>
+      <g fill="#FBBF24">
+        <circle cx="191" cy="300" r="5"/><circle cx="300" cy="310" r="5"/><circle cx="410" cy="315" r="5"/><circle cx="521" cy="291" r="5"/>
+      </g>
+      <text x="355" y="402" text-anchor="middle" fill="#FDE68A" font-size="14" font-weight="700">每个专家 Token 都给出稠密交叉熵信号</text>
+      <text x="100" y="450" fill="#AFC0D5" font-size="15"><tspan x="100">✓ 知识、格式、工具语法、标准步骤</tspan><tspan x="100" dy="28">✓ 样本效率高，快速建立稳定接口</tspan><tspan x="100" dy="28">△ 始终站在专家前缀，不自然覆盖自身错误状态</tspan><tspan x="100" dy="28">△ 单一示范可能压缩多种有效解法</tspan></text>
+    </g>
+
+    <!-- RL branching -->
+    <g>
+      <circle cx="795" cy="330" r="18" fill="#134E4A" stroke="#2DD4BF" stroke-width="3"/>
+      <circle cx="915" cy="245" r="15" fill="#134E4A" stroke="#2DD4BF" stroke-width="3"/>
+      <circle cx="915" cy="330" r="15" fill="#4C1D2D" stroke="#FB7185" stroke-width="3"/>
+      <circle cx="915" cy="415" r="15" fill="#4C1D2D" stroke="#FB7185" stroke-width="3"/>
+      <circle cx="1050" cy="220" r="15" fill="#134E4A" stroke="#2DD4BF" stroke-width="3"/>
+      <circle cx="1050" cy="280" r="15" fill="#4C1D2D" stroke="#FB7185" stroke-width="3"/>
+      <circle cx="1050" cy="330" r="15" fill="#4C1D2D" stroke="#FB7185" stroke-width="3"/>
+      <circle cx="1050" cy="415" r="15" fill="#134E4A" stroke="#2DD4BF" stroke-width="3"/>
+      <circle cx="1185" cy="220" r="18" fill="#14532D" stroke="#4ADE80" stroke-width="3"/>
+      <circle cx="1185" cy="280" r="18" fill="#4C1D2D" stroke="#FB7185" stroke-width="3"/>
+      <circle cx="1185" cy="330" r="18" fill="#4C1D2D" stroke="#FB7185" stroke-width="3"/>
+      <circle cx="1185" cy="415" r="18" fill="#14532D" stroke="#4ADE80" stroke-width="3"/>
+      <g fill="none" stroke-width="3">
+        <path d="M813 320 C850 290 875 260 900 249" stroke="#2DD4BF"/><path d="M813 330 L900 330" stroke="#FB7185"/><path d="M813 340 C850 370 875 400 900 411" stroke="#FB7185"/>
+        <path d="M930 240 C970 230 995 223 1035 220" stroke="#2DD4BF"/><path d="M930 252 C970 265 995 274 1035 279" stroke="#FB7185"/>
+        <line x1="930" y1="330" x2="1035" y2="330" stroke="#FB7185"/><line x1="930" y1="415" x2="1035" y2="415" stroke="#2DD4BF"/>
+        <line x1="1065" y1="220" x2="1167" y2="220" stroke="#2DD4BF" marker-end="url(#teal)"/>
+        <line x1="1065" y1="280" x2="1167" y2="280" stroke="#FB7185"/><line x1="1065" y1="330" x2="1167" y2="330" stroke="#FB7185"/><line x1="1065" y1="415" x2="1167" y2="415" stroke="#2DD4BF" marker-end="url(#teal)"/>
+      </g>
+      <text x="795" y="335" fill="#ECFDF5" font-size="13" text-anchor="middle">x</text>
+      <text x="1185" y="225" fill="#ECFDF5" font-size="13" text-anchor="middle">+1</text><text x="1185" y="285" fill="#FFE4E6" font-size="13" text-anchor="middle">0</text><text x="1185" y="335" fill="#FFE4E6" font-size="13" text-anchor="middle">0</text><text x="1185" y="420" fill="#ECFDF5" font-size="13" text-anchor="middle">+1</text>
+      <text x="1050" y="460" text-anchor="middle" fill="#FDE68A" font-size="14" font-weight="700">奖励来自结果；优势把成功/失败传回整条轨迹</text>
+      <text x="760" y="500" fill="#AFC0D5" font-size="15"><tspan x="760">✓ 多解搜索、反思回退、工具预算、长程策略</tspan><tspan x="760" dy="28">✓ 在模型自己的错误状态分布中学习</tspan><tspan x="760" dy="28">△ 奖励稀疏、采样昂贵、信用分配困难</tspan><tspan x="760" dy="28">△ verifier 有漏洞时会更高效地学会钻漏洞</tspan></text>
+    </g>
+
+    <rect x="220" y="686" width="960" height="76" rx="23" fill="#181F2D" stroke="#53637A"/>
+    <text x="700" y="716" text-anchor="middle" fill="#F8FAFC" font-size="17" font-weight="700">强 base → 少而准的 SFT / cold start → 可验证在线 RL → 回收成功轨迹再训练 → 独立评测</text>
+    <text x="700" y="743" text-anchor="middle" fill="#94A3B8" font-size="14">SFT 决定从哪里出发；RL 决定沿哪个方向探索；reward 决定所谓“进步”是否真实。</text>
+  </g>
+</svg>

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">大模型后训练算法族谱</title>
+  <desc id="desc">按监督信号和在线离线模式组织 SFT、DPO、PPO、RLOO、GRPO、DAPO、VAPO、GSPO 等方法，说明它们不是单线版本更替。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111F"/><stop offset="1" stop-color="#111B31"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
+    <marker id="blueArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#60A5FA"/></marker>
+    <marker id="purpleArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#A78BFA"/></marker>
+    <marker id="tealArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#2DD4BF"/></marker>
+  </defs>
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="70" y="65" fill="#F8FAFC" font-size="34" font-weight="700">算法族谱：不是 PPO → DPO → GRPO 的单线升级</text>
+    <text x="70" y="102" fill="#94A3B8" font-size="17">先按数据是否来自当前策略分成 offline / online，再看优势估计与更新约束</text>
+
+    <rect x="515" y="133" width="370" height="82" rx="21" fill="#172033" stroke="#53637A" filter="url(#shadow)"/>
+    <text x="700" y="166" text-anchor="middle" fill="#F8FAFC" font-size="18" font-weight="700">LLM Post-training：改变回答分布</text>
+    <text x="700" y="194" text-anchor="middle" fill="#AFC0D5" font-size="14.5">提高高质量回答概率，同时控制知识、格式与行为漂移</text>
+
+    <rect x="70" y="272" width="390" height="540" rx="25" fill="#0F192B" stroke="#29476B"/>
+    <rect x="505" y="272" width="390" height="540" rx="25" fill="#17162A" stroke="#4F3D77"/>
+    <rect x="940" y="272" width="390" height="540" rx="25" fill="#0D201F" stroke="#285950"/>
+    <rect x="70" y="272" width="390" height="9" rx="5" fill="#60A5FA"/>
+    <rect x="505" y="272" width="390" height="9" rx="5" fill="#A78BFA"/>
+    <rect x="940" y="272" width="390" height="9" rx="5" fill="#2DD4BF"/>
+
+    <g text-anchor="middle">
+      <text x="265" y="318" fill="#93C5FD" font-size="21" font-weight="700">示范与筛选</text>
+      <text x="700" y="318" fill="#C4B5FD" font-size="21" font-weight="700">离线偏好优化</text>
+      <text x="1135" y="318" fill="#5EEAD4" font-size="21" font-weight="700">在线策略优化</text>
+      <text x="265" y="344" fill="#71839B" font-size="13.5">固定正例 / 先生成后筛选</text>
+      <text x="700" y="344" fill="#84779E" font-size="13.5">固定 chosen / rejected 数据</text>
+      <text x="1135" y="344" fill="#668F86" font-size="13.5">当前策略持续 rollout</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="130" y="388" width="270" height="82" rx="17" fill="#132641" stroke="#315985"/>
+      <rect x="130" y="520" width="270" height="82" rx="17" fill="#132641" stroke="#315985"/>
+      <rect x="130" y="652" width="270" height="92" rx="17" fill="#132641" stroke="#315985"/>
+
+      <rect x="565" y="388" width="270" height="82" rx="17" fill="#292146" stroke="#604D91"/>
+      <rect x="545" y="520" width="145" height="82" rx="17" fill="#292146" stroke="#604D91"/>
+      <rect x="710" y="520" width="145" height="82" rx="17" fill="#292146" stroke="#604D91"/>
+      <rect x="545" y="652" width="145" height="82" rx="17" fill="#292146" stroke="#604D91"/>
+      <rect x="710" y="652" width="145" height="82" rx="17" fill="#292146" stroke="#604D91"/>
+
+      <rect x="995" y="388" width="280" height="82" rx="17" fill="#12332E" stroke="#2C6D61"/>
+      <rect x="972" y="520" width="145" height="82" rx="17" fill="#12332E" stroke="#2C6D61"/>
+      <rect x="1152" y="520" width="145" height="82" rx="17" fill="#12332E" stroke="#2C6D61"/>
+      <rect x="972" y="652" width="145" height="82" rx="17" fill="#12332E" stroke="#2C6D61"/>
+      <rect x="1152" y="652" width="145" height="82" rx="17" fill="#12332E" stroke="#2C6D61"/>
+    </g>
+
+    <g text-anchor="middle">
+      <text x="265" y="421" fill="#F8FAFC" font-size="19" font-weight="700">SFT</text>
+      <text x="265" y="448" fill="#9BB4CF" font-size="14">专家答案 · 工具轨迹 · cold start</text>
+      <text x="265" y="553" fill="#F8FAFC" font-size="18" font-weight="700">Best-of-N / Rejection Sampling</text>
+      <text x="265" y="580" fill="#9BB4CF" font-size="14">只回训高分候选；强非 RL 基线</text>
+      <text x="265" y="684" fill="#F8FAFC" font-size="18" font-weight="700">Trajectory SFT</text>
+      <text x="265" y="711" fill="#9BB4CF" font-size="14">长轨迹切分 · 失败恢复示范</text>
+
+      <text x="700" y="421" fill="#F8FAFC" font-size="18" font-weight="700">Direct Preference Family</text>
+      <text x="700" y="448" fill="#B8AED0" font-size="14">DPO 为代表 · 固定偏好数据</text>
+      <text x="617" y="553" fill="#F8FAFC" font-size="17" font-weight="700">IPO</text>
+      <text x="617" y="579" fill="#B8AED0" font-size="13">噪声与过拟合</text>
+      <text x="782" y="553" fill="#F8FAFC" font-size="17" font-weight="700">KTO</text>
+      <text x="782" y="579" fill="#B8AED0" font-size="13">单条好 / 坏标签</text>
+      <text x="617" y="685" fill="#F8FAFC" font-size="17" font-weight="700">ORPO</text>
+      <text x="617" y="711" fill="#B8AED0" font-size="13">SFT + odds ratio</text>
+      <text x="782" y="685" fill="#F8FAFC" font-size="17" font-weight="700">SimPO</text>
+      <text x="782" y="711" fill="#B8AED0" font-size="13">reference-free</text>
+
+      <text x="1135" y="421" fill="#F8FAFC" font-size="19" font-weight="700">Policy Gradient</text>
+      <text x="1135" y="448" fill="#9DC7BD" font-size="14">reward model · verifier · environment</text>
+      <text x="1044" y="553" fill="#F8FAFC" font-size="17" font-weight="700">PPO</text>
+      <text x="1044" y="579" fill="#9DC7BD" font-size="13">critic + GAE</text>
+      <text x="1224" y="553" fill="#F8FAFC" font-size="17" font-weight="700">RLOO / GRPO</text>
+      <text x="1224" y="579" fill="#9DC7BD" font-size="13">critic-free baseline</text>
+      <text x="1044" y="685" fill="#F8FAFC" font-size="17" font-weight="700">VAPO</text>
+      <text x="1044" y="711" fill="#9DC7BD" font-size="13">value-based long CoT</text>
+      <text x="1224" y="680" fill="#F8FAFC" font-size="16" font-weight="700">Dr.GRPO · DAPO</text>
+      <text x="1224" y="703" fill="#F8FAFC" font-size="16" font-weight="700">GSPO</text>
+      <text x="1224" y="724" fill="#9DC7BD" font-size="12.5">归一化 / 采样 / 序列稳定</text>
+    </g>
+
+    <g fill="none" stroke-width="2.5">
+      <path d="M620 215 C500 235 340 245 265 380" stroke="#60A5FA" marker-end="url(#blueArrow)"/>
+      <path d="M700 215 L700 380" stroke="#A78BFA" marker-end="url(#purpleArrow)"/>
+      <path d="M780 215 C900 235 1060 245 1135 380" stroke="#2DD4BF" marker-end="url(#tealArrow)"/>
+      <line x1="265" y1="470" x2="265" y2="512" stroke="#60A5FA" marker-end="url(#blueArrow)"/>
+      <line x1="265" y1="602" x2="265" y2="644" stroke="#60A5FA" marker-end="url(#blueArrow)"/>
+      <path d="M700 470 C690 490 635 495 617 512" stroke="#A78BFA" marker-end="url(#purpleArrow)"/>
+      <path d="M700 470 C710 490 765 495 782 512" stroke="#A78BFA" marker-end="url(#purpleArrow)"/>
+      <path d="M700 470 L700 490 L527 490 L527 628 L617 628 L617 644" stroke="#A78BFA" marker-end="url(#purpleArrow)"/>
+      <path d="M700 470 L700 490 L873 490 L873 628 L782 628 L782 644" stroke="#A78BFA" marker-end="url(#purpleArrow)"/>
+      <path d="M1135 470 C1115 490 1060 496 1044 512" stroke="#2DD4BF" marker-end="url(#tealArrow)"/>
+      <path d="M1135 470 C1155 490 1208 496 1224 512" stroke="#2DD4BF" marker-end="url(#tealArrow)"/>
+      <line x1="1044" y1="602" x2="1044" y2="644" stroke="#2DD4BF" marker-end="url(#tealArrow)"/>
+      <line x1="1224" y1="602" x2="1224" y2="644" stroke="#2DD4BF" marker-end="url(#tealArrow)"/>
+    </g>
+
+    <rect x="310" y="839" width="780" height="38" rx="19" fill="#172138"/>
+    <text x="700" y="864" text-anchor="middle" fill="#CBD5E1" font-size="14.5">关键分界：DPO 等优化固定偏好数据；PPO / GRPO 等必须消费当前策略生成的新轨迹</text>
+  </g>
+</svg>
