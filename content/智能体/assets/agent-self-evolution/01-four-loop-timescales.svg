@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
+  <title id="title">Agent 系统中四层 Loop 的嵌套时间尺度</title>
+  <desc id="desc">四个同心环分别表示任务执行、质量学习、价值学习和元进化。越过单次任务边界后，系统才会持久更新资产，并使用更严格的闭环判据。</desc>
+  <defs>
+    <marker id="arr-cyan" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#46D9E8"/></marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#5DD39E"/></marker>
+    <marker id="arr-amber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#F6C85F"/></marker>
+    <marker id="arr-violet" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#A78BFA"/></marker>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0 H0 V32" fill="none" stroke="#31445F" stroke-width="1" opacity="0.18"/></pattern>
+  </defs>
+
+  <rect width="1440" height="860" rx="28" fill="#0B1220"/>
+  <rect x="36" y="32" width="1368" height="770" rx="24" fill="url(#grid)" stroke="#1A2940"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="68" y="58" width="198" height="34" rx="17" fill="#111C2E" stroke="#31445F"/>
+    <text x="167" y="80" text-anchor="middle" fill="#9FB0C6" font-size="15" font-weight="700" letter-spacing="1.2">FIGURE 01 · TIMESCALE</text>
+    <text x="68" y="130" fill="#E6EDF7" font-size="34" font-weight="720">Loop 如何从一次执行变成持续进化</text>
+    <text x="68" y="164" fill="#9FB0C6" font-size="18">每向外跨一层，时间尺度更长、持久状态更多，闭环判据也更严格。</text>
+
+    <!-- Concentric temporal topology -->
+    <g>
+      <ellipse cx="424" cy="472" rx="326" ry="244" fill="#A78BFA" fill-opacity="0.025" stroke="#A78BFA" stroke-opacity="0.58" stroke-width="2"/>
+      <ellipse cx="424" cy="472" rx="266" ry="196" fill="#F6C85F" fill-opacity="0.025" stroke="#F6C85F" stroke-opacity="0.66" stroke-width="2"/>
+      <ellipse cx="424" cy="472" rx="206" ry="148" fill="#5DD39E" fill-opacity="0.025" stroke="#5DD39E" stroke-opacity="0.72" stroke-width="2"/>
+      <ellipse cx="424" cy="472" rx="142" ry="96" fill="#46D9E8" fill-opacity="0.04" stroke="#46D9E8" stroke-width="2.2"/>
+
+      <!-- directional arcs -->
+      <path d="M231 275 C342 205 520 217 622 298" fill="none" stroke="#A78BFA" stroke-width="4" marker-end="url(#arr-violet)"/>
+      <path d="M610 365 C681 424 683 517 626 579" fill="none" stroke="#F6C85F" stroke-width="4" marker-end="url(#arr-amber)"/>
+      <path d="M533 590 C453 638 341 629 270 576" fill="none" stroke="#5DD39E" stroke-width="4" marker-end="url(#arr-green)"/>
+      <path d="M301 446 C321 397 369 373 424 376" fill="none" stroke="#46D9E8" stroke-width="4" marker-end="url(#arr-cyan)"/>
+
+      <!-- ring labels -->
+      <rect x="84" y="242" width="170" height="42" rx="21" fill="#201A36" stroke="#A78BFA"/>
+      <text x="169" y="269" text-anchor="middle" fill="#A78BFA" font-size="18" font-weight="700">L3 · 元进化</text>
+      <rect x="124" y="315" width="170" height="42" rx="21" fill="#342A16" stroke="#F6C85F"/>
+      <text x="209" y="342" text-anchor="middle" fill="#F6C85F" font-size="18" font-weight="700">L2 · 价值学习</text>
+      <rect x="176" y="381" width="170" height="42" rx="21" fill="#17302D" stroke="#5DD39E"/>
+      <text x="261" y="408" text-anchor="middle" fill="#5DD39E" font-size="18" font-weight="700">L1 · 质量学习</text>
+      <rect x="272" y="438" width="154" height="40" rx="20" fill="#132C3A" stroke="#46D9E8"/>
+      <text x="349" y="464" text-anchor="middle" fill="#46D9E8" font-size="17" font-weight="700">L0 · 执行</text>
+
+      <!-- episode core -->
+      <rect x="312" y="484" width="224" height="78" rx="18" fill="#111C2E" stroke="#31445F" stroke-width="1.5"/>
+      <text x="424" y="512" text-anchor="middle" fill="#E6EDF7" font-size="19" font-weight="700">Task Episode</text>
+      <circle cx="356" cy="538" r="6" fill="#46D9E8"/>
+      <line x1="366" y1="538" x2="397" y2="538" stroke="#31445F" stroke-width="2"/>
+      <circle cx="407" cy="538" r="6" fill="#46D9E8"/>
+      <line x1="417" y1="538" x2="448" y2="538" stroke="#31445F" stroke-width="2"/>
+      <circle cx="458" cy="538" r="6" fill="#46D9E8"/>
+      <line x1="468" y1="538" x2="499" y2="538" stroke="#31445F" stroke-width="2"/>
+      <circle cx="509" cy="538" r="6" fill="#5DD39E"/>
+      <text x="424" y="584" text-anchor="middle" fill="#9FB0C6" font-size="15">Observe · Act · Verify</text>
+
+      <!-- timescale labels -->
+      <text x="424" y="731" text-anchor="middle" fill="#9FB0C6" font-size="15">秒 / 分钟</text>
+      <line x1="165" y1="748" x2="683" y2="748" stroke="#31445F" stroke-width="2"/>
+      <line x1="165" y1="741" x2="165" y2="755" stroke="#31445F" stroke-width="2"/>
+      <line x1="337" y1="741" x2="337" y2="755" stroke="#31445F" stroke-width="2"/>
+      <line x1="510" y1="741" x2="510" y2="755" stroke="#31445F" stroke-width="2"/>
+      <line x1="683" y1="741" x2="683" y2="755" stroke="#31445F" stroke-width="2"/>
+      <text x="165" y="778" text-anchor="middle" fill="#9FB0C6" font-size="14">任务</text>
+      <text x="337" y="778" text-anchor="middle" fill="#9FB0C6" font-size="14">天</text>
+      <text x="510" y="778" text-anchor="middle" fill="#9FB0C6" font-size="14">周</text>
+      <text x="683" y="778" text-anchor="middle" fill="#9FB0C6" font-size="14">月 / 跨代</text>
+    </g>
+
+    <!-- analytical panel -->
+    <g>
+      <rect x="806" y="208" width="546" height="540" rx="22" fill="#111C2E" fill-opacity="0.88" stroke="#31445F"/>
+      <text x="842" y="250" fill="#E6EDF7" font-size="20" font-weight="700">每一层究竟持久改变什么？</text>
+      <text x="842" y="282" fill="#9FB0C6" font-size="15" font-weight="600" letter-spacing="0.8">PERSISTED STATE</text>
+      <text x="1190" y="282" fill="#9FB0C6" font-size="15" font-weight="600" letter-spacing="0.8">CLOSURE TEST</text>
+      <line x1="842" y1="298" x2="1316" y2="298" stroke="#31445F"/>
+
+      <line x1="842" y1="324" x2="842" y2="392" stroke="#46D9E8" stroke-width="5" stroke-linecap="round"/>
+      <text x="865" y="340" fill="#46D9E8" font-size="17" font-weight="700">L0 · 当前轨迹</text>
+      <text x="865" y="368" fill="#E6EDF7" font-size="17">计划、上下文、工具观察</text>
+      <text x="1190" y="354" fill="#E6EDF7" font-size="16">完成当前任务</text>
+      <text x="1190" y="378" fill="#9FB0C6" font-size="14">不保证跨任务学习</text>
+      <line x1="842" y1="412" x2="1316" y2="412" stroke="#31445F"/>
+
+      <line x1="842" y1="438" x2="842" y2="506" stroke="#5DD39E" stroke-width="5" stroke-linecap="round"/>
+      <text x="865" y="454" fill="#5DD39E" font-size="17" font-weight="700">L1 · 系统资产</text>
+      <text x="865" y="482" fill="#E6EDF7" font-size="17">Skill、Tool、Knowledge、Runtime</text>
+      <text x="1190" y="468" fill="#E6EDF7" font-size="16">独立回归通过</text>
+      <text x="1190" y="492" fill="#9FB0C6" font-size="14">真实环境无回退</text>
+      <line x1="842" y1="526" x2="1316" y2="526" stroke="#31445F"/>
+
+      <line x1="842" y1="552" x2="842" y2="620" stroke="#F6C85F" stroke-width="5" stroke-linecap="round"/>
+      <text x="865" y="568" fill="#F6C85F" font-size="17" font-weight="700">L2 · 能力与业务方法</text>
+      <text x="865" y="596" fill="#E6EDF7" font-size="17">新能力、迁移假设、价值资产</text>
+      <text x="1190" y="582" fill="#E6EDF7" font-size="16">稳定增量价值</text>
+      <text x="1190" y="606" fill="#9FB0C6" font-size="14">可比生产 Outcome</text>
+      <line x1="842" y1="640" x2="1316" y2="640" stroke="#31445F"/>
+
+      <line x1="842" y1="666" x2="842" y2="716" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+      <text x="865" y="682" fill="#A78BFA" font-size="17" font-weight="700">L3 · Learning Harness</text>
+      <text x="865" y="710" fill="#E6EDF7" font-size="17">搜索、Case、预算、控制拓扑</text>
+      <text x="1190" y="696" fill="#E6EDF7" font-size="16">隐藏 Meta-Eval</text>
+      <text x="1190" y="720" fill="#9FB0C6" font-size="14">固定预算跨任务更优</text>
+    </g>
+
+    <rect x="286" y="814" width="868" height="30" rx="15" fill="#17302D" stroke="#5DD39E" stroke-opacity="0.55"/>
+    <text x="720" y="835" text-anchor="middle" fill="#5DD39E" font-size="16" font-weight="700">跨 Episode 持久更新 + 独立再验证 + 返回真实环境 = Self-Evolution</text>
+  </g>
+</svg>

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
+  <title id="title">Agent 自进化候选的评测与晋级门禁</title>
+  <desc id="desc">评测协议在运行前锁定。候选依次经过硬约束、目标收益、回归稳定、效率复杂度和真实环境验证。任一离线门禁失败都进入统一拒绝路径，最终发布由独立角色批准并保留回滚。</desc>
+  <defs>
+    <marker id="arr-violet" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#A78BFA"/></marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#FF6B6B"/></marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#5DD39E"/></marker>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0 H0 V32" fill="none" stroke="#31445F" stroke-width="1" opacity="0.16"/></pattern>
+  </defs>
+
+  <rect width="1440" height="860" rx="28" fill="#0B1220"/>
+  <rect x="36" y="32" width="1368" height="776" rx="24" fill="url(#grid)" stroke="#1A2940"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="68" y="58" width="204" height="34" rx="17" fill="#111C2E" stroke="#31445F"/>
+    <text x="170" y="80" text-anchor="middle" fill="#9FB0C6" font-size="15" font-weight="700" letter-spacing="1.2">FIGURE 03 · DECISION</text>
+    <text x="68" y="130" fill="#E6EDF7" font-size="34" font-weight="720">候选如何逐层获得发布资格</text>
+    <text x="68" y="164" fill="#9FB0C6" font-size="18">约束不是总分的一部分，而是先后有序、不可相互抵消的准入条件。</text>
+
+    <!-- protocol lock -->
+    <rect x="68" y="198" width="1304" height="92" rx="20" fill="#111C2E" fill-opacity="0.94" stroke="#31445F"/>
+    <circle cx="114" cy="244" r="24" fill="#201A36" stroke="#A78BFA"/>
+    <rect x="105" y="242" width="18" height="14" rx="3" fill="none" stroke="#A78BFA" stroke-width="2"/>
+    <path d="M109 242 v-5 c0-8 10-8 10 0 v5" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"/>
+    <text x="154" y="230" fill="#A78BFA" font-size="16" font-weight="800" letter-spacing="0.8">PROTOCOL LOCK</text>
+    <text x="154" y="260" fill="#E6EDF7" font-size="18" font-weight="700">P = {Benchmark vN, Baseline, Graders, Trials, Seeds, Budget, Environment}</text>
+    <rect x="1118" y="224" width="222" height="40" rx="20" fill="#201A36" stroke="#A78BFA"/>
+    <text x="1229" y="250" text-anchor="middle" fill="#A78BFA" font-size="14" font-weight="800">IMMUTABLE DURING RUN</text>
+
+    <!-- candidate entry -->
+    <rect x="68" y="338" width="132" height="58" rx="16" fill="#201A36" stroke="#A78BFA" stroke-width="1.8"/>
+    <text x="134" y="362" text-anchor="middle" fill="#A78BFA" font-size="15" font-weight="800">CANDIDATE</text>
+    <text x="134" y="383" text-anchor="middle" fill="#E6EDF7" font-size="14">最小 Diff</text>
+    <line x1="200" y1="367" x2="232" y2="367" stroke="#A78BFA" stroke-width="3" marker-end="url(#arr-violet)"/>
+
+    <!-- gate 1 -->
+    <rect x="246" y="318" width="200" height="176" rx="20" fill="#311C27" stroke="#FF6B6B" stroke-width="1.8"/>
+    <circle cx="276" cy="348" r="17" fill="#FF6B6B" fill-opacity="0.15" stroke="#FF6B6B"/>
+    <text x="276" y="354" text-anchor="middle" fill="#FF6B6B" font-size="14" font-weight="800">G1</text>
+    <text x="306" y="355" fill="#FF6B6B" font-size="18" font-weight="750">硬约束</text>
+    <line x1="270" y1="377" x2="422" y2="377" stroke="#FF6B6B" stroke-opacity="0.35"/>
+    <text x="270" y="407" fill="#E6EDF7" font-size="15">安全 · 合规 · 权限</text>
+    <text x="270" y="433" fill="#E6EDF7" font-size="15">Schema · Test</text>
+    <rect x="270" y="451" width="126" height="25" rx="12.5" fill="#111C2E" stroke="#FF6B6B" stroke-opacity="0.6"/>
+    <text x="333" y="468" text-anchor="middle" fill="#9FB0C6" font-size="12">zero tolerance</text>
+    <line x1="446" y1="367" x2="478" y2="367" stroke="#A78BFA" stroke-width="3" marker-end="url(#arr-violet)"/>
+
+    <!-- gate 2 -->
+    <rect x="492" y="318" width="200" height="176" rx="20" fill="#132C3A" stroke="#46D9E8" stroke-width="1.8"/>
+    <circle cx="522" cy="348" r="17" fill="#46D9E8" fill-opacity="0.12" stroke="#46D9E8"/>
+    <text x="522" y="354" text-anchor="middle" fill="#46D9E8" font-size="14" font-weight="800">G2</text>
+    <text x="552" y="355" fill="#46D9E8" font-size="18" font-weight="750">目标收益</text>
+    <line x1="516" y1="377" x2="668" y2="377" stroke="#46D9E8" stroke-opacity="0.35"/>
+    <text x="516" y="407" fill="#E6EDF7" font-size="15">目标失败簇改善</text>
+    <text x="516" y="433" fill="#E6EDF7" font-size="15">配对差值 · 置信区间</text>
+    <rect x="516" y="451" width="126" height="25" rx="12.5" fill="#111C2E" stroke="#46D9E8" stroke-opacity="0.6"/>
+    <text x="579" y="468" text-anchor="middle" fill="#9FB0C6" font-size="12">lower bound &gt; 0</text>
+    <line x1="692" y1="367" x2="724" y2="367" stroke="#A78BFA" stroke-width="3" marker-end="url(#arr-violet)"/>
+
+    <!-- gate 3 -->
+    <rect x="738" y="318" width="200" height="176" rx="20" fill="#201A36" stroke="#A78BFA" stroke-width="1.8"/>
+    <circle cx="768" cy="348" r="17" fill="#A78BFA" fill-opacity="0.12" stroke="#A78BFA"/>
+    <text x="768" y="354" text-anchor="middle" fill="#A78BFA" font-size="14" font-weight="800">G3</text>
+    <text x="798" y="355" fill="#A78BFA" font-size="18" font-weight="750">回归稳定</text>
+    <line x1="762" y1="377" x2="914" y2="377" stroke="#A78BFA" stroke-opacity="0.35"/>
+    <text x="762" y="407" fill="#E6EDF7" font-size="15">核心能力 · 风险长尾</text>
+    <text x="762" y="433" fill="#E6EDF7" font-size="15">方差 · 尾部 · 最坏切片</text>
+    <rect x="762" y="451" width="126" height="25" rx="12.5" fill="#111C2E" stroke="#A78BFA" stroke-opacity="0.6"/>
+    <text x="825" y="468" text-anchor="middle" fill="#9FB0C6" font-size="12">regression ≤ epsilon</text>
+    <line x1="938" y1="367" x2="970" y2="367" stroke="#A78BFA" stroke-width="3" marker-end="url(#arr-violet)"/>
+
+    <!-- gate 4 -->
+    <rect x="984" y="318" width="200" height="176" rx="20" fill="#342A16" stroke="#F6C85F" stroke-width="1.8"/>
+    <circle cx="1014" cy="348" r="17" fill="#F6C85F" fill-opacity="0.12" stroke="#F6C85F"/>
+    <text x="1014" y="354" text-anchor="middle" fill="#F6C85F" font-size="14" font-weight="800">G4</text>
+    <text x="1044" y="355" fill="#F6C85F" font-size="18" font-weight="750">效率复杂度</text>
+    <line x1="1008" y1="377" x2="1160" y2="377" stroke="#F6C85F" stroke-opacity="0.35"/>
+    <text x="1008" y="407" fill="#E6EDF7" font-size="15">延迟 · Token · 成本</text>
+    <text x="1008" y="433" fill="#E6EDF7" font-size="15">人工负担 · 维护复杂度</text>
+    <rect x="1008" y="451" width="126" height="25" rx="12.5" fill="#111C2E" stroke="#F6C85F" stroke-opacity="0.6"/>
+    <text x="1071" y="468" text-anchor="middle" fill="#9FB0C6" font-size="12">Pareto feasible</text>
+    <line x1="1184" y1="367" x2="1216" y2="367" stroke="#5DD39E" stroke-width="3" marker-end="url(#arr-green)"/>
+
+    <!-- gate 5 -->
+    <rect x="1230" y="318" width="142" height="176" rx="20" fill="#17302D" stroke="#5DD39E" stroke-width="1.8"/>
+    <circle cx="1260" cy="348" r="17" fill="#5DD39E" fill-opacity="0.12" stroke="#5DD39E"/>
+    <text x="1260" y="354" text-anchor="middle" fill="#5DD39E" font-size="14" font-weight="800">G5</text>
+    <text x="1250" y="390" fill="#5DD39E" font-size="17" font-weight="750">真实环境</text>
+    <text x="1250" y="418" fill="#E6EDF7" font-size="14">Shadow</text>
+    <text x="1250" y="442" fill="#E6EDF7" font-size="14">Canary / A-B</text>
+    <text x="1250" y="466" fill="#9FB0C6" font-size="13">Business Outcome</text>
+
+    <!-- rejection basin -->
+    <path d="M346 494 V532 M592 494 V532 M838 494 V532 M1084 494 V532" stroke="#FF6B6B" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arr-red)"/>
+    <rect x="246" y="548" width="938" height="82" rx="18" fill="#311C27" stroke="#FF6B6B" stroke-width="1.5"/>
+    <circle cx="286" cy="589" r="17" fill="#FF6B6B" fill-opacity="0.13" stroke="#FF6B6B"/>
+    <path d="M279 582 l14 14 M293 582 l-14 14" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round"/>
+    <text x="322" y="579" fill="#FF6B6B" font-size="17" font-weight="750">REJECT / REVISE</text>
+    <text x="322" y="607" fill="#E6EDF7" font-size="15">拒绝候选 · 回滚基线 · 保存失败证据 · 修正假设 · 新 Case 进入 Benchmark vN+1</text>
+
+    <!-- promotion outcome -->
+    <line x1="1301" y1="494" x2="1301" y2="532" stroke="#5DD39E" stroke-width="2.6" marker-end="url(#arr-green)"/>
+    <rect x="1230" y="548" width="142" height="82" rx="18" fill="#17302D" stroke="#5DD39E" stroke-width="1.5"/>
+    <path d="M1250 584 l9 9 18-22" fill="none" stroke="#5DD39E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1288" y="580" fill="#5DD39E" font-size="16" font-weight="750">PROMOTE</text>
+    <text x="1288" y="605" fill="#E6EDF7" font-size="14">观察 / 发布</text>
+
+    <!-- separation of duties -->
+    <rect x="68" y="676" width="1304" height="104" rx="20" fill="#111C2E" fill-opacity="0.94" stroke="#31445F"/>
+    <text x="96" y="708" fill="#9FB0C6" font-size="14" font-weight="800" letter-spacing="1">SEPARATION OF DUTIES</text>
+    <circle cx="260" cy="742" r="20" fill="#201A36" stroke="#A78BFA"/>
+    <text x="260" y="748" text-anchor="middle" fill="#A78BFA" font-size="15" font-weight="800">C</text>
+    <text x="296" y="738" fill="#E6EDF7" font-size="16" font-weight="700">Candidate Generator</text>
+    <text x="296" y="761" fill="#9FB0C6" font-size="14">只能提出 Diff</text>
+    <line x1="500" y1="742" x2="544" y2="742" stroke="#31445F" stroke-width="2" marker-end="url(#arr-violet)"/>
+    <circle cx="580" cy="742" r="20" fill="#201A36" stroke="#A78BFA"/>
+    <text x="580" y="748" text-anchor="middle" fill="#A78BFA" font-size="15" font-weight="800">E</text>
+    <text x="616" y="738" fill="#E6EDF7" font-size="16" font-weight="700">Independent Evaluator</text>
+    <text x="616" y="761" fill="#9FB0C6" font-size="14">产生证据，不改标准</text>
+    <line x1="842" y1="742" x2="886" y2="742" stroke="#31445F" stroke-width="2" marker-end="url(#arr-violet)"/>
+    <circle cx="922" cy="742" r="20" fill="#17302D" stroke="#5DD39E"/>
+    <text x="922" y="748" text-anchor="middle" fill="#5DD39E" font-size="15" font-weight="800">R</text>
+    <text x="958" y="738" fill="#E6EDF7" font-size="16" font-weight="700">Release Owner</text>
+    <text x="958" y="761" fill="#9FB0C6" font-size="14">批准晋级，保留回滚权</text>
+
+    <rect x="286" y="812" width="868" height="30" rx="15" fill="#342A16" stroke="#F6C85F" stroke-opacity="0.55"/>
+    <text x="720" y="833" text-anchor="middle" fill="#F6C85F" font-size="16" font-weight="700">最优候选是通过全部约束后的 Pareto 解，不是平均总分最高的版本。</text>
+  </g>
+</svg>
