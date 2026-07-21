@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">广告主投放操作系统的分层架构</title>
+  <desc id="desc">广告主以业务目标与治理为顶层，建设统一的测量、实验、决策、记忆和资金能力，再通过渠道适配层连接不同媒体。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#667187"/></marker>
+    <style>
+      .bg{fill:#fbfcff}.title{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#17233a}.sub{font:400 18px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#5d687e}.h{font:700 22px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#17233a}.t{font:500 17px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#344057}.s{font:400 15px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#667187}.layer{font:700 15px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;letter-spacing:1px}.card{stroke-width:1.5}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="820" rx="24"/>
+  <text x="60" y="62" class="title">通用能力沉淀在中台，渠道差异保留在适配层</text>
+  <text x="60" y="94" class="sub">真正可复用的不是某个平台上的一套账户结构，而是统一测量、受控实验、决策记忆和治理边界</text>
+
+  <text x="62" y="144" class="layer" fill="#8c58a2">LAYER 04 · BUSINESS &amp; GOVERNANCE</text>
+  <rect x="60" y="160" width="1080" height="94" rx="18" fill="#f7effa" stroke="#ceb1da" class="card"/>
+  <rect x="84" y="184" width="190" height="46" rx="12" fill="#fff"/><text x="179" y="213" text-anchor="middle" class="t">增量价值与 ROI</text>
+  <rect x="294" y="184" width="190" height="46" rx="12" fill="#fff"/><text x="389" y="213" text-anchor="middle" class="t">用户质量与长期价值</text>
+  <rect x="504" y="184" width="190" height="46" rx="12" fill="#fff"/><text x="599" y="213" text-anchor="middle" class="t">预算与现金流边界</text>
+  <rect x="714" y="184" width="190" height="46" rx="12" fill="#fff"/><text x="809" y="213" text-anchor="middle" class="t">隐私、合规与审计</text>
+  <rect x="924" y="184" width="190" height="46" rx="12" fill="#fff"/><text x="1019" y="213" text-anchor="middle" class="t">人力与供应链治理</text>
+
+  <text x="62" y="298" class="layer" fill="#4f67d8">LAYER 03 · ADVERTISER CONTROL PLANE</text>
+  <rect x="60" y="314" width="1080" height="150" rx="18" fill="#eef2ff" stroke="#aeb9ee" class="card"/>
+  <g transform="translate(84,338)"><rect width="190" height="102" rx="14" fill="#fff"/><text x="95" y="35" text-anchor="middle" class="h">测量</text><text x="95" y="64" text-anchor="middle" class="s">事件口径 · 归因 · 延迟</text><text x="95" y="87" text-anchor="middle" class="s">前后链路对账</text></g>
+  <g transform="translate(294,338)"><rect width="190" height="102" rx="14" fill="#fff"/><text x="95" y="35" text-anchor="middle" class="h">实验</text><text x="95" y="64" text-anchor="middle" class="s">假设 · 对照 · 增量</text><text x="95" y="87" text-anchor="middle" class="s">跨周期复验</text></g>
+  <g transform="translate(504,338)"><rect width="190" height="102" rx="14" fill="#fff"/><text x="95" y="35" text-anchor="middle" class="h">决策</text><text x="95" y="64" text-anchor="middle" class="s">出价 · 人群 · 素材</text><text x="95" y="87" text-anchor="middle" class="s">预算与状态控制</text></g>
+  <g transform="translate(714,338)"><rect width="190" height="102" rx="14" fill="#fff"/><text x="95" y="35" text-anchor="middle" class="h">记忆</text><text x="95" y="64" text-anchor="middle" class="s">策略卡 · 失败样本</text><text x="95" y="87" text-anchor="middle" class="s">结论适用边界</text></g>
+  <g transform="translate(924,338)"><rect width="190" height="102" rx="14" fill="#fff"/><text x="95" y="35" text-anchor="middle" class="h">执行</text><text x="95" y="64" text-anchor="middle" class="s">任务编排 · 告警</text><text x="95" y="87" text-anchor="middle" class="s">资金与结算</text></g>
+
+  <text x="62" y="508" class="layer" fill="#b67a24">LAYER 02 · CHANNEL ADAPTERS</text>
+  <rect x="60" y="524" width="1080" height="110" rx="18" fill="#fff7e8" stroke="#e0b96f" class="card"/>
+  <text x="114" y="567" class="t">事件映射</text><text x="304" y="567" class="t">反馈时延</text><text x="494" y="567" class="t">账户与预算语义</text><text x="724" y="567" class="t">素材语法</text><text x="914" y="567" class="t">库存与节奏</text>
+  <text x="114" y="602" class="s">什么可回传</text><text x="304" y="602" class="s">多久能观测</text><text x="494" y="602" class="s">如何创建与控量</text><text x="724" y="602" class="s">什么内容被分发</text><text x="914" y="602" class="s">何时放量或挤压</text>
+
+  <text x="62" y="678" class="layer" fill="#29966f">LAYER 01 · MEDIA SURFACES</text>
+  <g transform="translate(60,694)"><rect width="250" height="76" rx="18" fill="#edf9f4" stroke="#9ed8c2" class="card"/><text x="125" y="33" text-anchor="middle" class="h">短视频流</text><text x="125" y="58" text-anchor="middle" class="s">快反馈 · 强素材状态</text></g>
+  <g transform="translate(340,694)"><rect width="250" height="76" rx="18" fill="#edf9f4" stroke="#9ed8c2" class="card"/><text x="125" y="33" text-anchor="middle" class="h">内容社区</text><text x="125" y="58" text-anchor="middle" class="s">内容心智 · 慢反馈</text></g>
+  <g transform="translate(620,694)"><rect width="250" height="76" rx="18" fill="#edf9f4" stroke="#9ed8c2" class="card"/><text x="125" y="33" text-anchor="middle" class="h">社交生态</text><text x="125" y="58" text-anchor="middle" class="s">场景分散 · 版位差异</text></g>
+  <g transform="translate(900,694)"><rect width="240" height="76" rx="18" fill="#edf9f4" stroke="#9ed8c2" class="card"/><text x="120" y="33" text-anchor="middle" class="h">联盟与长尾媒体</text><text x="120" y="58" text-anchor="middle" class="s">供给异质 · 质量治理</text></g>
+
+  <path d="M600 254V304" stroke="#667187" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M600 464V514" stroke="#667187" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M600 634V684" stroke="#667187" stroke-width="3" marker-end="url(#arrow)"/>
+</svg>
