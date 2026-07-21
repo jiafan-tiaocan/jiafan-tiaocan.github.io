@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650">
+  <defs><style>text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#242631}.h{font-size:32px;font-weight:700}.t{font-size:21px;font-weight:700}.b{font-size:17px}.s{font-size:15px;fill:#666978}.w{fill:#fff}.tw{font-size:21px;font-weight:700;fill:#fff}.bw{font-size:17px;fill:#fff}.sw{font-size:15px;fill:#fff}.a{stroke:#655bd1;stroke-width:5;fill:none;marker-end:url(#arrow)}</style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#655bd1"/></marker></defs>
+  <rect width="1200" height="650" rx="28" fill="#faf9ff"/>
+  <text x="55" y="62" class="h">预测模型要用“决策后果”验收</text>
+  <g transform="translate(55 145)"><rect width="220" height="120" rx="18" fill="#efedff" stroke="#c7c1ff"/><text x="110" y="50" text-anchor="middle" class="t">历史切片</text><text x="110" y="82" text-anchor="middle" class="s">只使用当时可见信息</text></g>
+  <path d="M285 205H345" class="a"/>
+  <g transform="translate(355 145)"><rect width="220" height="120" rx="18" fill="#eaf8f2" stroke="#9bd8c1"/><text x="110" y="50" text-anchor="middle" class="t">状态预测</text><text x="110" y="82" text-anchor="middle" class="s">容量、价值与区间</text></g>
+  <path d="M585 205H645" class="a"/>
+  <g transform="translate(655 145)"><rect width="220" height="120" rx="18" fill="#fff1e9" stroke="#f0b18e"/><text x="110" y="50" text-anchor="middle" class="t">运筹求解</text><text x="110" y="82" text-anchor="middle" class="s">生成当时会执行的动作</text></g>
+  <path d="M885 205H945" class="a"/>
+  <g transform="translate(955 145)"><rect width="190" height="120" rx="18" fill="#262835"/><text x="95" y="50" text-anchor="middle" class="t" style="fill:#fff">真实回放</text><text x="95" y="82" text-anchor="middle" class="s" style="fill:#fff">计算价值与违约</text></g>
+  <path d="M1050 280V370H760" class="a"/>
+  <g transform="translate(420 355)">
+    <rect width="340" height="145" rx="20" fill="#655bd1"/>
+    <text x="170" y="45" text-anchor="middle" class="t" style="fill:#fff">决策遗憾 Regret</text>
+    <text x="170" y="82" text-anchor="middle" class="b" style="fill:#fff">完美信息最优值 - 预测驱动方案价值</text>
+    <text x="170" y="115" text-anchor="middle" class="s" style="fill:#fff">同时检查违约、波动、超调与尾部风险</text>
+  </g>
+  <rect x="150" y="550" width="900" height="50" rx="14" fill="#262835"/><text x="600" y="582" text-anchor="middle" class="b" style="fill:#fff">同样的预测误差，落在峰值、约束边界或低谷，决策损失可能完全不同</text>
+</svg>
