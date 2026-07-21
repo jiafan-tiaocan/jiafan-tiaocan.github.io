@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="520" viewBox="0 0 1400 520" role="img" aria-labelledby="title desc">
+  <title id="title">原始经历与编译知识的三层结构</title>
+  <desc id="desc">L0 保留不可变来源与经历，L1 提取带来源记忆，L2 形成经过归并和验证的编译知识。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#655cc5"/></marker><style>.h{font:700 28px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#28253f}.t{font:21px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#4f4b67}.s{font:18px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#6b6880}.a{stroke:#655cc5;stroke-width:3;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1400" height="520" rx="28" fill="#f8f7fc"/>
+  <g transform="translate(60 305)"><rect width="1280" height="150" rx="22" fill="#eef6ff" stroke="#93b7dc" stroke-width="2"/><text class="h" x="50" y="50">L0 · Source / Episode</text><text class="t" x="50" y="90">原始对话、Tool 结果、Trace、文档与截图</text><text class="s" x="50" y="122">不可变 · 可审计 · 保留完整证据</text></g>
+  <g transform="translate(235 165)"><rect width="930" height="115" rx="20" fill="#f3efff" stroke="#aa9ee1" stroke-width="2"/><text class="h" x="45" y="45">L1 · Extracted Memory</text><text class="t" x="45" y="82">从单个或少量 Source 提取的事实、偏好与候选规则；始终携带来源</text></g>
+  <g transform="translate(410 35)"><rect width="580" height="105" rx="20" fill="#ecf8f2" stroke="#79b497" stroke-width="2"/><text class="h" x="40" y="43">L2 · Compiled Knowledge</text><text class="t" x="40" y="78">跨经历归并、验证、去冲突后的方法、画像、规则和索引</text></g>
+  <path class="a" d="M700 305V280M700 165V140"/>
+</svg>

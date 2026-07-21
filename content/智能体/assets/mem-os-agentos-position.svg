@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780" role="img" aria-labelledby="title desc">
+  <title id="title">Mem-OS 在 Agent OS 中的位置</title>
+  <desc id="desc">事件进入不可变来源层，经 Mem-OS 的写入、检索和生长内核处理，由治理平面约束，再向 Agent Core 编译上下文。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#655cc5"/></marker><style>.b{fill:#fff;stroke:#c9c5e8;stroke-width:2}.h{font:700 30px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#27243e}.t{font:22px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#4f4b67}.s{font:19px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#6e6a82}.a{stroke:#655cc5;stroke-width:3;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1400" height="780" rx="28" fill="#f7f6fb"/>
+  <g transform="translate(70 60)"><rect class="b" width="1260" height="95" rx="18" fill="#eeeaff"/><text class="h" x="630" y="42" text-anchor="middle">对话 / Tool / 环境事件 / 人工反馈</text><text class="s" x="630" y="73" text-anchor="middle">实时发生的观察与行动结果</text></g>
+  <path class="a" d="M700 155V214"/>
+  <g transform="translate(70 215)"><rect class="b" width="1260" height="95" rx="18"/><text class="h" x="630" y="42" text-anchor="middle">不可变 Source &amp; Artifact</text><text class="s" x="630" y="73" text-anchor="middle">原对话、文档、截图、Trace、Tool 返回与业务产物</text></g>
+  <path class="a" d="M700 310V370"/>
+  <g transform="translate(215 370)"><rect width="970" height="250" rx="24" fill="#f1efff" stroke="#9c95dc" stroke-width="3"/><text class="h" x="485" y="48" text-anchor="middle">Mem-OS：知识与经验生命周期内核</text>
+    <g transform="translate(35 80)"><rect class="b" width="280" height="125" rx="16"/><text class="t" x="140" y="44" text-anchor="middle">写入内核</text><text class="s" x="140" y="78" text-anchor="middle">提案 · 准入 · 冲突</text><text class="s" x="140" y="105" text-anchor="middle">提交 · 版本 · 回滚</text></g>
+    <g transform="translate(345 80)"><rect class="b" width="280" height="125" rx="16"/><text class="t" x="140" y="44" text-anchor="middle">读取内核</text><text class="s" x="140" y="78" text-anchor="middle">计划 · 检索 · 优先级</text><text class="s" x="140" y="105" text-anchor="middle">Context Compiler</text></g>
+    <g transform="translate(655 80)"><rect class="b" width="280" height="125" rx="16"/><text class="t" x="140" y="44" text-anchor="middle">生长内核</text><text class="s" x="140" y="78" text-anchor="middle">归并 · 程序学习</text><text class="s" x="140" y="105" text-anchor="middle">评测 · 修订 · 遗忘</text></g>
+  </g>
+  <g transform="translate(25 370)"><rect width="165" height="250" rx="22" fill="#fff7e8" stroke="#e0bd72" stroke-width="2"/><text class="t" x="82" y="44" text-anchor="middle">Policy</text><text class="t" x="82" y="74" text-anchor="middle">Plane</text><text class="s" x="82" y="120" text-anchor="middle">身份</text><text class="s" x="82" y="150" text-anchor="middle">权限</text><text class="s" x="82" y="180" text-anchor="middle">保留期</text><text class="s" x="82" y="210" text-anchor="middle">审批 / 审计</text></g>
+  <path class="a" d="M700 620V679"/>
+  <g transform="translate(315 680)"><rect class="b" width="770" height="70" rx="18" fill="#eaf7f2"/><text class="h" x="385" y="44" text-anchor="middle">Agent Core：消费已编译、可追溯的上下文</text></g>
+</svg>

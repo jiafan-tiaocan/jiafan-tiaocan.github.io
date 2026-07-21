@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mem-OS 通用参考架构</title>
+  <desc id="desc">业务事件和原始材料进入写入内核，经受治理的知识状态层保存，再由读取内核编译为 Agent 上下文；后台归并与结果评测让知识持续演进。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#655cc5"/></marker>
+    <style>
+      .box{fill:#fff;stroke:#c9c5e8;stroke-width:2}.h{font:700 29px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#28253f}.t{font:21px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#4f4b67}.s{font:18px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#6b6880}.flow{stroke:#655cc5;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1400" height="900" rx="28" fill="#f8f7fc"/>
+
+  <g transform="translate(70 45)">
+    <rect class="box" width="1260" height="95" rx="18" fill="#eef6ff"/>
+    <text class="h" x="630" y="40" text-anchor="middle">对话 · Tool · 环境事件 · 文档 · 人工反馈</text>
+    <text class="s" x="630" y="71" text-anchor="middle">不可变 Source、Artifact 与 Episode</text>
+  </g>
+  <path class="flow" d="M700 140V195"/>
+
+  <g transform="translate(45 200)">
+    <rect width="205" height="535" rx="22" fill="#fff7e8" stroke="#d7b45e" stroke-width="2"/>
+    <text class="h" x="102" y="50" text-anchor="middle">治理平面</text>
+    <text class="t" x="102" y="105" text-anchor="middle">Scope / ACL</text>
+    <text class="t" x="102" y="148" text-anchor="middle">隐私 / 保留期</text>
+    <text class="t" x="102" y="191" text-anchor="middle">来源 / 审批</text>
+    <text class="t" x="102" y="234" text-anchor="middle">版本 / 审计</text>
+    <text class="s" x="102" y="305" text-anchor="middle">规则属于系统</text>
+    <text class="s" x="102" y="336" text-anchor="middle">不能只写进 Prompt</text>
+    <text class="s" x="102" y="407" text-anchor="middle">高风险知识</text>
+    <text class="s" x="102" y="438" text-anchor="middle">确定性执行</text>
+  </g>
+
+  <g transform="translate(280 200)">
+    <rect width="1075" height="535" rx="26" fill="#f1efff" stroke="#9c95dc" stroke-width="3"/>
+    <text class="h" x="537" y="48" text-anchor="middle">Mem-OS Kernel</text>
+
+    <g transform="translate(35 85)">
+      <rect class="box" width="305" height="175" rx="18"/>
+      <text class="h" x="152" y="45" text-anchor="middle">写入内核</text>
+      <text class="t" x="152" y="88" text-anchor="middle">Propose · Admission</text>
+      <text class="t" x="152" y="123" text-anchor="middle">Conflict · Commit</text>
+      <text class="s" x="152" y="153" text-anchor="middle">CAS · 幂等 · 回滚</text>
+    </g>
+
+    <g transform="translate(385 85)">
+      <rect class="box" width="305" height="175" rx="18" fill="#f5fbf8"/>
+      <text class="h" x="152" y="45" text-anchor="middle">知识状态层</text>
+      <text class="t" x="152" y="88" text-anchor="middle">Record · Event</text>
+      <text class="t" x="152" y="123" text-anchor="middle">Snapshot · View</text>
+      <text class="s" x="152" y="153" text-anchor="middle">索引是可重建的派生物</text>
+    </g>
+
+    <g transform="translate(735 85)">
+      <rect class="box" width="305" height="175" rx="18"/>
+      <text class="h" x="152" y="45" text-anchor="middle">读取内核</text>
+      <text class="t" x="152" y="88" text-anchor="middle">Plan · Route</text>
+      <text class="t" x="152" y="123" text-anchor="middle">Retrieve · Compile</text>
+      <text class="s" x="152" y="153" text-anchor="middle">按任务装配最小充分上下文</text>
+    </g>
+    <path class="flow" d="M340 172H385M690 172H735"/>
+
+    <g transform="translate(90 330)">
+      <rect class="box" width="410" height="145" rx="18"/>
+      <text class="h" x="205" y="44" text-anchor="middle">归并与程序编译</text>
+      <text class="t" x="205" y="88" text-anchor="middle">压缩 · 去重 · 时间冲突</text>
+      <text class="s" x="205" y="118" text-anchor="middle">Episode → Procedure / Skill</text>
+    </g>
+
+    <g transform="translate(575 330)">
+      <rect class="box" width="410" height="145" rx="18" fill="#fffaf0"/>
+      <text class="h" x="205" y="44" text-anchor="middle">评测与结果归因</text>
+      <text class="t" x="205" y="88" text-anchor="middle">Activation · Action · Outcome</text>
+      <text class="s" x="205" y="118" text-anchor="middle">收益、负迁移、修订与退役</text>
+    </g>
+    <path class="flow" d="M537 260V305H295V330"/>
+    <path class="flow" d="M887 260V305H780V330"/>
+    <path class="flow" d="M500 402H575"/>
+  </g>
+
+  <path class="flow" d="M1168 460V785H1080"/>
+  <g transform="translate(320 785)">
+    <rect class="box" width="760" height="75" rx="18" fill="#eaf7f2"/>
+    <text class="h" x="380" y="46" text-anchor="middle">Agent Core：消费已编译、带来源的上下文</text>
+  </g>
+  <path class="flow" d="M700 785V748H1060V675"/>
+</svg>

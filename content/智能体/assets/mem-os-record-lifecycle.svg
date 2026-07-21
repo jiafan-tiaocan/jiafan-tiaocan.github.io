@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="600" viewBox="0 0 1400 600" role="img" aria-labelledby="title desc">
+  <title id="title">一条知识从候选到生效的状态机</title>
+  <desc id="desc">知识提案可被拒绝、进入草稿、因冲突进入争议、激活后被替代或退役。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#655cc5"/></marker><style>.b{fill:#fff;stroke:#c9c5e8;stroke-width:2}.h{font:700 27px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#28253f}.s{font:18px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#625e77}.a{stroke:#655cc5;stroke-width:3;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1400" height="600" rx="28" fill="#f8f7fc"/>
+  <g transform="translate(70 230)"><rect class="b" width="190" height="95" rx="17"/><text class="h" x="95" y="58" text-anchor="middle">Proposed</text></g>
+  <g transform="translate(395 65)"><rect width="190" height="95" rx="17" fill="#fff0f0" stroke="#d88484" stroke-width="2"/><text class="h" x="95" y="58" text-anchor="middle">Rejected</text></g>
+  <g transform="translate(395 230)"><rect class="b" width="190" height="95" rx="17"/><text class="h" x="95" y="58" text-anchor="middle">Draft</text></g>
+  <g transform="translate(720 65)"><rect width="190" height="95" rx="17" fill="#fff9e8" stroke="#d7b45e" stroke-width="2"/><text class="h" x="95" y="58" text-anchor="middle">Disputed</text></g>
+  <g transform="translate(720 230)"><rect width="190" height="95" rx="17" fill="#ecf8f2" stroke="#79b497" stroke-width="2"/><text class="h" x="95" y="58" text-anchor="middle">Active</text></g>
+  <g transform="translate(1050 150)"><rect class="b" width="220" height="95" rx="17"/><text class="h" x="110" y="58" text-anchor="middle">Superseded</text></g>
+  <g transform="translate(1050 345)"><rect class="b" width="220" height="95" rx="17"/><text class="h" x="110" y="58" text-anchor="middle">Retired</text></g>
+  <path class="a" d="M260 265L395 145M260 278H395M585 278H720M585 250L720 145M815 160V230M910 260L1050 210M910 300L1050 390"/>
+  <text class="s" x="305" y="145" text-anchor="middle">噪声 / 无来源 / 越权</text><text class="s" x="328" y="262" text-anchor="middle">通过准入与类型校验</text><text class="s" x="650" y="260" text-anchor="middle">门禁 / 审核通过</text><text class="s" x="660" y="145" text-anchor="middle">高置信冲突</text><text class="s" x="845" y="200" text-anchor="middle">证据确认</text><text class="s" x="1030" y="185" text-anchor="end">新版本替代</text><text class="s" x="1030" y="380" text-anchor="end">过期 / 无效 / 遗忘</text>
+</svg>
