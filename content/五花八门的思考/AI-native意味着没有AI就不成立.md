@@ -4,6 +4,7 @@ description: 从企业基础设施接入 Agent 的实际体验出发，思考 AI
 tags:
   - AI-native
   - 智能体
+noteType: thought
 date: 2026-07-20
 publish: true
 ---
