@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">DiT 在完整 latent diffusion 系统中的位置</title>
+  <desc id="desc">训练时图像经 VAE 编码、加噪后送给 DiT。采样时 DiT 被采样器重复调用，最终 latent 经 VAE 解码成图像。DiT 只负责每一步的预测。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#46D9E8"/></marker>
+    <marker id="amber-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#F6C85F"/></marker>
+    <style>
+      text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}
+      .muted{fill:#9FB0C6}.small{font-size:16px}.body{font-size:18px}.label{font-size:20px;font-weight:650}.title{font-size:30px;font-weight:750}
+      .card{fill:#111C2E;stroke:#31445F;stroke-width:2}.focus{fill:#132B38;stroke:#46D9E8;stroke-width:3}.vae{fill:#201D3D;stroke:#A78BFA;stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1200" height="680" rx="24" fill="#0B1220"/>
+  <text class="title" x="56" y="58">DiT 只占系统中间的一格，但这一格会被反复调用</text>
+  <text class="body muted" x="56" y="90">VAE 管表示，扩散 / Flow 管路径，sampler 管怎样走；DiT 管当前状态下该预测什么。</text>
+
+  <text class="label" x="56" y="144" fill="#F6C85F">训练：随机抽一个噪声等级，只做一次监督</text>
+  <rect class="card" x="56" y="174" width="138" height="88" rx="16"/>
+  <text class="label" x="125" y="208" text-anchor="middle">RGB 图像</text><text class="small muted" x="125" y="237" text-anchor="middle">x · 3×256×256</text>
+  <line x1="194" y1="218" x2="237" y2="218" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect class="vae" x="242" y="174" width="142" height="88" rx="16"/>
+  <text class="label" x="313" y="208" text-anchor="middle">VAE Encoder</text><text class="small muted" x="313" y="237" text-anchor="middle">冻结</text>
+  <line x1="384" y1="218" x2="427" y2="218" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect class="card" x="432" y="174" width="150" height="88" rx="16"/>
+  <text class="label" x="507" y="208" text-anchor="middle">干净 latent</text><text class="small muted" x="507" y="237" text-anchor="middle">z₀ · 4×32×32</text>
+  <line x1="582" y1="218" x2="625" y2="218" stroke="#F6C85F" stroke-width="3" marker-end="url(#amber-arrow)"/>
+  <rect class="card" x="630" y="160" width="190" height="116" rx="16"/>
+  <text class="label" x="725" y="198" text-anchor="middle">闭式加噪</text>
+  <text class="small muted" x="725" y="227" text-anchor="middle">抽 t 与 ε</text>
+  <text class="small" x="725" y="253" text-anchor="middle">zₜ = aₜz₀ + bₜε</text>
+  <line x1="820" y1="218" x2="863" y2="218" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect class="focus" x="868" y="150" width="276" height="136" rx="18"/>
+  <text class="label" x="1006" y="188" text-anchor="middle" fill="#46D9E8">DiTθ(zₜ, t, y)</text>
+  <text class="body" x="1006" y="220" text-anchor="middle">输出：噪声预测 + 方差参数</text>
+  <text class="small muted" x="1006" y="250" text-anchor="middle">这一格是本文打开的黑盒</text>
+
+  <line x1="56" y1="323" x2="1144" y2="323" stroke="#31445F" stroke-width="2" stroke-dasharray="8 9"/>
+  <text class="label" x="56" y="374" fill="#5DD39E">推理：从纯噪声出发，同一组 DiT 参数调用 K 次</text>
+  <rect class="card" x="56" y="410" width="142" height="92" rx="16"/>
+  <text class="label" x="127" y="446" text-anchor="middle">高斯噪声</text><text class="small muted" x="127" y="477" text-anchor="middle">zT ~ N(0,I)</text>
+  <line x1="198" y1="456" x2="251" y2="456" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect class="focus" x="256" y="394" width="410" height="124" rx="18"/>
+  <rect x="282" y="420" width="132" height="70" rx="13" fill="#132B38" stroke="#46D9E8" stroke-width="2"/>
+  <text class="label" x="348" y="451" text-anchor="middle">DiT</text><text class="small muted" x="348" y="477" text-anchor="middle">预测场</text>
+  <line x1="414" y1="455" x2="463" y2="455" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="468" y="420" width="164" height="70" rx="13" fill="#252337" stroke="#F6C85F" stroke-width="2"/>
+  <text class="label" x="550" y="451" text-anchor="middle">Sampler</text><text class="small muted" x="550" y="477" text-anchor="middle">更新 zₜ → zₜ₋₁</text>
+  <path d="M610 420 C610 374 305 374 305 413" fill="none" stroke="#9FB0C6" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+  <text class="small" x="458" y="388" text-anchor="middle" fill="#F6C85F">重复 K 次，参数共享</text>
+  <line x1="666" y1="456" x2="719" y2="456" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect class="card" x="724" y="410" width="138" height="92" rx="16"/>
+  <text class="label" x="793" y="446" text-anchor="middle">干净 latent</text><text class="small muted" x="793" y="477" text-anchor="middle">z₀</text>
+  <line x1="862" y1="456" x2="905" y2="456" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect class="vae" x="910" y="410" width="142" height="92" rx="16"/>
+  <text class="label" x="981" y="446" text-anchor="middle">VAE Decoder</text><text class="small muted" x="981" y="477" text-anchor="middle">latent → RGB</text>
+  <line x1="1052" y1="456" x2="1085" y2="456" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect class="card" x="1090" y="410" width="54" height="92" rx="14"/>
+  <text class="label" x="1117" y="466" text-anchor="middle">图</text>
+
+  <rect x="56" y="560" width="1088" height="70" rx="16" fill="#101A2B" stroke="#31445F"/>
+  <circle cx="86" cy="595" r="8" fill="#46D9E8"/><text class="body" x="108" y="602">不变：VAE、噪声路径、训练目标、采样器</text>
+  <circle cx="580" cy="595" r="8" fill="#A78BFA"/><text class="body" x="602" y="602">改变：每一步内部的空间建模主干</text>
+</svg>

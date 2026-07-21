@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">扩散 U-Net 与 DiT 的内部责任对比</title>
+  <desc id="desc">两种网络拥有相同输入输出接口。U-Net 通过多尺度卷积、下采样上采样和跳连建模；DiT 通过固定 token 分辨率上的全局自注意力建模。</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#46D9E8"/></marker>
+    <style>text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}.title{font-size:30px;font-weight:750}.head{font-size:23px;font-weight:700}.body{font-size:18px}.small{font-size:16px;fill:#9FB0C6}.card{fill:#111C2E;stroke:#31445F;stroke-width:2}</style>
+  </defs>
+  <rect width="1200" height="700" rx="24" fill="#0B1220"/>
+  <text class="title" x="56" y="58">外部接口相同，内部的空间组织方式不同</text>
+  <rect class="card" x="430" y="92" width="340" height="76" rx="16"/>
+  <text class="head" x="600" y="124" text-anchor="middle">输入：带噪 latent zₜ</text><text class="small" x="600" y="150" text-anchor="middle">同时接收噪声步 t 与条件 y</text>
+  <path d="M520 168 C470 202 335 201 335 238" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+  <path d="M680 168 C730 202 865 201 865 238" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+
+  <rect x="56" y="242" width="520" height="324" rx="20" fill="#111C2E" stroke="#A78BFA" stroke-width="2.5"/>
+  <text class="head" x="316" y="282" text-anchor="middle" fill="#A78BFA">扩散 U-Net：显式多尺度金字塔</text>
+  <text class="small" x="316" y="311" text-anchor="middle">卷积先提供局部性，分辨率逐级变化</text>
+  <rect x="94" y="344" width="90" height="64" rx="12" fill="#201D3D" stroke="#A78BFA"/>
+  <rect x="206" y="372" width="90" height="64" rx="12" fill="#201D3D" stroke="#A78BFA"/>
+  <rect x="318" y="400" width="90" height="64" rx="12" fill="#201D3D" stroke="#A78BFA"/>
+  <rect x="430" y="372" width="90" height="64" rx="12" fill="#201D3D" stroke="#A78BFA"/>
+  <text class="body" x="139" y="383" text-anchor="middle">高分辨率</text><text class="body" x="251" y="411" text-anchor="middle">↓ 2</text><text class="body" x="363" y="439" text-anchor="middle">瓶颈</text><text class="body" x="475" y="411" text-anchor="middle">↑ 2</text>
+  <path d="M184 376L206 397M296 410L318 425M408 432L430 405" stroke="#A78BFA" stroke-width="3"/>
+  <path d="M139 344 C139 324 475 324 475 365" fill="none" stroke="#9FB0C6" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#a)"/>
+  <text class="small" x="307" y="334" text-anchor="middle">同尺度 skip connection</text>
+  <text class="body" x="316" y="505" text-anchor="middle">局部卷积 → 扩大感受野 → 压缩再恢复细节</text>
+  <text class="small" x="316" y="536" text-anchor="middle">层的角色与所在分辨率强绑定</text>
+
+  <rect x="624" y="242" width="520" height="324" rx="20" fill="#111C2E" stroke="#46D9E8" stroke-width="2.5"/>
+  <text class="head" x="884" y="282" text-anchor="middle" fill="#46D9E8">DiT：固定粒度 token 上的规则堆叠</text>
+  <text class="small" x="884" y="311" text-anchor="middle">每个 block 都处理同样的 T×d 形状</text>
+  <g fill="#132B38" stroke="#46D9E8" stroke-width="1.5">
+    <rect x="665" y="351" width="76" height="76" rx="12"/><rect x="758" y="351" width="76" height="76" rx="12"/><rect x="851" y="351" width="76" height="76" rx="12"/><rect x="944" y="351" width="76" height="76" rx="12"/><rect x="1037" y="351" width="66" height="76" rx="12"/>
+  </g>
+  <text class="body" x="703" y="382" text-anchor="middle">Patch</text><text class="small" x="703" y="407" text-anchor="middle">T×d</text>
+  <text class="body" x="796" y="382" text-anchor="middle">Block</text><text class="small" x="796" y="407" text-anchor="middle">1</text>
+  <text class="body" x="889" y="382" text-anchor="middle">Block</text><text class="small" x="889" y="407" text-anchor="middle">2</text>
+  <text class="body" x="982" y="382" text-anchor="middle">…</text><text class="small" x="982" y="407" text-anchor="middle">同形</text>
+  <text class="body" x="1070" y="382" text-anchor="middle">Head</text><text class="small" x="1070" y="407" text-anchor="middle">还原</text>
+  <path d="M741 389H758M834 389H851M927 389H944M1020 389H1037" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+  <path d="M796 446 C835 490 995 490 1035 446" fill="none" stroke="#F6C85F" stroke-width="2.5" stroke-dasharray="7 6"/>
+  <text class="body" x="884" y="505" text-anchor="middle">全局 Self-Attention + 条件化 MLP</text>
+  <text class="small" x="884" y="536" text-anchor="middle">通过深度、宽度、head 与 token 数扩展</text>
+
+  <path d="M316 566 C360 606 488 606 518 620" fill="none" stroke="#46D9E8" stroke-width="3"/>
+  <path d="M884 566 C840 606 712 606 682 620" fill="none" stroke="#46D9E8" stroke-width="3"/>
+  <rect class="card" x="420" y="608" width="360" height="64" rx="16"/>
+  <text class="head" x="600" y="647" text-anchor="middle">同一输出接口：噪声预测与方差参数</text>
+</svg>

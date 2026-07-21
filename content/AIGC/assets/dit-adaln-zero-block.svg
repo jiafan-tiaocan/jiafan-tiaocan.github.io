@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="790" viewBox="0 0 1200 790" role="img" aria-labelledby="title desc">
+  <title id="title">adaLN-Zero DiT block 的微观数据流</title>
+  <desc id="desc">时间与类别嵌入相加形成条件，条件 MLP 产生两组 shift、scale 和 gate，分别调制自注意力与前馈残差分支；gate 零初始化使 block 初始为恒等映射。</desc>
+  <defs>
+    <marker id="c" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#46D9E8"/></marker>
+    <marker id="v" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#A78BFA"/></marker>
+    <marker id="y" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#F6C85F"/></marker>
+    <style>text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}.title{font-size:30px;font-weight:750}.head{font-size:21px;font-weight:700}.body{font-size:18px}.small{font-size:16px;fill:#9FB0C6}.card{fill:#111C2E;stroke:#31445F;stroke-width:2}.op{fill:#132B38;stroke:#46D9E8;stroke-width:2}</style>
+  </defs>
+  <rect width="1200" height="790" rx="24" fill="#0B1220"/>
+  <text class="title" x="56" y="58">adaLN-Zero：条件不是“附加信息”，而是每层的动态控制面板</text>
+  <text class="body" x="56" y="90" fill="#9FB0C6">同一个 c 为 Attention 与 MLP 各自产生 shift、scale、gate；所有向量在 token 维广播。</text>
+
+  <rect x="104" y="126" width="142" height="72" rx="15" fill="#252337" stroke="#F6C85F" stroke-width="2"/>
+  <text class="head" x="175" y="158" text-anchor="middle">时间步 t</text><text class="small" x="175" y="184" text-anchor="middle">SinCos + MLP</text>
+  <rect x="280" y="126" width="142" height="72" rx="15" fill="#201D3D" stroke="#A78BFA" stroke-width="2"/>
+  <text class="head" x="351" y="158" text-anchor="middle">类别 y</text><text class="small" x="351" y="184" text-anchor="middle">Embedding</text>
+  <path d="M175 198V222H250" fill="none" stroke="#F6C85F" stroke-width="3" marker-end="url(#y)"/>
+  <path d="M351 198V222H285" fill="none" stroke="#A78BFA" stroke-width="3" marker-end="url(#v)"/>
+  <circle cx="268" cy="222" r="21" fill="#111C2E" stroke="#46D9E8" stroke-width="2"/><text class="head" x="268" y="230" text-anchor="middle">+</text>
+  <line x1="289" y1="222" x2="351" y2="222" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <rect class="op" x="356" y="188" width="182" height="70" rx="15"/>
+  <text class="head" x="447" y="218" text-anchor="middle">条件向量 c</text><text class="small" x="447" y="243" text-anchor="middle">B×d</text>
+  <line x1="538" y1="223" x2="587" y2="223" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <rect class="op" x="592" y="180" width="212" height="86" rx="15"/>
+  <text class="head" x="698" y="214" text-anchor="middle">SiLU + Linear</text><text class="small" x="698" y="242" text-anchor="middle">输出 B×6d，权重零初始化</text>
+  <path d="M804 223H878V286" fill="none" stroke="#46D9E8" stroke-width="3"/>
+  <path d="M878 286H695" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <path d="M878 286H1038V311" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+
+  <rect x="516" y="302" width="296" height="74" rx="14" fill="#111C2E" stroke="#F6C85F" stroke-width="2"/>
+  <text class="head" x="664" y="333" text-anchor="middle">Attention 控制</text><text class="small" x="664" y="360" text-anchor="middle">b_attn · s_attn · g_attn</text>
+  <rect x="888" y="302" width="256" height="74" rx="14" fill="#111C2E" stroke="#A78BFA" stroke-width="2"/>
+  <text class="head" x="1016" y="333" text-anchor="middle">MLP 控制</text><text class="small" x="1016" y="360" text-anchor="middle">b_mlp · s_mlp · g_mlp</text>
+
+  <text class="head" x="56" y="432">残差主路</text>
+  <rect class="card" x="56" y="462" width="1088" height="236" rx="20"/>
+  <rect class="op" x="82" y="531" width="96" height="80" rx="14"/><text class="head" x="130" y="565" text-anchor="middle">X</text><text class="small" x="130" y="592" text-anchor="middle">T×d</text>
+  <line x1="178" y1="571" x2="215" y2="571" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <rect class="card" x="220" y="521" width="120" height="100" rx="14"/><text class="head" x="280" y="558" text-anchor="middle">LayerNorm</text><text class="small" x="280" y="588" text-anchor="middle">无 affine</text>
+  <line x1="340" y1="571" x2="377" y2="571" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <rect x="382" y="511" width="148" height="120" rx="14" fill="#252337" stroke="#F6C85F" stroke-width="2"/>
+  <text class="head" x="456" y="548" text-anchor="middle">调制</text><text class="small" x="456" y="578" text-anchor="middle">LN(X)·(1+s)</text><text class="small" x="456" y="604" text-anchor="middle">+ b</text>
+  <line x1="530" y1="571" x2="567" y2="571" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <rect class="op" x="572" y="521" width="120" height="100" rx="14"/><text class="head" x="632" y="558" text-anchor="middle">Self-</text><text class="head" x="632" y="584" text-anchor="middle">Attention</text>
+  <line x1="692" y1="571" x2="729" y2="571" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <rect x="734" y="521" width="94" height="100" rx="14" fill="#252337" stroke="#F6C85F" stroke-width="2"/><text class="head" x="781" y="558" text-anchor="middle">× g</text><text class="small" x="781" y="589" text-anchor="middle">门控</text>
+  <line x1="828" y1="571" x2="865" y2="571" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <circle cx="888" cy="571" r="22" fill="#111C2E" stroke="#46D9E8" stroke-width="2"/><text class="head" x="888" y="579" text-anchor="middle">+</text>
+  <path d="M130 611V657H888V594" fill="none" stroke="#9FB0C6" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#c)"/>
+  <line x1="910" y1="571" x2="955" y2="571" stroke="#46D9E8" stroke-width="3" marker-end="url(#c)"/>
+  <rect class="op" x="960" y="531" width="158" height="80" rx="14"/><text class="head" x="1039" y="565" text-anchor="middle">X′</text><text class="small" x="1039" y="592" text-anchor="middle">再进 MLP 分支</text>
+
+  <path d="M664 376V489H456V507" fill="none" stroke="#F6C85F" stroke-width="2.5" marker-end="url(#y)"/>
+  <path d="M664 376V489H781V517" fill="none" stroke="#F6C85F" stroke-width="2.5" marker-end="url(#y)"/>
+  <path d="M1016 376V442" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-dasharray="7 6"/>
+  <text class="small" x="1016" y="471" text-anchor="middle">下一段重复同样结构：</text><text class="small" x="1016" y="494" text-anchor="middle">LN → 调制 → MLP → gate → +</text>
+
+  <rect x="56" y="724" width="1088" height="42" rx="13" fill="#101A2B" stroke="#31445F"/>
+  <text class="body" x="600" y="752" text-anchor="middle">初始化时 g_attn = g_mlp = 0，所以 block 从 X″ = X 开始，再逐步学会写入残差修正。</text>
+</svg>

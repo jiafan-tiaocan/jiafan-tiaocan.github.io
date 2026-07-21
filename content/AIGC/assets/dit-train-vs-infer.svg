@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">DiT 训练与推理的差别</title>
+  <desc id="desc">训练时为每个样本随机抽一个时间步，闭式加噪并进行一次 DiT 前向；推理时从纯噪声开始，在采样器控制下反复调用共享参数的 DiT。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#46D9E8"/></marker><marker id="y" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#F6C85F"/></marker>
+    <style>text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}.title{font-size:30px;font-weight:750}.head{font-size:23px;font-weight:700}.body{font-size:18px}.small{font-size:16px;fill:#9FB0C6}.card{fill:#111C2E;stroke:#31445F;stroke-width:2}.focus{fill:#132B38;stroke:#46D9E8;stroke-width:2.5}</style>
+  </defs>
+  <rect width="1200" height="700" rx="24" fill="#0B1220"/>
+  <text class="title" x="56" y="58">训练不是“先加噪 1000 次再去噪 1000 次”</text>
+  <text class="body" x="56" y="90" fill="#9FB0C6">训练用闭式公式随机抽一道题；推理才沿时间轴多步求解。</text>
+  <line x1="600" y1="120" x2="600" y2="636" stroke="#31445F" stroke-width="2" stroke-dasharray="9 9"/>
+
+  <text class="head" x="300" y="151" text-anchor="middle" fill="#F6C85F">训练：一个样本，一次随机 t，一次 DiT</text>
+  <rect class="card" x="72" y="190" width="156" height="82" rx="15"/><text class="head" x="150" y="223" text-anchor="middle">干净 latent</text><text class="small" x="150" y="251" text-anchor="middle">z₀</text>
+  <line x1="228" y1="231" x2="267" y2="231" stroke="#F6C85F" stroke-width="3" marker-end="url(#y)"/>
+  <rect x="272" y="177" width="236" height="108" rx="16" fill="#252337" stroke="#F6C85F" stroke-width="2"/>
+  <text class="head" x="390" y="211" text-anchor="middle">随机抽 t 与 ε</text><text class="small" x="390" y="241" text-anchor="middle">直接构造 zₜ = aₜz₀+bₜε</text><text class="small" x="390" y="266" text-anchor="middle">无需依次得到 z₁…zₜ₋₁</text>
+  <path d="M390 285V326" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+  <rect class="focus" x="272" y="332" width="236" height="92" rx="16"/><text class="head" x="390" y="367" text-anchor="middle">DiTθ(zₜ,t,y)</text><text class="small" x="390" y="397" text-anchor="middle">一次前向：噪声 + 方差</text>
+  <path d="M390 424V465" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+  <rect class="card" x="210" y="471" width="360" height="112" rx="16"/>
+  <text class="head" x="390" y="506" text-anchor="middle">监督来自自己加的噪声</text><text class="body" x="390" y="537" text-anchor="middle">噪声 MSE + 方差的变分项</text><text class="small" x="390" y="565" text-anchor="middle">反向传播一次；更新 EMA</text>
+
+  <text class="head" x="900" y="151" text-anchor="middle" fill="#5DD39E">推理：从 zT 开始，DiT 与 solver 交替 K 次</text>
+  <rect class="card" x="668" y="190" width="156" height="82" rx="15"/><text class="head" x="746" y="223" text-anchor="middle">纯噪声</text><text class="small" x="746" y="251" text-anchor="middle">zT ~ N(0,I)</text>
+  <line x1="824" y1="231" x2="863" y2="231" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+  <rect class="focus" x="868" y="180" width="260" height="102" rx="16"/><text class="head" x="998" y="216" text-anchor="middle">共享参数的 DiTθ</text><text class="small" x="998" y="246" text-anchor="middle">cond / uncond 可合 batch</text><text class="small" x="998" y="269" text-anchor="middle">得到 CFG 噪声与方差</text>
+  <path d="M998 282V329" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+  <rect x="868" y="335" width="260" height="102" rx="16" fill="#252337" stroke="#F6C85F" stroke-width="2"/><text class="head" x="998" y="372" text-anchor="middle">Sampler / Solver</text><text class="small" x="998" y="402" text-anchor="middle">依据路径与步长更新</text><text class="small" x="998" y="425" text-anchor="middle">zₜ → zₜ₋₁</text>
+  <path d="M868 386H808C774 386 774 320 808 320H850" fill="none" stroke="#9FB0C6" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#a)"/>
+  <text class="small" x="744" y="351" text-anchor="middle">t 递减</text><text class="small" x="744" y="374" text-anchor="middle">重复 K 次</text>
+  <path d="M998 437V482" stroke="#46D9E8" stroke-width="3" marker-end="url(#a)"/>
+  <rect class="card" x="868" y="488" width="260" height="95" rx="16"/><text class="head" x="998" y="523" text-anchor="middle">VAE Decoder</text><text class="body" x="998" y="554" text-anchor="middle">z₀ → 最终图像</text>
+
+  <rect x="56" y="624" width="1088" height="48" rx="14" fill="#101A2B" stroke="#31445F"/>
+  <text class="body" x="600" y="655" text-anchor="middle">训练在许多样本上覆盖所有噪声等级；推理把这些局部预测串成一条完整轨迹。</text>
+</svg>

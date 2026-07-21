@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="770" viewBox="0 0 1200 770" role="img" aria-labelledby="title desc">
+  <title id="title">DiT 原论文的三层证据</title>
+  <desc id="desc">左侧用近似读图数值比较四种条件注入策略，中间展示 12 个模型的 Gflops 与 FID 相关系数负 0.93，右侧比较小模型一千步与大模型一百二十八步的采样计算和 FID。</desc>
+  <defs><style>text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}.title{font-size:30px;font-weight:750}.head{font-size:22px;font-weight:700}.body{font-size:18px}.small{font-size:15px;fill:#9FB0C6}.card{fill:#111C2E;stroke:#31445F;stroke-width:2}</style></defs>
+  <rect width="1200" height="770" rx="24" fill="#0B1220"/>
+  <text class="title" x="56" y="58">不是只看 SOTA：最有用的是机制消融、扩展规律与反例</text>
+  <text class="body" x="56" y="90" fill="#9FB0C6">三块证据分别回答：条件怎样进、扩大哪种计算、推理多走几步能不能补救小主干。</text>
+
+  <rect class="card" x="40" y="126" width="358" height="548" rx="20"/>
+  <text class="head" x="219" y="166" text-anchor="middle" fill="#F6C85F">1 · 条件机制是因果变量</text>
+  <text class="small" x="219" y="193" text-anchor="middle">DiT-XL/2，400K step，FID-50K 越低越好</text>
+  <line x1="102" y1="246" x2="102" y2="514" stroke="#31445F" stroke-width="2"/>
+  <line x1="102" y1="514" x2="360" y2="514" stroke="#31445F" stroke-width="2"/>
+  <text class="small" x="92" y="250" text-anchor="end">40</text><text class="small" x="92" y="385" text-anchor="end">25</text><text class="small" x="92" y="518" text-anchor="end">10</text>
+  <rect x="122" y="290" width="42" height="224" rx="7" fill="#FF6B6B"/><text class="small" x="143" y="539" text-anchor="middle">In-</text><text class="small" x="143" y="559" text-anchor="middle">Context</text><text class="body" x="143" y="279" text-anchor="middle">≈35</text>
+  <rect x="184" y="370" width="42" height="144" rx="7" fill="#F6C85F"/><text class="small" x="205" y="539" text-anchor="middle">Cross-</text><text class="small" x="205" y="559" text-anchor="middle">Attn</text><text class="body" x="205" y="359" text-anchor="middle">≈26</text>
+  <rect x="246" y="378" width="42" height="136" rx="7" fill="#A78BFA"/><text class="small" x="267" y="539" text-anchor="middle">adaLN</text><text class="body" x="267" y="367" text-anchor="middle">≈25</text>
+  <rect x="308" y="432" width="42" height="82" rx="7" fill="#46D9E8"/><text class="small" x="329" y="539" text-anchor="middle">adaLN-</text><text class="small" x="329" y="559" text-anchor="middle">Zero</text><text class="body" x="329" y="421" text-anchor="middle">≈19</text>
+  <text class="small" x="219" y="592" text-anchor="middle">数值为 Figure 5 读图约数；</text><text class="small" x="219" y="614" text-anchor="middle">正文结论：约为 In-Context 的一半。</text>
+  <rect x="72" y="630" width="294" height="28" rx="9" fill="#132B38"/><text class="small" x="219" y="650" text-anchor="middle" fill="#46D9E8">adaLN-Zero 更好，且几乎不增 Gflops</text>
+
+  <rect class="card" x="421" y="126" width="358" height="548" rx="20"/>
+  <text class="head" x="600" y="166" text-anchor="middle" fill="#46D9E8">2 · 有效尺度不只是参数量</text>
+  <text class="small" x="600" y="193" text-anchor="middle">4 个尺寸 × 3 个 patch，共 12 个模型</text>
+  <line x1="478" y1="500" x2="733" y2="500" stroke="#31445F" stroke-width="2"/>
+  <line x1="478" y1="500" x2="478" y2="238" stroke="#31445F" stroke-width="2"/>
+  <text class="small" x="605" y="529" text-anchor="middle">Transformer Gflops →</text>
+  <text class="small" x="451" y="372" text-anchor="middle" transform="rotate(-90 451 372)">FID-50K → 差</text>
+  <path d="M502 267L713 472" stroke="#9FB0C6" stroke-width="2.5" stroke-dasharray="8 7"/>
+  <g>
+    <circle cx="507" cy="279" r="8" fill="#FF6B6B"/><circle cx="535" cy="327" r="9" fill="#FF6B6B"/><circle cx="573" cy="384" r="10" fill="#FF6B6B"/>
+    <circle cx="533" cy="290" r="8" fill="#F6C85F"/><circle cx="578" cy="381" r="9" fill="#F6C85F"/><circle cx="628" cy="433" r="10" fill="#F6C85F"/>
+    <circle cx="570" cy="302" r="8" fill="#A78BFA"/><circle cx="629" cy="427" r="9" fill="#A78BFA"/><circle cx="690" cy="463" r="10" fill="#A78BFA"/>
+    <circle cx="590" cy="321" r="8" fill="#46D9E8"/><circle cx="644" cy="430" r="9" fill="#46D9E8"/><circle cx="716" cy="472" r="10" fill="#46D9E8"/>
+  </g>
+  <rect x="496" y="550" width="208" height="52" rx="13" fill="#132B38" stroke="#46D9E8"/>
+  <text class="head" x="600" y="583" text-anchor="middle">相关系数 -0.93</text>
+  <text class="small" x="600" y="626" text-anchor="middle">同尺寸减小 patch：参数量近似不变，</text><text class="small" x="600" y="648" text-anchor="middle">token 与计算增加，FID 持续下降。</text>
+
+  <rect class="card" x="802" y="126" width="358" height="548" rx="20"/>
+  <text class="head" x="981" y="166" text-anchor="middle" fill="#5DD39E">3 · 多采样不能补回小主干</text>
+  <text class="small" x="981" y="193" text-anchor="middle">400K step 模型；同为类别条件 ImageNet</text>
+  <rect x="838" y="232" width="286" height="136" rx="16" fill="#201D3D" stroke="#A78BFA" stroke-width="2"/>
+  <text class="head" x="981" y="268" text-anchor="middle">较小 DiT-L/2</text>
+  <text class="body" x="876" y="309">采样步</text><text class="head" x="1086" y="309" text-anchor="end">1000</text>
+  <text class="body" x="876" y="340">每图计算</text><text class="head" x="1086" y="340" text-anchor="end">80.7 Tflops</text>
+  <rect x="838" y="392" width="286" height="136" rx="16" fill="#132B38" stroke="#46D9E8" stroke-width="2.5"/>
+  <text class="head" x="981" y="428" text-anchor="middle">较大 DiT-XL/2</text>
+  <text class="body" x="876" y="469">采样步</text><text class="head" x="1086" y="469" text-anchor="end">128</text>
+  <text class="body" x="876" y="500">每图计算</text><text class="head" x="1086" y="500" text-anchor="end">15.2 Tflops</text>
+  <text class="small" x="981" y="562" text-anchor="middle">小模型用了约 5.3× 推理计算，仍然：</text>
+  <text class="head" x="981" y="599" text-anchor="middle"><tspan fill="#FF6B6B">25.9 FID</tspan><tspan fill="#9FB0C6">  vs  </tspan><tspan fill="#5DD39E">23.7 FID</tspan></text>
+  <rect x="838" y="628" width="286" height="30" rx="9" fill="#132B38"/><text class="small" x="981" y="649" text-anchor="middle">更强单步估计器比盲目增加步数更重要</text>
+
+  <text class="small" x="600" y="724" text-anchor="middle">来源：Peebles &amp; Xie，Figures 5、8、10；相关性与对比只适用于论文控制下的 DiT 家族，不能外推成普遍定律。</text>
+</svg>
