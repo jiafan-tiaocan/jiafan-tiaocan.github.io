@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
   <title id="title">广告主投放操作系统的分层架构</title>
   <desc id="desc">广告主以业务目标与治理为顶层，建设统一的测量、实验、决策、记忆和资金能力，再通过渠道适配层连接不同媒体。</desc>
   <defs>

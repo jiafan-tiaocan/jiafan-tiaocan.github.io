@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
   <title id="title">广告账户的四阶段状态机</title>
   <desc id="desc">广告账户依次经历冷启动、扩量、稳态和衰退，不同阶段需要不同观察重点、动作和迁移门槛。</desc>
   <defs>
