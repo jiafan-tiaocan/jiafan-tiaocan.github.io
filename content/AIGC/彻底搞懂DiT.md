@@ -7,7 +7,7 @@ tags:
   - Transformer
   - 生成模型
   - 论文解读
-date: 2026-07-21
+date: 2023-03-20
 noteType: technical
 publish: true
 ---
