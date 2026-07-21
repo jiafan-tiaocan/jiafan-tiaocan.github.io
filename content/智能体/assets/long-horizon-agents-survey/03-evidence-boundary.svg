@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">论文的证据边界</title>
+  <desc id="desc">区分论文直接整理的事实、由框架推导出的解释，以及尚未被论文解决的开放问题，避免把概念框架误读为因果定律。</desc>
+  <defs>
+    <style>
+      text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif}.title{font-size:32px;font-weight:750;fill:#E6EDF7}.subtitle{font-size:17px;fill:#9FB0C6}.head{font-size:23px;font-weight:720;fill:#E6EDF7}.tag{font-size:14px;font-weight:750}.item{font-size:16px;fill:#E6EDF7}.note{font-size:14px;fill:#9FB0C6}.takeaway{font-size:18px;font-weight:700;fill:#E6EDF7}
+    </style>
+  </defs>
+  <rect width="1200" height="720" rx="28" fill="#0B1220"/>
+  <text x="60" y="58" class="title">这篇 Survey 证明了什么，又没有证明什么？</text>
+  <text x="60" y="91" class="subtitle">它提供的是强解释框架和广覆盖证据包，不是模型—Harness 因果分解实验</text>
+
+  <g transform="translate(60 132)">
+    <rect width="330" height="430" rx="22" fill="#111C2E" stroke="#5DD39E" stroke-width="2.5"/>
+    <rect x="24" y="24" width="116" height="30" rx="15" fill="#173C34"/><text x="82" y="45" text-anchor="middle" class="tag" fill="#5DD39E">论文事实</text>
+    <text x="24" y="92" class="head">直接陈述或测量</text>
+    <circle cx="30" cy="138" r="5" fill="#5DD39E"/><text x="48" y="144" class="item">长程任务依赖多步闭环</text>
+    <circle cx="30" cy="190" r="5" fill="#5DD39E"/><text x="48" y="196" class="item">Harness 包含六类运行时责任</text>
+    <circle cx="30" cy="242" r="5" fill="#5DD39E"/><text x="48" y="248" class="item">METR 提供时间地平线代理指标</text>
+    <circle cx="30" cy="294" r="5" fill="#5DD39E"/><text x="48" y="300" class="item">应用接口产生不同反馈强度</text>
+    <line x1="24" y1="336" x2="306" y2="336" stroke="#31445F"/>
+    <text x="24" y="370" class="note">证据形态：文献、系统、Benchmark、</text>
+    <text x="24" y="394" class="note">标准与官方工程实践的广泛汇总。</text>
+  </g>
+
+  <g transform="translate(435 132)">
+    <rect width="330" height="430" rx="22" fill="#111C2E" stroke="#F6C85F" stroke-width="2.5"/>
+    <rect x="24" y="24" width="132" height="30" rx="15" fill="#42371E"/><text x="90" y="45" text-anchor="middle" class="tag" fill="#F6C85F">推导解释</text>
+    <text x="24" y="92" class="head">框架给出的最佳解释</text>
+    <circle cx="30" cy="138" r="5" fill="#F6C85F"/><text x="48" y="144" class="item">长程能力是系统级属性</text>
+    <circle cx="30" cy="190" r="5" fill="#F6C85F"/><text x="48" y="196" class="item">控制面从调用迁移到轨迹</text>
+    <circle cx="30" cy="242" r="5" fill="#F6C85F"/><text x="48" y="248" class="item">能力会在 Harness 与权重间迁移</text>
+    <circle cx="30" cy="294" r="5" fill="#F6C85F"/><text x="48" y="300" class="item">验证能力决定可扩展的 Horizon</text>
+    <line x1="24" y1="336" x2="306" y2="336" stroke="#31445F"/>
+    <text x="24" y="370" class="note">这些判断解释力强，但论文没有用统一</text>
+    <text x="24" y="394" class="note">实验矩阵隔离各因素的因果贡献。</text>
+  </g>
+
+  <g transform="translate(810 132)">
+    <rect width="330" height="430" rx="22" fill="#111C2E" stroke="#FF6B6B" stroke-width="2.5"/>
+    <rect x="24" y="24" width="132" height="30" rx="15" fill="#44252C"/><text x="90" y="45" text-anchor="middle" class="tag" fill="#FF6B6B">开放问题</text>
+    <text x="24" y="92" class="head">仍未解决</text>
+    <circle cx="30" cy="138" r="5" fill="#FF6B6B"/><text x="48" y="144" class="item">模型与 Harness 各贡献多少？</text>
+    <circle cx="30" cy="190" r="5" fill="#FF6B6B"/><text x="48" y="196" class="item">H1–H3 是否真是严格层级？</text>
+    <circle cx="30" cy="242" r="5" fill="#FF6B6B"/><text x="48" y="248" class="item">能力能否跨 Harness 迁移？</text>
+    <circle cx="30" cy="294" r="5" fill="#FF6B6B"/><text x="48" y="300" class="item">如何验证开放世界中的完成与安全？</text>
+    <line x1="24" y1="336" x2="306" y2="336" stroke="#31445F"/>
+    <text x="24" y="370" class="note">需要：固定模型×固定任务×多 Harness</text>
+    <text x="24" y="394" class="note">的可复现实验，以及跨域、跨时间评估。</text>
+  </g>
+
+  <rect x="60" y="603" width="1080" height="70" rx="16" fill="#17243A" stroke="#31445F"/>
+  <text x="600" y="645" text-anchor="middle" class="takeaway">正确读法：把它当作研究地图和设计语言；具体技术结论仍需回到原始论文、代码和受控实验。</text>
+</svg>
