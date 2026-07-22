@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <title>Differential Grouping 的二阶有限差分交互检验</title>
+  <desc>通过四次黑盒函数评估，比较在 xj 两种取值下改变 xi 的效果是否一致，从而判定两个变量是否交互。</desc>
+  <defs>
+    <style>
+      text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}
+      .title{font-size:34px;font-weight:700}.head{font-size:24px;font-weight:700}.body{font-size:19px}.small{font-size:16px;fill:#9FB0C6}.mono{font-size:18px;font-family:"SFMono-Regular",Consolas,monospace}
+      .card{fill:#111C2E;stroke:#31445F;stroke-width:2}.cell{fill:#17283A;stroke:#46D9E8;stroke-width:2}.good{fill:#163126;stroke:#5DD39E;stroke-width:2}.bad{fill:#351D28;stroke:#FF6B6B;stroke-width:2}.amber{fill:#332A17;stroke:#F6C85F;stroke-width:2}
+      .arrow{stroke:#F6C85F;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#F6C85F"/></marker>
+  </defs>
+  <rect width="1200" height="800" rx="28" fill="#0B1220"/>
+  <text x="52" y="58" class="title">DG 只问一件事：x_j 会改变 x_i 的边际效果吗？</text>
+
+  <rect x="48" y="98" width="650" height="512" rx="22" class="card"/>
+  <text x="373" y="136" text-anchor="middle" class="head">四次黑盒评估</text>
+  <text x="390" y="180" text-anchor="middle" class="body">x_j = b₁</text>
+  <text x="566" y="180" text-anchor="middle" class="body">x_j = b₂</text>
+  <text x="160" y="267" text-anchor="middle" class="body">x_i = a₁</text>
+  <text x="160" y="407" text-anchor="middle" class="body">x_i = a₂</text>
+
+  <rect x="250" y="210" width="250" height="100" rx="14" class="cell"/>
+  <rect x="512" y="210" width="150" height="100" rx="14" class="cell"/>
+  <rect x="250" y="350" width="250" height="100" rx="14" class="cell"/>
+  <rect x="512" y="350" width="150" height="100" rx="14" class="cell"/>
+  <text x="375" y="250" text-anchor="middle" class="head">A</text>
+  <text x="375" y="282" text-anchor="middle" class="mono">f(a₁,b₁,u)</text>
+  <text x="587" y="250" text-anchor="middle" class="head">C</text>
+  <text x="587" y="282" text-anchor="middle" class="mono">f(a₁,b₂,u)</text>
+  <text x="375" y="390" text-anchor="middle" class="head">B</text>
+  <text x="375" y="422" text-anchor="middle" class="mono">f(a₂,b₁,u)</text>
+  <text x="587" y="390" text-anchor="middle" class="head">D</text>
+  <text x="587" y="422" text-anchor="middle" class="mono">f(a₂,b₂,u)</text>
+
+  <path d="M230 260 H190 V400 H230" class="arrow"/>
+  <path d="M682 260 H676 V400 H682" class="arrow"/>
+  <text x="190" y="490" text-anchor="middle" class="small">左列</text>
+  <text x="190" y="516" text-anchor="middle" class="mono">Δ_i(b₁)=A-B</text>
+  <text x="588" y="490" text-anchor="middle" class="small">右列</text>
+  <text x="588" y="516" text-anchor="middle" class="mono">Δ_i(b₂)=C-D</text>
+  <rect x="182" y="542" width="382" height="44" rx="12" class="amber"/>
+  <text x="373" y="570" text-anchor="middle" class="mono">I_ij = |(A-B) - (C-D)|</text>
+
+  <rect x="728" y="98" width="424" height="238" rx="22" class="good"/>
+  <text x="940" y="140" text-anchor="middle" class="head">若可分</text>
+  <text x="940" y="178" text-anchor="middle" class="mono">f = g(x_i) + h(x_j)</text>
+  <text x="940" y="220" text-anchor="middle" class="body">两列中改变 x_i 的效果相同</text>
+  <text x="940" y="258" text-anchor="middle" class="mono">Δ_i(b₁) = Δ_i(b₂)</text>
+  <text x="940" y="300" text-anchor="middle" class="body">I_ij ≈ 0 → 视为独立</text>
+
+  <rect x="728" y="356" width="424" height="254" rx="22" class="bad"/>
+  <text x="940" y="398" text-anchor="middle" class="head">若有交互</text>
+  <text x="940" y="436" text-anchor="middle" class="mono">f = g(x_i)+h(x_j)+γx_ix_j</text>
+  <text x="940" y="478" text-anchor="middle" class="body">x_j 改变了 x_i 的边际效果</text>
+  <text x="940" y="516" text-anchor="middle" class="mono">Δ_i(b₁) ≠ Δ_i(b₂)</text>
+  <text x="940" y="558" text-anchor="middle" class="body">I_ij &gt; δ → 应尽量同组</text>
+  <text x="940" y="590" text-anchor="middle" class="small">δ 用于容忍数值误差与噪声</text>
+
+  <rect x="96" y="648" width="1008" height="112" rx="18" fill="#17283A" stroke="#A78BFA" stroke-width="2"/>
+  <text x="600" y="686" text-anchor="middle" class="head">几何解释</text>
+  <text x="600" y="721" text-anchor="middle" class="body">I_ij / [(a₁-a₂)(b₁-b₂)] ≈ ∂²f / ∂x_i∂x_j</text>
+  <text x="600" y="747" text-anchor="middle" class="small">DG 是在不显式求导的情况下，用有限差分估计变量交互</text>
+</svg>
+

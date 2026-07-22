@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <title>论文实验支持的结论和证据边界</title>
+  <desc>以证据梯形展示 DG 在四个真实数据集上的最终目标、重复稳定性和迭代收敛证据，并列出未报告的时间、评估预算、统计检验和可复现性。</desc>
+  <defs>
+    <style>
+      text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}
+      .title{font-size:34px;font-weight:700}.head{font-size:23px;font-weight:700}.body{font-size:18px}.small{font-size:16px;fill:#9FB0C6}.mono{font-size:17px;font-family:"SFMono-Regular",Consolas,monospace}
+      .card{fill:#111C2E;stroke:#31445F;stroke-width:2}.good{fill:#163126;stroke:#5DD39E;stroke-width:2}.cyan{fill:#122B3A;stroke:#46D9E8;stroke-width:2}.amber{fill:#332A17;stroke:#F6C85F;stroke-width:2}.bad{fill:#351D28;stroke:#FF6B6B;stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1200" height="760" rx="28" fill="#0B1220"/>
+  <text x="52" y="58" class="title">证据梯：图 3–4 支持什么，又没支持什么</text>
+
+  <rect x="48" y="98" width="1104" height="154" rx="22" class="good"/>
+  <text x="82" y="137" class="head">能力证据：DG 找到的解更好</text>
+  <text x="82" y="176" class="body">• 4 个真实数据集上，DG 都有最高平均目标值</text>
+  <text x="82" y="208" class="body">• 不分组 NG 在数据集 1 落入约 2.5×10⁷ 的局部最优</text>
+  <text x="1088" y="176" text-anchor="end" class="small">证据：20 次箱线图</text>
+
+  <rect x="48" y="272" width="1104" height="140" rx="22" class="cyan"/>
+  <text x="82" y="311" class="head">稳定性与过程证据：结构分组减少迷路</text>
+  <text x="82" y="350" class="body">• DG 标准差相对小，并在约 100–200 轮进入接近最终值的区间</text>
+  <text x="82" y="382" class="body">• HG 在数据集 1 被困到约 350 轮；DRG 在数据集 2、4 波动最大</text>
+  <text x="1088" y="350" text-anchor="end" class="small">证据：代表性收敛曲线</text>
+
+  <rect x="48" y="432" width="1104" height="274" rx="22" class="bad"/>
+  <text x="82" y="473" class="head">边界证据缺失：不要把“迭代更快”放大成“生产更快”</text>
+  <rect x="82" y="504" width="236" height="146" rx="14" class="card"/>
+  <rect x="340" y="504" width="236" height="146" rx="14" class="card"/>
+  <rect x="598" y="504" width="236" height="146" rx="14" class="card"/>
+  <rect x="856" y="504" width="236" height="146" rx="14" class="card"/>
+  <text x="200" y="540" text-anchor="middle" class="head">时间</text>
+  <text x="200" y="578" text-anchor="middle" class="body">未报告墙钟时间</text>
+  <text x="200" y="608" text-anchor="middle" class="small">DG 检测成本未计入</text>
+  <text x="458" y="540" text-anchor="middle" class="head">预算</text>
+  <text x="458" y="578" text-anchor="middle" class="body">未对齐函数评估数</text>
+  <text x="458" y="608" text-anchor="middle" class="small">子组数可能是混杂因子</text>
+  <text x="716" y="540" text-anchor="middle" class="head">统计</text>
+  <text x="716" y="578" text-anchor="middle" class="body">无数值表和显著性</text>
+  <text x="716" y="608" text-anchor="middle" class="small">无法得到精确效应量</text>
+  <text x="974" y="540" text-anchor="middle" class="head">复现</text>
+  <text x="974" y="578" text-anchor="middle" class="body">数据和黑盒未公开</text>
+  <text x="974" y="608" text-anchor="middle" class="small">约束处理也未说明</text>
+  <text x="600" y="686" text-anchor="middle" class="body">可以相信：在本文设置下 DG 的目标值与迭代轨迹更好。仍未确定：总成本、泛化性与线上收益。</text>
+</svg>
+

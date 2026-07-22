@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <title>从高维黑盒搜索到分组协同进化</title>
+  <desc>左侧展示直接在 D 维黑盒收益函数上搜索的瓶颈，右侧展示将交互变量分成子组件、使用上下文向量协同评估的机制。</desc>
+  <defs>
+    <style>
+      text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#E6EDF7}
+      .title{font-size:34px;font-weight:700}.head{font-size:24px;font-weight:700}.body{font-size:18px}.small{font-size:16px;fill:#9FB0C6}.mono{font-size:18px;font-family:"SFMono-Regular",Consolas,monospace}
+      .card{fill:#111C2E;stroke:#31445F;stroke-width:2}.cyan{fill:#122B3A;stroke:#46D9E8;stroke-width:2}.violet{fill:#251F43;stroke:#A78BFA;stroke-width:2}.amber{fill:#332A17;stroke:#F6C85F;stroke-width:2}.bad{fill:#351D28;stroke:#FF6B6B;stroke-width:2}.good{fill:#163126;stroke:#5DD39E;stroke-width:2}
+      .arrow{stroke:#46D9E8;stroke-width:4;fill:none;marker-end:url(#arrow)}.muted{stroke:#31445F;stroke-width:3;fill:none;marker-end:url(#mutedArrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#46D9E8"/></marker>
+    <marker id="mutedArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#607A9B"/></marker>
+  </defs>
+  <rect width="1200" height="720" rx="28" fill="#0B1220"/>
+  <text x="52" y="58" class="title">改变的不是目标，而是搜索责任的组织方式</text>
+
+  <rect x="48" y="98" width="500" height="514" rx="22" class="card"/>
+  <text x="298" y="140" text-anchor="middle" class="head">单块全局搜索</text>
+  <rect x="82" y="170" width="432" height="70" rx="14" class="violet"/>
+  <text x="298" y="198" text-anchor="middle" class="body">完整决策向量</text>
+  <text x="298" y="224" text-anchor="middle" class="mono">x = [x₁, x₂, …, x_D]</text>
+  <path d="M298 242 V286" class="muted"/>
+  <rect x="118" y="294" width="360" height="112" rx="16" class="amber"/>
+  <text x="298" y="330" text-anchor="middle" class="head">黑盒收益 f(x)</text>
+  <text x="298" y="360" text-anchor="middle" class="small">非线性 · 不可分 · 评估贵</text>
+  <text x="298" y="386" text-anchor="middle" class="small">总预算 + 业务分组预算</text>
+  <path d="M298 410 V450" class="muted"/>
+  <rect x="98" y="458" width="400" height="112" rx="16" class="bad"/>
+  <text x="298" y="495" text-anchor="middle" class="head">瓶颈</text>
+  <text x="298" y="526" text-anchor="middle" class="body">D 维搜索空间过大</text>
+  <text x="298" y="552" text-anchor="middle" class="small">交互结构淹没在整体黑盒中</text>
+
+  <path d="M568 350 H626" class="arrow"/>
+  <text x="597" y="328" text-anchor="middle" class="small">分组</text>
+
+  <rect x="650" y="98" width="502" height="514" rx="22" class="card"/>
+  <text x="901" y="140" text-anchor="middle" class="head">分组协同进化</text>
+  <rect x="686" y="170" width="430" height="70" rx="14" class="violet"/>
+  <text x="901" y="198" text-anchor="middle" class="body">先识别变量组</text>
+  <text x="901" y="224" text-anchor="middle" class="mono">G₁ ∪ G₂ ∪ … ∪ G_m = {1,…,D}</text>
+
+  <rect x="686" y="280" width="128" height="112" rx="14" class="cyan"/>
+  <rect x="837" y="280" width="128" height="112" rx="14" class="cyan"/>
+  <rect x="988" y="280" width="128" height="112" rx="14" class="cyan"/>
+  <text x="750" y="316" text-anchor="middle" class="head">G₁</text>
+  <text x="750" y="346" text-anchor="middle" class="small">局部种群</text>
+  <text x="750" y="372" text-anchor="middle" class="small">交互变量同组</text>
+  <text x="901" y="316" text-anchor="middle" class="head">G₂</text>
+  <text x="901" y="346" text-anchor="middle" class="small">局部种群</text>
+  <text x="901" y="372" text-anchor="middle" class="small">小维度搜索</text>
+  <text x="1052" y="316" text-anchor="middle" class="head">G_m</text>
+  <text x="1052" y="346" text-anchor="middle" class="small">局部种群</text>
+  <text x="1052" y="372" text-anchor="middle" class="small">可并行评估</text>
+
+  <path d="M750 398 V448" class="muted"/>
+  <path d="M901 398 V448" class="muted"/>
+  <path d="M1052 398 V448" class="muted"/>
+  <rect x="704" y="456" width="394" height="112" rx="16" class="good"/>
+  <text x="901" y="492" text-anchor="middle" class="head">上下文向量协同评估</text>
+  <text x="901" y="525" text-anchor="middle" class="mono">f(c[G_g ← z_g])</text>
+  <text x="901" y="551" text-anchor="middle" class="small">用其他组当前最优值补全局方案</text>
+
+  <rect x="110" y="644" width="980" height="48" rx="14" fill="#17283A" stroke="#46D9E8" stroke-width="2"/>
+  <text x="600" y="675" text-anchor="middle" class="body">责任转移：从“盲搜整个 D 维空间”转向“先找对交互结构，再联合搜索”</text>
+</svg>
+
