@@ -1,5 +1,5 @@
 ---
-title: "从全局黑盒到变量分组：分组协同进化求解广告预算分配"
+title: "论文解读：Exploring the Impact of Grouping Strategies on Cooperative Co-evolutionary Algorithms for Solving the Advertising Budget Allocation Problem"
 description: "QRS 2022 论文深度解读：从广告预算模型、协同进化上下文评估到 Differential Grouping 的有限差分推导，并重新审视工业实验的证据边界。"
 tags:
   - 运筹学
@@ -12,6 +12,8 @@ noteType: technical
 publish: true
 source_title: "Exploring the Impact of Grouping Strategies on Cooperative Co-evolutionary Algorithms for Solving the Advertising Budget Allocation Problem"
 source_doi: "10.1109/QRS-C57518.2022.00098"
+aliases:
+  - "运筹学/从全局黑盒到变量分组：分组协同进化求解广告预算分配"
 ---
 
 > [!abstract] 一句话先记住
@@ -19,14 +21,14 @@ source_doi: "10.1109/QRS-C57518.2022.00098"
 
 ## 这篇论文在我们早期工作中的位置
 
-这是 [[蚂蚁应用：公域流量运筹]] 中“3.1.1 大规模分组进化算法”对应的较早期论文工作。两篇文章不是重复关系：
+这是 [[像造自动驾驶一样做流量分配：感知、运筹与控制]] 第四部分“运筹”所对应的算法局部放大。两篇文章不是重复关系：
 
 | 内容 | 本论文 | 运筹系统复盘 |
 |---|---|---|
-| 研究范围 | 决策层中的大规模黑盒求解 | 感知、决策、控制、时序预测与产品化全链路 |
+| 研究范围 | 决策层中的大规模黑盒求解 | 感知、运筹、控制与产品化全链路 |
 | 核心变量 | 每个产品的曝光比例 $x_i$ | 从预测状态到离线轨迹、近线矫正与实时控制 |
 | 核心问题 | 如何分组才能让协同进化收敛得更好 | 如何让“算出来的最优解”变成稳定可执行的系统 |
-| 证据 | 4 个脱敏真实数据集上的离线对比 | 系统架构、多模块实践与线上业务结果 |
+| 证据 | 4 个脱敏真实数据集上的离线对比 | 脱敏后的系统架构、方法与工程边界复盘 |
 
 因此，这篇论文可以看成那套运筹系统中的一张“算法局部放大图”。它证明了分组策略会显著影响求解过程，但没有覆盖柔性约束、时序预测、Budget Pacing 或反馈控制。
 
@@ -448,7 +450,7 @@ $$
 
 ### 6.2 论文中的 DG 不等于后续的业务先验分组
 
-[[蚂蚁应用：公域流量运筹]] 记录了在分组中加入投放单元属性和历史投放数据等先验，以及 Delta Grouping 等后续方向。本论文的公开实验只对比 HG、RG、DRG 和基于 FII 的 DG；它没有直接测试“业务先验 + DG”，也没有报告线上 A/B 的业务指标。
+[[像造自动驾驶一样做流量分配：感知、运筹与控制]] 将分组协同进化放回完整闭环，并说明工程中还会利用同源资源、共同约束和历史联动等结构先验辅助分组。本论文的公开实验只对比 HG、RG、DRG 和基于 FII 的 DG；它没有直接测试“业务先验 + DG”，也没有报告线上 A/B 的业务指标。
 
 所以更准确的时间线是：
 
@@ -496,4 +498,4 @@ DG 问的只是：
 - 公开预印本：[arXiv 2211.09155](https://arxiv.org/pdf/2211.09155)
 - Vault 本地归档：`运筹学/assets/grouping-strategies-qrs-2022/paper.pdf`
 - DOI：[10.1109/QRS-C57518.2022.00098](https://doi.org/10.1109/QRS-C57518.2022.00098)
-- 对应系统复盘：[[蚂蚁应用：公域流量运筹]]
+- 对应系统复盘：[[像造自动驾驶一样做流量分配：感知、运筹与控制]]
