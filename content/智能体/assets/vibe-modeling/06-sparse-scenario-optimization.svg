@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1020" viewBox="0 0 1800 1020">
+  <title>稀疏新场景的三组权重实验与决策</title>
+  <desc>一个成熟多场景模型接入低样本新场景后，在冻结数据和评测协议下比较一点零倍、一点五倍和二点零倍损失权重，最终选择一点五倍作为受控挑战者而不是直接替换全局基线。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#536273"/>
+    </marker>
+    <style>
+      .title{font:700 42px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#172033}
+      .sub{font:23px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#596579}
+      .h{font:700 29px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#172033}
+      .t{font:22px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#405068}
+      .s{font:19px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#64748b}
+      .big{font:700 38px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#173b70}
+      .tag{font:700 20px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif}
+      .line{fill:none;stroke:#536273;stroke-width:6;marker-end:url(#arrow)}
+    </style>
+  </defs>
+
+  <rect width="1800" height="1020" fill="#f7f9fc"/>
+  <text x="900" y="62" text-anchor="middle" class="title">一次完整优化：为什么 1.5× 成为 Challenger</text>
+  <text x="900" y="102" text-anchor="middle" class="sub">同一数据、代码基线、训练预算与测试集；这一轮只改变新场景的损失权重</text>
+
+  <rect x="65" y="155" width="440" height="720" rx="28" fill="#fff2bf" stroke="#d9a928" stroke-width="4"/>
+  <rect x="105" y="195" width="150" height="42" rx="18" fill="#d9a928"/>
+  <text x="180" y="223" text-anchor="middle" class="tag" fill="#172033">场景契约</text>
+  <text x="105" y="290" class="h">成熟模型接入稀疏新场景</text>
+  <text x="105" y="348" class="t">自然占比曾低于 1%</text>
+  <text x="105" y="390" class="t">材料记录后续接近 3%</text>
+  <line x1="105" y1="435" x2="465" y2="435" stroke="#d9a928" stroke-width="2"/>
+  <text x="105" y="485" class="h">冻结条件</text>
+  <text x="105" y="535" class="t">两阶段标签：y₂ ≤ y₁</text>
+  <text x="105" y="577" class="t">固定时序测试集</text>
+  <text x="105" y="619" class="t">相同训练预算</text>
+  <line x1="105" y1="662" x2="465" y2="662" stroke="#d9a928" stroke-width="2"/>
+  <text x="105" y="712" class="h">选择器</text>
+  <text x="105" y="760" class="t">主目标：新场景分群指标</text>
+  <text x="105" y="802" class="t">护栏：存量、总体、校准</text>
+
+  <path d="M505 515H570" class="line"/>
+
+  <rect x="590" y="155" width="430" height="720" rx="28" fill="#ffffff" stroke="#d8dee8" stroke-width="4"/>
+  <rect x="630" y="195" width="150" height="42" rx="18" fill="#536273"/>
+  <text x="705" y="223" text-anchor="middle" class="tag" fill="#fff">候选实验</text>
+
+  <rect x="630" y="280" width="350" height="135" rx="22" fill="#f2f4f7" stroke="#8491a3" stroke-width="3"/>
+  <text x="675" y="327" class="h">E0 · 1.0×</text>
+  <text x="675" y="372" class="t">现有权重，建立可比较基线</text>
+
+  <rect x="630" y="455" width="350" height="150" rx="22" fill="#e8f7ef" stroke="#2e9d62" stroke-width="4"/>
+  <text x="675" y="505" class="h">E1 · 1.5×</text>
+  <text x="675" y="550" class="t">中等增强新场景梯度</text>
+  <text x="675" y="583" class="s">唯一主变量：loss weight</text>
+
+  <rect x="630" y="645" width="350" height="150" rx="22" fill="#fff0e8" stroke="#d46a2e" stroke-width="3"/>
+  <text x="675" y="695" class="h">E2 · 2.0×</text>
+  <text x="675" y="740" class="t">进一步放大新场景权重</text>
+  <text x="675" y="773" class="s">检验收益是否单调</text>
+
+  <path d="M1020 515H1085" class="line"/>
+
+  <rect x="1105" y="155" width="630" height="720" rx="28" fill="#ffffff" stroke="#d8dee8" stroke-width="4"/>
+  <rect x="1145" y="195" width="150" height="42" rx="18" fill="#3b76c3"/>
+  <text x="1220" y="223" text-anchor="middle" class="tag" fill="#fff">结果与决策</text>
+
+  <rect x="1145" y="275" width="550" height="100" rx="20" fill="#f2f4f7" stroke="#8491a3" stroke-width="2"/>
+  <text x="1180" y="318" class="h">1.0× · Control</text>
+  <text x="1180" y="352" class="s">保留为全局对照，不因新实验自动退场</text>
+
+  <rect x="1145" y="410" width="550" height="225" rx="22" fill="#e8f7ef" stroke="#2e9d62" stroke-width="4"/>
+  <text x="1180" y="458" class="h">1.5× · Challenger</text>
+  <text x="1180" y="510" class="big">新场景 +5.98pp</text>
+  <text x="1180" y="552" class="t">存量场景 +0.22pp · 业务核心 +1.40pp</text>
+  <text x="1180" y="592" class="t">总体 AUC -1.35pp · 校准仍改善</text>
+  <text x="1645" y="458" text-anchor="end" class="tag" fill="#2e9d62">进入受控验证</text>
+
+  <rect x="1145" y="675" width="550" height="145" rx="22" fill="#fff0e8" stroke="#d46a2e" stroke-width="3"/>
+  <text x="1180" y="720" class="h">2.0× · Discard</text>
+  <text x="1180" y="765" class="t">新场景 -0.26pp · 存量 -0.30pp</text>
+  <text x="1180" y="800" class="s">权重继续增大没有带来单调收益</text>
+
+  <rect x="170" y="920" width="1460" height="68" rx="18" fill="#173b70"/>
+  <text x="900" y="963" text-anchor="middle" class="t" fill="#fff">结论：不是“总体 AUC 最高就晋级”，而是在明确的新场景目标与存量护栏下选择 Challenger，并把线上验证作为下一层裁判。</text>
+</svg>

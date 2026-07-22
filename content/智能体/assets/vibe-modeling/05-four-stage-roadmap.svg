@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="760" viewBox="0 0 1800 760">
+  <title>企业 AutoResearch 的四阶段演进路线</title>
+  <desc>从模型自动迭代，经过实验链路和离线数据模型联合闭环，逐步走向带灰度、监控和安全熔断的在线价值闭环。</desc>
+  <defs><marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#536273"/></marker></defs>
+  <style>
+    .title{font:700 42px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+    .n{font:700 28px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+    .t{font:22px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#405068}
+  </style>
+  <rect width="1800" height="760" fill="#f7f9fc"/>
+  <text x="900" y="68" text-anchor="middle" class="title">业务侧四阶段路线：自动迭代不是终点</text>
+  <path d="M425 360H505M865 360H945M1305 360H1385" stroke="#536273" stroke-width="6" fill="none" marker-end="url(#r)"/>
+  <rect x="70" y="150" width="355" height="420" rx="28" fill="#e8f7ef" stroke="#2e9d62" stroke-width="4"/>
+  <text x="247" y="215" text-anchor="middle" class="n">阶段一 · 已验证</text><text x="247" y="265" text-anchor="middle" class="n">模型自动迭代</text>
+  <text x="110" y="335" class="t">• 训练分析</text><text x="110" y="380" class="t">• 归因与检索</text><text x="110" y="425" class="t">• 并行方案与代码</text><text x="110" y="470" class="t">• 离线评估</text>
+  <rect x="510" y="150" width="355" height="420" rx="28" fill="#fff2bf" stroke="#d9a928" stroke-width="4"/>
+  <text x="687" y="215" text-anchor="middle" class="n">阶段二 · 推进中</text><text x="687" y="265" text-anchor="middle" class="n">实验链路闭环</text>
+  <text x="550" y="335" class="t">• 评估自动回收</text><text x="550" y="380" class="t">• 无人值守连续迭代</text><text x="550" y="425" class="t">• 模型自动部署</text><text x="550" y="470" class="t">• A/B 实验闭环</text>
+  <rect x="950" y="150" width="355" height="420" rx="28" fill="#e4efff" stroke="#3b76c3" stroke-width="4"/>
+  <text x="1127" y="215" text-anchor="middle" class="n">阶段三 · 目标</text><text x="1127" y="265" text-anchor="middle" class="n">离线全链路 AI 化</text>
+  <text x="990" y="345" class="t">数据 + 特征 + 样本</text><text x="990" y="390" class="t">+ 模型联合迭代</text><text x="990" y="455" class="t">统一 Dataset Registry</text><text x="990" y="500" class="t">统一 Ledger 与状态机</text>
+  <rect x="1390" y="150" width="340" height="420" rx="28" fill="#f0e9ff" stroke="#7c3aed" stroke-width="4"/>
+  <text x="1560" y="215" text-anchor="middle" class="n">阶段四 · 目标</text><text x="1560" y="265" text-anchor="middle" class="n">离线 + 在线全闭环</text>
+  <text x="1430" y="355" class="t">• 在线策略自调优</text><text x="1430" y="410" class="t">• 真实收益回收</text><text x="1430" y="465" class="t">• 安全熔断</text>
+  <rect x="185" y="625" width="1430" height="78" rx="18" fill="#fff" stroke="#d8dee8" stroke-width="3"/>
+  <text x="900" y="674" text-anchor="middle" class="t">材料时点的关键边界：评测回收尚未全自动；跨域数据流、关键发布和不可逆操作继续保留人工审批。</text>
+</svg>

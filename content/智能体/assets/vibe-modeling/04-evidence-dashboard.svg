@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040">
+  <title>脱敏实践证据的四种含义</title>
+  <desc>分别展示规模尝试与离线提升、陌生任务迁移、本地筛选吞吐、负向知识和线上边界，提醒读者不要把不同证据强度混为一谈。</desc>
+  <style>
+    .title{font:700 42px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#172033}
+    .sub{font:23px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#596579}
+    .h{font:700 28px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#172033}
+    .big{font:700 50px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#173b70}
+    .t{font:22px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#405068}
+    .s{font:19px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#64748b}
+    .tag{font:700 19px Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif}
+  </style>
+  <rect width="1800" height="1040" fill="#f7f9fc"/>
+  <text x="900" y="62" text-anchor="middle" class="title">脱敏实践证据：四种结论不能混读</text>
+  <text x="900" y="102" text-anchor="middle" class="sub">实验规模说明吞吐，离线提升说明候选有效，公开排名说明迁移，线上故障说明系统边界</text>
+
+  <rect x="70" y="145" width="800" height="350" rx="28" fill="#e4efff" stroke="#3b76c3" stroke-width="3"/>
+  <rect x="110" y="180" width="160" height="40" rx="18" fill="#3b76c3"/>
+  <text x="190" y="207" text-anchor="middle" class="tag" fill="#fff">能力证据</text>
+  <text x="110" y="265" class="h">企业多场景预测任务</text>
+  <text x="110" y="345" class="big">30+ 版本 / 约 5 次保留</text>
+  <text x="110" y="400" class="t">离线主指标相对基线约 +0.6pp</text>
+  <text x="110" y="446" class="s">最终候选进入受控线上实验；多数负向结果被完整保留。</text>
+
+  <rect x="930" y="145" width="800" height="350" rx="28" fill="#f0e9ff" stroke="#7c3aed" stroke-width="3"/>
+  <rect x="970" y="180" width="160" height="40" rx="18" fill="#7c3aed"/>
+  <text x="1050" y="207" text-anchor="middle" class="tag" fill="#fff">迁移证据</text>
+  <text x="970" y="265" class="h">外部陌生算法任务</text>
+  <text x="970" y="345" class="big">50 个版本 / Top 10%</text>
+  <text x="970" y="400" class="t">参赛规模 600+，人只完成数据接入与启动</text>
+  <text x="970" y="446" class="s">证明流程可迁移；公开离线排名不等于生产成熟。</text>
+
+  <rect x="70" y="555" width="510" height="365" rx="28" fill="#e8f7ef" stroke="#2e9d62" stroke-width="3"/>
+  <rect x="110" y="590" width="160" height="40" rx="18" fill="#2e9d62"/>
+  <text x="190" y="617" text-anchor="middle" class="tag" fill="#fff">吞吐证据</text>
+  <text x="110" y="685" class="h">本地微循环</text>
+  <text x="110" y="755" class="big">20 次 / 5 次保留</text>
+  <text x="110" y="810" class="t">累计约 +0.37pp</text>
+  <text x="110" y="860" class="s">低成本筛选有效，但不能替代全量训练与独立评测。</text>
+
+  <rect x="645" y="555" width="510" height="365" rx="28" fill="#fff2bf" stroke="#d9a928" stroke-width="3"/>
+  <rect x="685" y="590" width="160" height="40" rx="18" fill="#d9a928"/>
+  <text x="765" y="617" text-anchor="middle" class="tag" fill="#172033">因果边界</text>
+  <text x="685" y="685" class="h">链路打通 ≠ 指标提升</text>
+  <text x="685" y="755" class="big">约 -0.30pp</text>
+  <text x="685" y="810" class="t">一项特征补全通过工程验收</text>
+  <text x="685" y="850" class="t">但核心分群指标下降，未晋级</text>
+  <text x="685" y="890" class="s">工程完成条件与模型晋级条件必须分离。</text>
+
+  <rect x="1220" y="555" width="510" height="365" rx="28" fill="#fff0e8" stroke="#d46a2e" stroke-width="3"/>
+  <rect x="1260" y="590" width="160" height="40" rx="18" fill="#d46a2e"/>
+  <text x="1340" y="617" text-anchor="middle" class="tag" fill="#fff">边界证据</text>
+  <text x="1260" y="685" class="h">离线赢，线上仍可能输</text>
+  <text x="1260" y="755" class="t">持续训练退化</text>
+  <text x="1260" y="797" class="t">服务内存不足</text>
+  <text x="1260" y="839" class="t">Checkpoint 与分布异常</text>
+  <text x="1260" y="890" class="s">线上层是新的 verifier，不是自动部署终点。</text>
+</svg>

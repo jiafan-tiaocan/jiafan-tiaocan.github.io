@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1050" viewBox="0 0 1800 1050">
+  <title>三层 AutoResearch 闭环</title>
+  <desc>本地微循环用于廉价淘汰错误，全量训练验证用于离线选择，受控在线实验用于确认真实业务价值。</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4b5b70"/></marker>
+    <style>
+      .title{font:700 42px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .h{font:700 30px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .t{font:23px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#405068}
+      .pill{font:700 22px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .line{fill:none;stroke:#4b5b70;stroke-width:5;marker-end:url(#arr)}
+      .dash{fill:none;stroke:#7c3aed;stroke-width:5;stroke-dasharray:12 9;marker-end:url(#arr)}
+    </style>
+  </defs>
+  <rect width="1800" height="1050" fill="#f7f9fc"/>
+  <text x="900" y="64" text-anchor="middle" class="title">AutoResearch Harness：三层证据闭环</text>
+
+  <rect x="70" y="120" width="1660" height="245" rx="30" fill="#e8f7ef" stroke="#2e9d62" stroke-width="4"/>
+  <text x="115" y="173" class="h">第一层：本地微循环</text>
+  <text x="115" y="213" class="t">低成本、小样本、快速试错；收敛到开发环境表现最优的代码版本。</text>
+  <g>
+    <rect x="185" y="255" width="260" height="72" rx="30" fill="#fff" stroke="#2e9d62" stroke-width="3"/><text x="315" y="300" text-anchor="middle" class="pill">代码修改</text>
+    <rect x="615" y="255" width="260" height="72" rx="30" fill="#fff" stroke="#2e9d62" stroke-width="3"/><text x="745" y="300" text-anchor="middle" class="pill">本地测试</text>
+    <rect x="1045" y="255" width="260" height="72" rx="30" fill="#fff" stroke="#2e9d62" stroke-width="3"/><text x="1175" y="300" text-anchor="middle" class="pill">结果评估</text>
+    <path d="M445 291H605" class="line"/><path d="M875 291H1035" class="line"/><path d="M1305 291C1580 291 1580 340 1460 340H315C250 340 250 327 315 327" class="dash"/>
+    <rect x="1390" y="265" width="260" height="55" rx="20" fill="#d7f4e4"/><text x="1520" y="301" text-anchor="middle" class="pill">代码生成 Skill</text>
+  </g>
+
+  <rect x="70" y="405" width="1660" height="250" rx="30" fill="#e4efff" stroke="#3b76c3" stroke-width="4"/>
+  <text x="115" y="458" class="h">第二层：训练 - 验证大循环</text>
+  <text x="115" y="498" class="t">全量训练驱动真实模型选择，并把训练结果沉淀进知识库。</text>
+  <g>
+    <rect x="175" y="540" width="245" height="72" rx="28" fill="#fff" stroke="#3b76c3" stroke-width="3"/><text x="297" y="585" text-anchor="middle" class="pill">提交训练</text>
+    <rect x="540" y="540" width="245" height="72" rx="28" fill="#fff" stroke="#3b76c3" stroke-width="3"/><text x="662" y="585" text-anchor="middle" class="pill">监控作业</text>
+    <rect x="905" y="540" width="245" height="72" rx="28" fill="#fff" stroke="#3b76c3" stroke-width="3"/><text x="1027" y="585" text-anchor="middle" class="pill">离线评估</text>
+    <rect x="1270" y="540" width="245" height="72" rx="28" fill="#fff" stroke="#3b76c3" stroke-width="3"/><text x="1392" y="585" text-anchor="middle" class="pill">知识沉淀</text>
+    <path d="M420 576H530" class="line"/><path d="M785 576H895" class="line"/><path d="M1150 576H1260" class="line"/>
+    <text x="1700" y="553" text-anchor="end" class="t">训练 Skill</text><text x="1700" y="586" text-anchor="end" class="t">监控 Skill</text><text x="1700" y="619" text-anchor="end" class="t">知识 Skill</text>
+  </g>
+
+  <rect x="70" y="695" width="1660" height="260" rx="30" fill="#fff0e8" stroke="#d46a2e" stroke-width="4"/>
+  <text x="115" y="748" class="h">第三层：在线业务效果闭环</text>
+  <text x="115" y="788" class="t">把离线最优延伸到部署、A/B 与真实指标监测；最终优化目标是业务价值。</text>
+  <g>
+    <rect x="145" y="835" width="245" height="72" rx="28" fill="#fff" stroke="#d46a2e" stroke-width="3"/><text x="267" y="880" text-anchor="middle" class="pill">模型部署</text>
+    <rect x="500" y="835" width="245" height="72" rx="28" fill="#fff" stroke="#d46a2e" stroke-width="3"/><text x="622" y="880" text-anchor="middle" class="pill">开启 A/B</text>
+    <rect x="855" y="835" width="245" height="72" rx="28" fill="#fff" stroke="#d46a2e" stroke-width="3"/><text x="977" y="880" text-anchor="middle" class="pill">监测线上指标</text>
+    <rect x="1210" y="835" width="245" height="72" rx="28" fill="#fff" stroke="#d46a2e" stroke-width="3"/><text x="1332" y="880" text-anchor="middle" class="pill">反馈下一轮</text>
+    <path d="M390 871H490" class="line"/><path d="M745 871H845" class="line"/><path d="M1100 871H1200" class="line"/>
+    <path d="M1455 871C1650 871 1650 940 1480 940H267C180 940 180 907 267 907" class="dash"/>
+  </g>
+</svg>

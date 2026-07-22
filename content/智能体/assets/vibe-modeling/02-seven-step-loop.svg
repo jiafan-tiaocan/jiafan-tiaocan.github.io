@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000">
+  <title>七步研究闭环</title>
+  <desc>训练诊断、代码分析、归因、内部知识检索、外部检索、方案综合和批量实现首尾相接，并由单变量、产物校验和停止条件约束。</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4b5b70"/></marker>
+    <style>
+      .title{font:700 42px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .h{font:700 28px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .t{font:22px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#405068}
+      .n{font:700 24px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:white}
+      .line{fill:none;stroke:#4b5b70;stroke-width:5;marker-end:url(#a)}
+      .loop{fill:none;stroke:#7c3aed;stroke-width:6;stroke-dasharray:14 10;marker-end:url(#a)}
+    </style>
+  </defs>
+  <rect width="1800" height="1000" fill="#f7f9fc"/>
+  <text x="900" y="64" text-anchor="middle" class="title">七步研究闭环：从训练诊断回到下一轮实验</text>
+
+  <g>
+    <rect x="75" y="140" width="360" height="150" rx="22" fill="#e4efff" stroke="#3b76c3" stroke-width="3"/>
+    <circle cx="115" cy="180" r="24" fill="#3b76c3"/><text x="115" y="188" text-anchor="middle" class="n">1</text>
+    <text x="255" y="190" text-anchor="middle" class="h">训练分析</text><text x="255" y="232" text-anchor="middle" class="t">训练日志 + 评测结果</text><text x="255" y="266" text-anchor="middle" class="t">判断训练健康度</text>
+    <rect x="515" y="140" width="360" height="150" rx="22" fill="#e8f7ef" stroke="#2e9d62" stroke-width="3"/>
+    <circle cx="555" cy="180" r="24" fill="#2e9d62"/><text x="555" y="188" text-anchor="middle" class="n">2</text>
+    <text x="695" y="190" text-anchor="middle" class="h">代码分析</text><text x="695" y="232" text-anchor="middle" class="t">跨版本 diff 主干代码</text><text x="695" y="266" text-anchor="middle" class="t">还原设计意图</text>
+    <rect x="955" y="140" width="360" height="150" rx="22" fill="#fff2bf" stroke="#d9a928" stroke-width="3"/>
+    <circle cx="995" cy="180" r="24" fill="#d9a928"/><text x="995" y="188" text-anchor="middle" class="n">3</text>
+    <text x="1135" y="190" text-anchor="middle" class="h">归因分析</text><text x="1135" y="232" text-anchor="middle" class="t">数据 + 架构差异</text><text x="1135" y="266" text-anchor="middle" class="t">解释“为什么涨跌”</text>
+    <rect x="1395" y="140" width="330" height="150" rx="22" fill="#f0e9ff" stroke="#7c3aed" stroke-width="3"/>
+    <circle cx="1435" cy="180" r="24" fill="#7c3aed"/><text x="1435" y="188" text-anchor="middle" class="n">4</text>
+    <text x="1560" y="190" text-anchor="middle" class="h">知识库检索</text><text x="1560" y="232" text-anchor="middle" class="t">本地论文与历史实验</text><text x="1560" y="266" text-anchor="middle" class="t">定向召回</text>
+    <path d="M435 215H505" class="line"/><path d="M875 215H945" class="line"/><path d="M1315 215H1385" class="line"/>
+  </g>
+
+  <g>
+    <rect x="1280" y="430" width="420" height="160" rx="22" fill="#f0e9ff" stroke="#7c3aed" stroke-width="3"/>
+    <circle cx="1320" cy="470" r="24" fill="#7c3aed"/><text x="1320" y="478" text-anchor="middle" class="n">5</text>
+    <text x="1490" y="480" text-anchor="middle" class="h">外部搜索</text><text x="1490" y="524" text-anchor="middle" class="t">本地知识未覆盖时检索新论文</text><text x="1490" y="558" text-anchor="middle" class="t">只补齐可验证的研究方向</text>
+    <rect x="690" y="430" width="470" height="160" rx="22" fill="#fff2bf" stroke="#d9a928" stroke-width="3"/>
+    <circle cx="730" cy="470" r="24" fill="#d9a928"/><text x="730" y="478" text-anchor="middle" class="n">6</text>
+    <text x="925" y="480" text-anchor="middle" class="h">方案综合</text><text x="925" y="524" text-anchor="middle" class="t">融合归因与内外部知识</text><text x="925" y="558" text-anchor="middle" class="t">产出 3-5 个单变量方案</text>
+    <rect x="100" y="430" width="470" height="160" rx="22" fill="#e8f7ef" stroke="#2e9d62" stroke-width="3"/>
+    <circle cx="140" cy="470" r="24" fill="#2e9d62"/><text x="140" y="478" text-anchor="middle" class="n">7</text>
+    <text x="335" y="480" text-anchor="middle" class="h">批量代码生成</text><text x="335" y="524" text-anchor="middle" class="t">并行生成多个完整版本</text><text x="335" y="558" text-anchor="middle" class="t">本地冒烟后提交训练</text>
+    <path d="M1560 290V420" class="line"/><path d="M1280 510H1170" class="line"/><path d="M690 510H580" class="line"/>
+    <path d="M100 510C30 510 35 105 70 105C260 105 280 115 260 140" class="loop"/>
+  </g>
+
+  <rect x="80" y="700" width="1640" height="220" rx="24" fill="#fff" stroke="#d8dee8" stroke-width="3"/>
+  <text x="120" y="752" class="h">启动模式与鲁棒性约束</text>
+  <text x="120" y="807" class="t">极冷启动：1 个版本 → 单版本分析</text>
+  <text x="490" y="807" class="t">冷启动：2 个版本 → 两版本对比</text>
+  <text x="875" y="807" class="t">多版本冷启动：3+ 版本 → MAP-REDUCE 归因</text>
+  <text x="1345" y="807" class="t">迭代继续：新增评测 → 增量验证</text>
+  <text x="120" y="865" class="t">每个方案只允许单一增量改动；每步立即校验产物；失败最多重试 2 次，第 3 次记录后跳过。</text>
+  <text x="120" y="902" class="t">停止条件：目标达到、连续 N 轮收益递减、超过版本上限，或 synthesis 已无法产生有效新方向。</text>
+</svg>

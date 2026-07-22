@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1260" viewBox="0 0 1700 1260">
+  <title>企业级 AutoResearch 责任分层</title>
+  <desc>研究编排器连接数据契约、模型研究、执行适配器、独立评测、实验记忆与人工审批。颜色区分已验证、在建和目标能力。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#536273"/>
+    </marker>
+    <style>
+      .title{font:700 42px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .sub{font:24px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#596579}
+      .h{font:700 29px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .t{font:23px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#334155}
+      .white{fill:#fff}
+      .line{fill:none;stroke:#536273;stroke-width:5;marker-end:url(#arrow)}
+      .feedback{fill:none;stroke:#7c3aed;stroke-width:5;stroke-dasharray:11 9;marker-end:url(#arrow)}
+      .node{stroke-width:3;rx:18}
+    </style>
+  </defs>
+  <rect width="1700" height="1260" fill="#f7f9fc"/>
+  <text x="850" y="62" text-anchor="middle" class="title">企业级 AutoResearch：责任分层</text>
+  <text x="850" y="100" text-anchor="middle" class="sub">LLM 负责开放研究，状态机与平台适配器负责确定性执行，关键边界保留人工决策</text>
+
+  <rect x="590" y="135" width="520" height="82" rx="18" fill="#173b70"/>
+  <text x="850" y="174" text-anchor="middle" class="h white">算法工程师 / Human Review</text>
+  <text x="850" y="203" text-anchor="middle" class="t white">目标 · 口径 · 风险 · 最终决策</text>
+
+  <path d="M850 218V254" class="line"/>
+  <rect x="550" y="260" width="600" height="105" rx="18" fill="#fff2bf" stroke="#d9a928" class="node"/>
+  <text x="850" y="303" text-anchor="middle" class="h">Orchestrator / 研究编排器</text>
+  <text x="850" y="339" text-anchor="middle" class="t">目标理解 · 规划 · 状态机 · Review Packet</text>
+
+  <path d="M650 365C540 405 400 420 320 458" class="line"/>
+  <path d="M850 365V451" class="line"/>
+  <path d="M1050 365C1165 405 1295 420 1380 458" class="line"/>
+
+  <rect x="80" y="458" width="470" height="80" rx="18" fill="#fff2bf" stroke="#d9a928" class="node"/>
+  <text x="315" y="492" text-anchor="middle" class="h">Data Orchestration</text>
+  <text x="315" y="523" text-anchor="middle" class="t">阶段状态机 / 受控自动推进</text>
+  <path d="M315 538V574" class="line"/>
+
+  <rect x="80" y="580" width="470" height="85" rx="18" fill="#e4efff" stroke="#3b76c3" class="node"/>
+  <text x="315" y="617" text-anchor="middle" class="h">Data Contract &amp; Research</text>
+  <text x="315" y="650" text-anchor="middle" class="t">探查 · 标签 · 特征 · 样本协议</text>
+  <path d="M315 665V701" class="line"/>
+
+  <rect x="80" y="707" width="470" height="85" rx="18" fill="#e4efff" stroke="#3b76c3" class="node"/>
+  <text x="315" y="744" text-anchor="middle" class="h">Data Quality Gate</text>
+  <text x="315" y="777" text-anchor="middle" class="t">Schema · Smoke · 对账 · 防穿越</text>
+  <path d="M315 792V828" class="line"/>
+
+  <rect x="80" y="834" width="470" height="85" rx="18" fill="#e4efff" stroke="#3b76c3" class="node"/>
+  <text x="315" y="871" text-anchor="middle" class="h">Dataset Builder</text>
+  <text x="315" y="904" text-anchor="middle" class="t">Train · Valid · Test · Version</text>
+  <path d="M315 919V955" class="line"/>
+
+  <rect x="80" y="961" width="470" height="85" rx="18" fill="#fff2bf" stroke="#d9a928" class="node"/>
+  <text x="315" y="998" text-anchor="middle" class="h">Dataset Registry</text>
+  <text x="315" y="1031" text-anchor="middle" class="t">统一登记 · 血缘 · 版本 · 跨任务检索</text>
+
+  <rect x="615" y="458" width="470" height="90" rx="18" fill="#e4efff" stroke="#3b76c3" class="node"/>
+  <text x="850" y="496" text-anchor="middle" class="h">Model Research Layer</text>
+  <text x="850" y="532" text-anchor="middle" class="t">网络 · Loss · 权重 · 训练配置</text>
+  <path d="M850 548V614" class="line"/>
+
+  <rect x="615" y="620" width="470" height="90" rx="18" fill="#e4efff" stroke="#3b76c3" class="node"/>
+  <text x="850" y="658" text-anchor="middle" class="h">Execution Adapters</text>
+  <text x="850" y="694" text-anchor="middle" class="t">训练 · 预测 · 评估 · 部署 · Daemon</text>
+  <path d="M850 710V776" class="line"/>
+
+  <rect x="615" y="782" width="470" height="96" rx="18" fill="#e4efff" stroke="#3b76c3" class="node"/>
+  <text x="850" y="821" text-anchor="middle" class="h">Evaluation &amp; Decision</text>
+  <text x="850" y="856" text-anchor="middle" class="t">AUC · GAUC · Lift · PCOC · Guardrail</text>
+  <path d="M850 878V934" class="line"/>
+
+  <rect x="615" y="940" width="470" height="90" rx="18" fill="#f2f4f7" stroke="#8491a3" stroke-dasharray="12 10" class="node"/>
+  <text x="850" y="979" text-anchor="middle" class="h">Online Experiment Layer</text>
+  <text x="850" y="1015" text-anchor="middle" class="t">灰度 · A/B · Monitoring（更高权限层）</text>
+
+  <rect x="1150" y="458" width="470" height="100" rx="18" fill="#f0e9ff" stroke="#7c3aed" class="node"/>
+  <text x="1385" y="498" text-anchor="middle" class="h">Artifacts &amp; Memory</text>
+  <text x="1385" y="535" text-anchor="middle" class="t">Ledger · Report · Negative Results</text>
+  <path d="M1385 558V624" class="line"/>
+
+  <rect x="1150" y="630" width="470" height="100" rx="18" fill="#f0e9ff" stroke="#7c3aed" class="node"/>
+  <text x="1385" y="670" text-anchor="middle" class="h">Context &amp; Knowledge</text>
+  <text x="1385" y="707" text-anchor="middle" class="t">领域语义 · 数据资产 · 正负经验</text>
+
+  <path d="M550 1003C590 1003 590 503 615 503" class="line"/>
+  <path d="M1085 830C1130 830 1130 508 1150 508" class="line"/>
+  <path d="M1385 730C1385 825 1240 820 1085 830" class="feedback"/>
+  <path d="M1385 458C1385 390 1165 330 1150 318" class="feedback"/>
+
+  <rect x="90" y="1120" width="1520" height="92" rx="16" fill="#ffffff" stroke="#d8dee8" stroke-width="2"/>
+  <circle cx="145" cy="1166" r="14" fill="#e4efff" stroke="#3b76c3" stroke-width="3"/><text x="174" y="1174" class="t">已在真实任务中验证</text>
+  <circle cx="560" cy="1166" r="14" fill="#fff2bf" stroke="#d9a928" stroke-width="3"/><text x="589" y="1174" class="t">部分实现 / 在建</text>
+  <circle cx="945" cy="1166" r="14" fill="#f2f4f7" stroke="#8491a3" stroke-width="3"/><text x="974" y="1174" class="t">规划中</text>
+  <path d="M1270 1166H1338" class="feedback"/><text x="1360" y="1174" class="t">研究反馈</text>
+</svg>
