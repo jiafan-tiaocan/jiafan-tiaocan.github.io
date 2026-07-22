@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <defs><style>text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252633}.h{font-size:32px;font-weight:700}.t{font-size:24px;font-weight:700}.b{font-size:18px}.s{font-size:16px;fill:#666978}.a{stroke:#655bd1;stroke-width:5;fill:none;marker-end:url(#m)}</style><marker id="m" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#655bd1"/></marker></defs>
+  <rect width="1200" height="760" rx="28" fill="#faf9ff"/><text x="55" y="62" class="h">“感知 - 决策 - 控制”的智能流量分发框架</text>
+  <g transform="translate(55 115)">
+    <rect width="330" height="470" rx="22" fill="#efedff" stroke="#c7c1ff"/>
+    <rect width="330" height="82" rx="22" fill="#655bd1"/><text x="165" y="51" text-anchor="middle" fill="white" class="t">感知</text>
+    <text x="165" y="122" text-anchor="middle" class="b">全月变量精准预估</text>
+    <rect x="28" y="155" width="274" height="100" rx="14" fill="white"/><text x="165" y="188" text-anchor="middle" class="t">截面感知</text><text x="165" y="218" text-anchor="middle" class="s">曝光概率、CTR、CVR</text><text x="165" y="242" text-anchor="middle" class="s">流失概率、当前最优估计</text>
+    <rect x="28" y="283" width="274" height="100" rx="14" fill="white"/><text x="165" y="316" text-anchor="middle" class="t">时序预测</text><text x="165" y="346" text-anchor="middle" class="s">来访、竞争与周期性</text><text x="165" y="370" text-anchor="middle" class="s">刻画未来可知信息</text>
+    <text x="165" y="430" text-anchor="middle" class="s">用户理解 + 模型优化</text>
+  </g>
+  <path d="M395 350H445" class="a"/>
+  <g transform="translate(455 115)">
+    <rect width="330" height="470" rx="22" fill="#eaf8f2" stroke="#9bd8c1"/>
+    <rect width="330" height="82" rx="22" fill="#2aa879"/><text x="165" y="51" text-anchor="middle" fill="white" class="t">决策</text>
+    <text x="165" y="122" text-anchor="middle" class="b">多目标、业务约束、全局优化</text>
+    <rect x="28" y="155" width="274" height="100" rx="14" fill="white"/><text x="165" y="188" text-anchor="middle" class="t">离线运筹</text><text x="165" y="218" text-anchor="middle" class="s">天级调度、粗粒度</text><text x="165" y="242" text-anchor="middle" class="s">稳定、可解释、可交互</text>
+    <rect x="28" y="283" width="274" height="100" rx="14" fill="white"/><text x="165" y="316" text-anchor="middle" class="t">近线博弈</text><text x="165" y="346" text-anchor="middle" class="s">小时级调度、细粒度</text><text x="165" y="370" text-anchor="middle" class="s">响应变化、提升精度</text>
+    <text x="165" y="430" text-anchor="middle" class="s">约束可解释 + 目标可调整</text>
+  </g>
+  <path d="M795 350H845" class="a"/>
+  <g transform="translate(855 115)">
+    <rect width="290" height="470" rx="22" fill="#fff1e9" stroke="#f0b18e"/>
+    <rect width="290" height="82" rx="22" fill="#e9804f"/><text x="145" y="51" text-anchor="middle" fill="white" class="t">控制</text>
+    <text x="145" y="122" text-anchor="middle" class="b">实时纠偏与落地</text>
+    <rect x="25" y="155" width="240" height="102" rx="14" fill="white"/><text x="145" y="188" text-anchor="middle" class="t">控制组合</text><text x="145" y="218" text-anchor="middle" class="s">规则 + PID</text><text x="145" y="242" text-anchor="middle" class="s">模糊控制 + 专家经验</text>
+    <rect x="25" y="285" width="240" height="98" rx="14" fill="white"/><text x="145" y="320" text-anchor="middle" class="t">实时数据</text><text x="145" y="350" text-anchor="middle" class="s">在线监测与变量矫正</text>
+    <text x="145" y="430" text-anchor="middle" class="s">保证离线决策在线一致</text>
+  </g>
+  <rect x="135" y="635" width="930" height="66" rx="18" fill="#655bd1"/><text x="600" y="676" text-anchor="middle" fill="white" class="t">统一底座：实时数据、运筹计算、人机交互与产品化支持</text>
+</svg>
