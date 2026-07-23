@@ -1,5 +1,5 @@
 ---
-title: "Towards Long-Horizon Agents：长程能力如何在模型与 Harness 之间共演化"
+title: "论文解读：Towards Long-Horizon Agents: A Survey"
 description: "从任务依赖、H1–H3 能力层级、六类 Harness、内化训练管线与证据边界出发，解释长程智能为何是模型、运行时、环境与验证器共同形成的系统能力。"
 tags:
   - Agent
@@ -9,10 +9,12 @@ tags:
   - 论文解读
 date: 2026-07-21
 publish: true
-noteType: technical
+noteType: paper
+aliases:
+  - "智能体/Towards Long-Horizon Agents深度解读：长程能力如何在模型与Harness之间共演化"
 ---
 
-# Towards Long-Horizon Agents：长程能力如何在模型与 Harness 之间共演化
+# 论文解读：Towards Long-Horizon Agents: A Survey
 
 > [!abstract] 核心结论
 > **长程智能不是模型独自拥有的一项能力，而是策略模型、运行时 Harness、外部环境与验证反馈共同形成的系统属性。**
