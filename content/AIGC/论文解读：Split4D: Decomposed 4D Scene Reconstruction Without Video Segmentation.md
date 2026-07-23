@@ -1,5 +1,5 @@
 ---
-title: Split4D：不依赖视频分割的可分解 4D 场景重建
+title: "论文解读：Split4D: Decomposed 4D Scene Reconstruction Without Video Segmentation"
 description: 从身份断裂这一核心难题出发，逐层拆解 Split4D 如何用运动 Gaussian、逐图对比学习和流式优化构建时空一致的实例级 4D 表示。
 tags:
   - 论文解读
@@ -8,9 +8,12 @@ tags:
   - 场景分解
   - 计算机视觉
 date: 2025-12-28
+noteType: paper
 publish: true
+aliases:
+  - "AIGC/Split4D：不依赖视频分割的可分解4D场景重建"
 ---
-# Split4D：不依赖视频分割的可分解 4D 场景重建
+# 论文解读：Split4D: Decomposed 4D Scene Reconstruction Without Video Segmentation
 
 > **核心判断：Split4D 没有消灭时序对应，而是把它从脆弱的 2D 视频标签，迁移到运动 Gaussian 与流式优化中。最关键的证据是：去掉 streaming learning 后，mIoU 从 0.895 降到 0.552。**
 
