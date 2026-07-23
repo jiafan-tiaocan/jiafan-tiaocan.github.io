@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 720" role="img" aria-labelledby="title desc">
+  <title id="title">动作驱动项目的五次路线转向</title>
+  <desc id="desc">从姿态驱动与口型后处理，经过音频进入视频主干、局部口型监督和统一多条件范式，最终落到可训练的 OmniAvatar 基线；每一步都标出解决的问题和暴露的新瓶颈。</desc>
+  <style>
+    .bg{fill:#f8fafc}.card{fill:#fff;stroke:#cbd5e1;stroke-width:2}.asset{fill:#eef2ff;stroke:#c7d2fe;stroke-width:1.5}.warnbox{fill:#fff7ed;stroke:#fed7aa}.openbox{fill:#eff6ff;stroke:#bfdbfe}
+    .title{font:700 30px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#172033}
+    .stage{font:700 17px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#4338ca}
+    .head{font:700 22px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#172033}
+    .body{font:15px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#334155}
+    .small{font:14px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#475569}
+    .warn{font:700 14px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#9a3412}
+    .arrow{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    @media (prefers-color-scheme:dark){
+      .bg{fill:#0b1220}.card{fill:#111827;stroke:#334155}.asset{fill:#172554;stroke:#3730a3}.warnbox{fill:#431407;stroke:#9a3412}.openbox{fill:#172554;stroke:#1d4ed8}
+      .title,.head{fill:#f8fafc}.body{fill:#cbd5e1}.small{fill:#aebbd0}.stage{fill:#a5b4fc}.warn{fill:#fdba74}.arrow{stroke:#94a3b8}
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1440" height="720" rx="28"/>
+  <text class="title" x="42" y="52">动作驱动不是模型年表，而是五次被瓶颈逼出来的责任迁移</text>
+
+  <path class="arrow" d="M286 235 H315"/>
+  <path class="arrow" d="M566 235 H595"/>
+  <path class="arrow" d="M846 235 H875"/>
+  <path class="arrow" d="M1126 235 H1155"/>
+
+  <g transform="translate(36 86)">
+    <rect class="card" width="250" height="330" rx="20"/>
+    <text class="stage" x="20" y="38">阶段 1 · 2024 Q3-Q4</text>
+    <text class="head" x="20" y="78">姿态复刻 + 口型</text>
+    <text class="body" x="20" y="112"><tspan x="20">Pose / 驱动视频控制身体</tspan><tspan x="20" dy="25">MuseTalk 局部改嘴</tspan><tspan x="20" dy="25">身份、动作、声音、包装解耦</tspan></text>
+    <rect class="warnbox" x="16" y="214" width="218" height="92" rx="14"/>
+    <text class="warn" x="30" y="242">新瓶颈</text>
+    <text class="small" x="30" y="267"><tspan x="30">动作来自另一段视频：</tspan><tspan x="30" dy="22">它会动，却不一定在“说这句话”</tspan></text>
+  </g>
+
+  <g transform="translate(316 86)">
+    <rect class="card" width="250" height="330" rx="20"/>
+    <text class="stage" x="20" y="38">阶段 2 · 2025 Q2</text>
+    <text class="head" x="20" y="78">音频进入视频主干</text>
+    <text class="body" x="20" y="112"><tspan x="20">Wan2.1 I2V 底座</tspan><tspan x="20" dy="25">Wav2Vec + Audio Attention</tspan><tspan x="20" dy="25">DiT LoRA 保留底模能力</tspan></text>
+    <rect class="warnbox" x="16" y="214" width="218" height="92" rx="14"/>
+    <text class="warn" x="30" y="242">新瓶颈</text>
+    <text class="small" x="30" y="267"><tspan x="30">Audio 已接入，但全局 loss</tspan><tspan x="30" dy="22">仍可忽略不足整帧 5% 的嘴部</tspan></text>
+  </g>
+
+  <g transform="translate(596 86)">
+    <rect class="card" width="250" height="330" rx="20"/>
+    <text class="stage" x="20" y="38">阶段 3 · 2025 Q2</text>
+    <text class="head" x="20" y="78">局部口型监督</text>
+    <text class="body" x="20" y="112"><tspan x="20">Clip-level 学整体表演</tspan><tspan x="20" dy="25">Frame-level 对齐音素与嘴形</tspan><tspan x="20" dy="25">Sync / LPIPS / TREPA</tspan></text>
+    <rect class="warnbox" x="16" y="214" width="218" height="92" rx="14"/>
+    <text class="warn" x="30" y="242">新瓶颈</text>
+    <text class="small" x="30" y="267"><tspan x="30">局部精度与全局自然度冲突；</tspan><tspan x="30" dy="22">完整两阶段复现和训练很重</tspan></text>
+  </g>
+
+  <g transform="translate(876 86)">
+    <rect class="card" width="250" height="330" rx="20"/>
+    <text class="stage" x="20" y="38">阶段 4 · 2025 Q1-Q2</text>
+    <text class="head" x="20" y="78">统一多条件范式</text>
+    <text class="body" x="20" y="112"><tspan x="20">Image + Text + Audio + Pose</tspan><tspan x="20" dy="25">弱条件扩大数据利用率</tspan><tspan x="20" dy="25">Hunyuan 验证能力上界</tspan></text>
+    <rect class="warnbox" x="16" y="214" width="218" height="92" rx="14"/>
+    <text class="warn" x="30" y="242">新瓶颈</text>
+    <text class="small" x="30" y="267"><tspan x="30">理想架构不等于可训练底座：</tspan><tspan x="30" dy="22">算力、代码和迭代成本不合格</tspan></text>
+  </g>
+
+  <g transform="translate(1156 86)">
+    <rect class="card" width="250" height="330" rx="20"/>
+    <text class="stage" x="20" y="38">阶段 5 · 2025 Q3</text>
+    <text class="head" x="20" y="78">可训练现实落点</text>
+    <text class="body" x="20" y="112"><tspan x="20">OmniAvatar + Wan 底座</tspan><tspan x="20" dy="25">Audio Pack / Projection</tspan><tspan x="20" dy="25">LoRA + 分层音频注入</tspan></text>
+    <rect class="openbox" x="16" y="214" width="218" height="92" rx="14"/>
+    <text class="stage" x="30" y="242">剩余主问题</text>
+    <text class="small" x="30" y="267"><tspan x="30">冻结基准、90 秒稳定性、</tspan><tspan x="30" dy="22">良品率、成本与回退闭环</tspan></text>
+  </g>
+
+  <text class="head" x="42" y="468">项目真正留下的，不是某个模型名字，而是一组可迁移资产</text>
+  <g transform="translate(36 495)">
+    <rect class="asset" width="250" height="150" rx="18"/>
+    <text class="stage" x="18" y="34">数据与监督</text>
+    <text class="small" x="18" y="64"><tspan x="18">7,000+ 口播片段 / 约 20 小时</tspan><tspan x="18" dy="23">置信度、手部与脸部区域加权</tspan><tspan x="18" dy="23">V1-V3 数据处理与动作 Caption</tspan></text>
+  </g>
+  <g transform="translate(316 495)">
+    <rect class="asset" width="250" height="150" rx="18"/>
+    <text class="stage" x="18" y="34">生成与长视频</text>
+    <text class="small" x="18" y="64"><tspan x="18">参考身份 + 音频 + 可选姿态</tspan><tspan x="18" dy="23">Clip 重叠、末帧状态与融合</tspan><tspan x="18" dy="23">音频强度与注入层可控</tspan></text>
+  </g>
+  <g transform="translate(596 495)">
+    <rect class="asset" width="250" height="150" rx="18"/>
+    <text class="stage" x="18" y="34">专项质量约束</text>
+    <text class="small" x="18" y="64"><tspan x="18">lip-focused loss / Sync</tspan><tspan x="18" dy="23">身份、手部、时序连续性</tspan><tspan x="18" dy="23">“统一生成 + 局部监督”</tspan></text>
+  </g>
+  <g transform="translate(876 495)">
+    <rect class="asset" width="250" height="150" rx="18"/>
+    <text class="stage" x="18" y="34">工程可迭代性</text>
+    <text class="small" x="18" y="64"><tspan x="18">LoRA 与音频模块独立保存</tspan><tspan x="18" dy="23">固定版本、对照与回滚</tspan><tspan x="18" dy="23">可训练性优先于最佳 Demo</tspan></text>
+  </g>
+  <g transform="translate(1156 495)">
+    <rect class="asset" width="250" height="150" rx="18"/>
+    <text class="stage" x="18" y="34">业务验收</text>
+    <text class="small" x="18" y="64"><tspan x="18">8 条真实达人初始测试集</tspan><tspan x="18" dy="23">失败标签、盲评与良品率</tspan><tspan x="18" dy="23">成本、延迟、重试与降级</tspan></text>
+  </g>
+</svg>

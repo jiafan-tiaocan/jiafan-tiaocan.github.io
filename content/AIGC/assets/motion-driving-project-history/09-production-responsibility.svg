@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
+  <title id="title">动作驱动数字人的生产责任架构</title>
+  <desc id="desc">输入资产进入可替换的生成主干，再由局部质量约束和业务质量闸门验收；失败任务根据类型重试、切换基线或人工复核。</desc>
+  <style>
+    .bg{fill:#f8fafc}.panel{fill:#fff;stroke:#cbd5e1;stroke-width:2}.box{fill:#f8fafc;stroke:#d8e1ec;stroke-width:1.5}
+    .band{fill:#eef2ff;stroke:#c7d2fe;stroke-width:1.5}.title{font:700 30px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#172033}
+    .head{font:700 21px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#172033}
+    .body{font:15px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#334155}.small{font:14px -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;fill:#475569}
+    .arrow{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#arrow)}.loop{stroke:#ea580c;stroke-width:3;fill:none;stroke-dasharray:8 6;marker-end:url(#arrow2)}
+    @media (prefers-color-scheme:dark){
+      .bg{fill:#0b1220}.panel{fill:#111827;stroke:#334155}.box{fill:#0f172a;stroke:#334155}.band{fill:#172554;stroke:#3730a3}
+      .title,.head{fill:#f8fafc}.body{fill:#cbd5e1}.small{fill:#aebbd0}.arrow{stroke:#94a3b8}
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#64748b"/></marker>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ea580c"/></marker>
+  </defs>
+  <rect class="bg" width="1440" height="760" rx="28"/>
+  <text class="title" x="42" y="54">最终应沉淀为可替换模型、不可省略质量责任的生产系统</text>
+
+  <path class="arrow" d="M307 330 H348"/>
+  <path class="arrow" d="M657 330 H698"/>
+  <path class="arrow" d="M1007 330 H1048"/>
+
+  <g transform="translate(36 94)">
+    <rect class="panel" width="270" height="500" rx="20"/>
+    <text class="head" x="22" y="42">1　输入与资产治理</text>
+    <g transform="translate(20 72)"><rect class="box" width="230" height="78" rx="13"/><text class="body" x="16" y="31">身份参考图 / 人设</text><text class="small" x="16" y="57">授权、版本、裁剪与质量</text></g>
+    <g transform="translate(20 166)"><rect class="box" width="230" height="78" rx="13"/><text class="body" x="16" y="31">目标音频 / TTS</text><text class="small" x="16" y="57">文本正确、音质与时间轴</text></g>
+    <g transform="translate(20 260)"><rect class="box" width="230" height="78" rx="13"/><text class="body" x="16" y="31">文本 / 表演意图</text><text class="small" x="16" y="57">情绪、语速、手势与镜头</text></g>
+    <g transform="translate(20 354)"><rect class="box" width="230" height="78" rx="13"/><text class="body" x="16" y="31">可选 Pose / 动作视频</text><text class="small" x="16" y="57">只在需要强动作约束时启用</text></g>
+  </g>
+
+  <g transform="translate(348 94)">
+    <rect class="panel" width="310" height="500" rx="20"/>
+    <text class="head" x="22" y="42">2　可替换生成主干</text>
+    <g transform="translate(20 72)"><rect class="box" width="270" height="92" rx="13"/><text class="body" x="16" y="31">统一视频底模</text><text class="small" x="16" y="57"><tspan x="16">Image + Text + Audio</tspan><tspan x="16" dy="20">必要时叠加 Pose</tspan></text></g>
+    <g transform="translate(20 182)"><rect class="box" width="270" height="92" rx="13"/><text class="body" x="16" y="31">轻量训练接口</text><text class="small" x="16" y="57"><tspan x="16">LoRA + Audio Projection</tspan><tspan x="16" dy="20">分层注入、可回滚 checkpoint</tspan></text></g>
+    <g transform="translate(20 292)"><rect class="box" width="270" height="92" rx="13"/><text class="body" x="16" y="31">长视频状态</text><text class="small" x="16" y="57"><tspan x="16">重叠窗口、末帧 / latent 继承</tspan><tspan x="16" dy="20">接缝与累计漂移控制</tspan></text></g>
+    <text class="small" x="22" y="444"><tspan x="22">近期主基线：OmniAvatar 内部版</tspan><tspan x="22" dy="22">显式复刻基线：MimicMotion + MuseTalk</tspan></text>
+  </g>
+
+  <g transform="translate(698 94)">
+    <rect class="panel" width="310" height="500" rx="20"/>
+    <text class="head" x="22" y="42">3　专项约束与增强</text>
+    <g transform="translate(20 72)"><rect class="box" width="270" height="78" rx="13"/><text class="body" x="16" y="31">口型：Sync + lip mask</text><text class="small" x="16" y="57">停顿闭嘴、音素与嘴形</text></g>
+    <g transform="translate(20 166)"><rect class="box" width="270" height="78" rx="13"/><text class="body" x="16" y="31">身份：参考一致性</text><text class="small" x="16" y="57">脸部漂移与跨 Clip 稳定</text></g>
+    <g transform="translate(20 260)"><rect class="box" width="270" height="78" rx="13"/><text class="body" x="16" y="31">局部：手、脸、牙齿</text><text class="small" x="16" y="57">置信度与区域感知 loss</text></g>
+    <g transform="translate(20 354)"><rect class="box" width="270" height="78" rx="13"/><text class="body" x="16" y="31">时序：动作与背景</text><text class="small" x="16" y="57">抖动、循环、运镜与接缝</text></g>
+  </g>
+
+  <g transform="translate(1048 94)">
+    <rect class="panel" width="356" height="500" rx="20"/>
+    <text class="head" x="22" y="42">4　质量闸门与路由</text>
+    <g transform="translate(20 72)"><rect class="box" width="316" height="78" rx="13"/><text class="body" x="16" y="31">任务级：完成、时长、可播放</text><text class="small" x="16" y="57">接口成功不等于成片成功</text></g>
+    <g transform="translate(20 166)"><rect class="box" width="316" height="78" rx="13"/><text class="body" x="16" y="31">模型级：Sync / ID / Motion</text><text class="small" x="16" y="57">固定测试集 + 失败类型标签</text></g>
+    <g transform="translate(20 260)"><rect class="box" width="316" height="78" rx="13"/><text class="body" x="16" y="31">业务级：字幕、合规、包装</text><text class="small" x="16" y="57">投放前规则校验与人工抽检</text></g>
+    <g transform="translate(20 354)"><rect class="box" width="316" height="98" rx="13"/><text class="body" x="16" y="31">失败路由</text><text class="small" x="16" y="57"><tspan x="16">可恢复 → 重试 / 调低动作强度</tspan><tspan x="16" dy="21">不可恢复 → 基线降级 / 人工复核</tspan></text></g>
+  </g>
+
+  <path class="loop" d="M1230 612 C1230 690, 510 700, 510 604"/>
+  <text class="small" x="720" y="694">失败样本回流到数据、标签和专项 loss，而不是只从结果库里删除</text>
+
+  <rect class="band" x="36" y="625" width="500" height="76" rx="16"/>
+  <text class="body" x="58" y="656">跨版本稳定接口</text>
+  <text class="small" x="58" y="682">Job Spec · 资产版本 · 模型版本 · 指标 · 日志 · 成本</text>
+</svg>
+
