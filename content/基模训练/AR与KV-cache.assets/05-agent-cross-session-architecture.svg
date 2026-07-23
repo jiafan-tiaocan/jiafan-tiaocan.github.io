@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">Agent 跨会话 KV-cache 生产架构与责任边界</title>
+  <desc id="desc">从会话账本和长期记忆编译稳定提示词，经缓存身份和策略控制，路由到 Prefill 与 Decode 服务，再落入 GPU、CPU、NVMe 和远端分层缓存。</desc>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #56647a;
+      --line: #cbd5e1;
+      --blue: #215fd5;
+      --blue-soft: #e8f0ff;
+      --green: #17745a;
+      --green-soft: #e8f7f1;
+      --orange: #c45a17;
+      --orange-soft: #fff0e5;
+      --purple: #6c4bd0;
+      --purple-soft: #f0ebff;
+      --red: #b83b46;
+      --red-soft: #ffecef;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111827;
+        --panel: #182235;
+        --ink: #edf3ff;
+        --muted: #bcc7d8;
+        --line: #3b4a62;
+        --blue: #7eabff;
+        --blue-soft: #223b66;
+        --green: #66d3ad;
+        --green-soft: #183f36;
+        --orange: #ffad72;
+        --orange-soft: #55311f;
+        --purple: #b7a2ff;
+        --purple-soft: #362d5d;
+        --red: #ff929d;
+        --red-soft: #54282f;
+      }
+    }
+    text { font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif; fill: var(--ink); }
+    .h1 { font-size: 32px; font-weight: 800; }
+    .layer { font-size: 22px; font-weight: 800; }
+    .box-title { font-size: 21px; font-weight: 750; }
+    .body { font-size: 18px; fill: var(--muted); }
+    .tag { font-size: 16px; font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--blue)"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--orange)"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="980" rx="28" fill="var(--bg)"/>
+  <text x="60" y="58" class="h1">Agent 跨会话 KV-cache：加速平面与语义平面必须分开</text>
+  <text x="60" y="91" class="body">命中条件是相同模型配置下的相同 token 前缀；长期事实、权限、版本与删除语义仍由会话账本和 Mem-OS 承诺。</text>
+
+  <!-- Layer labels -->
+  <rect x="60" y="130" width="150" height="180" rx="20" fill="var(--purple-soft)" stroke="var(--purple)" stroke-width="2"/>
+  <text x="135" y="190" text-anchor="middle" class="layer">语义平面</text>
+  <text x="135" y="225" text-anchor="middle" class="body">事实与意图</text>
+  <text x="135" y="255" text-anchor="middle" class="body">唯一事实来源</text>
+
+  <rect x="60" y="338" width="150" height="206" rx="20" fill="var(--green-soft)" stroke="var(--green)" stroke-width="2"/>
+  <text x="135" y="407" text-anchor="middle" class="layer">缓存控制面</text>
+  <text x="135" y="442" text-anchor="middle" class="body">身份与策略</text>
+  <text x="135" y="472" text-anchor="middle" class="body">可观测治理</text>
+
+  <rect x="60" y="572" width="150" height="180" rx="20" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="2"/>
+  <text x="135" y="635" text-anchor="middle" class="layer">推理数据面</text>
+  <text x="135" y="670" text-anchor="middle" class="body">计算与调度</text>
+  <text x="135" y="700" text-anchor="middle" class="body">块级访问</text>
+
+  <rect x="60" y="780" width="150" height="145" rx="20" fill="var(--orange-soft)" stroke="var(--orange)" stroke-width="2"/>
+  <text x="135" y="840" text-anchor="middle" class="layer">存储层</text>
+  <text x="135" y="875" text-anchor="middle" class="body">热度分层</text>
+
+  <!-- Semantic plane -->
+  <rect x="245" y="130" width="300" height="180" rx="20" fill="var(--panel)" stroke="var(--line)" stroke-width="2"/>
+  <text x="270" y="170" class="box-title">会话账本 / Run 状态</text>
+  <text x="270" y="205" class="body">消息、Tool 结果、审批、分支、检查点</text>
+  <text x="270" y="236" class="body">append-only + version + provenance</text>
+  <rect x="270" y="260" width="155" height="28" rx="14" fill="var(--purple-soft)"/>
+  <text x="348" y="280" text-anchor="middle" class="tag" fill="var(--purple)">权威记录，不是缓存</text>
+
+  <rect x="575" y="130" width="300" height="180" rx="20" fill="var(--panel)" stroke="var(--line)" stroke-width="2"/>
+  <text x="600" y="170" class="box-title">Mem-OS / Artifact Store</text>
+  <text x="600" y="205" class="body">事实、偏好、规则、知识、原始材料</text>
+  <text x="600" y="236" class="body">权限、时效、删除、冲突与血缘</text>
+  <rect x="600" y="260" width="155" height="28" rx="14" fill="var(--purple-soft)"/>
+  <text x="678" y="280" text-anchor="middle" class="tag" fill="var(--purple)">跨会话语义来源</text>
+
+  <rect x="905" y="130" width="625" height="180" rx="20" fill="var(--panel)" stroke="var(--purple)" stroke-width="2"/>
+  <text x="930" y="170" class="box-title">确定性 Prompt Compiler</text>
+  <text x="930" y="205" class="body">固定顺序：tools → system → stable corpus → history → volatile turn</text>
+  <text x="930" y="236" class="body">规范化 JSON、稳定工具排序、模板版本、tokenizer/model revision 固定</text>
+  <rect x="930" y="260" width="200" height="28" rx="14" fill="var(--green-soft)"/>
+  <text x="1030" y="280" text-anchor="middle" class="tag" fill="var(--green)">输出 byte/token 稳定前缀</text>
+  <rect x="1148" y="260" width="345" height="28" rx="14" fill="var(--red-soft)"/>
+  <text x="1320" y="280" text-anchor="middle" class="tag" fill="var(--red)">时间戳、nonce、动态检索结果放在断点之后</text>
+
+  <path d="M 545 220 L 565 220" stroke="var(--purple)" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <path d="M 875 220 L 895 220" stroke="var(--purple)" stroke-width="3" marker-end="url(#arrowBlue)"/>
+
+  <!-- Control plane -->
+  <rect x="245" y="338" width="390" height="206" rx="20" fill="var(--panel)" stroke="var(--green)" stroke-width="2"/>
+  <text x="270" y="378" class="box-title">Cache Identity</text>
+  <text x="270" y="412" class="body">H(parent_hash, token_block, model_rev,</text>
+  <text x="270" y="441" class="body">adapter, RoPE, KV dtype, modality, tenant_salt)</text>
+  <text x="270" y="478" class="body">只共享完整且已提交的块；哈希命中仍需防碰撞</text>
+  <rect x="270" y="498" width="170" height="28" rx="14" fill="var(--green-soft)"/>
+  <text x="355" y="518" text-anchor="middle" class="tag" fill="var(--green)">相同 token ≠ 相同状态</text>
+
+  <rect x="665" y="338" width="390" height="206" rx="20" fill="var(--panel)" stroke="var(--green)" stroke-width="2"/>
+  <text x="690" y="378" class="box-title">Policy &amp; Lifecycle</text>
+  <text x="690" y="412" class="body">租户/项目隔离、TTL、版本 bump、配额、加密</text>
+  <text x="690" y="441" class="body">LRU/LFU/优先级、Pin、驱逐、删除与审计</text>
+  <text x="690" y="478" class="body">模型滚动升级或权限变化时必须显式失效</text>
+  <rect x="690" y="498" width="195" height="28" rx="14" fill="var(--red-soft)"/>
+  <text x="788" y="518" text-anchor="middle" class="tag" fill="var(--red)">默认禁止跨租户共享</text>
+
+  <rect x="1085" y="338" width="445" height="206" rx="20" fill="var(--panel)" stroke="var(--green)" stroke-width="2"/>
+  <text x="1110" y="378" class="box-title">Observability &amp; Admission</text>
+  <text x="1110" y="412" class="body">cached_tokens、TTFT、ITL、load/recompute cost</text>
+  <text x="1110" y="441" class="body">HBM occupancy、block utilization、eviction、thrash</text>
+  <text x="1110" y="478" class="body">按“节省的 Prefill 时间 - 读缓存时间”决定是否复用</text>
+  <rect x="1110" y="498" width="210" height="28" rx="14" fill="var(--orange-soft)"/>
+  <text x="1215" y="518" text-anchor="middle" class="tag" fill="var(--orange)">命中率不是最终目标</text>
+
+  <path d="M 1218 310 L 1218 328" stroke="var(--green)" stroke-width="3" marker-end="url(#arrowBlue)"/>
+
+  <!-- Serving plane -->
+  <rect x="245" y="572" width="260" height="180" rx="20" fill="var(--panel)" stroke="var(--blue)" stroke-width="2"/>
+  <text x="270" y="612" class="box-title">Cache-aware Router</text>
+  <text x="270" y="647" class="body">先查目录与位置</text>
+  <text x="270" y="677" class="body">综合 queue、SLO、传输成本</text>
+  <text x="270" y="707" class="body">路由到有热块的 Worker</text>
+
+  <rect x="545" y="572" width="300" height="180" rx="20" fill="var(--panel)" stroke="var(--blue)" stroke-width="2"/>
+  <text x="570" y="612" class="box-title">Prefill Workers</text>
+  <text x="570" y="647" class="body">命中：加载块 + 计算后缀</text>
+  <text x="570" y="677" class="body">未命中：chunked prefill</text>
+  <text x="570" y="707" class="body">生成新 KV 块并异步提交</text>
+
+  <rect x="885" y="572" width="300" height="180" rx="20" fill="var(--panel)" stroke="var(--blue)" stroke-width="2"/>
+  <text x="910" y="612" class="box-title">Decode Workers</text>
+  <text x="910" y="647" class="body">连续批处理 + paged attention</text>
+  <text x="910" y="677" class="body">追加当前序列 KV</text>
+  <text x="910" y="707" class="body">分支采用引用计数 / COW</text>
+
+  <rect x="1225" y="572" width="305" height="180" rx="20" fill="var(--panel)" stroke="var(--blue)" stroke-width="2"/>
+  <text x="1250" y="612" class="box-title">Block Manager</text>
+  <text x="1250" y="647" class="body">逻辑块表 → 物理页</text>
+  <text x="1250" y="677" class="body">refcount、free queue、LRU</text>
+  <text x="1250" y="707" class="body">页大小与复用粒度权衡</text>
+
+  <path d="M 505 662 L 535 662" stroke="var(--blue)" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <path d="M 845 662 L 875 662" stroke="var(--blue)" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <path d="M 1185 662 L 1215 662" stroke="var(--blue)" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <path d="M 440 544 L 440 562" stroke="var(--green)" stroke-width="3" marker-end="url(#arrowBlue)"/>
+
+  <!-- Storage tiers -->
+  <rect x="245" y="780" width="285" height="145" rx="20" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="2"/>
+  <text x="270" y="820" class="box-title">L1　GPU HBM</text>
+  <text x="270" y="855" class="body">纳秒级访问，容量最小</text>
+  <text x="270" y="885" class="body">运行中与最热前缀</text>
+
+  <rect x="565" y="780" width="285" height="145" rx="20" fill="var(--green-soft)" stroke="var(--green)" stroke-width="2"/>
+  <text x="590" y="820" class="box-title">L2　CPU DRAM</text>
+  <text x="590" y="855" class="body">Host offload / pinned memory</text>
+  <text x="590" y="885" class="body">容量换 PCIe / RDMA 延迟</text>
+
+  <rect x="885" y="780" width="285" height="145" rx="20" fill="var(--orange-soft)" stroke="var(--orange)" stroke-width="2"/>
+  <text x="910" y="820" class="box-title">L3　NVMe / 本地盘</text>
+  <text x="910" y="855" class="body">长 TTL、预热与恢复</text>
+  <text x="910" y="885" class="body">读缓存可能慢于重算</text>
+
+  <rect x="1205" y="780" width="325" height="145" rx="20" fill="var(--purple-soft)" stroke="var(--purple)" stroke-width="2"/>
+  <text x="1230" y="820" class="box-title">L4　远端 / 分布式 KV Store</text>
+  <text x="1230" y="855" class="body">跨实例、跨节点、故障解耦</text>
+  <text x="1230" y="885" class="body">目录、复制、带宽与隔离优先</text>
+
+  <path d="M 530 852 L 555 852" stroke="var(--orange)" stroke-width="3" marker-end="url(#arrowOrange)"/>
+  <path d="M 850 852 L 875 852" stroke="var(--orange)" stroke-width="3" marker-end="url(#arrowOrange)"/>
+  <path d="M 1170 852 L 1195 852" stroke="var(--orange)" stroke-width="3" marker-end="url(#arrowOrange)"/>
+  <path d="M 1378 752 L 1378 770" stroke="var(--orange)" stroke-width="3" marker-end="url(#arrowOrange)"/>
+
+  <text x="245" y="958" class="body">责任边界：缓存丢失只应让请求变慢，不能让 Agent 忘记事实；缓存误命中则可能让模型读取不属于当前身份、版本或位置的状态。</text>
+</svg>
