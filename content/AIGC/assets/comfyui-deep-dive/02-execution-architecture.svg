@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1080" role="img" aria-labelledby="title desc">
+  <title id="title">ComfyUI 从画布到生成资产的执行架构</title>
+  <desc id="desc">工作流画布经 graphToPrompt 编译成 API Prompt，进入服务端校验和内存队列，由单个 prompt worker 通过 DynamicPrompt 与 ExecutionList 调度节点；输出缓存、显存管理、文件与 WebSocket 构成运行时侧路。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111f"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="authoring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#172554"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="runtime" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#153e45"/>
+      <stop offset="1" stop-color="#115e59"/>
+    </linearGradient>
+    <linearGradient id="state" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b235f"/>
+      <stop offset="1" stop-color="#5b21b6"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#60a5fa"/>
+    </marker>
+    <marker id="arrowTeal" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#2dd4bf"/>
+    </marker>
+    <marker id="arrowViolet" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#c4b5fd"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", sans-serif; }
+      .title { fill: #f8fafc; font-size: 46px; font-weight: 760; }
+      .subtitle { fill: #94a3b8; font-size: 22px; }
+      .lane { fill: #cbd5e1; font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+      .cardTitle { fill: #f8fafc; font-size: 25px; font-weight: 720; }
+      .cardText { fill: #cbd5e1; font-size: 18px; }
+      .code { fill: #bfdbfe; font-family: "SFMono-Regular", Consolas, monospace; font-size: 15px; }
+      .runtimeCode { fill: #99f6e4; font-family: "SFMono-Regular", Consolas, monospace; font-size: 15px; }
+      .stateCode { fill: #ddd6fe; font-family: "SFMono-Regular", Consolas, monospace; font-size: 15px; }
+      .badge { fill: #0f172a; stroke-width: 1.5; }
+      .badgeText { font-size: 14px; font-weight: 750; letter-spacing: 1px; }
+      .arrowLabel { fill: #94a3b8; font-size: 16px; }
+      .footnote { fill: #64748b; font-size: 16px; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1080" rx="28" fill="url(#bg)"/>
+  <text x="70" y="82" class="title">ComfyUI：从可编辑画布到生成资产</text>
+  <text x="70" y="120" class="subtitle">同一张图会经历“项目文件 → 执行 IR → 调度计划 → 运行结果”四次语义变形</text>
+
+  <rect x="70" y="160" width="1660" height="260" rx="28" fill="#0f172a" stroke="#1e3a8a" stroke-width="2"/>
+  <text x="98" y="198" class="lane">AUTHORING &amp; COMPILE</text>
+
+  <g filter="url(#shadow)">
+    <rect x="105" y="230" width="330" height="150" rx="20" fill="url(#authoring)" stroke="#3b82f6" stroke-width="2"/>
+    <rect x="124" y="247" width="72" height="26" rx="13" class="badge" stroke="#60a5fa"/>
+    <text x="139" y="265" class="badgeText" fill="#93c5fd">EDIT</text>
+    <text x="125" y="307" class="cardTitle">Workflow JSON</text>
+    <text x="125" y="338" class="cardText">节点、连线、位置、widget、分组</text>
+    <text x="125" y="363" class="code">前端项目文件</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="545" y="230" width="330" height="150" rx="20" fill="url(#authoring)" stroke="#3b82f6" stroke-width="2"/>
+    <rect x="564" y="247" width="96" height="26" rx="13" class="badge" stroke="#60a5fa"/>
+    <text x="578" y="265" class="badgeText" fill="#93c5fd">COMPILE</text>
+    <text x="565" y="307" class="cardTitle">graphToPrompt</text>
+    <text x="565" y="338" class="cardText">展开、过滤并序列化可执行节点</text>
+    <text x="565" y="363" class="code">executionUtil.ts</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="985" y="230" width="330" height="150" rx="20" fill="url(#authoring)" stroke="#3b82f6" stroke-width="2"/>
+    <rect x="1004" y="247" width="57" height="26" rx="13" class="badge" stroke="#60a5fa"/>
+    <text x="1020" y="265" class="badgeText" fill="#93c5fd">IR</text>
+    <text x="1005" y="307" class="cardTitle">API Prompt</text>
+    <text x="1005" y="338" class="cardText">class_type、常量输入与连接</text>
+    <text x="1005" y="363" class="code">{ node_id: { inputs, class_type } }</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1425" y="230" width="270" height="150" rx="20" fill="url(#authoring)" stroke="#3b82f6" stroke-width="2"/>
+    <rect x="1444" y="247" width="74" height="26" rx="13" class="badge" stroke="#60a5fa"/>
+    <text x="1459" y="265" class="badgeText" fill="#93c5fd">HTTP</text>
+    <text x="1445" y="307" class="cardTitle">POST /prompt</text>
+    <text x="1445" y="338" class="cardText">提交执行目标与参数</text>
+    <text x="1445" y="363" class="code">server.py</text>
+  </g>
+
+  <path d="M 435 305 L 525 305" fill="none" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <path d="M 875 305 L 965 305" fill="none" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <path d="M 1315 305 L 1405 305" fill="none" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+  <rect x="70" y="470" width="1660" height="330" rx="28" fill="#0f172a" stroke="#0f766e" stroke-width="2"/>
+  <text x="98" y="508" class="lane">EXECUTION KERNEL</text>
+
+  <g filter="url(#shadow)">
+    <rect x="105" y="548" width="300" height="188" rx="20" fill="url(#runtime)" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="124" y="565" width="92" height="26" rx="13" class="badge" stroke="#2dd4bf"/>
+    <text x="139" y="583" class="badgeText" fill="#5eead4">VALIDATE</text>
+    <text x="125" y="626" class="cardTitle">validate_prompt</text>
+    <text x="125" y="658" class="cardText">从输出节点反向校验</text>
+    <text x="125" y="685" class="cardText">类型、必填项与参数范围</text>
+    <text x="125" y="716" class="runtimeCode">execution.py</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="475" y="548" width="300" height="188" rx="20" fill="url(#runtime)" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="494" y="565" width="70" height="26" rx="13" class="badge" stroke="#2dd4bf"/>
+    <text x="509" y="583" class="badgeText" fill="#5eead4">QUEUE</text>
+    <text x="495" y="626" class="cardTitle">PromptQueue</text>
+    <text x="495" y="658" class="cardText">内存优先队列</text>
+    <text x="495" y="685" class="cardText">queue / running / history</text>
+    <text x="495" y="716" class="runtimeCode">execution.py</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="845" y="548" width="300" height="188" rx="20" fill="url(#runtime)" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="864" y="565" width="86" height="26" rx="13" class="badge" stroke="#2dd4bf"/>
+    <text x="879" y="583" class="badgeText" fill="#5eead4">WORKER</text>
+    <text x="865" y="626" class="cardTitle">prompt_worker</text>
+    <text x="865" y="658" class="cardText">单实例一次推进一个 Prompt</text>
+    <text x="865" y="685" class="cardText">任务内允许异步等待重叠</text>
+    <text x="865" y="716" class="runtimeCode">main.py</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1215" y="548" width="480" height="188" rx="20" fill="url(#runtime)" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="1234" y="565" width="110" height="26" rx="13" class="badge" stroke="#2dd4bf"/>
+    <text x="1249" y="583" class="badgeText" fill="#5eead4">SCHEDULE</text>
+    <text x="1235" y="626" class="cardTitle">DynamicPrompt + ExecutionList</text>
+    <text x="1235" y="658" class="cardText">拓扑消解、懒输入、动态子图、输出优先</text>
+    <text x="1235" y="685" class="cardText">按依赖选择 ready node，再调用节点函数</text>
+    <text x="1235" y="716" class="runtimeCode">comfy_execution/graph.py</text>
+  </g>
+
+  <path d="M 1560 380 C 1560 455 255 440 255 528" fill="none" stroke="#2dd4bf" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <text x="875" y="455" class="arrowLabel">校验通过后入队</text>
+  <path d="M 405 642 L 455 642" fill="none" stroke="#2dd4bf" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <path d="M 775 642 L 825 642" fill="none" stroke="#2dd4bf" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <path d="M 1145 642 L 1195 642" fill="none" stroke="#2dd4bf" stroke-width="4" marker-end="url(#arrowTeal)"/>
+
+  <rect x="70" y="850" width="1660" height="150" rx="28" fill="#0f172a" stroke="#6d28d9" stroke-width="2"/>
+  <text x="98" y="888" class="lane">RUNTIME STATE &amp; OBSERVABILITY</text>
+
+  <g filter="url(#shadow)">
+    <rect x="130" y="915" width="320" height="56" rx="16" fill="url(#state)" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="154" y="950" class="cardTitle">输出缓存</text>
+    <text x="278" y="950" class="stateCode">caching.py</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="525" y="915" width="350" height="56" rx="16" fill="url(#state)" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="549" y="950" class="cardTitle">模型 / VRAM</text>
+    <text x="720" y="950" class="stateCode">model_management.py</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="950" y="915" width="330" height="56" rx="16" fill="url(#state)" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="974" y="950" class="cardTitle">文件 / History / Jobs</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1355" y="915" width="315" height="56" rx="16" fill="url(#state)" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="1379" y="950" class="cardTitle">WebSocket 事件</text>
+    <text x="1560" y="950" class="stateCode">进度 / 错误</text>
+  </g>
+
+  <path d="M 1455 736 C 1455 810 290 810 290 895" fill="none" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="10 9" marker-end="url(#arrowViolet)"/>
+  <path d="M 1455 736 C 1455 815 700 810 700 895" fill="none" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="10 9" marker-end="url(#arrowViolet)"/>
+  <path d="M 1455 736 C 1455 815 1115 810 1115 895" fill="none" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="10 9" marker-end="url(#arrowViolet)"/>
+  <path d="M 1455 736 L 1510 895" fill="none" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="10 9" marker-end="url(#arrowViolet)"/>
+
+  <text x="70" y="1043" class="footnote">实线：执行主链　虚线：缓存、资源与观测侧路　｜　依据 Core v0.28.0 / Frontend v1.45.21 固定源码重绘</text>
+</svg>

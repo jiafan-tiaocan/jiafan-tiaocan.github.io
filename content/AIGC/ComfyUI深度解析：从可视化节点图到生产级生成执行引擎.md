@@ -21,6 +21,10 @@ publish: true
 >
 > 这也解释了我们为什么曾经非常深度地使用它：算法同学在画布上完成的复杂生成流程，可以编译成 JSON，通过少量参数注入直接接到生产服务，而不必把验证过的流程重新手写一遍。但它只解决了**单个生成任务内部的计算编排**，没有提供生产系统所需的持久队列、认证、幂等、跨进程恢复、版本治理与多租户隔离。正确的生产形态不是“把 ComfyUI 端口暴露出去”，而是把它放在外部业务网关和耐久任务系统之后，作为一台可版本化的 GPU 执行器。
 
+![ComfyUI 官方工作流画布：模型加载、文本编码、采样、VAE 解码与保存节点组成完整生成图](assets/comfyui-deep-dive/01-official-workflow-canvas.png)
+
+*图 1：ComfyUI 官方画布。真正被保存和执行的不是一串线性步骤，而是由模型、条件、latent、图像等带类型对象连接起来的生成计算图；节点中的预览又让中间结果与最终资产留在同一调试界面。来源：[ComfyUI 官方仓库 README 固定快照](https://github.com/Comfy-Org/ComfyUI/blob/700821e1364eaab0e8f21c538a2131719fec57bf/README.md#L34)。*
+
 ## 一、先看结论
 
 | 维度 | 判断 | 证据 |
@@ -77,19 +81,9 @@ LATENT ──────┘
 
 从用户点击 Run 到文件落盘，完整链路如下：
 
-```mermaid
-flowchart LR
-    A["可视化画布<br/>Workflow JSON"] --> B["前端 graphToPrompt<br/>编译执行图"]
-    B --> C["API Prompt<br/>class_type + inputs"]
-    C --> D["POST /prompt<br/>校验与入队"]
-    D --> E["PromptQueue<br/>内存优先队列"]
-    E --> F["单个 prompt_worker"]
-    F --> G["DynamicPrompt + ExecutionList<br/>拓扑、懒执行、异步与动态子图"]
-    G --> H["Node Function<br/>模型与 Tensor 运算"]
-    H --> I["输出缓存与显存管理"]
-    I --> J["文件 / History / Jobs"]
-    G --> K["WebSocket<br/>进度与错误事件"]
-```
+![ComfyUI 从可编辑画布到生成资产的源码级执行架构](assets/comfyui-deep-dive/02-execution-architecture.svg)
+
+*图 2：依据固定源码重绘的执行主链。蓝色层把可编辑 Workflow 编译为 API Prompt；绿色层完成校验、入队与单 Worker 内的输出驱动调度；紫色层是缓存、显存、结果和 WebSocket 等运行时侧路。对应源码入口见文末“核心代码索引”。*
 
 这条链路可以分成四层：
 
@@ -173,6 +167,10 @@ flowchart LR
 - 多输出工作流可以只跑一个分支；
 - 某个输出分支无效时，其他合法输出仍可能继续；
 - “左边先、右边后”只是画布视觉，真正顺序由依赖关系决定。
+
+![ComfyUI 官方局部执行对比图：指定一个输出节点与运行完整工作流的差异](assets/comfyui-deep-dive/03-official-partial-execution.jpg)
+
+*图 3：官方局部执行对比。左侧选择某个输出节点运行时，只有其上游依赖闭包被点亮；右侧普通 Run 会覆盖全部有效输出分支。这张图把“从输出反向展开”从源码语义变成了可见交互。来源：[ComfyUI Partial Execution 官方文档](https://docs.comfy.org/interface/features/partial-execution)。*
 
 ### 6.2 调度器执行拓扑消解
 
@@ -393,6 +391,12 @@ Core 在启动时扫描 `custom_nodes`，用 `importlib` 载入模块并执行 `
 ```
 
 过去若用 Notebook 或散落的 Python 脚本，研发验证完之后往往还要经历一次“生产重写”：重新实现模型加载、条件组合、采样、后处理与显存策略。ComfyUI 把这次翻译压缩成工作流发布，复杂链路可以更快进入业务。
+
+官方后续推出的 App Mode 把这条路径继续向产品端推进：工作流作者从图中选择要暴露的输入与输出，使用者看到的则是输入面板、结果区和 Run 按钮，而不是节点画布。这证明“同一份图同时服务作者和使用者”已经成为产品能力。不过 App Mode 解决的是**交互封装**，不是认证、耐久队列、幂等、租户隔离或跨进程恢复；严肃生产系统仍然需要外置这些控制面。
+
+![ComfyUI 官方 App Mode：节点图被收敛为输入、输出与运行按钮组成的应用界面](assets/comfyui-deep-dive/04-official-app-mode.png)
+
+*图 4：官方 App Mode。右侧只暴露工作流作者选定的输入控件和运行参数，节点图被隐藏，普通使用者无需理解 ComfyUI 图结构。它直观展示了“研发画布 → 可消费工具”的最后一公里，也说明 UI 产品化与后端生产治理是两个不同层次。来源：[ComfyUI App Mode 官方文档](https://docs.comfy.org/interface/app-mode)。*
 
 ### 10.1 那套早期实现有效，但还不是生产契约
 
@@ -764,7 +768,10 @@ Temporal / 业务任务系统
 
 - [ComfyUI Core 固定快照](https://github.com/Comfy-Org/ComfyUI/tree/700821e1364eaab0e8f21c538a2131719fec57bf)
 - [ComfyUI Frontend 固定快照](https://github.com/Comfy-Org/ComfyUI_frontend/tree/3f8dabb756e3428bc3686eccc38b9a2f468c0a2e)
+- [ComfyUI 官方画布截图（Core 固定快照 README）](https://github.com/Comfy-Org/ComfyUI/blob/700821e1364eaab0e8f21c538a2131719fec57bf/README.md#L34)
 - [ComfyUI Workflow 核心概念](https://docs.comfy.org/development/core-concepts/workflow)
+- [ComfyUI Partial Execution](https://docs.comfy.org/interface/features/partial-execution)
+- [ComfyUI App Mode](https://docs.comfy.org/interface/app-mode)
 - [ComfyUI Server 路由与 WebSocket](https://docs.comfy.org/development/comfyui-server/comms_routes)
 - [Custom Node Properties](https://docs.comfy.org/custom-nodes/backend/server_overview)
 - [Custom Node Lifecycle](https://docs.comfy.org/custom-nodes/backend/lifecycle)
