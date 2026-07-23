@@ -235,6 +235,7 @@ plugins:
       batchSize: 4
       showTags: true
       excerptLength: 120
+      chartMonths: 24
     layout:
       position: afterBody
       priority: 20

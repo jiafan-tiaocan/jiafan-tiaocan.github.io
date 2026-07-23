@@ -577,6 +577,240 @@ body[data-slug="tags/index"] {
 }
 
 body[data-slug="index"] .recent-notes.with-summary {
+  .publication-chart {
+    --publication-technical: #7faa87;
+    --publication-paper: #8798c7;
+    --publication-thought: #cf7867;
+    --publication-life: #d2a349;
+
+    position: relative;
+    margin-top: 1.25rem;
+    padding: 0.9rem 1rem 0.75rem;
+    border: 1px solid var(--lightgray);
+    border-radius: 0.8rem;
+    background: color-mix(in srgb, var(--light) 94%, var(--lightgray));
+  }
+
+  .publication-chart__header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .publication-chart__eyebrow {
+    margin: 0;
+    color: var(--darkgray);
+    font-family: var(--headerFont);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .publication-chart__status {
+    margin: 0.18rem 0 0;
+    color: var(--gray);
+    font-family: var(--codeFont);
+    font-size: 0.6rem;
+    letter-spacing: 0.03em;
+  }
+
+  .publication-chart__clear {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--lightgray);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--darkgray);
+    font-family: var(--headerFont);
+    font-size: 0.62rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .publication-chart__clear:hover,
+  .publication-chart__clear:focus-visible {
+    border-color: var(--secondary);
+    color: var(--secondary);
+  }
+
+  .publication-chart__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.8rem;
+    margin: 0.55rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .publication-chart__legend-item {
+    display: inline-flex;
+    gap: 0.3rem;
+    align-items: center;
+    color: var(--gray);
+    font-family: var(--codeFont);
+    font-size: 0.55rem;
+  }
+
+  .publication-chart__legend-item::before {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 1px;
+    background: var(--publication-technical);
+  }
+
+  .publication-chart__legend-item--paper::before {
+    background: var(--publication-paper);
+  }
+
+  .publication-chart__legend-item--thought::before {
+    background: var(--publication-thought);
+  }
+
+  .publication-chart__legend-item--life::before {
+    background: var(--publication-life);
+  }
+
+  .publication-chart__scroll {
+    margin-top: 0.5rem;
+    padding-bottom: 0.2rem;
+    overflow-x: auto;
+    scrollbar-color: var(--lightgray) transparent;
+    scrollbar-width: thin;
+  }
+
+  .publication-chart__plot {
+    display: grid;
+    grid-template-columns: repeat(var(--publication-chart-columns), minmax(0, 1fr));
+    gap: 0.18rem;
+    min-width: calc(var(--publication-chart-columns) * 1.8rem);
+  }
+
+  .publication-chart__month {
+    display: grid;
+    grid-template-rows: 4.35rem auto;
+    gap: 0.35rem;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0.35rem;
+    background: transparent;
+    color: var(--gray);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .publication-chart__month[aria-disabled="true"] {
+    cursor: default;
+    opacity: 0.58;
+  }
+
+  .publication-chart__month:hover:not([aria-disabled="true"]),
+  .publication-chart__month:focus-visible,
+  .publication-chart__month[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--secondary) 8%, transparent);
+    outline: none;
+  }
+
+  .publication-chart__month:focus-visible {
+    box-shadow: 0 0 0 1px var(--secondary);
+  }
+
+  .publication-chart__bar-track {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--lightgray) 78%, transparent);
+  }
+
+  .publication-chart__bar {
+    display: flex;
+    flex-direction: column-reverse;
+    width: min(0.85rem, 58%);
+    height: var(--publication-month-height);
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 0.2rem 0.2rem 0 0;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--dark) 5%, transparent);
+    transition:
+      height 180ms ease,
+      filter 160ms ease,
+      transform 160ms ease;
+  }
+
+  .publication-chart__month:hover .publication-chart__bar,
+  .publication-chart__month:focus-visible .publication-chart__bar,
+  .publication-chart__month[aria-pressed="true"] .publication-chart__bar {
+    filter: saturate(1.12) brightness(1.05);
+    transform: translateY(-1px);
+  }
+
+  .publication-chart__segment {
+    flex: var(--publication-segment-count) 0 0;
+    min-height: 3px;
+    background: var(--publication-technical);
+  }
+
+  .publication-chart__segment--paper {
+    background: var(--publication-paper);
+  }
+
+  .publication-chart__segment--thought {
+    background: var(--publication-thought);
+  }
+
+  .publication-chart__segment--life {
+    background: var(--publication-life);
+  }
+
+  .publication-chart__month-label {
+    overflow: visible;
+    font-family: var(--codeFont);
+    font-size: 0.52rem;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .publication-chart__month-label--hidden {
+    visibility: hidden;
+  }
+
+  .publication-chart__tooltip {
+    position: fixed;
+    z-index: 1000;
+    width: min(22rem, calc(100vw - 1.5rem));
+    max-height: min(18rem, calc(100vh - 1rem));
+    padding: 0.75rem 0.85rem;
+    overflow-y: auto;
+    border: 1px solid var(--lightgray);
+    border-radius: 0.6rem;
+    background: color-mix(in srgb, var(--light) 96%, var(--lightgray));
+    box-shadow: 0 0.75rem 2.5rem rgb(0 0 0 / 18%);
+    color: var(--darkgray);
+    font-size: 0.72rem;
+    line-height: 1.45;
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  .publication-chart__tooltip > strong {
+    display: block;
+    color: var(--dark);
+    font-family: var(--headerFont);
+    font-size: 0.72rem;
+  }
+
+  .publication-chart__tooltip > ul {
+    margin: 0.45rem 0 0;
+    padding-left: 1rem;
+  }
+
+  .publication-chart__tooltip > ul > li + li {
+    margin-top: 0.22rem;
+  }
+
   .note-summary {
     max-width: 42rem;
     margin: 0.7rem 0 0;
@@ -669,6 +903,10 @@ body[data-slug="index"] .recent-notes.with-summary {
     width: 100%;
     height: 1px;
     pointer-events: none;
+  }
+
+  & > ul.recent-ul {
+    margin-top: 1.1rem;
   }
 }
 
@@ -794,6 +1032,17 @@ body[data-slug="index"] .recent-notes.with-summary {
 
   .recent-notes {
     padding-top: 3rem;
+
+    .publication-chart {
+      margin-right: -0.15rem;
+      margin-left: -0.15rem;
+      padding-right: 0.75rem;
+      padding-left: 0.75rem;
+    }
+
+    .publication-chart__plot {
+      min-width: calc(var(--publication-chart-columns) * 1.72rem);
+    }
 
     & > ul.recent-ul > li.recent-li .section {
       display: block;
