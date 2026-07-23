@@ -43,7 +43,7 @@ StreamingTalker 的切入点不是继续压缩这个大模型，而是先问：
 
 如果下一帧主要由当前语音、说话人风格和有限的历史面部状态决定，那么长序列可以被改写成一个不断重复的局部条件生成问题。
 
-![全序列扩散与 StreamingTalker 的责任转移](assets/streamingtalker/streamingtalker-responsibility-shift.svg)
+![本文重绘：全序列扩散与 StreamingTalker 的责任转移](assets/streamingtalker/streamingtalker-responsibility-shift.svg)
 
 *图 1：全序列模型把输出权留到整段去噪结束；StreamingTalker 把时序连续性写进固定历史状态，因此每完成一步就能交付一帧。*
 
@@ -120,7 +120,13 @@ $$
 
 ## 五、黑盒总览：AR 与 Diffusion 各做一半
 
-![StreamingTalker 的自回归扩散闭环](assets/streamingtalker/streamingtalker-ar-diffusion-loop.svg)
+读原图时先区分两种时间：横向的面部动画时间由 AR condition predictor 推进，每个动画步内部的 diffusion time 只负责把噪声 latent 还原为动作；历史运动、音频和身份则从不同入口汇入条件。
+
+![论文原图 Figure 1：StreamingTalker 总体流程与 AR condition predictor](assets/streamingtalker/paper-fig01-pipeline.png)
+
+*论文原图 Figure 1，来源：[StreamingTalker](https://arxiv.org/abs/2511.14223)。它直接支持“AR 管时间连续性、轻量 diffusion 管条件生成”的模块分工，也显示固定历史窗口与语音条件的接线位置；结构图不能单独证明长序列更稳定或首帧更快，这两点还要看 Figure 2/3 与量化实验。*
+
+![本文重绘：StreamingTalker 的自回归扩散闭环](assets/streamingtalker/streamingtalker-ar-diffusion-loop.svg)
 
 *图 2：动画时间 $n$ 与扩散时间 $s$ 是两个不同循环。AR 负责沿 $n$ 传递状态；每一个 $n$ 内部，再用 50 个 DDIM 步从噪声恢复动作 latent。*
 
@@ -373,9 +379,15 @@ $$
 
 StreamingTalker 在 “body / now” 等圆唇音，以及 “ambiguous / parents” 等闭唇音上更接近真值。这里截图只能提供案例证据；若要确认普遍感知优势，还需要盲测用户研究或音素分层统计。
 
+看原图时按列对齐同一语音时刻，重点观察圆唇音的口型曲率和双唇音是否真正闭合，不要只凭整张脸“看起来更顺眼”作判断。
+
+![论文原图 Figure 2：StreamingTalker 与代表方法在圆唇音和双唇音上的定性比较](assets/streamingtalker/paper-fig02-qualitative.png)
+
+*论文原图 Figure 2，来源：[StreamingTalker](https://arxiv.org/abs/2511.14223)。这些样例支持论文对特定发音口型的可见改善，并为 LVE/MOD 指标提供直观对应；它们仍是案例证据，不能替代盲测、音素分层统计或对所有说话者的普遍结论。*
+
 ## 十二、消融：不要把所有模块都叫“核心”
 
-![StreamingTalker 的 BIWI 消融证据](assets/streamingtalker/streamingtalker-ablation-evidence.svg)
+![本文重绘：StreamingTalker 的 BIWI 消融证据](assets/streamingtalker/streamingtalker-ablation-evidence.svg)
 
 *图 3：每个指标除以完整模型的误差。相对恶化揭示组件职责：cross-attention 负责语音条件，latent 负责可生成空间，self-attention 负责动态一致性，diffusion 主要补动态幅度。*
 
@@ -390,7 +402,13 @@ StreamingTalker 在 “body / now” 等圆唇音，以及 “ambiguous / parent
 
 ## 十三、实时证据：25 ms 到底买到了什么
 
-![StreamingTalker 的实时延迟预算](assets/streamingtalker/streamingtalker-realtime-budget.svg)
+读延迟图时先看横轴音频时长，再比较 StreamingTalker 的曲线是否近似水平；这比只盯住某个单点的“25 ms”更能验证它是否把计算从全序列改写为固定窗口。
+
+![论文原图 Figure 3：不同音频时长下 StreamingTalker 与全序列方法的推理延迟](assets/streamingtalker/paper-fig03-latency.png)
+
+*论文原图 Figure 3，来源：[StreamingTalker](https://arxiv.org/abs/2511.14223)。StreamingTalker 的延迟几乎不随输入总时长增长，而对照方法随序列变长，直接支持固定状态转移的复杂度主张；它测量的是指定硬件和动画模型内部路径，不等价于麦克风、网络、渲染和播放在内的端到端对话延迟。*
+
+![本文重绘：StreamingTalker 的实时延迟预算](assets/streamingtalker/streamingtalker-realtime-budget.svg)
 
 *图 4：必须分开看首帧延迟、逐帧吞吐和端到端对话延迟。论文测量的是动画模型内部时间。*
 
