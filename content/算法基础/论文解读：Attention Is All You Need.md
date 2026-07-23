@@ -7,7 +7,7 @@ tags:
   - Self-Attention
   - Cross-Attention
   - 深度学习
-date: 2017-06-12
+date: 2023-01-01
 noteType: paper
 publish: true
 aliases:
