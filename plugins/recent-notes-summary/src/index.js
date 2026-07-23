@@ -119,6 +119,7 @@ const setupRecentNotes = () => {
     let visibleLimit = initialLimit
     let activeMonth = ""
     let observer
+    let autoLoadFrame = 0
 
     const updateStatus = () => {
       if (activeMonth) {
@@ -154,18 +155,35 @@ const setupRecentNotes = () => {
       updateStatus()
     }
 
-    const loadMore = () => revealBatch()
+    const maybeAutoLoad = () => {
+      if (autoLoadFrame || activeMonth || visibleLimit >= items.length || !sentinel) return
+      autoLoadFrame = requestAnimationFrame(() => {
+        autoLoadFrame = 0
+        const sentinelPosition = sentinel.getBoundingClientRect()
+        const withinPreloadRange =
+          sentinelPosition.top <= window.innerHeight + 320 && sentinelPosition.bottom >= -320
+        if (!withinPreloadRange) return
+        revealBatch()
+        maybeAutoLoad()
+      })
+    }
+
+    const loadMore = () => {
+      revealBatch()
+      maybeAutoLoad()
+    }
     if (button) button.addEventListener("click", loadMore)
 
     if (sentinel && "IntersectionObserver" in window) {
       observer = new IntersectionObserver(
         (entries) => {
-          if (entries.some((entry) => entry.isIntersecting)) revealBatch()
+          if (entries.some((entry) => entry.isIntersecting)) maybeAutoLoad()
         },
         { rootMargin: "320px 0px" },
       )
       observer.observe(sentinel)
     }
+    window.addEventListener("scroll", maybeAutoLoad, { passive: true })
 
     const applyMonthFilter = (month) => {
       activeMonth = activeMonth === month ? "" : month
@@ -179,6 +197,7 @@ const setupRecentNotes = () => {
       if (clearFilter) clearFilter.hidden = !activeMonth
       container.toggleAttribute("data-month-filtered", Boolean(activeMonth))
       updateStatus()
+      if (!activeMonth) maybeAutoLoad()
     }
 
     const clearMonthFilter = () => {
@@ -250,10 +269,13 @@ const setupRecentNotes = () => {
 
     container.dataset.bound = "true"
     updateStatus()
+    maybeAutoLoad()
     window.addCleanup(() => {
       if (button) button.removeEventListener("click", loadMore)
       if (clearFilter) clearFilter.removeEventListener("click", clearMonthFilter)
       window.removeEventListener("scroll", hideTooltip)
+      window.removeEventListener("scroll", maybeAutoLoad)
+      if (autoLoadFrame) cancelAnimationFrame(autoLoadFrame)
       for (const { monthButton, activate, enter } of monthListeners) {
         monthButton.removeEventListener("click", activate)
         monthButton.removeEventListener("pointerenter", enter)
