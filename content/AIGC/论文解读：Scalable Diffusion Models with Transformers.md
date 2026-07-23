@@ -1,5 +1,5 @@
 ---
-title: 彻底搞懂 DiT：它不是一种新的 Diffusion，而是可扩展的去噪主干
+title: "论文解读：Scalable Diffusion Models with Transformers"
 description: 从扩散系统中的位置一路拆到张量形状、Self-Attention、adaLN-Zero、输出头、训练目标与采样循环，建立一套可以迁移到图像、视频和现代 Flow Transformer 的 DiT 心智模型。
 tags:
   - DiT
@@ -8,11 +8,13 @@ tags:
   - 生成模型
   - 论文解读
 date: 2024-06-20
-noteType: technical
+noteType: paper
 publish: true
+aliases:
+  - "AIGC/彻底搞懂DiT"
 ---
 
-# 彻底搞懂 DiT：它不是一种新的 Diffusion，而是可扩展的去噪主干
+# 论文解读：Scalable Diffusion Models with Transformers
 
 > **先记住一句话：Diffusion 规定“怎样把数据变成噪声、再怎样一步步走回来”；DiT 只是负责每一步里那次最昂贵、最关键的函数估计。它把这个函数从卷积 U-Net 换成了处理 latent patch 的 Transformer。**
 
