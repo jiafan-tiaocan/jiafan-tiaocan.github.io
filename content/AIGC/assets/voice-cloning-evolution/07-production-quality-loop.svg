@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" role="img" aria-labelledby="title desc">
+  <title id="title">MiniMax 音色克隆生产闭环</title>
+  <desc id="desc">音色资产线、文本生成线和自动验收线共同组成生产链路，质量门禁失败后回到生成或人工抽检。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { fill: #0f172a; font: 700 38px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; }
+      .subtitle { fill: #475569; font: 500 20px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; }
+      .lane-title { fill: #0f172a; font: 700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; }
+      .box-title { fill: #0f172a; font: 700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; text-anchor: middle; }
+      .box-note { fill: #475569; font: 500 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; text-anchor: middle; }
+      .footer { fill: #334155; font: 600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; text-anchor: middle; }
+      .lane-asset { fill: #eff6ff; stroke: #bfdbfe; }
+      .lane-text { fill: #ecfeff; stroke: #a5f3fc; }
+      .lane-gate { fill: #fff7ed; stroke: #fed7aa; }
+      .box-asset { fill: #ffffff; stroke: #60a5fa; }
+      .box-text { fill: #ffffff; stroke: #22d3ee; }
+      .box-gate { fill: #ffffff; stroke: #fb923c; }
+      .box-pass { fill: #ecfdf5; stroke: #34d399; }
+      .box-fail { fill: #fff1f2; stroke: #fb7185; }
+      .line { fill: none; stroke: #64748b; stroke-width: 3; marker-end: url(#arrow); }
+      .line-fail { fill: none; stroke: #e11d48; stroke-width: 3; stroke-dasharray: 9 7; marker-end: url(#arrow); }
+      .arrow-head { fill: #64748b; }
+      .badge { fill: #2563eb; }
+      .badge-text { fill: white; font: 700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; text-anchor: middle; }
+      @media (prefers-color-scheme: dark) {
+        .bg { fill: #0b1220; }
+        .title, .lane-title, .box-title { fill: #f8fafc; }
+        .subtitle, .box-note, .footer { fill: #cbd5e1; }
+        .lane-asset { fill: #10223f; stroke: #1e40af; }
+        .lane-text { fill: #0d2930; stroke: #0e7490; }
+        .lane-gate { fill: #302014; stroke: #9a3412; }
+        .box-asset, .box-text, .box-gate { fill: #111827; }
+        .box-pass { fill: #0d2a22; }
+        .box-fail { fill: #32151b; }
+        .line { stroke: #94a3b8; }
+        .arrow-head { fill: #94a3b8; }
+      }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1500" height="820" rx="28"/>
+  <text class="title" x="750" y="58" text-anchor="middle">当前生产链路：三个闭环，而不是一次 API 调用</text>
+  <text class="subtitle" x="750" y="92" text-anchor="middle">模型只负责中间的生成；团队必须拥有音色资产、文本控制与质量门禁</text>
+
+  <rect class="lane-asset" x="28" y="122" width="1444" height="178" rx="22"/>
+  <text class="lane-title" x="62" y="158">① 音色资产线</text>
+  <rect class="box-asset" x="186" y="175" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="291" y="207">授权参考音频</text>
+  <text class="box-note" x="291" y="235">单人、来源与用途可追溯</text>
+  <rect class="box-asset" x="448" y="175" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="553" y="207">输入质检</text>
+  <text class="box-note" x="553" y="235">格式 / 时长 / SNR / VAD</text>
+  <rect class="box-asset" x="710" y="175" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="815" y="207">创建 voice_id</text>
+  <text class="box-note" x="815" y="235">上传 MiniMax 并版本化</text>
+  <rect class="box-asset" x="972" y="175" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="1077" y="207">固定文案试音</text>
+  <text class="box-note" x="1077" y="235">覆盖专名、长句与情绪</text>
+  <rect class="box-pass" x="1234" y="175" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="1339" y="207">登记并激活</text>
+  <text class="box-note" x="1339" y="235">权限 / 版本 / 下线策略</text>
+  <path class="line" d="M396 219 H448"/>
+  <path class="line" d="M658 219 H710"/>
+  <path class="line" d="M920 219 H972"/>
+  <path class="line" d="M1182 219 H1234"/>
+
+  <rect class="lane-text" x="28" y="322" width="1444" height="178" rx="22"/>
+  <text class="lane-title" x="62" y="358">② 文本与生成线</text>
+  <rect class="box-text" x="186" y="375" width="248" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="310" y="407">保留原始文案</text>
+  <text class="box-note" x="310" y="435">字幕与审核使用显示文本</text>
+  <rect class="box-text" x="497" y="375" width="248" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="621" y="407">TTS 文本规范化</text>
+  <text class="box-note" x="621" y="435">读音 / 停顿 / 数字 / 专名</text>
+  <rect class="box-text" x="808" y="375" width="248" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="932" y="407">MiniMax Speech 2.8</text>
+  <text class="box-note" x="932" y="435">HD 成片 / Turbo 试音</text>
+  <rect class="box-text" x="1119" y="375" width="248" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="1243" y="407">合成音频</text>
+  <text class="box-note" x="1243" y="435">携带 voice_id 与版本记录</text>
+  <path class="line" d="M434 419 H497"/>
+  <path class="line" d="M745 419 H808"/>
+  <path class="line" d="M1056 419 H1119"/>
+
+  <rect class="lane-gate" x="28" y="522" width="1444" height="220" rx="22"/>
+  <text class="lane-title" x="62" y="558">③ 自动验收线</text>
+  <rect class="box-gate" x="186" y="575" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="291" y="607">音频完整性</text>
+  <text class="box-note" x="291" y="635">时长 / 截断 / 静音 / 峰值</text>
+  <rect class="box-gate" x="448" y="575" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="553" y="607">ASR 回转</text>
+  <text class="box-note" x="553" y="635">WER / CER 与专名命中</text>
+  <rect class="box-gate" x="710" y="575" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="815" y="607">Speaker SIM</text>
+  <text class="box-note" x="815" y="635">和授权参考音频比较</text>
+  <rect class="box-gate" x="972" y="575" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="1077" y="607">质量门禁</text>
+  <text class="box-note" x="1077" y="635">阈值按业务回归集校准</text>
+  <rect class="box-pass" x="1234" y="575" width="210" height="88" rx="16" stroke-width="2"/>
+  <text class="box-title" x="1339" y="607">进入视频生产</text>
+  <text class="box-note" x="1339" y="635">字幕仍使用原始显示文本</text>
+  <path class="line" d="M396 619 H448"/>
+  <path class="line" d="M658 619 H710"/>
+  <path class="line" d="M920 619 H972"/>
+  <path class="line" d="M1182 619 H1234"/>
+
+  <rect class="box-fail" x="903" y="680" width="348" height="42" rx="12" stroke-width="2"/>
+  <text class="box-note" x="1077" y="707">不通过：重试、换参考片段或人工抽检</text>
+  <path class="line-fail" d="M1077 663 V680"/>
+  <path class="line-fail" d="M903 701 H856 C815 701 789 674 789 635 V488 C789 453 805 435 808 435"/>
+
+  <rect class="badge" x="1110" y="16" width="318" height="34" rx="17"/>
+  <text class="badge-text" x="1269" y="38">我们的核心资产：可替换模型的生产系统</text>
+  <text class="footer" x="750" y="790">模型升级改变中间一格；授权、版本、发音文本、回归集和失败处理必须长期保留</text>
+</svg>

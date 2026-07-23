@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="990" viewBox="0 0 1500 990" role="img" aria-labelledby="title desc">
+  <title id="title">音色克隆宏观技术演进图</title>
+  <desc id="desc">从拼接式和统计参数语音，经说话人编码、端到端 TTS、神经 Codec 语言模型、GPT-SoVITS 与 CosyVoice，演进到 MiniMax Speech 托管 API；下方总结身份、内容、生成和工程四层责任的收敛。</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#111a30"/>
+    </linearGradient>
+    <linearGradient id="timeline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="0.48" stop-color="#a78bfa"/>
+      <stop offset="0.72" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+    <linearGradient id="shift" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#020617" flood-opacity="0.4"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2dd4bf"/>
+    </marker>
+    <style>
+      text{font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif}
+      .bg{fill:url(#background)}
+      .panel{fill:#0b1527;stroke:#26364d;stroke-width:2}
+      .card{fill:#111d31;stroke:#334155;stroke-width:2}
+      .project-old{fill:#211b2c;stroke:#f59e0b;stroke-width:2.5}
+      .project-mid{fill:#102522;stroke:#2dd4bf;stroke-width:2.5}
+      .project-now{fill:#10231f;stroke:#5eead4;stroke-width:3}
+      .stack{fill:#101a2b;stroke:#334155;stroke-width:2}
+      .title{fill:#f8fafc;font-size:36px;font-weight:700}
+      .subtitle{fill:#94a3b8;font-size:18px}
+      .date{fill:#cbd5e1;font-size:16px;font-weight:700}
+      .node-title{fill:#f8fafc;font-size:17px;font-weight:700}
+      .body{fill:#b6c4d6;font-size:14px}
+      .muted{fill:#7f91a9;font-size:13px}
+      .section{fill:#dbeafe;font-size:19px;font-weight:700}
+      .stack-title{fill:#f8fafc;font-size:17px;font-weight:700}
+      .stack-body{fill:#aebdd0;font-size:14px}
+      .pill{fill:#18243a;stroke:#f59e0b;stroke-width:1.5}
+      .pill-text{fill:#fde68a;font-size:15px;font-weight:700}
+      .shift-pill{fill:#14243a;stroke:#3b82a7;stroke-width:1.5}
+      .footer{fill:#e2e8f0;font-size:16px;font-weight:700}
+      @media (prefers-color-scheme: light){
+        .bg{fill:#f8fafc}
+        .panel{fill:#eef3f9;stroke:#cbd5e1}
+        .card{fill:#ffffff;stroke:#cbd5e1}
+        .project-old{fill:#fff8e8;stroke:#d97706}
+        .project-mid{fill:#ecfdf5;stroke:#0f9f8f}
+        .project-now{fill:#e8fbf7;stroke:#0f9f8f}
+        .stack{fill:#ffffff;stroke:#cbd5e1}
+        .title,.node-title,.stack-title{fill:#0f172a}
+        .subtitle,.muted{fill:#64748b}
+        .date,.body,.stack-body,.footer{fill:#334155}
+        .section{fill:#1e3a5f}
+        .pill{fill:#fff7df;stroke:#d97706}
+        .pill-text{fill:#92400e}
+        .shift-pill{fill:#e8f5fb;stroke:#3b82a7}
+      }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1500" height="990" rx="28"/>
+  <text class="title" x="64" y="62">音色克隆：从“每人一模”到“十秒参考音频 + 通用 API”</text>
+  <text class="subtitle" x="64" y="100">每次跃迁都在把说话人个性从专属模型参数中迁出，并把内容、身份、韵律和声学重建分配给更稳定的模块。</text>
+
+  <rect class="panel" x="48" y="132" width="1404" height="500" rx="26"/>
+  <text class="section" x="76" y="174">技术范式与项目路径</text>
+
+  <rect class="pill" x="844" y="151" width="555" height="42" rx="21"/>
+  <text class="pill-text" x="1121" y="178" text-anchor="middle">我们的路径：GPT-SoVITS 私有训练 → CosyVoice 短提示 → MiniMax 托管 API</text>
+  <path d="M940 206 C1045 185,1250 185,1360 206" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="7 7"/>
+
+  <line x1="142" y1="276" x2="1354" y2="276" stroke="url(#timeline)" stroke-width="8" stroke-linecap="round"/>
+  <g fill="#0b1527" stroke-width="4">
+    <circle cx="145" cy="276" r="12" stroke="#60a5fa"/>
+    <circle cx="343" cy="276" r="12" stroke="#6f9ffb"/>
+    <circle cx="541" cy="276" r="12" stroke="#818cf8"/>
+    <circle cx="739" cy="276" r="12" stroke="#a78bfa"/>
+    <circle cx="937" cy="276" r="13" stroke="#f59e0b"/>
+    <circle cx="1135" cy="276" r="13" stroke="#2dd4bf"/>
+    <circle cx="1333" cy="276" r="14" stroke="#5eead4"/>
+  </g>
+  <g text-anchor="middle">
+    <text class="date" x="145" y="246">1990s-2000s</text>
+    <text class="date" x="343" y="246">2016-2018</text>
+    <text class="date" x="541" y="246">2018-2021</text>
+    <text class="date" x="739" y="246">2023</text>
+    <text class="date" x="937" y="246">2024</text>
+    <text class="date" x="1135" y="246">2024-2025</text>
+    <text class="date" x="1333" y="246">2025-2026</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="card" x="60" y="318" width="170" height="250" rx="16"/>
+    <rect class="card" x="258" y="318" width="170" height="250" rx="16"/>
+    <rect class="card" x="456" y="318" width="170" height="250" rx="16"/>
+    <rect class="card" x="654" y="318" width="170" height="250" rx="16"/>
+    <rect class="project-old" x="852" y="318" width="170" height="250" rx="16"/>
+    <rect class="project-mid" x="1050" y="318" width="170" height="250" rx="16"/>
+    <rect class="project-now" x="1248" y="318" width="170" height="250" rx="16"/>
+  </g>
+
+  <g text-anchor="middle">
+    <text class="node-title" x="145" y="354"><tspan x="145">拼接式 / HMM</tspan><tspan x="145" dy="23">参数语音</tspan></text>
+    <text class="body" x="145" y="415"><tspan x="145">身份写在音库</tspan><tspan x="145" dy="22">与模型参数里</tspan><tspan class="muted" x="145" dy="34">每个声音都要</tspan><tspan class="muted" x="145" dy="20">专属数据与适配</tspan></text>
+
+    <text class="node-title" x="343" y="354"><tspan x="343">Tacotron 2</tspan><tspan x="343" dy="23">+ WaveNet</tspan></text>
+    <text class="body" x="343" y="415"><tspan x="343">Mel 声学模型</tspan><tspan x="343" dy="22">+ 神经声码器</tspan><tspan class="muted" x="343" dy="34">自然度跃迁</tspan><tspan class="muted" x="343" dy="20">但迁移仍然重</tspan></text>
+
+    <text class="node-title" x="541" y="354"><tspan x="541">SV2TTS / VITS</tspan><tspan x="541" dy="23">YourTTS</tspan></text>
+    <text class="body" x="541" y="415"><tspan x="541">Speaker Encoder</tspan><tspan x="541" dy="22">把身份变成向量</tspan><tspan class="muted" x="541" dy="34">未见说话人</tspan><tspan class="muted" x="541" dy="20">可零样本生成</tspan></text>
+
+    <text class="node-title" x="739" y="354"><tspan x="739">VALL-E</tspan><tspan x="739" dy="23">Codec LM</tspan></text>
+    <text class="body" x="739" y="415"><tspan x="739">语音离散成 Token</tspan><tspan x="739" dy="22">TTS 变语言建模</tspan><tspan class="muted" x="739" dy="34">3 秒 Prompt</tspan><tspan class="muted" x="739" dy="20">出现上下文学习</tspan></text>
+
+    <text class="node-title" x="937" y="354"><tspan x="937">GPT-SoVITS</tspan><tspan x="937" dy="23">开源少样本</tspan></text>
+    <text class="body" x="937" y="415"><tspan x="937">GPT 语义 Token</tspan><tspan x="937" dy="22">+ SoVITS 声学端</tspan><tspan class="muted" x="937" dy="34">项目：可私有训练</tspan><tspan class="muted" x="937" dy="20">痛点：错漏字 / 杂音</tspan></text>
+
+    <text class="node-title" x="1135" y="354"><tspan x="1135">CosyVoice 1/2/3</tspan><tspan x="1135" dy="23">监督语义 Token</tspan></text>
+    <text class="body" x="1135" y="415"><tspan x="1135">LLM + Flow</tspan><tspan x="1135" dy="22">短 Prompt / 可流式</tspan><tspan class="muted" x="1135" dy="34">项目可用率</tspan><tspan class="muted" x="1135" dy="20">&lt;60% → 90%+</tspan></text>
+
+    <text class="node-title" x="1333" y="354"><tspan x="1333">MiniMax Speech</tspan><tspan x="1333" dy="23">02 → 2.8</tspan></text>
+    <text class="body" x="1333" y="415"><tspan x="1333">公开：Learnable</tspan><tspan x="1333" dy="22">Encoder + Flow-VAE</tspan><tspan class="muted" x="1333" dy="34">当前：10 秒克隆</tspan><tspan class="muted" x="1333" dy="20">HD / Turbo API</tspan></text>
+  </g>
+
+  <text class="section" x="64" y="681">最终收敛的四层责任栈</text>
+  <g filter="url(#shadow)">
+    <rect class="stack" x="60" y="712" width="325" height="170" rx="18"/>
+    <rect class="stack" x="411" y="712" width="325" height="170" rx="18"/>
+    <rect class="stack" x="762" y="712" width="325" height="170" rx="18"/>
+    <rect class="stack" x="1113" y="712" width="325" height="170" rx="18"/>
+  </g>
+  <g>
+    <rect x="60" y="712" width="325" height="7" rx="3.5" fill="#60a5fa"/>
+    <rect x="411" y="712" width="325" height="7" rx="3.5" fill="#a78bfa"/>
+    <rect x="762" y="712" width="325" height="7" rx="3.5" fill="#f59e0b"/>
+    <rect x="1113" y="712" width="325" height="7" rx="3.5" fill="#2dd4bf"/>
+    <text class="stack-title" x="84" y="751">① 身份：谁在说</text>
+    <text class="stack-body" x="84" y="786"><tspan x="84">专属模型参数 → Speaker Embedding</tspan><tspan x="84" dy="25">→ 声学 Prompt → 可学习说话人编码器</tspan><tspan class="muted" x="84" dy="29">身份条件从权重迁到推理上下文</tspan></text>
+
+    <text class="stack-title" x="435" y="751">② 内容：说什么</text>
+    <text class="stack-body" x="435" y="786"><tspan x="435">字符 / 音素 → Codec Token</tspan><tspan x="435" dy="25">→ 监督式语义 Speech Token</tspan><tspan class="muted" x="435" dy="29">核心目标从“像”扩展到“读对”</tspan></text>
+
+    <text class="stack-title" x="786" y="751">③ 生成：怎么说与怎样还原</text>
+    <text class="stack-body" x="786" y="786"><tspan x="786">Seq2Seq / Vocoder → AR LLM</tspan><tspan x="786" dy="25">+ Flow / Diffusion / Flow-VAE</tspan><tspan class="muted" x="786" dy="29">先规划内容韵律，再渲染连续声学</tspan></text>
+
+    <text class="stack-title" x="1137" y="751">④ 工程：怎样稳定生产</text>
+    <text class="stack-body" x="1137" y="786"><tspan x="1137">逐人训练 → 少样本 / 零样本</tspan><tspan x="1137" dy="25">→ 托管 API + 自动验收 + 资产治理</tspan><tspan class="muted" x="1137" dy="29">边际收益从换模型转向系统质量</tspan></text>
+  </g>
+
+  <rect class="shift-pill" x="300" y="914" width="900" height="52" rx="26"/>
+  <text class="footer" x="750" y="947" text-anchor="middle">边际收益重心：模型专属训练与声学拟合 → 通用基础模型、短参考条件与生产治理</text>
+</svg>
