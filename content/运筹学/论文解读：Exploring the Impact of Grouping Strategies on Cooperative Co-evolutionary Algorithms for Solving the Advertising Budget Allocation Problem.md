@@ -33,7 +33,7 @@ aliases:
 因此，这篇论文可以看成那套运筹系统中的一张“算法局部放大图”。它证明了分组策略会显著影响求解过程，但没有覆盖柔性约束、时序预测、Budget Pacing 或反馈控制。
 
 > [!info] 来源与证据标记
-> 主要来源是 [论文公开预印本](https://arxiv.org/pdf/2211.09155)，正式 DOI 为 [10.1109/QRS-C57518.2022.00098](https://doi.org/10.1109/QRS-C57518.2022.00098)。下文将“论文直接陈述或测量的结果”称为**论文事实**，将为了帮助理解而补出的数学过程称为**推导解释**，论文未提供证据的部分会标成**开放问题**。
+> 主要来源是 Vault 中归档的正式论文 PDF，正式 DOI 为 [10.1109/QRS-C57518.2022.00098](https://doi.org/10.1109/QRS-C57518.2022.00098)。下文将“论文直接陈述或测量的结果”称为**论文事实**，将为了帮助理解而补出的数学过程称为**推导解释**，论文未提供证据的部分会标成**开放问题**。
 
 ## 1. 先把问题说清楚：究竟在优化什么
 
@@ -128,7 +128,7 @@ $$
 
 论文的 DG 主要识别第一层——**目标函数中的交互**。它并不自动解决第二层——**共享约束造成的耦合**。这是后面评估论文边界时的一个关键点。
 
-![从高维黑盒搜索到分组协同进化的责任转移](assets/grouping-strategies-qrs-2022/01-global-to-cooperative.svg)
+![本文重绘：从高维黑盒搜索到分组协同进化的责任转移](assets/grouping-strategies-qrs-2022/01-global-to-cooperative.svg)
 
 ## 2. 协同进化究竟如何“协同”
 
@@ -207,6 +207,12 @@ $$
 | DRG，Dynamic Random Grouping | 每轮从 $T=\{5,10,25,50,100\}$ 随机选择子组件大小并重新分组 | 用多轮重组提高交互变量曾经同组的概率 | 频繁改变搜索坐标系，可能破坏已建立的收敛方向 |
 | DG，Differential Grouping | 用函数有限差分测试变量间交互，把交互变量置于同组 | 直接估计问题内部结构 | 需额外黑盒评估，阈值、噪声与约束耦合会影响判断 |
 
+看原图时从“是否利用变量索引、是否每轮重组、是否检测交互”三条线比较四种策略：HG 固定二分，RG 随机分组，DRG 反复改变组，DG 则让交互检测决定哪些变量应绑在一起。
+
+![论文原图 Figure 2：Half、Random、Dynamic Random 与 Differential Grouping 的示意比较](assets/grouping-strategies-qrs-2022/paper-fig02-grouping-strategies.png)
+
+*论文原图 Figure 2，来源：Gu et al., QRS-C 2022，DOI：[10.1109/QRS-C57518.2022.00098](https://doi.org/10.1109/QRS-C57518.2022.00098)。它直接支持四种分组策略在“组如何形成、是否动态变化”上的定义差异；示意图本身不证明 DG 更好，也没有展示交互检测的评估成本。*
+
 ### 3.1 随机分组的概率直觉
 
 假设 $D$ 个变量被均匀分成 $m$ 组，每组大小为 $s=D/m$。已知 $x_i$ 的位置后，与它交互的 $x_j$ 在剩余 $D-1$ 个位置中有 $s-1$ 个位置会与 $x_i$ 同组，所以单轮同组概率为：
@@ -280,7 +286,7 @@ I_{ij}>\delta
 \text{视为存在交互}.
 $$
 
-![Differential Grouping 通过二阶有限差分检验变量交互](assets/grouping-strategies-qrs-2022/02-differential-test.svg)
+![本文重绘：Differential Grouping 通过二阶有限差分检验变量交互](assets/grouping-strategies-qrs-2022/02-differential-test.svg)
 
 ### 4.2 为什么可分函数的差值一定为零
 
@@ -397,6 +403,12 @@ $$
 - RG 在数据集 1 和 4 上略优于 HG；
 - DRG 在数据集 2 和 4 上最不稳定，标准差最大。
 
+箱线图要按数据集逐列读：先看中位数和箱体高度，再看离群点。重点不是挑一个最高点，而是 DG 是否在四组数据上同时保持更高中心位置与较小波动。
+
+![论文原图 Figure 3：五种分组设置在四个广告预算数据集上的最终目标值分布](assets/grouping-strategies-qrs-2022/paper-fig03-results.png)
+
+*论文原图 Figure 3，来源：Gu et al., QRS-C 2022，DOI：[10.1109/QRS-C57518.2022.00098](https://doi.org/10.1109/QRS-C57518.2022.00098)。20 次运行的分布支持 DG 在这四个实例上的最终值与稳定性优势；它不能回答总函数评估次数、墙钟成本或线上业务收益是否同样占优。*
+
 **RQ2：在迭代轴上收敛得快不快？**
 
 - DG 大致在 100–200 轮达到接近最终的目标值；
@@ -404,7 +416,13 @@ $$
 - 数据集 4 上，DRG 在 200 轮前仍未收敛；
 - HG 在数据集 1 和 4 上表现出最慢的收敛趋势。
 
-![论文实验支持的结论与仍缺失的证据](assets/grouping-strategies-qrs-2022/03-evidence-boundary.svg)
+收敛图要同时看“进入高目标值区间有多早”和“最终平台有多高”，并牢记横轴是 iteration，不是时间或统一函数评估预算。
+
+![论文原图 Figure 4：五种分组设置在四个数据集上的迭代收敛曲线](assets/grouping-strategies-qrs-2022/paper-fig04-convergence.png)
+
+*论文原图 Figure 4，来源：Gu et al., QRS-C 2022，DOI：[10.1109/QRS-C57518.2022.00098](https://doi.org/10.1109/QRS-C57518.2022.00098)。DG 在多组数据上更早进入较高目标值区域，支持“迭代收敛更快”的表述；由于图中没有墙钟时间和分组检测成本，它不能证明端到端计算更快。*
+
+![本文重绘：论文实验支持的结论与仍缺失的证据](assets/grouping-strategies-qrs-2022/03-evidence-boundary.svg)
 
 ### 5.3 最强的证据是什么
 
@@ -495,7 +513,7 @@ DG 问的只是：
 ## 论文信息
 
 - Yongfeng Gu, Yuxuan Zhou, Hao Ding, Fan Jia, Shiping Wang. *Exploring the Impact of Grouping Strategies on Cooperative Co-evolutionary Algorithms for Solving the Advertising Budget Allocation Problem*. QRS-C 2022, pp. 616–620.
-- 公开预印本：[arXiv 2211.09155](https://arxiv.org/pdf/2211.09155)
+- 公开版本说明：目前未保留可核验的公开预印本链接，公开引用以 DOI 为准。
 - Vault 本地归档：`运筹学/assets/grouping-strategies-qrs-2022/paper.pdf`
 - DOI：[10.1109/QRS-C57518.2022.00098](https://doi.org/10.1109/QRS-C57518.2022.00098)
 - 对应系统复盘：[[像造自动驾驶一样做流量分配：感知、运筹与控制]]
