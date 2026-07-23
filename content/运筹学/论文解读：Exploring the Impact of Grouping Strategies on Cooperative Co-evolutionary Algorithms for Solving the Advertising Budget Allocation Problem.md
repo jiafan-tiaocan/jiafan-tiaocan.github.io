@@ -8,7 +8,7 @@ tags:
   - 进化算法
   - 大规模优化
 date: 2022-12-05
-noteType: technical
+noteType: paper
 publish: true
 source_title: "Exploring the Impact of Grouping Strategies on Cooperative Co-evolutionary Algorithms for Solving the Advertising Budget Allocation Problem"
 source_doi: "10.1109/QRS-C57518.2022.00098"
