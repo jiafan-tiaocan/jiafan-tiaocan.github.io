@@ -1,5 +1,5 @@
 ---
-title: StreamingTalker：把全序列扩散改造成实时流式 3D 面部动画
+title: "论文解读：StreamingTalker: Audio-driven 3D Facial Animation with Autoregressive Diffusion Model"
 description: 从数字人首帧延迟出发，拆解 StreamingTalker 如何用固定历史窗口、自回归条件预测与轻量 latent diffusion，把任意长度的面部动画变成可逐帧交付的生成过程。
 tags:
   - 论文解读
@@ -10,9 +10,12 @@ tags:
   - Autoregressive
   - Streaming
 date: 2026-01-18
+noteType: paper
 publish: true
+aliases:
+  - "AIGC/StreamingTalker：把全序列扩散改造成实时流式3D面部动画"
 ---
-# StreamingTalker：把全序列扩散改造成实时流式 3D 面部动画
+# 论文解读：StreamingTalker: Audio-driven 3D Facial Animation with Autoregressive Diffusion Model
 
 > **核心判断：StreamingTalker 没有试图让一个全序列 diffusion 更快地吞下长音频，而是把“整段一次性去噪”改写为“固定历史状态下反复生成下一步”。自回归条件负责跨帧连续，轻量 diffusion 负责局部生成质量。最关键的能力证据是 2000 帧测试与 25 ms 首帧延迟；最关键的机制证据则是固定窗口、cross-attention、latent 编码和 diffusion head 的消融。**
 
