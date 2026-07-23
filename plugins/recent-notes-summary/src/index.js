@@ -293,12 +293,7 @@ function RecentNotesSummary(userOptions = {}) {
     const chartMonths = Math.max(1, Number(options.chartMonths) || defaults.chartMonths)
     const hasMore = pages.length > initialLimit
     const timeline = publicationTimeline(pages, cfg, locale, chartMonths)
-    const timelineTotal = timeline.reduce((sum, month) => sum + month.total, 0)
     const maxMonthTotal = Math.max(1, ...timeline.map((month) => month.total))
-    const timelineRange = `${timeline.at(0)?.key.replace("-", ".")}—${timeline
-      .at(-1)
-      ?.key.replace("-", ".")}`
-    const timelineDefaultText = `${timelineRange} · 共 ${timelineTotal} 篇`
 
     const className = [displayClass, "recent-notes", "with-summary"].filter(Boolean).join(" ")
 
@@ -311,7 +306,7 @@ function RecentNotesSummary(userOptions = {}) {
         "data-initial-limit": initialLimit,
         "data-batch-size": batchSize,
       },
-      h("h3", null, options.title),
+      options.title && h("h3", null, options.title),
       h(
         "section",
         {
@@ -319,35 +314,6 @@ function RecentNotesSummary(userOptions = {}) {
           "data-publication-chart": "",
           "aria-label": `近 ${chartMonths} 个月文章数量`,
         },
-        h(
-          "div",
-          { class: "publication-chart__header" },
-          h(
-            "div",
-            null,
-            h("p", { class: "publication-chart__eyebrow" }, `过去 ${chartMonths} 个月`),
-            h(
-              "p",
-              {
-                class: "publication-chart__status",
-                "data-publication-chart-status": "",
-                "data-default-text": timelineDefaultText,
-                "aria-live": "polite",
-              },
-              timelineDefaultText,
-            ),
-          ),
-          h(
-            "button",
-            {
-              type: "button",
-              class: "publication-chart__clear",
-              "data-publication-chart-clear": "",
-              hidden: true,
-            },
-            "查看全部",
-          ),
-        ),
         h(
           "ul",
           { class: "publication-chart__legend", "aria-label": "文章类型" },
@@ -368,12 +334,11 @@ function RecentNotesSummary(userOptions = {}) {
               class: "publication-chart__plot",
               style: `--publication-chart-columns: ${timeline.length}`,
             },
-            timeline.map((month, index) => {
+            timeline.map((month) => {
               const tooltipText = `${month.label} · ${month.total} 篇\n${
                 month.titles.join("\n") || "暂无文章"
               }`
               const height = month.total === 0 ? 0 : (month.total / maxMonthTotal) * 100
-              const showAxisLabel = index === 0 || index === timeline.length - 1 || index % 3 === 0
 
               return h(
                 "button",
@@ -414,9 +379,7 @@ function RecentNotesSummary(userOptions = {}) {
                 h(
                   "span",
                   {
-                    class: `publication-chart__month-label${
-                      showAxisLabel ? "" : " publication-chart__month-label--hidden"
-                    }`,
+                    class: "publication-chart__month-label",
                     "aria-hidden": "true",
                   },
                   month.key.replace("-", "."),

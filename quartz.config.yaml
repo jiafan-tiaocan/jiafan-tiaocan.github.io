@@ -230,7 +230,7 @@ plugins:
   - source: ./plugins/recent-notes-summary
     enabled: true
     options:
-      title: 最近写下的
+      title: ""
       initialLimit: 10
       batchSize: 4
       showTags: true

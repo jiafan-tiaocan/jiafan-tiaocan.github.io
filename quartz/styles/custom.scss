@@ -584,60 +584,14 @@ body[data-slug="index"] .recent-notes.with-summary {
     --publication-life: #d2a349;
 
     position: relative;
-    margin-top: 1.25rem;
-    padding: 0.9rem 1rem 0.75rem;
-    border: 1px solid var(--lightgray);
-    border-radius: 0.8rem;
-    background: color-mix(in srgb, var(--light) 94%, var(--lightgray));
-  }
-
-  .publication-chart__header {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  .publication-chart__eyebrow {
     margin: 0;
-    color: var(--darkgray);
-    font-family: var(--headerFont);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-
-  .publication-chart__status {
-    margin: 0.18rem 0 0;
-    color: var(--gray);
-    font-family: var(--codeFont);
-    font-size: 0.6rem;
-    letter-spacing: 0.03em;
-  }
-
-  .publication-chart__clear {
-    padding: 0.3rem 0.55rem;
-    border: 1px solid var(--lightgray);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--darkgray);
-    font-family: var(--headerFont);
-    font-size: 0.62rem;
-    font-weight: 650;
-    cursor: pointer;
-  }
-
-  .publication-chart__clear:hover,
-  .publication-chart__clear:focus-visible {
-    border-color: var(--secondary);
-    color: var(--secondary);
   }
 
   .publication-chart__legend {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem 0.8rem;
-    margin: 0.55rem 0 0;
+    margin: 0 0 0.35rem;
     padding: 0;
     list-style: none;
   }
@@ -672,18 +626,16 @@ body[data-slug="index"] .recent-notes.with-summary {
   }
 
   .publication-chart__scroll {
-    margin-top: 0.5rem;
-    padding-bottom: 0.2rem;
-    overflow-x: auto;
-    scrollbar-color: var(--lightgray) transparent;
-    scrollbar-width: thin;
+    min-width: 0;
+    overflow-x: clip;
   }
 
   .publication-chart__plot {
     display: grid;
     grid-template-columns: repeat(var(--publication-chart-columns), minmax(0, 1fr));
-    gap: 0.18rem;
-    min-width: calc(var(--publication-chart-columns) * 1.8rem);
+    gap: clamp(0.08rem, 0.4vw, 0.18rem);
+    width: 100%;
+    min-width: 0;
   }
 
   .publication-chart__month {
@@ -765,6 +717,9 @@ body[data-slug="index"] .recent-notes.with-summary {
   }
 
   .publication-chart__month-label {
+    visibility: hidden;
+    width: 100%;
+    min-width: 0;
     overflow: visible;
     font-family: var(--codeFont);
     font-size: 0.52rem;
@@ -773,8 +728,17 @@ body[data-slug="index"] .recent-notes.with-summary {
     white-space: nowrap;
   }
 
-  .publication-chart__month-label--hidden {
-    visibility: hidden;
+  .publication-chart__month:first-child .publication-chart__month-label,
+  .publication-chart__month:last-child .publication-chart__month-label {
+    visibility: visible;
+  }
+
+  .publication-chart__month:first-child .publication-chart__month-label {
+    text-align: left;
+  }
+
+  .publication-chart__month:last-child .publication-chart__month-label {
+    text-align: right;
   }
 
   .publication-chart__tooltip {
@@ -906,7 +870,24 @@ body[data-slug="index"] .recent-notes.with-summary {
   }
 
   & > ul.recent-ul {
-    margin-top: 1.1rem;
+    margin-top: 0.85rem;
+  }
+}
+
+@media all and (max-width: 699px) {
+  body[data-slug="index"] .recent-notes.with-summary {
+    .publication-chart__month:nth-child(4n + 1) .publication-chart__month-label {
+      visibility: visible;
+    }
+  }
+}
+
+@media all and (min-width: 700px) {
+  body[data-slug="index"] .recent-notes.with-summary {
+    .publication-chart__month:nth-child(3n + 1) .publication-chart__month-label,
+    .publication-chart__month:last-child .publication-chart__month-label {
+      visibility: visible;
+    }
   }
 }
 
@@ -1032,17 +1013,6 @@ body[data-slug="index"] .recent-notes.with-summary {
 
   .recent-notes {
     padding-top: 3rem;
-
-    .publication-chart {
-      margin-right: -0.15rem;
-      margin-left: -0.15rem;
-      padding-right: 0.75rem;
-      padding-left: 0.75rem;
-    }
-
-    .publication-chart__plot {
-      min-width: calc(var(--publication-chart-columns) * 1.72rem);
-    }
 
     & > ul.recent-ul > li.recent-li .section {
       display: block;
