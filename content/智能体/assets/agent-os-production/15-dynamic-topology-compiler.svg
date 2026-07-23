@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">
+  <title id="title">Agent 提议动态拓扑，Agent OS 编译并执行</title>
+  <desc id="desc">Agent 提交包含节点、依赖和汇合意图的拓扑提案。Agent OS 检查输入、权限、写集合、预算与并发限制，调度 Ready Set 到 Worker，并通过 Join 或 Reducer 把结果归入 Root Task。</desc>
+  <defs>
+    <style>
+      text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}
+      .h1{font-size:34px;font-weight:750}.h2{font-size:23px;font-weight:700}.body{font-size:17px}.small{font-size:14px;fill:#666176}
+      .agent{fill:#fff3eb;stroke:#d58b57;stroke-width:2.5}.gate{fill:#f1eeff;stroke:#7568dc;stroke-width:2.5}
+      .ready{fill:#eef8ff;stroke:#5f9dcc;stroke-width:2.5}.worker{fill:#edf8f1;stroke:#58a077;stroke-width:2.5}
+      .blocked{fill:#fff8df;stroke:#c89a35;stroke-width:2.3}.root{fill:#fff;stroke:#6f67c6;stroke-width:2.7}
+      .arrow{stroke:#756d8e;stroke-width:2.7;fill:none;marker-end:url(#a)}.dash{stroke:#c89a35;stroke-width:2.3;fill:none;stroke-dasharray:8 7;marker-end:url(#b)}
+    </style>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#756d8e"/></marker>
+    <marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#c89a35"/></marker>
+  </defs>
+
+  <rect width="1200" height="920" rx="30" fill="#faf9fd"/>
+  <text x="600" y="58" text-anchor="middle" class="h1">动态拓扑不是自由发挥，而是一条“提议 - 准入 - 执行 - 汇合”协议</text>
+
+  <rect x="120" y="98" width="960" height="112" rx="22" class="agent"/>
+  <text x="600" y="137" text-anchor="middle" class="h2">Topology Proposal · Agent 提议工作结构</text>
+  <text x="600" y="171" text-anchor="middle" class="body">子目标 · 专业 Agent · 依赖关系 · 串行/并行意图 · 预期产物 · 汇合方式</text>
+  <text x="600" y="196" text-anchor="middle" class="small">模型负责提出“接下来怎样组织工作”，不直接获得调度权</text>
+
+  <path d="M600 210L600 250" class="arrow"/>
+  <rect x="55" y="260" width="1090" height="180" rx="24" class="gate"/>
+  <text x="600" y="296" text-anchor="middle" class="h2">Admission Gate · Agent OS 把意图编译为执行契约</text>
+  <rect x="80" y="322" width="240" height="84" rx="15" fill="#fff" stroke="#aaa3d8" stroke-width="1.8"/>
+  <text x="200" y="352" text-anchor="middle" class="body">依赖与输入</text>
+  <text x="200" y="382" text-anchor="middle" class="small">无环 · 输入已就绪</text>
+  <rect x="345" y="322" width="240" height="84" rx="15" fill="#fff" stroke="#aaa3d8" stroke-width="1.8"/>
+  <text x="465" y="352" text-anchor="middle" class="body">权限与委派</text>
+  <text x="465" y="382" text-anchor="middle" class="small">Agent 白名单 · 作用域收敛</text>
+  <rect x="610" y="322" width="240" height="84" rx="15" fill="#fff" stroke="#aaa3d8" stroke-width="1.8"/>
+  <text x="730" y="352" text-anchor="middle" class="body">写集合与资源</text>
+  <text x="730" y="382" text-anchor="middle" class="small">资产冲突 · 资源键 · 租约</text>
+  <rect x="875" y="322" width="240" height="84" rx="15" fill="#fff" stroke="#aaa3d8" stroke-width="1.8"/>
+  <text x="995" y="352" text-anchor="middle" class="body">预算与并发</text>
+  <text x="995" y="382" text-anchor="middle" class="small">Token · 成本 · 截止时间</text>
+
+  <path d="M600 440L600 478" class="arrow"/>
+  <rect x="90" y="490" width="790" height="110" rx="20" class="ready"/>
+  <text x="485" y="525" text-anchor="middle" class="h2">Ready Set · 当前允许运行的节点</text>
+  <rect x="120" y="548" width="200" height="34" rx="10" fill="#fff" stroke="#7caed0"/><text x="220" y="571" text-anchor="middle" class="small">文案分析 · Ready</text>
+  <rect x="340" y="548" width="200" height="34" rx="10" fill="#fff" stroke="#7caed0"/><text x="440" y="571" text-anchor="middle" class="small">视觉探索 · Ready</text>
+  <rect x="560" y="548" width="200" height="34" rx="10" fill="#fff" stroke="#7caed0"/><text x="660" y="571" text-anchor="middle" class="small">视频生成 · Ready</text>
+  <rect x="915" y="490" width="220" height="110" rx="20" class="blocked"/>
+  <text x="1025" y="527" text-anchor="middle" class="h2">Blocked</text>
+  <text x="1025" y="559" text-anchor="middle" class="small">等依赖 / 写冲突 / 超预算</text>
+  <path d="M880 545L905 545" class="dash"/>
+
+  <path d="M270 600L270 640" class="arrow"/><path d="M485 600L485 640" class="arrow"/><path d="M700 600L700 640" class="arrow"/>
+  <rect x="170" y="650" width="200" height="90" rx="18" class="worker"/>
+  <text x="270" y="687" text-anchor="middle" class="h2">Worker A</text><text x="270" y="716" text-anchor="middle" class="small">领取一个 Task · 可替换</text>
+  <rect x="385" y="650" width="200" height="90" rx="18" class="worker"/>
+  <text x="485" y="687" text-anchor="middle" class="h2">Worker B</text><text x="485" y="716" text-anchor="middle" class="small">能力匹配 · 资源有界</text>
+  <rect x="600" y="650" width="200" height="90" rx="18" class="worker"/>
+  <text x="700" y="687" text-anchor="middle" class="h2">Worker C</text><text x="700" y="716" text-anchor="middle" class="small">失败可重试 · 状态外置</text>
+  <rect x="875" y="650" width="260" height="90" rx="18" class="gate"/>
+  <text x="1005" y="687" text-anchor="middle" class="h2">Join / Reducer</text><text x="1005" y="716" text-anchor="middle" class="small">策略汇合 · Schema 校验</text>
+
+  <path d="M270 740C330 780 780 780 885 716" class="arrow"/>
+  <path d="M485 740C545 770 790 770 885 708" class="arrow"/>
+  <path d="M700 740C760 752 825 744 875 706" class="arrow"/>
+  <rect x="250" y="795" width="700" height="82" rx="20" class="root"/>
+  <text x="600" y="829" text-anchor="middle" class="h2">Root Task · 连续的用户工作</text>
+  <text x="600" y="858" text-anchor="middle" class="body">统一事件、预算、取消、风险与完成证据</text>
+  <path d="M1005 740C1005 772 975 790 930 812" class="arrow"/>
+</svg>

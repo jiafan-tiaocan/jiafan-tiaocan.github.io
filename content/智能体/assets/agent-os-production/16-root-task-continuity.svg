@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Root Task 维持动态拓扑中的用户工作连续性</title>
+  <desc id="desc">Root Task 统一拥有目标、预算、事件与取消源。多个子任务和人工等待把事件写入 Root Event Channel，用户界面、监控和审计使用独立 Cursor 消费。取消从 Root 传播到子任务、Worker、Runtime、模型、工具和外部作业。</desc>
+  <defs>
+    <style>
+      text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#252333}
+      .h1{font-size:34px;font-weight:750}.h2{font-size:23px;font-weight:700}.body{font-size:17px}.small{font-size:14px;fill:#666176}
+      .root{fill:#f1eeff;stroke:#7568dc;stroke-width:2.7}.child{fill:#eef8ff;stroke:#5f9dcc;stroke-width:2.3}
+      .human{fill:#fff3eb;stroke:#d58b57;stroke-width:2.4}.event{fill:#edf8f1;stroke:#58a077;stroke-width:2.6}
+      .consumer{fill:#fff;stroke:#d6d2e5;stroke-width:2}.cancel{fill:#fff0f0;stroke:#c86b6b;stroke-width:2.2}
+      .arrow{stroke:#756d8e;stroke-width:2.5;fill:none;marker-end:url(#a)}.eventLine{stroke:#58a077;stroke-width:2.5;fill:none;marker-end:url(#b)}
+      .cancelLine{stroke:#c86b6b;stroke-width:2.5;fill:none;marker-end:url(#c)}
+    </style>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#756d8e"/></marker>
+    <marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#58a077"/></marker>
+    <marker id="c" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#c86b6b"/></marker>
+  </defs>
+
+  <rect width="1200" height="900" rx="30" fill="#faf9fd"/>
+  <text x="600" y="58" text-anchor="middle" class="h1">内部拓扑可以变化，用户仍只面对一项连续工作</text>
+
+  <rect x="330" y="95" width="540" height="105" rx="22" class="root"/>
+  <text x="600" y="135" text-anchor="middle" class="h2">Root Task</text>
+  <text x="600" y="169" text-anchor="middle" class="body">目标 · 所有权 · 总预算 · 事件目标 · 取消源 · 完成合同</text>
+
+  <path d="M600 200L600 230L145 230L145 260" class="arrow"/>
+  <path d="M600 230L380 230L380 260" class="arrow"/>
+  <path d="M600 230L615 230L615 260" class="arrow"/>
+  <path d="M600 230L850 230L850 260" class="arrow"/>
+  <path d="M600 230L1080 230L1080 260" class="arrow"/>
+
+  <rect x="45" y="270" width="200" height="105" rx="18" class="child"/>
+  <text x="145" y="307" text-anchor="middle" class="h2">文案 Child</text><text x="145" y="339" text-anchor="middle" class="small">Task / Run 独立</text><text x="145" y="361" text-anchor="middle" class="small">可重试、可审计</text>
+  <rect x="280" y="270" width="200" height="105" rx="18" class="child"/>
+  <text x="380" y="307" text-anchor="middle" class="h2">设计 Child</text><text x="380" y="339" text-anchor="middle" class="small">可与兄弟并行</text><text x="380" y="361" text-anchor="middle" class="small">写集合受控</text>
+  <rect x="515" y="270" width="200" height="105" rx="18" class="child"/>
+  <text x="615" y="307" text-anchor="middle" class="h2">视频 Child</text><text x="615" y="339" text-anchor="middle" class="small">外部作业可恢复</text><text x="615" y="361" text-anchor="middle" class="small">成本单独归因</text>
+  <rect x="750" y="270" width="200" height="105" rx="18" class="child"/>
+  <text x="850" y="307" text-anchor="middle" class="h2">审校 Child</text><text x="850" y="339" text-anchor="middle" class="small">Join 后验收</text><text x="850" y="361" text-anchor="middle" class="small">可能请求人工</text>
+  <rect x="985" y="270" width="190" height="105" rx="18" class="human"/>
+  <text x="1080" y="307" text-anchor="middle" class="h2">Human Request</text><text x="1080" y="339" text-anchor="middle" class="small">等待输入 / 审批</text><text x="1080" y="361" text-anchor="middle" class="small">回答后恢复</text>
+
+  <path d="M145 375L145 455" class="eventLine"/><path d="M380 375L380 455" class="eventLine"/>
+  <path d="M615 375L615 455" class="eventLine"/><path d="M850 375L850 455" class="eventLine"/>
+  <path d="M1080 375L1080 455" class="eventLine"/>
+  <rect x="85" y="465" width="1030" height="115" rx="22" class="event"/>
+  <text x="600" y="505" text-anchor="middle" class="h2">Root Event Channel</text>
+  <text x="600" y="538" text-anchor="middle" class="body">后代事件统一归属 · 有序 Sequence · 可续传 · 多消费者互不抢消息</text>
+  <text x="600" y="564" text-anchor="middle" class="small">浏览器断线 ≠ Task 死亡；事件流与执行生命周期彼此独立</text>
+
+  <path d="M300 580L300 630" class="eventLine"/><path d="M600 580L600 630" class="eventLine"/><path d="M900 580L900 630" class="eventLine"/>
+  <rect x="165" y="640" width="270" height="90" rx="18" class="consumer"/>
+  <text x="300" y="676" text-anchor="middle" class="h2">用户界面</text><text x="300" y="706" text-anchor="middle" class="small">Cursor U · 断线续传</text>
+  <rect x="465" y="640" width="270" height="90" rx="18" class="consumer"/>
+  <text x="600" y="676" text-anchor="middle" class="h2">运行监控</text><text x="600" y="706" text-anchor="middle" class="small">Cursor M · 实时诊断</text>
+  <rect x="765" y="640" width="270" height="90" rx="18" class="consumer"/>
+  <text x="900" y="676" text-anchor="middle" class="h2">审计与回放</text><text x="900" y="706" text-anchor="middle" class="small">Cursor A · 独立保留</text>
+
+  <text x="65" y="784" class="h2">Root Cancellation</text>
+  <rect x="245" y="753" width="150" height="60" rx="14" class="cancel"/><text x="320" y="790" text-anchor="middle" class="small">Child / Group</text>
+  <rect x="425" y="753" width="150" height="60" rx="14" class="cancel"/><text x="500" y="790" text-anchor="middle" class="small">Worker</text>
+  <rect x="605" y="753" width="150" height="60" rx="14" class="cancel"/><text x="680" y="790" text-anchor="middle" class="small">Runtime / Model</text>
+  <rect x="785" y="753" width="150" height="60" rx="14" class="cancel"/><text x="860" y="790" text-anchor="middle" class="small">Tool</text>
+  <rect x="965" y="753" width="170" height="60" rx="14" class="cancel"/><text x="1050" y="790" text-anchor="middle" class="small">External Job</text>
+  <path d="M205 783L235 783" class="cancelLine"/><path d="M395 783L415 783" class="cancelLine"/>
+  <path d="M575 783L595 783" class="cancelLine"/><path d="M755 783L775 783" class="cancelLine"/><path d="M935 783L955 783" class="cancelLine"/>
+  <text x="600" y="857" text-anchor="middle" class="body">用户取消的是整项工作，不是当前连接；每一层都必须检查并传播取消意图</text>
+</svg>
