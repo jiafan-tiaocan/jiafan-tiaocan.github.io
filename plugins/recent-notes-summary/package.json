@@ -1,6 +1,6 @@
 {
   "name": "@jiafan/recent-notes-summary",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -13,7 +13,7 @@
     "displayName": "Recent Notes with Summary",
     "description": "Displays recently published notes with frontmatter descriptions and text excerpts as fallback.",
     "category": "component",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
     "defaultOrder": 50,

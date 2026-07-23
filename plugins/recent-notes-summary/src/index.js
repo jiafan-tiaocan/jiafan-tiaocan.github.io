@@ -13,6 +13,7 @@ const defaults = {
 
 const contentTypes = {
   technical: { label: "技术长文" },
+  paper: { label: "论文解读" },
   thought: { label: "思考卡片" },
   life: { label: "生活与爱好" },
 }
