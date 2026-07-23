@@ -11,7 +11,7 @@ tags:
   - MLOps
   - 模型迭代
   - 生产系统
-date: 2026-07-23
+date: 2026-06-23
 noteType: technical
 publish: true
 ---
@@ -253,8 +253,8 @@ DRAFT -> READY -> RUNNING -> EVALUATING -> REVIEW_READY
 下面是抽象后的最小示例，字段名不对应任何内部平台：
 
 ```yaml
-experiment_id: exp-20260723-017
-parent_baseline: exp-20260722-031
+experiment_id: exp-20260623-017
+parent_baseline: exp-20260622-031
 hypothesis: "分段聚合能减少长短行为混合造成的信息稀释"
 change_scope:
   primary: model-architecture
@@ -264,7 +264,7 @@ change_scope:
 data:
   dataset_version: ds-042
   train_window: frozen
-  holdout: holdout-2026q3
+  holdout: holdout-2026q2
   leakage_checks: required
 
 runtime:
