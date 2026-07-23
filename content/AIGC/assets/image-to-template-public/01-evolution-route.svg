@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="900" viewBox="0 0 1900 900">
+  <defs>
+    <linearGradient id="ocean" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08264f"/>
+      <stop offset="1" stop-color="#0d7a96"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101c49"/>
+      <stop offset="1" stop-color="#4d3e92"/>
+    </linearGradient>
+    <linearGradient id="softBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#edf4ff"/>
+      <stop offset="1" stop-color="#f6fbff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#18233a" flood-opacity=".14"/>
+    </filter>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#2f6df6"/>
+    </marker>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#c9d5e8" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1900" height="900" fill="#ffffff"/>
+  
+    <text x="70" y="70" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="38" font-weight="750" fill="#172033" text-anchor="start">图生模版的两条技术路线</text><text x="70" y="108" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="21" font-weight="400" fill="#5f6b7a" text-anchor="start">演进的关键不只是换模型，而是把中间表示从“局部结果集合”升级为“统一设计契约”</text>
+    <rect x="70" y="155" width="370" height="150" rx="24" fill="#f4f7fb" stroke="#d7deea" stroke-width="2"/>
+    <text x="105" y="200" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="700" fill="#172033" text-anchor="start">输入：一张扁平视觉卡片</text>
+    <text x="105" y="240" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="19" font-weight="400" fill="#5f6b7a" text-anchor="start">只有像素，没有图层、角色和关系</text>
+    <text x="105" y="278" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="19" font-weight="700" fill="#2f6df6" text-anchor="start">目标：恢复可编辑场景图</text>
+    <line x1="440" y1="230" x2="535" y2="230" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="535" y="140" width="830" height="240" rx="24" fill="#f8fbff" stroke="#abc7f8" stroke-width="2"/>
+    <rect x="570" y="168" width="134" height="42" rx="21" fill="#2f6df6" stroke="#2f6df6" stroke-width="1"/><text x="637" y="197" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">路线 A</text>
+    <text x="570" y="238" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="31" font-weight="750" fill="#172033" text-anchor="start">多模型工作流</text>
+    <text x="570" y="276" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="500" fill="#5f6b7a" text-anchor="start">OCR · 检测 · 分割 · 擦除 · 图层写入</text>
+    <text x="570" y="323" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="500" fill="#172033" text-anchor="start">优势：模块可替换、问题可定位、闭环建立快</text>
+    <rect x="570" y="402" width="250" height="120" rx="24" fill="#eef5ff" stroke="#abc7f8" stroke-width="2"/>
+    <text x="695" y="446" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="700" fill="#2f6df6" text-anchor="middle">局部输出</text>
+    <text x="695" y="482" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="19" font-weight="400" fill="#5f6b7a" text-anchor="middle">bbox / text / mask</text>
+    <line x1="820" y1="462" x2="935" y2="462" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="935" y="402" width="300" height="120" rx="24" fill="#fff6f1" stroke="#ffc1a4" stroke-width="2"/>
+    <text x="1085" y="446" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="700" fill="#ff7a45" text-anchor="middle">接口拼接</text>
+    <text x="1085" y="482" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="19" font-weight="400" fill="#5f6b7a" text-anchor="middle">冲突与误差传播</text>
+    <line x1="1085" y1="522" x2="1085" y2="585" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="535" y="585" width="830" height="190" rx="24" fill="#faf8ff" stroke="#c8baf4" stroke-width="2"/>
+    <rect x="570" y="613" width="134" height="42" rx="21" fill="#7857d8" stroke="#7857d8" stroke-width="1"/><text x="637" y="642" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">路线 B</text>
+    <text x="570" y="683" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="31" font-weight="750" fill="#172033" text-anchor="start">视觉语言模型统一解析</text>
+    <text x="570" y="722" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="21" font-weight="500" fill="#5f6b7a" text-anchor="start">元素角色、坐标、内容、样式与关系在同一 Schema 内对齐</text>
+    <text x="570" y="757" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="600" fill="#7857d8" text-anchor="start">SFT 稳定任务语言，GRPO 强化可验证几何</text>
+    <line x1="1365" y1="680" x2="1470" y2="680" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="1470" y="585" width="360" height="190" rx="24" fill="#effaf6" stroke="#9edfc5" stroke-width="2"/>
+    <text x="1650" y="632" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="750" fill="#19a974" text-anchor="middle">最终收敛</text>
+    <text x="1650" y="678" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="600" fill="#172033" text-anchor="middle">VLM 负责开放理解</text>
+    <text x="1650" y="713" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="600" fill="#172033" text-anchor="middle">工具负责确定性执行</text>
+    <text x="1650" y="748" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="600" fill="#172033" text-anchor="middle">编辑器负责可用性验收</text>
+    <text x="70" y="850" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="700" fill="#102a54" text-anchor="start">结论：端到端统一的是“图片 → 结构化理解”；分割、擦除、校验和图层写入仍保留。</text>
+  
+</svg>
