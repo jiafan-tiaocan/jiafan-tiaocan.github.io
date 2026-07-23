@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <title>口型改写技术演进</title>
+  <desc>从音素视素拼接、同步判别器、神经渲染、潜空间生成到扩散视频编辑的五阶段演进。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f8f8fb}.card{fill:#fff;stroke:#deddea;stroke-width:2}.accent{fill:#635bce}.teal{fill:#0f9d8b}.warm{fill:#e38b08}.blue{fill:#2878c8}.rose{fill:#c45178}.soft{fill:#f3f1ff}.ink{fill:#20212a}.muted{fill:#686979}.white{fill:#fff}.axis{stroke:#9f9bbd;stroke-width:5}.rule{stroke:#deddea;stroke-width:2}.title{font:700 36px Inter,'PingFang SC','Microsoft YaHei',Arial,sans-serif}.subtitle{font:500 19px Inter,'PingFang SC','Microsoft YaHei',Arial,sans-serif}.year{font:700 22px Inter,'PingFang SC','Microsoft YaHei',Arial,sans-serif}.h{font:700 23px Inter,'PingFang SC','Microsoft YaHei',Arial,sans-serif}.p{font:500 17px Inter,'PingFang SC','Microsoft YaHei',Arial,sans-serif}.s{font:500 15px Inter,'PingFang SC','Microsoft YaHei',Arial,sans-serif}.takeaway{font:700 20px Inter,'PingFang SC','Microsoft YaHei',Arial,sans-serif}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#9f9bbd"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1600" height="900" rx="28"/>
+  <text x="72" y="68" class="title ink">口型改写的五次责任迁移</text>
+  <text x="72" y="106" class="subtitle muted">进步不只是换生成器，而是把“嘴该怎么动、怎样画出来、怎样保持连续”逐步交给可学习模块</text>
+
+  <line x1="110" y1="188" x2="1490" y2="188" class="axis" marker-end="url(#arrow)"/>
+  <circle cx="195" cy="188" r="11" class="accent"/>
+  <circle cx="485" cy="188" r="11" class="teal"/>
+  <circle cx="775" cy="188" r="11" class="warm"/>
+  <circle cx="1065" cy="188" r="11" class="blue"/>
+  <circle cx="1355" cy="188" r="11" class="rose"/>
+
+  <g>
+    <rect x="70" y="230" width="250" height="495" rx="22" class="card"/>
+    <rect x="70" y="230" width="250" height="74" rx="22" class="accent"/>
+    <text x="195" y="277" text-anchor="middle" class="year white">1997—2015</text>
+    <text x="195" y="345" text-anchor="middle" class="h ink">规则与样例拼接</text>
+    <text x="95" y="388" class="p muted">音素 → 视素</text>
+    <text x="95" y="419" class="p muted">三音素上下文</text>
+    <text x="95" y="450" class="p muted">嘴部片段检索与变形</text>
+    <line x1="95" y1="481" x2="295" y2="481" class="rule"/>
+    <text x="95" y="522" class="s ink">代表：Video Rewrite</text>
+    <text x="95" y="562" class="s muted">突破：首次把配音后的</text>
+    <text x="95" y="587" class="s muted">口型重写做成完整系统</text>
+    <text x="95" y="635" class="s muted">瓶颈：强人物依赖，素材</text>
+    <text x="95" y="660" class="s muted">覆盖决定效果上限</text>
+  </g>
+
+  <g>
+    <rect x="360" y="230" width="250" height="495" rx="22" class="card"/>
+    <rect x="360" y="230" width="250" height="74" rx="22" class="teal"/>
+    <text x="485" y="277" text-anchor="middle" class="year white">2016—2020</text>
+    <text x="485" y="345" text-anchor="middle" class="h ink">同步专家与 GAN</text>
+    <text x="385" y="388" class="p muted">音频/嘴部联合嵌入</text>
+    <text x="385" y="419" class="p muted">冻结 Sync Expert</text>
+    <text x="385" y="450" class="p muted">生成器直接重建嘴部</text>
+    <line x1="385" y1="481" x2="585" y2="481" class="rule"/>
+    <text x="385" y="522" class="s ink">代表：SyncNet、Wav2Lip</text>
+    <text x="385" y="562" class="s muted">突破：把“是否同步”变成</text>
+    <text x="385" y="587" class="s muted">可迁移的学习型监督</text>
+    <text x="385" y="635" class="s muted">瓶颈：清晰度、牙齿细节</text>
+    <text x="385" y="660" class="s muted">与局部方框伪影</text>
+  </g>
+
+  <g>
+    <rect x="650" y="230" width="250" height="495" rx="22" class="card"/>
+    <rect x="650" y="230" width="250" height="74" rx="22" class="warm"/>
+    <text x="775" y="277" text-anchor="middle" class="year white">2021—2023</text>
+    <text x="775" y="345" text-anchor="middle" class="h ink">渲染器分化</text>
+    <text x="675" y="388" class="p muted">个体 NeRF / 3D</text>
+    <text x="675" y="419" class="p muted">通用形变与 Inpaint</text>
+    <text x="675" y="450" class="p muted">身份、纹理、姿态解耦</text>
+    <line x1="675" y1="481" x2="875" y2="481" class="rule"/>
+    <text x="675" y="522" class="s ink">代表：AD-NeRF、DINet</text>
+    <text x="675" y="547" class="s ink">VideoReTalking</text>
+    <text x="675" y="587" class="s muted">突破：高保真与通用编辑</text>
+    <text x="675" y="635" class="s muted">瓶颈：逐人训练，或多段</text>
+    <text x="675" y="660" class="s muted">流水线累积误差</text>
+  </g>
+
+  <g>
+    <rect x="940" y="230" width="250" height="495" rx="22" class="card"/>
+    <rect x="940" y="230" width="250" height="74" rx="22" class="blue"/>
+    <text x="1065" y="277" text-anchor="middle" class="year white">2024—2025</text>
+    <text x="1065" y="345" text-anchor="middle" class="h ink">潜空间生成</text>
+    <text x="965" y="388" class="p muted">音频 Cross-Attention</text>
+    <text x="965" y="419" class="p muted">潜空间局部生成</text>
+    <text x="965" y="450" class="p muted">时序层与同步监督</text>
+    <line x1="965" y1="481" x2="1165" y2="481" class="rule"/>
+    <text x="965" y="522" class="s ink">代表：Diff2Lip、MuseTalk</text>
+    <text x="965" y="547" class="s ink">LatentSync</text>
+    <text x="965" y="587" class="s muted">突破：生成先验补足口腔</text>
+    <text x="965" y="612" class="s muted">细节，兼顾泛化与清晰度</text>
+    <text x="965" y="660" class="s muted">瓶颈：Mask、闪烁、延迟</text>
+  </g>
+
+  <g>
+    <rect x="1230" y="230" width="250" height="495" rx="22" class="card"/>
+    <rect x="1230" y="230" width="250" height="74" rx="22" class="rose"/>
+    <text x="1355" y="277" text-anchor="middle" class="year white">2025—2026</text>
+    <text x="1355" y="345" text-anchor="middle" class="h ink">DiT 视频编辑</text>
+    <text x="1255" y="388" class="p muted">Mask-free / V2V</text>
+    <text x="1255" y="419" class="p muted">动态时空音频引导</text>
+    <text x="1255" y="450" class="p muted">插入、删除、重定时</text>
+    <line x1="1255" y1="481" x2="1455" y2="481" class="rule"/>
+    <text x="1255" y="522" class="s ink">代表：OmniSync</text>
+    <text x="1255" y="547" class="s ink">EditYourself</text>
+    <text x="1255" y="587" class="s muted">突破：从“遮嘴补洞”走向</text>
+    <text x="1255" y="612" class="s muted">保持上下文的整段编辑</text>
+    <text x="1255" y="660" class="s muted">瓶颈：算力、开放性与</text>
+    <text x="1255" y="685" class="s muted">生产稳定性尚待验证</text>
+  </g>
+
+  <rect x="70" y="770" width="1410" height="82" rx="20" class="soft"/>
+  <text x="775" y="820" text-anchor="middle" class="takeaway ink">责任迁移：显式视素映射 → 同步监督 → 专用渲染器 → 生成先验 → 上下文完整的视频编辑</text>
+</svg>

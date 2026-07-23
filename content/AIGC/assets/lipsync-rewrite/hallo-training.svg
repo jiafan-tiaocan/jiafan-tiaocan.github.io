@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <defs>
+    <style>
+      .bg{fill:#f8f8fb}.card{fill:#fff;stroke:#deddea;stroke-width:2}.accent{fill:#635bce}.teal{fill:#0f9d8b}.warm{fill:#f59e0b}.soft{fill:#f3f1ff}.soft2{fill:#eaf8f5}.ink{fill:#20212a}.muted{fill:#686979}.white{fill:#fff}.line{stroke:#9f9bbd;stroke-width:4}.title{font:700 34px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.h{font:700 23px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.p{font:500 18px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.s{font:500 15px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#9f9bbd"/></marker>
+  </defs>
+  <rect class="bg" width="1400" height="760" rx="28"/>
+  <text x="70" y="70" class="title ink">基于 Hallo 的两阶段训练</text>
+  <text x="70" y="108" class="p muted">7718 条 VFHQ 采访与对话视频，按 lip、face、background 构建多尺度 Mask</text>
+
+  <rect x="70" y="155" width="330" height="210" rx="24" class="card"/>
+  <text x="110" y="205" class="h accent">数据工程</text>
+  <text x="110" y="247" class="p ink">逐视频预处理</text><text x="110" y="278" class="s muted">抽帧、检测面部区域</text>
+  <g><rect x="110" y="304" width="78" height="38" rx="12" class="accent"/><text x="149" y="329" class="s white" text-anchor="middle">lip</text><rect x="201" y="304" width="78" height="38" rx="12" class="teal"/><text x="240" y="329" class="s white" text-anchor="middle">face</text><rect x="292" y="304" width="78" height="38" rx="12" class="warm"/><text x="331" y="329" class="s white" text-anchor="middle">background</text></g>
+  <line x1="405" y1="260" x2="495" y2="260" class="line" marker-end="url(#arrow)"/>
+
+  <rect x="510" y="155" width="350" height="210" rx="24" class="soft"/>
+  <text x="550" y="205" class="h accent">阶段一：图像生成</text>
+  <text x="550" y="250" class="p ink">训练 ReferenceNet</text><text x="550" y="284" class="p ink">训练 Denoising U-Net</text><text x="550" y="327" class="s muted">学习身份一致性与基础画面生成</text>
+  <line x1="865" y1="260" x2="955" y2="260" class="line" marker-end="url(#arrow)"/>
+
+  <rect x="970" y="155" width="360" height="210" rx="24" class="soft2"/>
+  <text x="1010" y="205" class="h teal">阶段二：时序与音频</text>
+  <text x="1010" y="245" class="s muted">冻结阶段一权重</text><text x="1010" y="281" class="p ink">训练 Audio-Attention</text><text x="1010" y="315" class="p ink">训练 Temporal-Attention</text><text x="1010" y="345" class="s muted">学习音频控制与视频连续性</text>
+
+  <rect x="70" y="425" width="1260" height="260" rx="24" class="card"/>
+  <text x="110" y="475" class="h ink">统一模型中的三类职责</text>
+  <g>
+    <rect x="110" y="520" width="340" height="110" rx="18" class="soft"/><text x="280" y="560" class="h accent" text-anchor="middle">ReferenceNet</text><text x="280" y="595" class="s muted" text-anchor="middle">强化人物身份与外观一致性</text>
+    <rect x="530" y="520" width="340" height="110" rx="18" class="soft2"/><text x="700" y="560" class="h teal" text-anchor="middle">Audio Cross-Attention</text><text x="700" y="595" class="s muted" text-anchor="middle">对面部不同区域进行音频控制</text>
+    <rect x="950" y="520" width="340" height="110" rx="18" fill="#fff7e8"/><text x="1120" y="560" class="h warm" text-anchor="middle">Temporal-Attention</text><text x="1120" y="595" class="s muted" text-anchor="middle">增强跨帧连续性</text>
+  </g>
+  <text x="700" y="663" class="p ink" text-anchor="middle">目标：不再只关注嘴部，而是由音频共同驱动更丰富的面部动作。</text>
+</svg>

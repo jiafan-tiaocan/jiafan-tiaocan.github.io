@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="740" viewBox="0 0 1400 740">
+  <defs>
+    <style>
+      .bg{fill:#f8f8fb}.card{fill:#fff;stroke:#deddea;stroke-width:2}.accent{fill:#635bce}.teal{fill:#0f9d8b}.warm{fill:#f59e0b}.soft{fill:#f3f1ff}.ink{fill:#20212a}.muted{fill:#686979}.white{fill:#fff}.line{stroke:#9f9bbd;stroke-width:4}.dash{stroke:#b7b3d2;stroke-width:3;stroke-dasharray:9 9}.title{font:700 34px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.h{font:700 23px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.p{font:500 18px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.s{font:500 15px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#9f9bbd"/></marker>
+  </defs>
+  <rect class="bg" width="1400" height="740" rx="28"/>
+  <text x="70" y="70" class="title ink">MuseTalk 局部口型改写</text>
+  <text x="70" y="108" class="p muted">只重建必须变化的面部区域，降低全身尺度推理的成本和漂移</text>
+
+  <rect x="70" y="160" width="1260" height="300" rx="24" class="card"/>
+  <rect x="105" y="215" width="190" height="82" rx="18" class="soft"/><text x="200" y="249" class="h ink" text-anchor="middle">参考人脸</text><text x="200" y="278" class="s muted" text-anchor="middle">Reference Image</text>
+  <rect x="105" y="325" width="190" height="82" rx="18" class="soft"/><text x="200" y="359" class="h ink" text-anchor="middle">Mask 人脸</text><text x="200" y="388" class="s muted" text-anchor="middle">Masked Image</text>
+  <line x1="300" y1="256" x2="390" y2="290" class="line" marker-end="url(#arrow)"/><line x1="300" y1="366" x2="390" y2="330" class="line" marker-end="url(#arrow)"/>
+  <rect x="405" y="257" width="180" height="108" rx="18" class="accent"/><text x="495" y="302" class="h white" text-anchor="middle">冻结 VAE</text><text x="495" y="335" class="s white" text-anchor="middle">编码为潜变量</text>
+  <line x1="590" y1="311" x2="680" y2="311" class="line" marker-end="url(#arrow)"/>
+  <rect x="695" y="235" width="250" height="152" rx="18" class="teal"/><text x="820" y="279" class="h white" text-anchor="middle">单步 U-Net</text><text x="820" y="312" class="s white" text-anchor="middle">Spatial Conv + Self Attention</text><text x="820" y="340" class="s white" text-anchor="middle">Audio Cross-Attention</text>
+  <line x1="950" y1="311" x2="1040" y2="311" class="line" marker-end="url(#arrow)"/>
+  <rect x="1055" y="257" width="210" height="108" rx="18" class="warm"/><text x="1160" y="302" class="h white" text-anchor="middle">VAE 解码</text><text x="1160" y="335" class="s white" text-anchor="middle">贴回原始视频帧</text>
+
+  <rect x="405" y="505" width="220" height="82" rx="18" class="soft"/><text x="515" y="539" class="h ink" text-anchor="middle">同步音频</text><text x="515" y="568" class="s muted" text-anchor="middle">Synchronized Audio</text>
+  <line x1="630" y1="546" x2="720" y2="546" class="line" marker-end="url(#arrow)"/>
+  <rect x="735" y="505" width="220" height="82" rx="18" class="soft"/><text x="845" y="539" class="h ink" text-anchor="middle">冻结 Whisper</text><text x="845" y="568" class="s muted" text-anchor="middle">音频特征编码</text>
+  <path d="M845 500 V430 Q845 410 825 410 V390" fill="none" class="dash" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="635" width="1260" height="55" rx="16" class="card"/>
+  <text x="700" y="670" class="p ink" text-anchor="middle">关键工程决策：先检测并裁出人脸，再做局部生成；Mask 边界决定同步质量与身份保真之间的平衡。</text>
+</svg>

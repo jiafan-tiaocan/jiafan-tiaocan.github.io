@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720">
+  <defs>
+    <style>
+      .bg{fill:#f8f8fb}.card{fill:#fff;stroke:#deddea;stroke-width:2}.accent{fill:#635bce}.teal{fill:#0f9d8b}.warm{fill:#f59e0b}.soft{fill:#f3f1ff}.ink{fill:#20212a}.muted{fill:#686979}.white{fill:#fff}.line{stroke:#9f9bbd;stroke-width:4}.title{font:700 34px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.h{font:700 23px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.p{font:500 18px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}.s{font:500 15px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#9f9bbd"/></marker>
+  </defs>
+  <rect class="bg" width="1400" height="720" rx="28"/>
+  <text x="70" y="70" class="title ink">LivePortrait 表情迁移</text>
+  <text x="70" y="108" class="p muted">外观来自源人物，运动来自驱动人物，隐式关键点承担解耦接口</text>
+
+  <rect x="70" y="165" width="240" height="105" rx="20" class="soft"/><text x="190" y="207" class="h ink" text-anchor="middle">源人物 I<tspan baseline-shift="sub" font-size="15">s</tspan></text><text x="190" y="241" class="s muted" text-anchor="middle">身份、外观、背景</text>
+  <rect x="70" y="315" width="240" height="105" rx="20" class="soft"/><text x="190" y="357" class="h ink" text-anchor="middle">驱动人物 I<tspan baseline-shift="sub" font-size="15">d</tspan></text><text x="190" y="391" class="s muted" text-anchor="middle">表情与头部运动</text>
+
+  <line x1="315" y1="217" x2="395" y2="217" class="line" marker-end="url(#arrow)"/><line x1="315" y1="367" x2="395" y2="367" class="line" marker-end="url(#arrow)"/>
+  <rect x="410" y="145" width="310" height="305" rx="24" class="accent"/>
+  <text x="565" y="193" class="h white" text-anchor="middle">Appearance &amp; Motion Extractor</text>
+  <rect x="445" y="220" width="240" height="68" rx="16" fill="#8179df"/><text x="565" y="262" class="p white" text-anchor="middle">外观特征 F</text>
+  <rect x="445" y="307" width="240" height="105" rx="16" fill="#8179df"/><text x="565" y="342" class="p white" text-anchor="middle">运动特征 M</text><text x="565" y="373" class="s white" text-anchor="middle">隐式关键点、头姿、表情形变</text>
+
+  <line x1="725" y1="297" x2="815" y2="297" class="line" marker-end="url(#arrow)"/>
+  <rect x="830" y="235" width="220" height="125" rx="20" class="teal"/><text x="940" y="282" class="h white" text-anchor="middle">Warping Module</text><text x="940" y="317" class="s white" text-anchor="middle">以驱动相对运动</text><text x="940" y="342" class="s white" text-anchor="middle">变换源外观特征</text>
+  <line x1="1055" y1="297" x2="1135" y2="297" class="line" marker-end="url(#arrow)"/>
+  <rect x="1150" y="245" width="180" height="105" rx="20" class="warm"/><text x="1240" y="289" class="h white" text-anchor="middle">Decoder G</text><text x="1240" y="322" class="s white" text-anchor="middle">输出编辑帧</text>
+
+  <rect x="70" y="510" width="1260" height="145" rx="22" class="card"/>
+  <text x="110" y="555" class="h accent">原稿记录的工程扩展</text>
+  <text x="110" y="595" class="p ink">从“人脸图片表情迁移”扩展到“人脸视频编辑”和“动物图片编辑”；同时优化头部运动迁移逻辑。</text>
+  <text x="110" y="628" class="s muted">证据边界：照片展示了三种头动处理的对比现象，但没有拍到最终组合算法的完整实现细节。</text>
+</svg>
