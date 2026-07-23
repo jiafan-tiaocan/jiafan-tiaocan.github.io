@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">神童 Mem-OS 的两条经验形成闭环</title>
+  <desc id="desc">左侧从业务策略、Agent 行动和业务结果中提炼实践经验；右侧从 Agent 提案、专家修改和判断理由中提炼专家经验。两路证据进入统一的经验编译器，经过类型、范围、冲突和验证后发布为可复用记忆。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0 0L0 6L9 3z" fill="#665bc5"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0 0L0 6L9 3z" fill="#5688b8"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0 0L0 6L9 3z" fill="#4f9a77"/>
+    </marker>
+    <style>
+      .h{font:700 30px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#28253f}
+      .t{font:22px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#413d59}
+      .s{font:18px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#69647d}
+      .box{fill:#fff;stroke:#cac6e8;stroke-width:2}
+      .blue{fill:#eef6ff;stroke:#8eb5d9;stroke-width:2}
+      .green{fill:#edf9f3;stroke:#82b99e;stroke-width:2}
+      .purple{fill:#f1efff;stroke:#9d96dc;stroke-width:3}
+      .flow{stroke:#665bc5;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .flowBlue{stroke:#5688b8;stroke-width:3;fill:none;marker-end:url(#arrowBlue)}
+      .flowGreen{stroke:#4f9a77;stroke-width:3;fill:none;marker-end:url(#arrowGreen)}
+      .cross{stroke:#8a82c8;stroke-width:2.5;stroke-dasharray:8 7;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" rx="28" fill="#f8f7fc"/>
+  <text class="h" x="700" y="52" text-anchor="middle">神童 Mem-OS：两条经验形成闭环</text>
+
+  <g transform="translate(60 85)">
+    <rect class="blue" width="585" height="390" rx="24"/>
+    <text class="h" x="292" y="48" text-anchor="middle">业务策略实践</text>
+    <text class="s" x="292" y="78" text-anchor="middle">从行动与结果学习“什么做法在什么条件下有效”</text>
+
+    <g transform="translate(45 105)">
+      <rect class="box" width="495" height="72" rx="16"/>
+      <text class="t" x="247" y="43" text-anchor="middle">任务上下文 · 策略版本 · 备选方案</text>
+    </g>
+    <path class="flowBlue" d="M292 177V208"/>
+    <g transform="translate(45 208)">
+      <rect class="box" width="495" height="72" rx="16"/>
+      <text class="t" x="247" y="43" text-anchor="middle">Agent 行动 · Tool Trace · 人工介入</text>
+    </g>
+    <path class="flowBlue" d="M292 280V311"/>
+    <g transform="translate(45 311)">
+      <rect class="box" width="495" height="55" rx="16"/>
+      <text class="t" x="247" y="35" text-anchor="middle">Outcome · 对照 · 延迟窗口 · 混杂因素</text>
+    </g>
+  </g>
+
+  <g transform="translate(755 85)">
+    <rect class="green" width="585" height="390" rx="24"/>
+    <text class="h" x="292" y="48" text-anchor="middle">专家协作任务</text>
+    <text class="s" x="292" y="78" text-anchor="middle">从修改与理由学习“专家怎样判断、何时例外”</text>
+
+    <g transform="translate(45 105)">
+      <rect class="box" width="495" height="72" rx="16"/>
+      <text class="t" x="247" y="43" text-anchor="middle">Agent 原提案 · 证据 · 不确定点</text>
+    </g>
+    <path class="flowGreen" d="M292 177V208"/>
+    <g transform="translate(45 208)">
+      <rect class="box" width="495" height="72" rx="16"/>
+      <text class="t" x="247" y="43" text-anchor="middle">专家接受 / 修改 / 拒绝 / 重排</text>
+    </g>
+    <path class="flowGreen" d="M292 280V311"/>
+    <g transform="translate(45 311)">
+      <rect class="box" width="495" height="55" rx="16"/>
+      <text class="t" x="247" y="35" text-anchor="middle">判断理由 · 适用范围 · 反例 · 置信度</text>
+    </g>
+  </g>
+
+  <path class="cross" d="M645 170H755"/>
+  <text class="s" x="700" y="154" text-anchor="middle">实践异常 → 专家诊断</text>
+  <path class="cross" d="M755 422H645"/>
+  <text class="s" x="700" y="452" text-anchor="middle">专家假设 → 业务验证</text>
+
+  <path class="flowBlue" d="M352 475V525H555"/>
+  <path class="flowGreen" d="M1048 475V525H845"/>
+
+  <g transform="translate(415 525)">
+    <rect class="purple" width="570" height="105" rx="22"/>
+    <text class="h" x="285" y="43" text-anchor="middle">统一 Evidence Bundle</text>
+    <text class="t" x="285" y="78" text-anchor="middle">保留原始过程、来源、Diff、Outcome 与时间</text>
+  </g>
+  <path class="flow" d="M700 630V675"/>
+
+  <g transform="translate(105 675)">
+    <rect class="box" width="260" height="115" rx="18"/>
+    <text class="h" x="130" y="42" text-anchor="middle">分类与限域</text>
+    <text class="s" x="130" y="78" text-anchor="middle">Fact / Belief / Preference</text>
+    <text class="s" x="130" y="101" text-anchor="middle">Procedure / Policy</text>
+  </g>
+  <path class="flow" d="M365 732H430"/>
+  <g transform="translate(430 675)">
+    <rect class="box" width="250" height="115" rx="18"/>
+    <text class="h" x="125" y="42" text-anchor="middle">Memory Proposal</text>
+    <text class="s" x="125" y="78" text-anchor="middle">Scope · Trigger · Evidence</text>
+    <text class="s" x="125" y="101" text-anchor="middle">Conflict · Revision</text>
+  </g>
+  <path class="flow" d="M680 732H745"/>
+  <g transform="translate(745 675)">
+    <rect class="box" width="250" height="115" rx="18"/>
+    <text class="h" x="125" y="42" text-anchor="middle">验证与审核</text>
+    <text class="s" x="125" y="78" text-anchor="middle">重放 · Holdout · Near-miss</text>
+    <text class="s" x="125" y="101" text-anchor="middle">专家 / Policy 门禁</text>
+  </g>
+  <path class="flow" d="M995 732H1060"/>
+  <g transform="translate(1060 675)">
+    <rect class="box" width="235" height="115" rx="18" fill="#ecf8f2"/>
+    <text class="h" x="117" y="42" text-anchor="middle">Commit</text>
+    <text class="s" x="117" y="78" text-anchor="middle">可复用知识与方法</text>
+    <text class="s" x="117" y="101" text-anchor="middle">可追溯 · 可回滚</text>
+  </g>
+
+  <path class="flow" d="M1177 790V840H220V790"/>
+  <text class="s" x="700" y="865" text-anchor="middle">下一轮任务激活经验；使用结果继续回到业务实践与专家协作</text>
+</svg>
