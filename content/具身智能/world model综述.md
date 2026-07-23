@@ -6,7 +6,7 @@ tags:
   - World-Model
   - 强化学习
   - 机器人学习
-date: 2026-07-17
+date: 2026-06-30
 publish: true
 ---
 # 具身智能中的 World Model：从潜空间预测到可交互世界模拟器
@@ -587,4 +587,4 @@ $$
 25. Upadhyay et al. [WorldBench: Disambiguating Physics for Diagnostic Evaluation of World Models](https://arxiv.org/abs/2601.21282), 2026.
 26. [Physically Viable World Models: A Case for Query-Conditioned Embodied AI](https://arxiv.org/abs/2605.30542), 2026.
 
-> 本文资料更新截至 2026-07-17。前沿模型的官方命名与能力边界变化很快，后续更新应优先核对论文、技术报告和闭环实机结果，而不是只采用产品演示。
+> 本文资料更新截至 2026-06-30。前沿模型的官方命名与能力边界变化很快，后续更新应优先核对论文、技术报告和闭环实机结果，而不是只采用产品演示。
