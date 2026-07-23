@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">RNN、CNN 与 Self-Attention 的信息路径对比</title>
+  <desc id="desc">RNN 需要沿时间步串行传递，CNN 需要跨多层传播，Self-Attention 允许内容相关位置在一层内直接连接。</desc>
+  <defs>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrow-muted" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6F839E"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="700" fill="#0B1220"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="60" y="58" fill="#E6EDF7" font-size="30" font-weight="700">跨位置关系怎样被接通？</text>
+    <text x="60" y="91" fill="#9FB0C6" font-size="18">同一条远距离依赖，在三种骨架中走过不同计算路径</text>
+
+    <rect x="60" y="125" width="1080" height="150" rx="18" fill="#111C2E" stroke="#31445F"/>
+    <text x="88" y="165" fill="#F6C85F" font-size="23" font-weight="700">RNN：关系沿时间步排队</text>
+    <g fill="#182942" stroke="#6F839E" stroke-width="2">
+      <rect x="105" y="190" width="120" height="55" rx="12"/><rect x="290" y="190" width="120" height="55" rx="12"/>
+      <rect x="475" y="190" width="120" height="55" rx="12"/><rect x="660" y="190" width="120" height="55" rx="12"/>
+      <rect x="845" y="190" width="120" height="55" rx="12"/>
+    </g>
+    <g fill="#E6EDF7" font-size="18" text-anchor="middle">
+      <text x="165" y="224">token 1</text><text x="350" y="224">token 2</text><text x="535" y="224">token 3</text>
+      <text x="720" y="224">…</text><text x="905" y="224">token n</text>
+    </g>
+    <g stroke="#6F839E" stroke-width="3" fill="none" marker-end="url(#arrow-muted)">
+      <path d="M225 217 H282"/><path d="M410 217 H467"/><path d="M595 217 H652"/><path d="M780 217 H837"/>
+    </g>
+    <text x="1092" y="165" fill="#FF6B6B" font-size="18" text-anchor="end">串行 O(n) · 路径 O(n)</text>
+
+    <rect x="60" y="295" width="1080" height="150" rx="18" fill="#111C2E" stroke="#31445F"/>
+    <text x="88" y="335" fill="#A78BFA" font-size="23" font-weight="700">CNN：位置可并行，远关系跨层传播</text>
+    <g fill="#182942" stroke="#A78BFA" stroke-width="2">
+      <rect x="120" y="363" width="105" height="46" rx="10"/><rect x="285" y="363" width="105" height="46" rx="10"/>
+      <rect x="450" y="363" width="105" height="46" rx="10"/><rect x="615" y="363" width="105" height="46" rx="10"/>
+      <rect x="780" y="363" width="105" height="46" rx="10"/>
+    </g>
+    <g fill="#E6EDF7" font-size="17" text-anchor="middle">
+      <text x="172" y="392">局部窗口</text><text x="337" y="392">第 2 层</text><text x="502" y="392">第 3 层</text>
+      <text x="667" y="392">…</text><text x="832" y="392">远端位置</text>
+    </g>
+    <path d="M225 385 C260 350,260 350,285 385 S425 420,450 385 S590 350,615 385 S755 420,780 385"
+          fill="none" stroke="#A78BFA" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrow-muted)"/>
+    <text x="1092" y="335" fill="#9FB0C6" font-size="18" text-anchor="end">并行 · 路径随层数增长</text>
+
+    <rect x="60" y="465" width="1080" height="170" rx="18" fill="#111C2E" stroke="#46D9E8" stroke-width="2"/>
+    <text x="88" y="505" fill="#46D9E8" font-size="23" font-weight="700">Self-Attention：一次内容寻址建立全局边</text>
+    <g fill="#182942" stroke="#46D9E8" stroke-width="2">
+      <rect x="120" y="545" width="120" height="55" rx="12"/><rect x="335" y="545" width="120" height="55" rx="12"/>
+      <rect x="550" y="545" width="120" height="55" rx="12"/><rect x="765" y="545" width="120" height="55" rx="12"/>
+    </g>
+    <g fill="#E6EDF7" font-size="18" text-anchor="middle">
+      <text x="180" y="579">animal</text><text x="395" y="579">cross</text><text x="610" y="579">it</text><text x="825" y="579">tired</text>
+    </g>
+    <path d="M610 545 C610 505,180 505,180 537" fill="none" stroke="#46D9E8" stroke-width="4" marker-end="url(#arrow-cyan)"/>
+    <path d="M610 545 C610 522,825 522,825 537" fill="none" stroke="#46D9E8" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow-cyan)"/>
+    <text x="1092" y="505" fill="#5DD39E" font-size="18" text-anchor="end">层内并行 · 全局路径 O(1)</text>
+    <text x="1092" y="531" fill="#9FB0C6" font-size="16" text-anchor="end">代价：分数矩阵 O(n²)</text>
+
+    <text x="600" y="673" fill="#E6EDF7" font-size="20" font-weight="600" text-anchor="middle">
+      责任迁移：从“按位置传递状态”到“按内容选择信息”
+    </text>
+  </g>
+</svg>

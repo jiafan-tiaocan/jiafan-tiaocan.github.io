@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Self-Attention、Causal Self-Attention 与 Cross-Attention 的 QKV 来源</title>
+  <desc id="desc">三种注意力共享同一个缩放点积算子，区别在于 Query、Key、Value 来源以及是否使用因果遮罩。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrow-violet" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="760" fill="#0B1220"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="60" y="58" fill="#E6EDF7" font-size="30" font-weight="700">同一个 Attention 算子，三种接线</text>
+    <text x="60" y="91" fill="#9FB0C6" font-size="18">Q 决定输出位置；K 参与匹配；V 携带被读回的内容</text>
+
+    <rect x="340" y="116" width="520" height="92" rx="18" fill="#111C2E" stroke="#46D9E8" stroke-width="2"/>
+    <text x="600" y="153" fill="#46D9E8" font-size="21" font-weight="700" text-anchor="middle">Scaled Dot-Product Attention</text>
+    <text x="600" y="185" fill="#E6EDF7" font-size="21" text-anchor="middle">softmax(QKᵀ / sqrt(d_k) + M) V</text>
+
+    <rect x="60" y="245" width="340" height="420" rx="20" fill="#111C2E" stroke="#31445F"/>
+    <text x="230" y="285" fill="#5DD39E" font-size="23" font-weight="700" text-anchor="middle">Encoder Self-Attention</text>
+    <rect x="115" y="325" width="230" height="62" rx="13" fill="#182942" stroke="#5DD39E" stroke-width="2"/>
+    <text x="230" y="352" fill="#E6EDF7" font-size="18" text-anchor="middle">Encoder 状态 X</text>
+    <text x="230" y="375" fill="#9FB0C6" font-size="15" text-anchor="middle">同一源序列</text>
+    <g fill="#182942" stroke="#46D9E8" stroke-width="2">
+      <rect x="83" y="456" width="85" height="52" rx="10"/><rect x="188" y="456" width="85" height="52" rx="10"/><rect x="293" y="456" width="85" height="52" rx="10"/>
+    </g>
+    <g fill="#E6EDF7" font-size="20" font-weight="700" text-anchor="middle">
+      <text x="125" y="489">Q</text><text x="230" y="489">K</text><text x="335" y="489">V</text>
+    </g>
+    <g stroke="#46D9E8" stroke-width="3" fill="none" marker-end="url(#arrow)">
+      <path d="M190 387 L132 448"/><path d="M230 387 V448"/><path d="M270 387 L328 448"/>
+    </g>
+    <text x="230" y="550" fill="#E6EDF7" font-size="18" text-anchor="middle">分数矩阵：n × n</text>
+    <text x="230" y="580" fill="#9FB0C6" font-size="16" text-anchor="middle">所有源位置互相可见</text>
+    <text x="230" y="620" fill="#5DD39E" font-size="17" font-weight="600" text-anchor="middle">更新 Encoder token</text>
+
+    <rect x="430" y="245" width="340" height="420" rx="20" fill="#111C2E" stroke="#31445F"/>
+    <text x="600" y="285" fill="#F6C85F" font-size="23" font-weight="700" text-anchor="middle">Causal Self-Attention</text>
+    <rect x="485" y="325" width="230" height="62" rx="13" fill="#182942" stroke="#F6C85F" stroke-width="2"/>
+    <text x="600" y="352" fill="#E6EDF7" font-size="18" text-anchor="middle">Decoder 状态 Y</text>
+    <text x="600" y="375" fill="#9FB0C6" font-size="15" text-anchor="middle">同一目标前缀</text>
+    <g fill="#182942" stroke="#46D9E8" stroke-width="2">
+      <rect x="453" y="456" width="85" height="52" rx="10"/><rect x="558" y="456" width="85" height="52" rx="10"/><rect x="663" y="456" width="85" height="52" rx="10"/>
+    </g>
+    <g fill="#E6EDF7" font-size="20" font-weight="700" text-anchor="middle">
+      <text x="495" y="489">Q</text><text x="600" y="489">K</text><text x="705" y="489">V</text>
+    </g>
+    <g stroke="#46D9E8" stroke-width="3" fill="none" marker-end="url(#arrow)">
+      <path d="M560 387 L502 448"/><path d="M600 387 V448"/><path d="M640 387 L698 448"/>
+    </g>
+    <path d="M493 532 h214 v70 h-214 z" fill="#182942" stroke="#F6C85F" stroke-width="2"/>
+    <path d="M493 532 L707 602 M493 555 L660 602 M493 579 L587 602" stroke="#FF6B6B" stroke-width="2" opacity="0.65"/>
+    <text x="600" y="630" fill="#F6C85F" font-size="17" font-weight="600" text-anchor="middle">三角 mask：未来权重 = 0</text>
+
+    <rect x="800" y="245" width="340" height="420" rx="20" fill="#111C2E" stroke="#31445F"/>
+    <text x="970" y="285" fill="#A78BFA" font-size="23" font-weight="700" text-anchor="middle">Cross-Attention</text>
+    <rect x="830" y="325" width="125" height="62" rx="13" fill="#182942" stroke="#A78BFA" stroke-width="2"/>
+    <text x="892" y="352" fill="#E6EDF7" font-size="17" text-anchor="middle">Decoder S</text>
+    <text x="892" y="375" fill="#9FB0C6" font-size="14" text-anchor="middle">提出问题</text>
+    <rect x="985" y="325" width="125" height="62" rx="13" fill="#182942" stroke="#5DD39E" stroke-width="2"/>
+    <text x="1047" y="352" fill="#E6EDF7" font-size="17" text-anchor="middle">Encoder H</text>
+    <text x="1047" y="375" fill="#9FB0C6" font-size="14" text-anchor="middle">提供记忆</text>
+    <g fill="#182942" stroke-width="2">
+      <rect x="820" y="456" width="85" height="52" rx="10" stroke="#A78BFA"/>
+      <rect x="935" y="456" width="85" height="52" rx="10" stroke="#5DD39E"/>
+      <rect x="1035" y="456" width="85" height="52" rx="10" stroke="#5DD39E"/>
+    </g>
+    <g fill="#E6EDF7" font-size="20" font-weight="700" text-anchor="middle">
+      <text x="862" y="489">Q</text><text x="977" y="489">K</text><text x="1077" y="489">V</text>
+    </g>
+    <path d="M892 387 L867 448" stroke="#A78BFA" stroke-width="3" fill="none" marker-end="url(#arrow-violet)"/>
+    <g stroke="#46D9E8" stroke-width="3" fill="none" marker-end="url(#arrow)">
+      <path d="M1032 387 L983 448"/><path d="M1062 387 L1073 448"/>
+    </g>
+    <text x="970" y="550" fill="#E6EDF7" font-size="18" text-anchor="middle">分数矩阵：m × n</text>
+    <text x="970" y="580" fill="#9FB0C6" font-size="16" text-anchor="middle">目标位置读取源记忆</text>
+    <text x="970" y="620" fill="#A78BFA" font-size="17" font-weight="600" text-anchor="middle">更新 Query 一侧</text>
+
+    <rect x="240" y="694" width="720" height="42" rx="12" fill="#182942" stroke="#46D9E8"/>
+    <text x="600" y="721" fill="#E6EDF7" font-size="19" font-weight="600" text-anchor="middle">
+      判断 Self / Cross，不看模块名字，只追踪 Q、K、V 的来源
+    </text>
+  </g>
+</svg>
