@@ -12,7 +12,7 @@
   <rect x="36" y="32" width="1368" height="776" rx="24" fill="url(#grid)" stroke="#1A2940"/>
   <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
     <rect x="68" y="58" width="204" height="34" rx="17" fill="#111C2E" stroke="#31445F"/>
-    <text x="170" y="80" text-anchor="middle" fill="#9FB0C6" font-size="15" font-weight="700" letter-spacing="1.2">FIGURE 03 · DECISION</text>
+    <text x="170" y="80" text-anchor="middle" fill="#9FB0C6" font-size="15" font-weight="700" letter-spacing="1.2">FIGURE 07 · DECISION</text>
     <text x="68" y="130" fill="#E6EDF7" font-size="34" font-weight="720">候选如何逐层获得发布资格</text>
     <text x="68" y="164" fill="#9FB0C6" font-size="18">约束不是总分的一部分，而是先后有序、不可相互抵消的准入条件。</text>
 

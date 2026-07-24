@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="980" viewBox="0 0 1440 980" role="img" aria-labelledby="title desc">
+  <title id="title">生产 Agent 系统的四条学习来源 Loop</title>
+  <desc id="desc">专家经验、实践经验、指标驱动和 Badcase 四条 Loop 分列四周，共享中央的 Evidence Store、Evaluation Harness 和 Versioned Assets。所有发布结果回到生产 Runtime，并通过可观测性产生下一轮证据。</desc>
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#18263A" stroke-width="1"/>
+    </pattern>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#F6C85F"/>
+    </marker>
+    <marker id="arrowViolet" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#A78BFA"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#FF6B6B"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#5DD39E"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="980" rx="28" fill="#0B1220"/>
+  <rect x="36" y="32" width="1368" height="916" rx="24" fill="url(#grid)" stroke="#243650"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="66" y="58" width="210" height="32" rx="16" fill="#122034" stroke="#31445F"/>
+    <text x="171" y="80" text-anchor="middle" fill="#9FB0C6" font-size="15" letter-spacing="1.6">FIGURE 05 · FOUR LOOPS</text>
+    <text x="66" y="132" fill="#E6EDF7" font-size="34" font-weight="700">四种信号进入同一台学习机器</text>
+    <text x="66" y="165" fill="#9FB0C6" font-size="18">Loop 的起点不同；证据、评测、资产晋级与生产回流协议必须统一。</text>
+
+    <!-- Loop A -->
+    <rect x="66" y="205" width="430" height="238" rx="22" fill="#102A35" stroke="#46D9E8" stroke-width="2"/>
+    <rect x="88" y="224" width="210" height="34" rx="17" fill="#123844" stroke="#46D9E8"/>
+    <text x="193" y="247" text-anchor="middle" fill="#46D9E8" font-size="16" font-weight="700">A · 专家经验引入</text>
+    <text x="88" y="291" fill="#E6EDF7" font-size="18" font-weight="700">把反馈变成带边界的方法</text>
+    <g fill="#D7E0EC" font-size="15">
+      <text x="88" y="325">用户 / 专家反馈</text>
+      <text x="88" y="357">个人知识候选</text>
+      <text x="88" y="389">跨 Case 验证</text>
+      <text x="88" y="421">通用知识 / Skill 候选</text>
+    </g>
+    <path d="M242 320H438M242 352H438M242 384H438M242 416H438" stroke="#284C59"/>
+    <path d="M388 316V411" stroke="#46D9E8" stroke-width="2" marker-end="url(#arrowCyan)"/>
+    <rect x="320" y="274" width="148" height="30" rx="15" fill="#182B37"/>
+    <text x="394" y="294" text-anchor="middle" fill="#9FB0C6" font-size="13">HUMAN · HIGH</text>
+
+    <!-- Loop B -->
+    <rect x="944" y="205" width="430" height="238" rx="22" fill="#2F2816" stroke="#F6C85F" stroke-width="2"/>
+    <rect x="966" y="224" width="210" height="34" rx="17" fill="#493B18" stroke="#F6C85F"/>
+    <text x="1071" y="247" text-anchor="middle" fill="#F6C85F" font-size="16" font-weight="700">B · 实践经验沉淀</text>
+    <text x="966" y="291" fill="#E6EDF7" font-size="18" font-weight="700">从运行中提取可迁移经验</text>
+    <g fill="#D7E0EC" font-size="15">
+      <text x="966" y="325">成功 / 失败 Episode</text>
+      <text x="966" y="357">重复模式与反例</text>
+      <text x="966" y="389">适用范围 / 冲突检查</text>
+      <text x="966" y="421">通用知识 / Procedure</text>
+    </g>
+    <path d="M1130 320H1316M1130 352H1316M1130 384H1316M1130 416H1316" stroke="#554720"/>
+    <path d="M1266 316V411" stroke="#F6C85F" stroke-width="2" marker-end="url(#arrowAmber)"/>
+    <rect x="1198" y="274" width="148" height="30" rx="15" fill="#3A321D"/>
+    <text x="1272" y="294" text-anchor="middle" fill="#D7C789" font-size="13">AUTO + SAMPLE</text>
+
+    <!-- Loop C -->
+    <rect x="66" y="540" width="430" height="238" rx="22" fill="#211B37" stroke="#A78BFA" stroke-width="2"/>
+    <rect x="88" y="559" width="210" height="34" rx="17" fill="#30244E" stroke="#A78BFA"/>
+    <text x="193" y="582" text-anchor="middle" fill="#C5B5FF" font-size="16" font-weight="700">C · 指标驱动优化</text>
+    <text x="88" y="626" fill="#E6EDF7" font-size="18" font-weight="700">从群体退化定位系统性问题</text>
+    <g fill="#D7E0EC" font-size="15">
+      <text x="88" y="660">指标树 / 切片异常</text>
+      <text x="88" y="692">失败簇与机制假设</text>
+      <text x="88" y="724">多策略候选 Trial</text>
+      <text x="88" y="756">最优可行版本</text>
+    </g>
+    <path d="M242 655H438M242 687H438M242 719H438M242 751H438" stroke="#4B3E70"/>
+    <path d="M388 651V746" stroke="#A78BFA" stroke-width="2" marker-end="url(#arrowViolet)"/>
+    <rect x="320" y="609" width="148" height="30" rx="15" fill="#29213F"/>
+    <text x="394" y="629" text-anchor="middle" fill="#C5B5FF" font-size="13">POPULATION VIEW</text>
+
+    <!-- Loop D -->
+    <rect x="944" y="540" width="430" height="238" rx="22" fill="#301D27" stroke="#FF6B6B" stroke-width="2"/>
+    <rect x="966" y="559" width="210" height="34" rx="17" fill="#47232E" stroke="#FF6B6B"/>
+    <text x="1071" y="582" text-anchor="middle" fill="#FF8A8A" font-size="16" font-weight="700">D · Badcase 修复</text>
+    <text x="966" y="626" fill="#E6EDF7" font-size="18" font-weight="700">从单次失败还原因果路径</text>
+    <g fill="#D7E0EC" font-size="15">
+      <text x="966" y="660">失败 Case + 完整 Trace</text>
+      <text x="966" y="692">重放 / 根因定位</text>
+      <text x="966" y="724">回归 Case + 最小 Diff</text>
+      <text x="966" y="756">修复与长尾验证</text>
+    </g>
+    <path d="M1130 655H1316M1130 687H1316M1130 719H1316M1130 751H1316" stroke="#5C303A"/>
+    <path d="M1266 651V746" stroke="#FF6B6B" stroke-width="2" marker-end="url(#arrowRed)"/>
+    <rect x="1198" y="609" width="148" height="30" rx="15" fill="#3B232B"/>
+    <text x="1272" y="629" text-anchor="middle" fill="#F2A0AE" font-size="13">INSTANCE VIEW</text>
+
+    <!-- Shared kernel -->
+    <rect x="532" y="244" width="376" height="492" rx="28" fill="#171A2D" stroke="#A78BFA" stroke-width="2"/>
+    <text x="720" y="283" text-anchor="middle" fill="#E6EDF7" font-size="21" font-weight="700">SHARED LEARNING KERNEL</text>
+    <text x="720" y="309" text-anchor="middle" fill="#9FB0C6" font-size="14">四条 Loop 共用，不各自造一套裁判</text>
+
+    <rect x="568" y="338" width="304" height="68" rx="16" fill="#102A35" stroke="#46D9E8"/>
+    <text x="720" y="366" text-anchor="middle" fill="#46D9E8" font-size="17" font-weight="700">Evidence Store</text>
+    <text x="720" y="390" text-anchor="middle" fill="#9FB0C6" font-size="14">Trace · Outcome · Feedback · Provenance</text>
+
+    <rect x="568" y="428" width="304" height="68" rx="16" fill="#211B37" stroke="#A78BFA"/>
+    <text x="720" y="456" text-anchor="middle" fill="#C5B5FF" font-size="17" font-weight="700">Diagnosis &amp; Candidate</text>
+    <text x="720" y="480" text-anchor="middle" fill="#9FB0C6" font-size="14">机制假设 · 最小改动面 · 多候选</text>
+
+    <rect x="568" y="518" width="304" height="68" rx="16" fill="#2F2816" stroke="#F6C85F"/>
+    <text x="720" y="546" text-anchor="middle" fill="#F6C85F" font-size="17" font-weight="700">Evaluation Harness</text>
+    <text x="720" y="570" text-anchor="middle" fill="#9FB0C6" font-size="14">Frozen Protocol · Trial · Human Label</text>
+
+    <rect x="568" y="608" width="304" height="86" rx="16" fill="#102820" stroke="#5DD39E"/>
+    <text x="720" y="636" text-anchor="middle" fill="#5DD39E" font-size="17" font-weight="700">Versioned Asset Registry</text>
+    <text x="720" y="661" text-anchor="middle" fill="#D7E0EC" font-size="14">Knowledge · Skill · Tool</text>
+    <text x="720" y="682" text-anchor="middle" fill="#9FB0C6" font-size="14">Organization · Runtime · Eval</text>
+
+    <!-- Inbound arrows -->
+    <path d="M496 330C520 330 518 372 560 372" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrowCyan)"/>
+    <path d="M944 330C920 330 922 372 880 372" fill="none" stroke="#F6C85F" stroke-width="3" marker-end="url(#arrowAmber)"/>
+    <path d="M496 656C520 656 520 552 560 552" fill="none" stroke="#A78BFA" stroke-width="3" marker-end="url(#arrowViolet)"/>
+    <path d="M944 656C920 656 920 552 880 552" fill="none" stroke="#FF6B6B" stroke-width="3" marker-end="url(#arrowRed)"/>
+
+    <!-- Production feedback -->
+    <rect x="396" y="828" width="648" height="64" rx="24" fill="#102820" stroke="#5DD39E" stroke-width="2"/>
+    <text x="720" y="854" text-anchor="middle" fill="#5DD39E" font-size="18" font-weight="700">SHADOW → CANARY → PRODUCTION RUNTIME</text>
+    <text x="720" y="878" text-anchor="middle" fill="#9FB0C6" font-size="14">真实运行通过 Observability 生成下一轮 Episode</text>
+    <path d="M720 694V820" stroke="#5DD39E" stroke-width="3" marker-end="url(#arrowGreen)"/>
+    <path d="M396 860C180 860 58 814 58 494C58 196 258 188 496 221" fill="none" stroke="#5DD39E" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrowGreen)"/>
+    <path d="M1044 860C1260 860 1382 814 1382 494C1382 196 1182 188 944 221" fill="none" stroke="#5DD39E" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrowGreen)"/>
+
+    <rect x="435" y="914" width="570" height="30" rx="15" fill="#122034" stroke="#31445F"/>
+    <text x="720" y="934" text-anchor="middle" fill="#E6EDF7" font-size="14" font-weight="700">指标决定优先级；Badcase 解释机制；专家与实践决定知识如何积累</text>
+  </g>
+</svg>

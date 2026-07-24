@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Runtime 可观测性的三层架构</title>
+  <desc id="desc">左侧以多泳道 Span 记录一次 Agent 执行，中间用稳定语义描述 Span，右侧把同一份数据编译成 Trace Tree、Agent Graph 和 State Diff。底部强调可观测性完整性是评测和自进化的前置门禁。</desc>
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#18263A" stroke-width="1"/>
+    </pattern>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrowViolet" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#A78BFA"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#5DD39E"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="900" rx="28" fill="#0B1220"/>
+  <rect x="36" y="32" width="1368" height="836" rx="24" fill="url(#grid)" stroke="#243650"/>
+
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <rect x="66" y="58" width="210" height="32" rx="16" fill="#122034" stroke="#31445F"/>
+    <text x="171" y="80" text-anchor="middle" fill="#9FB0C6" font-size="15" letter-spacing="1.6">FIGURE 01 · FOUNDATION</text>
+    <text x="66" y="132" fill="#E6EDF7" font-size="34" font-weight="700">可观测性不是日志，而是可重建的执行语义</text>
+    <text x="66" y="165" fill="#9FB0C6" font-size="18">同一份运行事实必须同时服务于调试、评测、失败归因与候选比较。</text>
+
+    <!-- Plane labels -->
+    <rect x="66" y="205" width="510" height="42" rx="21" fill="#102735" stroke="#46D9E8"/>
+    <text x="321" y="232" text-anchor="middle" fill="#46D9E8" font-size="17" font-weight="700">① TRACE DATA PLANE · 发生了什么</text>
+    <rect x="605" y="205" width="318" height="42" rx="21" fill="#251D3B" stroke="#A78BFA"/>
+    <text x="764" y="232" text-anchor="middle" fill="#A78BFA" font-size="17" font-weight="700">② SEMANTIC PLANE · 意味着什么</text>
+    <rect x="952" y="205" width="422" height="42" rx="21" fill="#122B25" stroke="#5DD39E"/>
+    <text x="1163" y="232" text-anchor="middle" fill="#5DD39E" font-size="17" font-weight="700">③ VIEW PLANE · 人怎样理解</text>
+
+    <!-- Trace lanes -->
+    <rect x="66" y="267" width="510" height="430" rx="22" fill="#0F1A2B" stroke="#31445F"/>
+    <g fill="#9FB0C6" font-size="16" font-weight="600">
+      <text x="88" y="310">MODEL</text>
+      <text x="88" y="382">SKILL / SCRIPT</text>
+      <text x="88" y="454">TOOL</text>
+      <text x="88" y="526">SUBAGENT</text>
+      <text x="88" y="598">STATE</text>
+      <text x="88" y="670">OUTCOME</text>
+    </g>
+    <g stroke="#243650">
+      <path d="M205 286V678"/>
+      <path d="M205 328H552M205 400H552M205 472H552M205 544H552M205 616H552"/>
+    </g>
+    <text x="214" y="288" fill="#667993" font-size="14">time →</text>
+
+    <rect x="220" y="292" width="98" height="28" rx="14" fill="#12313C" stroke="#46D9E8"/>
+    <text x="269" y="312" text-anchor="middle" fill="#46D9E8" font-size="14">plan</text>
+    <rect x="414" y="292" width="118" height="28" rx="14" fill="#12313C" stroke="#46D9E8"/>
+    <text x="473" y="312" text-anchor="middle" fill="#46D9E8" font-size="14">replan</text>
+
+    <rect x="252" y="364" width="145" height="28" rx="14" fill="#251D3B" stroke="#A78BFA"/>
+    <text x="324" y="384" text-anchor="middle" fill="#C5B5FF" font-size="14">diagnose@2.1</text>
+    <rect x="428" y="364" width="108" height="28" rx="14" fill="#251D3B" stroke="#A78BFA"/>
+    <text x="482" y="384" text-anchor="middle" fill="#C5B5FF" font-size="14">verify.py</text>
+
+    <rect x="300" y="436" width="118" height="28" rx="14" fill="#322914" stroke="#F6C85F"/>
+    <text x="359" y="456" text-anchor="middle" fill="#F6C85F" font-size="14">search × 2</text>
+    <rect x="456" y="436" width="80" height="28" rx="14" fill="#322914" stroke="#F6C85F"/>
+    <text x="496" y="456" text-anchor="middle" fill="#F6C85F" font-size="14">fetch</text>
+
+    <rect x="332" y="508" width="150" height="28" rx="14" fill="#202A45" stroke="#7E9BFF"/>
+    <text x="407" y="528" text-anchor="middle" fill="#AFC0FF" font-size="14">researcher · ∥</text>
+
+    <rect x="268" y="580" width="116" height="28" rx="14" fill="#122B25" stroke="#5DD39E"/>
+    <text x="326" y="600" text-anchor="middle" fill="#5DD39E" font-size="14">checkpoint</text>
+    <rect x="468" y="580" width="68" height="28" rx="14" fill="#122B25" stroke="#5DD39E"/>
+    <text x="502" y="600" text-anchor="middle" fill="#5DD39E" font-size="14">diff</text>
+
+    <rect x="402" y="652" width="134" height="28" rx="14" fill="#122B25" stroke="#5DD39E"/>
+    <text x="469" y="672" text-anchor="middle" fill="#5DD39E" font-size="14">accepted</text>
+
+    <g fill="none" stroke="#46D9E8" stroke-width="2" marker-end="url(#arrowCyan)">
+      <path d="M318 306C338 306 330 378 252 378"/>
+      <path d="M397 378C438 378 278 450 300 450"/>
+      <path d="M418 450C448 450 418 522 482 522"/>
+      <path d="M482 522C504 522 464 594 468 594"/>
+      <path d="M502 608V652"/>
+    </g>
+    <path d="M418 450C448 450 396 330 414 306" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#arrowCyan)"/>
+    <text x="420" y="417" fill="#FF8A8A" font-size="13">tool error → replan</text>
+
+    <!-- Semantic card -->
+    <rect x="605" y="267" width="318" height="430" rx="22" fill="#15172B" stroke="#5E4D8F"/>
+    <text x="631" y="307" fill="#E6EDF7" font-size="20" font-weight="700">Agent Span Contract</text>
+    <text x="631" y="335" fill="#9FB0C6" font-size="15">稳定命名，低基数；动态值进入属性。</text>
+
+    <g font-size="15">
+      <text x="631" y="380" fill="#A78BFA" font-weight="700">IDENTITY</text>
+      <text x="631" y="405" fill="#D7E0EC">trace_id · span_id · parent / links</text>
+      <text x="631" y="430" fill="#D7E0EC">episode · task · asset manifest</text>
+
+      <text x="631" y="474" fill="#46D9E8" font-weight="700">OPERATION</text>
+      <text x="631" y="499" fill="#D7E0EC">model · skill · script · tool · agent</text>
+      <text x="631" y="524" fill="#D7E0EC">input ref · output ref · status · error</text>
+
+      <text x="631" y="568" fill="#F6C85F" font-weight="700">MEASUREMENT</text>
+      <text x="631" y="593" fill="#D7E0EC">latency · token · cost · retry · wait</text>
+      <text x="631" y="618" fill="#D7E0EC">state diff · evidence refs · side effects</text>
+    </g>
+    <rect x="630" y="646" width="268" height="34" rx="17" fill="#341F28" stroke="#FF6B6B"/>
+    <text x="764" y="668" text-anchor="middle" fill="#FF8A8A" font-size="14" font-weight="700">不记录原始隐藏思维链</text>
+
+    <!-- View plane -->
+    <rect x="952" y="267" width="422" height="430" rx="22" fill="#0F1C28" stroke="#3F6F62"/>
+    <rect x="980" y="296" width="366" height="94" rx="16" fill="#111C2E" stroke="#46D9E8"/>
+    <text x="1004" y="326" fill="#46D9E8" font-size="17" font-weight="700">TRACE TREE · 精确运行</text>
+    <text x="1004" y="353" fill="#D7E0EC" font-size="15">父子嵌套、耗时、成本、错误与重试</text>
+    <text x="1004" y="377" fill="#9FB0C6" font-size="14">回答：这一次到底发生了什么？</text>
+
+    <rect x="980" y="410" width="366" height="110" rx="16" fill="#18172C" stroke="#A78BFA"/>
+    <text x="1004" y="440" fill="#A78BFA" font-size="17" font-weight="700">AGENT GRAPH · 结构与 Loop</text>
+    <path d="M1010 478H1050L1082 454L1118 487L1158 448L1200 478H1320" fill="none" stroke="#A78BFA" stroke-width="2" marker-end="url(#arrowViolet)"/>
+    <text x="1004" y="507" fill="#9FB0C6" font-size="14">回答：分支、循环和并行是否合理？</text>
+
+    <rect x="980" y="540" width="366" height="128" rx="16" fill="#102820" stroke="#5DD39E"/>
+    <text x="1004" y="570" fill="#5DD39E" font-size="17" font-weight="700">STATE DIFF · 持久变化</text>
+    <text x="1004" y="601" fill="#9FB0C6" font-size="14">before</text>
+    <text x="1100" y="601" fill="#D7E0EC" font-size="15">knowledge@17</text>
+    <text x="1004" y="630" fill="#9FB0C6" font-size="14">after</text>
+    <text x="1100" y="630" fill="#5DD39E" font-size="15">knowledge@18  + rule#42</text>
+    <text x="1004" y="654" fill="#9FB0C6" font-size="14">回答：经验究竟沉淀成了什么？</text>
+
+    <!-- Connect planes -->
+    <path d="M576 482H598" stroke="#A78BFA" stroke-width="3" marker-end="url(#arrowViolet)"/>
+    <path d="M923 482H945" stroke="#5DD39E" stroke-width="3" marker-end="url(#arrowGreen)"/>
+
+    <!-- Bottom gate -->
+    <rect x="168" y="750" width="1104" height="72" rx="24" fill="#101E31" stroke="#5DD39E" stroke-width="2"/>
+    <circle cx="212" cy="786" r="18" fill="#123B30" stroke="#5DD39E"/>
+    <path d="M202 786L210 794L224 778" fill="none" stroke="#5DD39E" stroke-width="3"/>
+    <text x="248" y="780" fill="#E6EDF7" font-size="18" font-weight="700">OBSERVABILITY GATE</text>
+    <text x="248" y="807" fill="#9FB0C6" font-size="16">关键 Span、版本、Outcome 或状态差异缺失 → 本次 Episode 不得进入评测、知识沉淀与自进化数据集</text>
+  </g>
+</svg>
