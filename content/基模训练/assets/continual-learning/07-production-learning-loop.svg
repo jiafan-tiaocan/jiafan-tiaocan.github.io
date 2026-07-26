@@ -20,6 +20,7 @@
       .body{font-size:17px;fill:#37465c}
       .small{font-size:15px;fill:#5e6d81}
       .label{font-size:17px;font-weight:680;fill:#1a2638}
+      .onDark{fill:#ffffff}
     </style>
   </defs>
   <rect width="1400" height="900" rx="28" fill="url(#bg2)"/>
@@ -63,19 +64,19 @@
   <path d="M574 250 H627" stroke="#536a88" stroke-width="3" marker-end="url(#a2)"/>
   <path d="M982 250 H1034" stroke="#536a88" stroke-width="3" marker-end="url(#a2)"/>
 
-  <rect x="169" y="584" width="1062" height="164" rx="24" fill="#18243a"/>
-  <text x="204" y="627" class="sans head" fill="#f8fafc">统一评测门禁</text>
+  <rect x="169" y="584" width="1062" height="164" rx="24" fill="#0b1730" stroke="#6380aa" stroke-width="2"/>
+  <text x="204" y="627" class="sans head onDark">统一评测门禁</text>
   <g class="sans">
-    <rect x="204" y="653" width="176" height="59" rx="14" fill="#263650"/>
-    <text x="292" y="689" text-anchor="middle" class="label" fill="#f8fafc">新能力是否学会</text>
-    <rect x="402" y="653" width="176" height="59" rx="14" fill="#263650"/>
-    <text x="490" y="689" text-anchor="middle" class="label" fill="#f8fafc">旧能力是否保留</text>
-    <rect x="600" y="653" width="176" height="59" rx="14" fill="#263650"/>
-    <text x="688" y="689" text-anchor="middle" class="label" fill="#f8fafc">安全边界是否退化</text>
-    <rect x="798" y="653" width="176" height="59" rx="14" fill="#263650"/>
-    <text x="886" y="689" text-anchor="middle" class="label" fill="#f8fafc">隐私与来源合规</text>
-    <rect x="996" y="653" width="200" height="59" rx="14" fill="#263650"/>
-    <text x="1096" y="689" text-anchor="middle" class="label" fill="#f8fafc">成本、延迟与容量预算</text>
+    <rect x="204" y="653" width="176" height="59" rx="14" fill="#dff4ff" stroke="#6bc2e8"/>
+    <text x="292" y="689" text-anchor="middle" class="label">新能力是否学会</text>
+    <rect x="402" y="653" width="176" height="59" rx="14" fill="#e8ecff" stroke="#8fa3e8"/>
+    <text x="490" y="689" text-anchor="middle" class="label">旧能力是否保留</text>
+    <rect x="600" y="653" width="176" height="59" rx="14" fill="#f5e8ff" stroke="#b98ad8"/>
+    <text x="688" y="689" text-anchor="middle" class="label">安全边界是否退化</text>
+    <rect x="798" y="653" width="176" height="59" rx="14" fill="#ddf7f0" stroke="#6bbda9"/>
+    <text x="886" y="689" text-anchor="middle" class="label">隐私与来源合规</text>
+    <rect x="996" y="653" width="200" height="59" rx="14" fill="#fff0d8" stroke="#d8a65f"/>
+    <text x="1096" y="689" text-anchor="middle" class="label">成本、延迟与容量预算</text>
   </g>
   <path d="M1188 334 V545 H1093 V576" fill="none" stroke="#536a88" stroke-width="3" marker-end="url(#a2)"/>
 
