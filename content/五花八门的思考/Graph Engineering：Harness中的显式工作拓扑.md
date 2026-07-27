@@ -29,7 +29,7 @@ Agent 系统最初依赖模型在上下文中临场决定下一步。随后，�
 
 这里的 Harness 指承载权限、状态、预算、验证与恢复的系统级执行包络。Anthropic 也会把单个 Dynamic Workflow 称为“针对当前任务即时生成的 Harness”。两种说法并不矛盾：**系统级 Harness 托管一个由 Workflow 描述的任务级 Harness，后者再实例化具体 Graph。**
 
-全文分为三条阅读路线：只关心概念边界，可以阅读第 1、4、10 节；关心 Claude Code Workflow，可以阅读第 2、3、6、9 节；准备实现类似系统，则重点阅读第 5 至第 8 节。
+全文分为四条阅读路线：只关心概念边界，可以阅读第 1、4、10 节；关心 Claude Code Workflow，可以阅读第 2、3、6、9 节；准备实现类似系统，则重点阅读第 5 至第 8 节；希望直接看完整工程案例，可以阅读第 11 节。
 
 > [!note] 证据边界
 > - Claude Code Dynamic Workflow 的产品行为核验于 2026-07-27，以 Anthropic 官方文档为准。
@@ -718,6 +718,21 @@ type RunSnapshot = {
 
 ## 7. 图约束应分成三种强度
 
+Graph 不必把 Agent 固化为一条预设流水线。真正需要固定的是权限边界、证据要求、循环预算和终态条件；问题分解与修正路径仍可由运行状态决定。常见的灵活性有两种。
+
+### 7.1 两种互补的动态模式
+
+| 模式 | 图结构 | 动态性在哪里 | 适合解决什么 |
+|---|---|---|---|
+| 问题分支 | `分析 → 解法 A / 解法 B / 解法 C` | 分析节点根据结构化结果选择一个分支，或动态展开多个并行分支 | 问题类型、领域数量或工作单元在运行前未知 |
+| 评审回路 | `分析 → Review → 分析` | Review 根据证据决定通过、带反馈返回或停止 | 初次分析可能不完整，需要反证和修正 |
+
+第一种不是要求预先知道唯一执行路径。Workflow 只规定**允许出现哪些解法子图**，Runtime 再根据 `problemType`、假设列表或数据分区选择一个或多个分支。第二种也不是让 Agent 无限 ReAct；回边必须携带 Review 反馈，并由 `maxIterations`、失败指纹和进展信号共同约束。
+
+两者可以组合：先将问题展开为多个领域分支，汇合为一次诊断；再让独立 Reviewer 检查证据与策略。如果结构性问题未解决，就返回诊断节点重新分析。图约束限制的是可接受的转移，不是预先写死每次运行的完整路径。
+
+### 7.2 约束必须落到不同执行层
+
 并不是把条件写进 Workflow 就获得了同样强的保证。图约束至少分为三层：
 
 | 约束层 | 典型内容 | 最合适的执行者 |
@@ -816,3 +831,353 @@ Task Contract
 最终需要建设的不是一张越来越复杂的流程图，而是一条完整的编译与治理链路：
 
 > **把任务意图编译成受约束的 Workflow，验证其拓扑不变量，由 Harness 可靠执行，并用运行图与 Trace 持续优化下一版结构。**
+
+## 11. 完整案例：多 Agent 经营分析与策略执行
+
+下面给出一个假想但可实现的案例：订阅业务的周度净收入与毛利同时恶化，系统需要定位原因、生成干预策略，并在审批后灰度执行。示例中的阈值只是接口字段，不代表真实业务参数。
+
+这个案例同时使用前述两种动态模式：
+
+1. **问题分支**：获客、转化、留存和单位经济模型并行分析；诊断完成后，预算、Offer 和产品干预三个策略分支并行产生候选。
+2. **评审回路**：模拟工具计算候选影响，Red-team Agent 检查证据、遗漏和护栏；若发现结构性缺陷且仍有预算，则带反馈返回诊断节点，重新分析，而不是在原答案上继续润色。
+
+[![多 Agent 经营数据分析与策略执行图：Claude Workflow 内包含问题分支和有界评审回路，外层 Harness 负责审批、灰度执行、监控与回滚](assets/graph-engineering-workflow/09-multi-agent-strategy-case.svg)](assets/graph-engineering-workflow/09-multi-agent-strategy-case.svg)
+
+*图 9　完整案例同时包含“分析后按问题结构分支”和“分析—Review—重分析”两种模式。Claude Workflow 只生成有证据的 Proposal；外层 Harness 持有审批、执行凭证、监控和回滚。本文归纳，节点语义依据 [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api)，Workflow 能力边界依据 [Claude Code Dynamic Workflow 文档](https://code.claude.com/docs/en/workflows)。*
+
+### 11.1 每个节点都需要是 Subagent 吗
+
+不需要。Graph 节点是一个**可调度、可记录状态的工作单元**，不是 Agent 的同义词。[LangGraph 官方文档](https://docs.langchain.com/oss/javascript/langgraph/graph-api)明确把节点定义为接收状态并返回更新的函数；函数内部可以调用 LLM，也可以执行普通代码。
+
+| 节点类型 | 案例中的节点 | 为什么这样划分 |
+|---|---|---|
+| Subagent | Acquisition、Retention、Diagnosis、Strategy、Red-team | 需要解释语义、提出假设、综合证据或寻找反例 |
+| 确定性函数 / 工具 | Snapshot、Data Quality、Simulation、Policy、Executor、Monitor | 结果应由 SQL、Schema、规则、计算或 API 回执决定 |
+| 人工节点 | Human Approval | 高影响策略需要把授权绑定到明确的 Proposal 版本 |
+| 状态 / 终态 | BLOCKED、Proposal、ADOPTED、ROLLBACK | 保存可恢复、可审计的业务事实 |
+| 子图 | 单个领域分析、一次策略评审 | 可复用的多步过程可以在上层 Graph 中表现为一个节点 |
+
+Claude Workflow 有一个实现细节：脚本本身不能直接调用文件系统、Shell 或业务工具，工具需要由 `agent()` 内的 Subagent 使用。因此下方代码会用一个受限 Agent 包装 Snapshot 或 Simulation Tool。**包装层是 Subagent，不代表计算逻辑应交给模型判断**；数据质量结论仍应来自确定性查询结果，策略执行更不能由 Agent 自行授权。
+
+### 11.2 Claude Workflow：分析、分支与有界复审
+
+下面的 `.claude/workflows/05-growth-strategy.js` 只使用只读工具。它先动态展开领域分析，再动态展开策略候选；Red-team 不通过时，最多重新诊断两次。输出是 `AWAITING_APPROVAL`，不是已经执行的策略。
+
+```javascript
+export const meta = {
+  name: "growth-strategy-proposal",
+  description: "Analyze business metrics and produce a reviewed strategy proposal",
+};
+
+const MAX_REVISIONS = 2;
+const contract = {
+  window: args?.window ?? "latest completed week",
+  objective: args?.objective ?? "recover net revenue without violating margin guardrails",
+  maxBudgetShiftPct: Number(args?.maxBudgetShiftPct ?? 10),
+};
+
+const snapshot = await agent(
+  `Use approved read-only analytics tools to freeze the dataset for ${JSON.stringify(contract)}.
+Return query/result references and metric definitions; do not recommend or execute actions.`,
+  {
+    label: "read-only-snapshot",
+    schema: {
+      type: "object",
+      required: ["snapshotRef", "metricDefinitions", "evidenceRefs"],
+      properties: {
+        snapshotRef: { type: "string" },
+        metricDefinitions: { type: "array", items: { type: "string" } },
+        evidenceRefs: { type: "array", items: { type: "string" } },
+      },
+    },
+  },
+);
+
+const quality = await agent(
+  `Run the deterministic data-quality checks for ${snapshot.snapshotRef}.
+Check freshness, completeness, denominators and anomalies. Do not infer missing values.`,
+  {
+    label: "data-quality-gate",
+    schema: {
+      type: "object",
+      required: ["verdict", "blockers", "evidenceRefs"],
+      properties: {
+        verdict: { type: "string", enum: ["PASS", "BLOCKED"] },
+        blockers: { type: "array", items: { type: "string" } },
+        evidenceRefs: { type: "array", items: { type: "string" } },
+      },
+    },
+  },
+);
+
+if (quality.verdict === "BLOCKED") {
+  return { status: "BLOCKED", contract, snapshot, quality };
+}
+
+const domains = ["acquisition", "conversion", "retention", "unit_economics"];
+const domainAnalyses = await pipeline(domains, domain =>
+  agent(
+    `Analyze only the ${domain} domain in snapshot ${snapshot.snapshotRef}.
+Separate observations, hypotheses and causal claims. Every finding must cite an evidenceRef.`,
+    {
+      label: `analyze-${domain}`,
+      schema: {
+        type: "object",
+        required: ["domain", "findings", "missingEvidence"],
+        properties: {
+          domain: { type: "string" },
+          findings: { type: "array", items: { type: "object" } },
+          missingEvidence: { type: "array", items: { type: "string" } },
+        },
+      },
+    },
+  ),
+);
+
+let reviewFeedback = [];
+let lastReview = null;
+
+for (let revision = 0; revision <= MAX_REVISIONS; revision += 1) {
+  const diagnosis = await agent(
+    `Synthesize these domain analyses into ranked root-cause hypotheses:
+${JSON.stringify(domainAnalyses)}
+Revision feedback: ${JSON.stringify(reviewFeedback)}
+Do not turn correlation into causation; preserve evidenceRefs.`,
+    {
+      label: `diagnosis-r${revision}`,
+      schema: {
+        type: "object",
+        required: ["hypotheses", "evidenceRefs"],
+        properties: {
+          hypotheses: { type: "array", items: { type: "object" } },
+          evidenceRefs: { type: "array", items: { type: "string" } },
+        },
+      },
+    },
+  );
+
+  const strategyKinds = ["spend_reallocation", "offer", "product_intervention"];
+  const candidates = await pipeline(strategyKinds, kind =>
+    agent(
+      `Create one ${kind} candidate for ${JSON.stringify(contract)} from this diagnosis:
+${JSON.stringify(diagnosis)}
+Specify actions, assumptions, guardrails and rollback actions. Do not execute anything.`,
+      {
+        label: `${kind}-r${revision}`,
+        schema: {
+          type: "object",
+          required: ["candidateId", "kind", "actions", "guardrails", "rollbackActions"],
+          properties: {
+            candidateId: { type: "string" },
+            kind: { type: "string" },
+            actions: { type: "array", items: { type: "object" } },
+            guardrails: { type: "array", items: { type: "object" } },
+            rollbackActions: { type: "array", items: { type: "object" } },
+          },
+        },
+      },
+    ),
+  );
+
+  const simulations = await pipeline(candidates, candidate =>
+    agent(
+      `Use the approved deterministic scenario tool to evaluate this candidate:
+${JSON.stringify(candidate)}
+Return scenario outputs and evidenceRefs; never call a write or strategy-execution tool.`,
+      {
+        label: `simulate-${candidate.candidateId}`,
+        schema: {
+          type: "object",
+          required: ["candidateId", "scenarios", "evidenceRefs"],
+          properties: {
+            candidateId: { type: "string" },
+            scenarios: { type: "array", items: { type: "object" } },
+            evidenceRefs: { type: "array", items: { type: "string" } },
+          },
+        },
+      },
+    ),
+  );
+
+  lastReview = await agent(
+    `Independently red-team the diagnosis, candidates and simulations.
+Return PASS only when evidence is traceable, actions obey the contract, and rollback is executable.
+Diagnosis: ${JSON.stringify(diagnosis)}
+Candidates: ${JSON.stringify(candidates)}
+Simulations: ${JSON.stringify(simulations)}`,
+    {
+      label: `red-team-r${revision}`,
+      schema: {
+        type: "object",
+        required: ["verdict", "issues", "selectedCandidateId"],
+        properties: {
+          verdict: { type: "string", enum: ["PASS", "REVISE", "STOP"] },
+          issues: { type: "array", items: { type: "string" } },
+          selectedCandidateId: { type: ["string", "null"] },
+        },
+      },
+    },
+  );
+
+  if (lastReview.verdict === "PASS") {
+    const selected = candidates.find(
+      candidate => candidate.candidateId === lastReview.selectedCandidateId,
+    );
+    const selectedSimulation = simulations.find(
+      simulation => simulation.candidateId === lastReview.selectedCandidateId,
+    );
+    if (!selected || !selectedSimulation) {
+      reviewFeedback = ["Reviewer selected an unknown candidate"];
+      continue;
+    }
+    return {
+      status: "AWAITING_APPROVAL",
+      proposal: {
+        strategyId: selected.candidateId,
+        actions: selected.actions,
+        guardrails: selected.guardrails,
+        rollbackActions: selected.rollbackActions,
+        evidenceRefs: [
+          ...new Set([
+            ...snapshot.evidenceRefs,
+            ...diagnosis.evidenceRefs,
+            ...selectedSimulation.evidenceRefs,
+          ]),
+        ],
+        analysis: {
+          contract,
+          snapshotRef: snapshot.snapshotRef,
+          revision,
+          review: lastReview,
+        },
+      },
+    };
+  }
+
+  if (lastReview.verdict === "STOP") break;
+  reviewFeedback = lastReview.issues;
+}
+
+return {
+  status: "NO_SAFE_PROPOSAL",
+  reason: "Review did not pass within the revision budget",
+  review: lastReview,
+};
+```
+
+这段代码中的两个模式是显式的：`pipeline(domains, ...)` 与 `pipeline(strategyKinds, ...)` 构成问题分支；`for` 循环和 `REVISE` 构成 `Diagnosis → Strategy → Simulation → Review → Diagnosis` 回边。`MAX_REVISIONS` 将回路变成有限状态机，而不是开放式 ReAct。
+
+### 11.3 外层 Harness：审批后执行
+
+Claude Code Workflow 目前不支持普通用户在运行中途插入审批；需要阶段性签字时，应拆成多个 Workflow。更重要的是，生产策略执行需要跨 Session 状态、业务凭证、幂等语义和补偿操作。因此 Proposal 应交给外层控制面。下面的 `strategy-control-plane.ts` 展示最小骨架：
+
+```typescript
+import { createHash } from "node:crypto";
+
+type Action = { type: string; target: string; value: unknown };
+type Guardrail = { metric: string; operator: string; threshold: number };
+
+type Proposal = {
+  strategyId: string;
+  actions: Action[];
+  guardrails: Guardrail[];
+  rollbackActions: Action[];
+  evidenceRefs: string[];
+  analysis: Record<string, unknown>;
+};
+
+type Approval = {
+  proposalHash: string;
+  approvedBy: string;
+  expiresAt: string;
+};
+
+type Receipt = { executionId: string; appliedActions: string[] };
+type Observation = { breachedGuardrails: string[]; evidenceRefs: string[] };
+
+type Dependencies = {
+  policy: { validate(proposal: Proposal): Promise<string[]> };
+  approvals: { get(strategyId: string): Promise<Approval | null> };
+  executor: {
+    apply(actions: Action[], idempotencyKey: string): Promise<Receipt>;
+    rollback(receipt: Receipt, actions: Action[], idempotencyKey: string): Promise<void>;
+  };
+  monitor: {
+    evaluate(receipt: Receipt, guardrails: Guardrail[]): Promise<Observation>;
+  };
+  events: { append(event: Record<string, unknown>): Promise<void> };
+};
+
+function canonical(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.entries(value)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, item]) => `${JSON.stringify(key)}:${canonical(item)}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value) ?? "null";
+}
+
+function proposalHash(proposal: Proposal): string {
+  return createHash("sha256").update(canonical(proposal)).digest("hex");
+}
+
+export async function executeApprovedStrategy(
+  proposal: Proposal,
+  deps: Dependencies,
+): Promise<{ status: "ADOPTED" | "ROLLED_BACK"; observation: Observation }> {
+  const policyErrors = await deps.policy.validate(proposal);
+  if (policyErrors.length > 0) {
+    throw new Error(`Policy rejected proposal: ${policyErrors.join("; ")}`);
+  }
+
+  const hash = proposalHash(proposal);
+  const approval = await deps.approvals.get(proposal.strategyId);
+  if (!approval || approval.proposalHash !== hash) {
+    throw new Error("Missing approval for this exact proposal version");
+  }
+  if (Date.parse(approval.expiresAt) <= Date.now()) {
+    throw new Error("Approval expired");
+  }
+
+  const executionKey = `strategy:${proposal.strategyId}:${hash}`;
+  await deps.events.append({
+    type: "STRATEGY_APPROVED",
+    strategyId: proposal.strategyId,
+    proposalHash: hash,
+    approvedBy: approval.approvedBy,
+  });
+
+  const receipt = await deps.executor.apply(proposal.actions, executionKey);
+  await deps.events.append({ type: "STRATEGY_EXECUTED", receipt, proposalHash: hash });
+
+  const observation = await deps.monitor.evaluate(receipt, proposal.guardrails);
+  if (observation.breachedGuardrails.length > 0) {
+    await deps.executor.rollback(
+      receipt,
+      proposal.rollbackActions,
+      `rollback:${receipt.executionId}`,
+    );
+    await deps.events.append({
+      type: "STRATEGY_ROLLED_BACK",
+      receipt,
+      observation,
+      proposalHash: hash,
+    });
+    return { status: "ROLLED_BACK", observation };
+  }
+
+  await deps.events.append({
+    type: "STRATEGY_ADOPTED",
+    receipt,
+    observation,
+    proposalHash: hash,
+  });
+  return { status: "ADOPTED", observation };
+}
+```
+
+这里没有 Agent 节点。Policy、Approval、Executor、Monitor 和 Event Store 都是确定性的控制面组件。审批绑定 Proposal Hash，执行绑定幂等键，回滚绑定原始 Receipt；模型既不持有生产凭证，也不能把自己的 `PASS` 当作授权。
+
+因此，Graph 的灵活性不来自“每个节点都是自由行动的 Subagent”，而来自更严格的分工：**Agent 决定值得探索什么，Workflow 决定允许怎样探索，Harness 决定什么可以真实发生。**
