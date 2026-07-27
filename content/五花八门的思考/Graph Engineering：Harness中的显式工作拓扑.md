@@ -29,7 +29,7 @@ Agent 系统最初依赖模型在上下文中临场决定下一步。随后，�
 
 这里的 Harness 指承载权限、状态、预算、验证与恢复的系统级执行包络。Anthropic 也会把单个 Dynamic Workflow 称为“针对当前任务即时生成的 Harness”。两种说法并不矛盾：**系统级 Harness 托管一个由 Workflow 描述的任务级 Harness，后者再实例化具体 Graph。**
 
-全文分为三条阅读路线：只关心概念边界，可以阅读第 1、4、9 节；关心 Claude Code Workflow，可以阅读第 2、3、8 节；准备实现类似系统，则重点阅读第 5 至第 7 节。
+全文分为三条阅读路线：只关心概念边界，可以阅读第 1、4、10 节；关心 Claude Code Workflow，可以阅读第 2、3、6、9 节；准备实现类似系统，则重点阅读第 5 至第 8 节。
 
 > [!note] 证据边界
 > - Claude Code Dynamic Workflow 的产品行为核验于 2026-07-27，以 Anthropic 官方文档为准。
@@ -79,6 +79,25 @@ return audits.filter(Boolean);
 - 如果增加验证—修复循环，控制流图中就会出现回边。
 
 所以 Workflow 不是图的数据结构，而是**能够实例化执行图的程序**。它和 SQL 查询计划、编译器控制流图的关系类似：源代码是程序，图是程序所表达或运行时形成的结构。
+
+### 1.1 JavaScript 语法怎样对应图
+
+Claude Code Workflow 不是一份 `nodes + edges` 配置，也不是直接交给 Node.js 运行的普通脚本。它是一段带 top-level `await` 的 JavaScript，Runtime 注入 `agent()`、`pipeline()` 和 `args` 等运行环境，并接受顶层 `return` 作为 Workflow 结果。保存后，文件位于项目或个人的 `.claude/workflows/` 目录。
+
+JavaScript 控制结构与图语义的对应关系是：
+
+| JavaScript | 运行图语义 |
+|---|---|
+| `await agent(...)` | 创建一个 Agent 节点；后续语句等待该节点完成 |
+| 连续两个 `await` | 建立顺序依赖边 `A → B` |
+| `pipeline(items, fn)` | 根据运行时列表动态展开 N 个节点，并在返回时汇合 |
+| `if` / `switch` | 条件路由；未命中的分支不会实例化 |
+| `for` / `while` | 回边；循环条件决定继续、退出或进入失败终态 |
+| 普通变量 | 保存节点结果、循环计数、失败指纹和中间聚合 |
+| `schema` | 约束 Agent 节点输出，使下一节点获得结构化输入 |
+| `return` | 产生 Workflow 终态结果 |
+
+这也是为什么静态查看 JavaScript 只能得到**控制流模板**。例如 `pipeline(files, audit)` 在代码里只有一行；只有 Runtime 得到 `files` 的实际值之后，才能知道本次运行究竟展开 3 个还是 300 个 Audit 节点。
 
 ## 2. Claude Code 把 Workflow 从模式推进到了 Runtime
 
@@ -409,7 +428,295 @@ return pipeline(backlog.issues, deliver);
 
 它还增加了一个比“重试三次”更重要的条件：相同失败指纹连续出现时立即进入 `BLOCKED`。有限循环不仅需要次数上限，还需要判断循环是否取得进展。
 
-## 6. 图约束应分成三种强度
+### 5.3 五类常用 Workflow 及其 JavaScript 文件
+
+大多数 Workflow 并不需要发明新结构，而是组合五种基本拓扑：
+
+| 模式 | 图结构 | 典型用途 | 对应文件 |
+|---|---|---|---|
+| Chain | `A → B → C` | 计划、执行、复核 | `01-chain.js` |
+| Router | `Classify → A / B / C` | 工单分流、模型或工具选择 | `02-router.js` |
+| Fan-out / Fan-in | `Discover → Worker[*] → Synthesize` | 审计、迁移、研究、逐文件 Review | `03-fanout-fanin.js` |
+| Evaluator–Optimizer | `Generate ↔ Verify` | 修复直到通过或停止进展 | 前文 `deliver-backlog.js` |
+| Until stable | `Search ↺` | 找问题直到新增集合收敛 | `04-until-stable.js` |
+
+下面四段代码都可以直接保存到 `.claude/workflows/`。它们只使用[官方文档](https://code.claude.com/docs/en/workflows)公开的 `meta`、`agent()`、`pipeline()`、`args` 与普通 JavaScript 控制流；文件、Shell 和网络操作仍由 Agent 使用获准工具完成。
+
+#### 文件：`.claude/workflows/01-chain.js`
+
+```javascript
+export const meta = {
+  name: "plan-build-verify",
+  description: "Plan a task, implement it, then verify independently",
+};
+
+const task = args?.task ?? "Inspect the current change and make it production-ready.";
+
+const plan = await agent(
+  `Plan this task without editing files:\n${task}\n` +
+  "Return scope, acceptance criteria, risks, and verification commands.",
+  { label: "plan" },
+);
+
+const implementation = await agent(
+  `Implement the task against this plan:\n${plan}\n` +
+  "Run the relevant checks and report changed files.",
+  { label: "implement" },
+);
+
+const verification = await agent(
+  `Independently verify the task. Do not edit files.\n` +
+  `Task:\n${task}\nPlan:\n${plan}\nImplementation:\n${implementation}`,
+  {
+    label: "verify",
+    schema: {
+      type: "object",
+      required: ["verdict", "evidence"],
+      properties: {
+        verdict: { enum: ["PASS", "FAIL"] },
+        evidence: { type: "array", items: { type: "string" } },
+      },
+    },
+  },
+);
+
+return { task, plan, implementation, verification };
+```
+
+三个 `await` 形成严格串行边。它适合依赖关系明确、并行收益很低，但需要上下游角色隔离的任务。
+
+#### 文件：`.claude/workflows/02-router.js`
+
+```javascript
+export const meta = {
+  name: "route-request",
+  description: "Classify one request and activate exactly one specialist",
+};
+
+const request = args?.request ?? "Investigate the reported repository problem.";
+
+const classification = await agent(
+  `Classify this request as security, performance, or correctness:\n${request}`,
+  {
+    label: "classify",
+    schema: {
+      type: "object",
+      required: ["kind", "reason"],
+      properties: {
+        kind: { enum: ["security", "performance", "correctness"] },
+        reason: { type: "string" },
+      },
+    },
+  },
+);
+
+let result;
+
+switch (classification.kind) {
+  case "security":
+    result = await agent(`Perform a security review:\n${request}`, {
+      label: "security",
+    });
+    break;
+  case "performance":
+    result = await agent(`Profile and explain performance risks:\n${request}`, {
+      label: "performance",
+    });
+    break;
+  default:
+    result = await agent(`Find correctness defects and evidence:\n${request}`, {
+      label: "correctness",
+    });
+}
+
+return { route: classification, result };
+```
+
+`switch` 声明三条允许路径，但一次运行只会创建其中一个 Specialist。Classifier 的 `schema` 使路由值不能退化成难以解析的自然语言。
+
+#### 文件：`.claude/workflows/03-fanout-fanin.js`
+
+```javascript
+export const meta = {
+  name: "review-and-synthesize",
+  description: "Review every target independently, verify, then synthesize",
+};
+
+const scope = await agent("List every changed source file that requires review.", {
+  label: "discover",
+  schema: {
+    type: "object",
+    required: ["files"],
+    properties: {
+      files: { type: "array", items: { type: "string" } },
+    },
+  },
+});
+
+const reviewed = await pipeline(scope.files, async file => {
+  const finding = await agent(
+    `Review ${file} for correctness defects. Return only evidence-backed findings.`,
+    { label: `review:${file}` },
+  );
+
+  return agent(
+    `Adversarially verify these findings for ${file}:\n${finding}\n` +
+    "Reject claims without direct code or test evidence.",
+    { label: `verify:${file}` },
+  );
+});
+
+const summary = await agent(
+  "Deduplicate and rank the verified findings below. Preserve file evidence.\n" +
+  JSON.stringify(reviewed),
+  { label: "synthesize" },
+);
+
+return { targets: scope.files, reviewed, summary };
+```
+
+`pipeline()` 的输入长度决定实际 Worker 数量；回调内部又形成 `Review → Verify` 子图；最后一个 `agent()` 是 fan-in barrier，只有所有文件返回后才会运行。
+
+#### 文件：`.claude/workflows/04-until-stable.js`
+
+```javascript
+export const meta = {
+  name: "find-until-stable",
+  description: "Search in rounds until two rounds add no new findings",
+};
+
+const question = args?.question ?? "Find reproducible flaky tests in this repository.";
+const seen = new Set();
+const rounds = [];
+let stableRounds = 0;
+
+for (let round = 1; round <= 6; round += 1) {
+  const result = await agent(
+    `Round ${round}: ${question}\n` +
+    `Already known fingerprints:\n${JSON.stringify([...seen])}\n` +
+    "Return only newly reproduced findings with stable fingerprints.",
+    {
+      label: `search:${round}`,
+      schema: {
+        type: "object",
+        required: ["findings"],
+        properties: {
+          findings: {
+            type: "array",
+            items: {
+              type: "object",
+              required: ["fingerprint", "evidence"],
+              properties: {
+                fingerprint: { type: "string" },
+                evidence: { type: "string" },
+              },
+            },
+          },
+        },
+      },
+    },
+  );
+
+  const fresh = result.findings.filter(
+    finding => !seen.has(finding.fingerprint),
+  );
+  fresh.forEach(finding => seen.add(finding.fingerprint));
+  rounds.push({ round, newFindings: fresh.length });
+  stableRounds = fresh.length === 0 ? stableRounds + 1 : 0;
+
+  if (stableRounds >= 2) {
+    return { status: "CONVERGED", fingerprints: [...seen], rounds };
+  }
+}
+
+return { status: "BUDGET_EXHAUSTED", fingerprints: [...seen], rounds };
+```
+
+这不是“固定重试六次”，而是同时设置硬上限与收敛条件：最多六轮，连续两轮没有新增指纹就提前结束。Graph Engineering 关心的正是这种回边语义。
+
+### 5.4 为什么 Claude 能稳定生成这种“模板语言”
+
+首先需要纠正一个直觉：Claude Code 并没有让模型从零学习一门复杂 Workflow DSL。生成物的主体是模型非常熟悉的 JavaScript；公开示例中的专用词汇主要是 `meta`、`agent()`、`pipeline()`、`args` 和 `schema`。顺序、分支、循环、数组处理与异常传播都复用现成语言语义。
+
+因此，这更接近**带少量专用 API 的程序合成**，而不是让模型自由发明图格式。文件看起来高度标准化，主要来自外围 Harness 的约束：
+
+| 可靠性来源 | 作用 | 仍不能保证什么 |
+|---|---|---|
+| 成熟宿主语言 | 绝大多数控制流是普通 JavaScript | 仍可能出现语法错误或不存在的 API |
+| 很小的专用表面 | 核心节点创建与并行语义集中在少量函数 | 不能保证拓扑选择正确 |
+| `schema` 输出契约 | 把节点交接从自由文本收紧为结构化数据 | Schema 可以定义错，内容也可能不真实 |
+| 运行前审阅 | CLI 可查看 Phase 与 raw script，并允许编辑或拒绝 | Auto、Ultracode 和非交互模式不一定逐次询问 |
+| 受限 Runtime | 脚本隔离执行，不能直接操作文件或 Shell | Agent 仍可能在获准工具范围内做错事 |
+| 权限与资源边界 | Agent 继承权限检查、Sandbox、allowlist，并受并发与总量上限约束 | 只能限制影响范围，不能证明任务语义正确 |
+| 运行后再保存 | 先观察一次 Run，再将有效脚本保存为命令 | 一次成功不代表面对所有输入都正确 |
+
+官方没有公开完整的 Workflow 生成 Prompt 或内部编译流程，因此不能把稳定性归因于某个未公开的“神奇模板”。可以从[公开行为](https://code.claude.com/docs/en/workflows)确认的是：生成脚本可以在运行前查看和编辑；脚本运行在隔离环境中；Subagent 的工具调用继续接受权限与 Sandbox 检查；成功运行后才需要保存为可复用命令。
+
+这里仍然存在三类不同的幻觉：
+
+1. **语法或 API 幻觉**：例如拼错函数名。这类错误通常会在解析或执行时直接暴露。
+2. **拓扑幻觉**：JavaScript 完全合法，但漏掉 Verifier、形成无进展循环，或让错误角色进入终态。这需要 GraphSpec、静态验证和预算约束。
+3. **语义幻觉**：图执行完整，Agent 却给出错误判断或虚假 `PASS`。这需要独立验证器、外部测试与可追溯证据。
+
+所以真正降低风险的不是“模型生成代码时不再幻觉”，而是：**将开放式幻觉转化为可解析的程序、可检查的拓扑和可验证的运行证据。** Claude Code 已经较好地处理了第一层，并限制了错误的影响范围；Graph Engineering 与 Harness 仍需负责后两层。
+
+## 6. 为什么 Workflow 与 Runtime Observability 必须放在一起
+
+Workflow 文件描述的是**可能怎样运行**，Runtime 才知道**这次实际怎样运行**。原因在于运行图可能依赖前一个 Agent 的输出：`pipeline()` 的节点数、`switch` 命中的分支、循环经过几次，都无法从静态 JavaScript 中提前完全确定。
+
+[![JavaScript Workflow 到运行图与可观测状态：await、pipeline、条件和循环经 Runtime 解释为实际节点与边；Runtime 状态可见，脚本内部状态只部分可见，业务状态必须显式持久化](assets/graph-engineering-workflow/08-js-runtime-observability.svg)](assets/graph-engineering-workflow/08-js-runtime-observability.svg)
+
+*图 8　JavaScript、Runtime 与状态可见性的关系。Runtime 是动态节点创建、调度和结果返回的必经点，因此天然拥有运行级观测；业务状态与跨 Session 状态仍需 Harness 显式建模。本文归纳，产品行为依据 [Claude Code Dynamic Workflow 文档](https://code.claude.com/docs/en/workflows)。*
+
+### 6.1 当前 Claude Code 能看到哪些状态
+
+官方文档明确公开了以下能力：
+
+| 状态层 | 当前可见内容 | 证据与边界 |
+|---|---|---|
+| Run | Workflow 运行入口、进行中或已停止的 Run | 从 `/workflows` 管理 |
+| Phase | 每个阶段的 Agent 数、Token 总量与耗时 | 可从 Run 视图下钻 |
+| Agent | 每个 Agent 的进度、Token 与结果 | 可以查看每个 Agent 发现了什么 |
+| Resume | 已完成 Agent 的结果缓存 | 同一 Session 暂停后可复用；暂停时仍在运行的 Agent 会重跑 |
+| Cost | Agent 数、Token、耗时和大任务告警 | 用于停止异常膨胀的运行 |
+
+Runtime 之所以能提供这些信息，不是因为 JavaScript 天生可观测，而是因为每个 `agent()` 都必须通过 Runtime 创建、调度并返回结果。Runtime 是所有节点生命周期事件的统一入口。
+
+### 6.2 能否找到一个 Workflow 的“所有状态”
+
+如果“所有状态”指 Run、Phase、Agent、结果和成本，当前 `/workflows` 已经覆盖了主要运行状态。如果还包括任意 JavaScript 变量、当前程序计数器、业务对象、审批、Artifact、幂等键和跨 Session 恢复点，答案是否定的。公开文档没有承诺读取完整 JS Heap；退出 Claude Code 后，下一 Session 也会从头启动 Workflow。
+
+这三个状态域必须分开：
+
+1. **Runtime 状态**：Agent 是否已完成、用了多少 Token、结果是否可复用。Runtime 自动产生。
+2. **脚本状态**：数组、循环计数、选中分支、失败指纹。Runtime 执行时持有，但不等于全部暴露给 UI。
+3. **业务与治理状态**：验收项、审批、部署、Artifact 哈希、幂等键。必须由 Workflow 输出 Schema 与外部 Harness 显式记录。
+
+生产系统若要真正回答“任务现在处于哪个状态、为什么到这里、重启后如何恢复”，应将每次转移写入不可变事件日志，并由事件重建快照：
+
+```typescript
+type RunEvent =
+  | { type: "NODE_SCHEDULED"; nodeId: string; at: string }
+  | { type: "NODE_STARTED"; nodeId: string; at: string }
+  | { type: "NODE_SUCCEEDED"; nodeId: string; resultRef: string; at: string }
+  | { type: "NODE_FAILED"; nodeId: string; fingerprint: string; at: string }
+  | { type: "STATE_CHANGED"; from: string; to: string; evidence: string[] };
+
+type RunSnapshot = {
+  runId: string;
+  workflowHash: string;
+  status: "RUNNING" | "BLOCKED" | "SUCCEEDED" | "FAILED";
+  activeNodes: string[];
+  completedNodes: string[];
+  domainState: Record<string, unknown>;
+  tokenUsed: number;
+  lastEventAt: string;
+};
+```
+
+这不是 Claude Code 当前公开的状态 API，而是自建 Harness 应补充的状态模型。其关键不是多做一个 Dashboard，而是让每一次图转移都留下可恢复、可审计的事实。**Observability 是状态机的读取面，Checkpoint 与 Event Log 是状态机的持久化面。**
+
+## 7. 图约束应分成三种强度
 
 并不是把条件写进 Workflow 就获得了同样强的保证。图约束至少分为三层：
 
@@ -430,7 +737,7 @@ Workflow 可以规定 Engineer 之后必须经过 QA，却不能仅凭一段 Pro
 
 所以“用 Workflow 做图约束”是合理的，但更准确的实现方式是：**Workflow 提供控制结构，Harness 赋予控制结构强制力。**
 
-## 7. Graph Engineering 需要评测什么
+## 8. Graph Engineering 需要评测什么
 
 只比较最终答案，无法判断增加 Agent 是否真的有价值。Graph Engineering 的目标可以写成质量与成本之间的约束优化：
 
@@ -462,7 +769,7 @@ $R$ 是成功率、测试通过率或业务结果，$C$ 包括 Token、工具调
 
 这时，Graph Engineering 才从“画一张更复杂的图”变成真正的工程循环。
 
-## 8. Claude Code Dynamic Workflow 的边界
+## 9. Claude Code Dynamic Workflow 的边界
 
 截至 2026-07-27，Claude Code Dynamic Workflow 已经具备清晰的编排能力，但不能直接视为通用耐久工作流引擎。官方文档列出了几项重要边界：
 
@@ -482,7 +789,7 @@ $R$ 是成功率、测试通过率或业务结果，$C$ 包括 Token、工具调
 
 涉及跨 Session 耐久状态、长时间人工等待、外部事务、Exactly-once Activity 或复杂补偿时，仍需要 Temporal、队列系统、数据库状态机或专门 Agent Runtime 承担底层语义。Claude Workflow 可以作为上层生成和编排入口，而不是替代这些系统。
 
-## 9. 与现有 Harness 实践的关系
+## 10. 与现有 Harness 实践的关系
 
 [[AI Coding研发中的Harness与Loop构建]] 已经包含四层 Loop、任务状态机、跨系统依赖图、角色隔离、Worktree、Checkpoint、重试预算、Verifier 和人工接管。Dynamic Workflow 不会推翻这套结构，而是补上一个很具体的中间层：
 
