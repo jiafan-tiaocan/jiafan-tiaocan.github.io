@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="860" viewBox="0 0 1600 860" role="img" aria-labelledby="title desc">
+  <title id="title">从隐式 Agent Loop 到受约束的动态 Workflow</title>
+  <desc id="desc">展示 Agent 编排从模型在上下文中逐步决定，到工程师定义固定图，再到模型生成 Workflow，最终由 Graph Engineering 管理图生成、验证、执行和优化的演进路线。</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#15324a"/>
+      <stop offset="1" stop-color="#245d72"/>
+    </linearGradient>
+    <linearGradient id="band" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e7f0f5"/>
+      <stop offset="0.5" stop-color="#e9f2ee"/>
+      <stop offset="1" stop-color="#f4edf8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#17374a" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto">
+      <path d="M0 0 L11 5.5 L0 11 Z" fill="#42677b"/>
+    </marker>
+    <style>
+      .title { font: 700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #fff; }
+      .subtitle { font: 400 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #dceaf0; }
+      .phase { font: 700 14px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #557080; letter-spacing: 0.5px; }
+      .card-title { font: 700 23px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .label { font: 700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #33576b; }
+      .body { font: 400 16px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #4d6574; }
+      .shift { font: 700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #8b5b24; }
+      .band-title { font: 700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .band-body { font: 500 16px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #496371; }
+      .principle { font: 700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #75522e; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="860" rx="18" fill="#f8fafc"/>
+  <rect width="1600" height="108" rx="18" fill="url(#header)"/>
+  <rect y="90" width="1600" height="18" fill="url(#header)"/>
+  <text class="title" x="54" y="49">从隐式 Agent Loop 到受约束的动态 Workflow</text>
+  <text class="subtitle" x="56" y="80">控制流逐步移出模型上下文；Graph Engineering 开始管理“图如何被生成、验证、执行和改进”</text>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(40 150)">
+      <rect width="330" height="480" rx="16" fill="#fff" stroke="#87a9bc" stroke-width="2"/>
+      <rect width="330" height="12" rx="6" fill="#4e87a6"/>
+      <text class="phase" x="24" y="48">PHASE 1 · IMPLICIT</text>
+      <text class="card-title" x="24" y="84">模型驱动的 Agent Loop</text>
+      <text class="label" x="24" y="128">表示</text>
+      <text class="body" x="24" y="156">计划、状态和下一步</text>
+      <text class="body" x="24" y="181">主要保存在上下文中</text>
+      <text class="label" x="24" y="226">解决</text>
+      <text class="body" x="24" y="254">根据工具反馈动态行动</text>
+      <text class="body" x="24" y="279">无需预先写完整流程</text>
+      <text class="label" x="24" y="324">暴露</text>
+      <text class="body" x="24" y="352">长任务漂移、上下文污染</text>
+      <text class="body" x="24" y="377">完成条件由执行者自述</text>
+      <rect x="22" y="414" width="286" height="42" rx="9" fill="#edf4f8"/>
+      <text class="shift" x="42" y="440">瓶颈：计划缺少外部载体</text>
+    </g>
+
+    <g transform="translate(430 150)">
+      <rect width="330" height="480" rx="16" fill="#fff" stroke="#79a38f" stroke-width="2"/>
+      <rect width="330" height="12" rx="6" fill="#4d9278"/>
+      <text class="phase" x="24" y="48">PHASE 2 · EXPLICIT</text>
+      <text class="card-title" x="24" y="84">工程师定义固定图</text>
+      <text class="label" x="24" y="128">表示</text>
+      <text class="body" x="24" y="156">DAG、状态机、DSL</text>
+      <text class="body" x="24" y="181">或代码中的固定控制流</text>
+      <text class="label" x="24" y="226">解决</text>
+      <text class="body" x="24" y="254">顺序、分支、并发、重试</text>
+      <text class="body" x="24" y="279">和验证位置变得可审计</text>
+      <text class="label" x="24" y="324">暴露</text>
+      <text class="body" x="24" y="352">拓扑依赖人工维护</text>
+      <text class="body" x="24" y="377">难适配运行时任务规模</text>
+      <rect x="22" y="414" width="286" height="42" rx="9" fill="#edf6f1"/>
+      <text class="shift" x="42" y="440">瓶颈：固定图适应性有限</text>
+    </g>
+
+    <g transform="translate(820 150)">
+      <rect width="330" height="480" rx="16" fill="#fff" stroke="#b99a61" stroke-width="2"/>
+      <rect width="330" height="12" rx="6" fill="#bb8135"/>
+      <text class="phase" x="24" y="48">PHASE 3 · GENERATED</text>
+      <text class="card-title" x="24" y="84">模型生成 Workflow</text>
+      <text class="label" x="24" y="128">表示</text>
+      <text class="body" x="24" y="156">面向任务生成的 JS 程序</text>
+      <text class="body" x="24" y="181">运行时展开 Agent 节点</text>
+      <text class="label" x="24" y="226">解决</text>
+      <text class="body" x="24" y="254">动态分解、批量 fan-out</text>
+      <text class="body" x="24" y="279">汇合、复核和有限循环</text>
+      <text class="label" x="24" y="324">暴露</text>
+      <text class="body" x="24" y="352">生成的控制流也会犯错</text>
+      <text class="body" x="24" y="377">成本和拓扑可能失控</text>
+      <rect x="22" y="414" width="286" height="42" rx="9" fill="#fbf4e9"/>
+      <text class="shift" x="42" y="440">瓶颈：谁验证生成的图</text>
+    </g>
+
+    <g transform="translate(1210 150)">
+      <rect width="350" height="480" rx="16" fill="#fff" stroke="#9a85bd" stroke-width="2.5"/>
+      <rect width="350" height="12" rx="6" fill="#7d68a5"/>
+      <text class="phase" x="24" y="48">PHASE 4 · GOVERNED</text>
+      <text class="card-title" x="24" y="84">Graph Engineering</text>
+      <text class="label" x="24" y="128">管理对象</text>
+      <text class="body" x="24" y="156">模板、运行图与 Trace</text>
+      <text class="body" x="24" y="181">节点契约和拓扑不变量</text>
+      <text class="label" x="24" y="226">工程能力</text>
+      <text class="body" x="24" y="254">生成前约束、运行前验证</text>
+      <text class="body" x="24" y="279">运行时治理、离线优化</text>
+      <text class="label" x="24" y="324">稳定责任</text>
+      <text class="body" x="24" y="352">模型提出结构</text>
+      <text class="body" x="24" y="377">Harness 决定是否可执行</text>
+      <rect x="22" y="414" width="306" height="42" rx="9" fill="#f3eff8"/>
+      <text class="shift" x="42" y="440">目标：动态性不牺牲约束</text>
+    </g>
+  </g>
+
+  <line x1="372" y1="390" x2="422" y2="390" stroke="#42677b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="762" y1="390" x2="812" y2="390" stroke="#42677b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="1152" y1="390" x2="1202" y2="390" stroke="#42677b" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="672" width="1520" height="130" rx="16" fill="url(#band)" stroke="#b9cbd4" stroke-width="2"/>
+  <text class="band-title" x="70" y="712">不变的外层：Harness</text>
+  <text class="band-body" x="70" y="746">上下文 · 工具 · 权限 · Sandbox · 状态 · 调度 · 预算 · 验证 · 观测 · Checkpoint · 恢复 · 人工接管</text>
+  <text class="principle" x="70" y="780">演进的核心不是把 Loop 换成 Graph，而是把控制权从模型的临场叙述迁移到可执行、可验证的外部系统。</text>
+</svg>

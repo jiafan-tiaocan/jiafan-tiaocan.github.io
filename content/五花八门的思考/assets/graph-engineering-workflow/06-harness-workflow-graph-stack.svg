@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">Harness、Workflow、Graph 与 Loop 的工程分层</title>
+  <desc id="desc">任务契约先由模型生成 Workflow 候选，再经过 Graph IR 和静态策略验证，由 Workflow Runtime 实例化运行图并调度 Agent，外层 Harness 持有权限、状态、预算、验证、观测和恢复。</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#15324a"/>
+      <stop offset="1" stop-color="#245d72"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#17374a" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#3d6478"/>
+    </marker>
+    <marker id="arrow-warn" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#b56b2f"/>
+    </marker>
+    <style>
+      .title { font: 700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #fff; }
+      .subtitle { font: 400 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #dceaf0; }
+      .harness-title { font: 700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .box-title { font: 700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #173042; }
+      .box-body { font: 400 15px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #526a78; }
+      .badge { font: 700 13px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #fff; letter-spacing: 0.4px; }
+      .edge-label { font: 600 14px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #536c7b; }
+      .rule { font: 600 14px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #76522e; }
+      .side-title { font: 700 17px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #294c60; }
+      .side-body { font: 400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; fill: #5d7280; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="980" rx="18" fill="#f8fafc"/>
+  <rect width="1600" height="108" rx="18" fill="url(#header)"/>
+  <rect y="90" width="1600" height="18" fill="url(#header)"/>
+  <text class="title" x="54" y="49">Harness &gt; Workflow / Graph / Loop</text>
+  <text class="subtitle" x="56" y="80">Workflow 是图程序，Graph 是执行结构，Loop 是结构中的回边；Harness 才是约束与恢复的最终所有者</text>
+
+  <rect x="35" y="132" width="1530" height="788" rx="22" fill="#edf3f7" stroke="#6f98ae" stroke-width="3"/>
+  <text class="harness-title" x="65" y="174">Harness / 生产执行系统</text>
+
+  <g transform="translate(70 206)">
+    <rect width="250" height="664" rx="16" fill="#fff" stroke="#9ab5c4" stroke-width="2"/>
+    <text class="side-title" x="24" y="42">横切约束</text>
+    <g transform="translate(20 70)">
+      <rect width="210" height="66" rx="10" fill="#edf4f8"/><text class="side-title" x="16" y="27">权限与 Sandbox</text><text class="side-body" x="16" y="49">工具、路径、网络、凭证</text>
+    </g>
+    <g transform="translate(20 154)">
+      <rect width="210" height="66" rx="10" fill="#edf6f1"/><text class="side-title" x="16" y="27">状态与幂等</text><text class="side-body" x="16" y="49">operation id、checkpoint</text>
+    </g>
+    <g transform="translate(20 238)">
+      <rect width="210" height="66" rx="10" fill="#fbf4e9"/><text class="side-title" x="16" y="27">预算与调度</text><text class="side-body" x="16" y="49">并发、token、deadline</text>
+    </g>
+    <g transform="translate(20 322)">
+      <rect width="210" height="66" rx="10" fill="#f3eff8"/><text class="side-title" x="16" y="27">验证与审批</text><text class="side-body" x="16" y="49">test、grader、human gate</text>
+    </g>
+    <g transform="translate(20 406)">
+      <rect width="210" height="66" rx="10" fill="#eef2f5"/><text class="side-title" x="16" y="27">Trace 与观测</text><text class="side-body" x="16" y="49">事件、成本、失败指纹</text>
+    </g>
+    <g transform="translate(20 490)">
+      <rect width="210" height="66" rx="10" fill="#fff1ec"/><text class="side-title" x="16" y="27">恢复与接管</text><text class="side-body" x="16" y="49">重试、隔离、回滚、人工</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(390 205)">
+      <rect width="850" height="106" rx="15" fill="#fff" stroke="#789fb4" stroke-width="2"/>
+      <rect x="20" y="20" width="106" height="28" rx="14" fill="#4f829e"/>
+      <text class="badge" x="37" y="39">INPUT</text>
+      <text class="box-title" x="152" y="43">Task Contract</text>
+      <text class="box-body" x="152" y="72">目标、范围、输入、完成条件、风险、资源预算与允许的结构自由度</text>
+    </g>
+
+    <g transform="translate(390 349)">
+      <rect width="850" height="116" rx="15" fill="#fff" stroke="#b48b51" stroke-width="2"/>
+      <rect x="20" y="20" width="106" height="28" rx="14" fill="#b27732"/>
+      <text class="badge" x="37" y="39">SYNTHESIZE</text>
+      <text class="box-title" x="152" y="43">Workflow Generator</text>
+      <text class="box-body" x="152" y="72">模型根据任务生成 JavaScript、DSL 或受约束 GraphSpec</text>
+      <text class="box-body" x="152" y="95">输出只是候选程序，不自动获得执行资格</text>
+    </g>
+
+    <g transform="translate(390 503)">
+      <rect width="850" height="136" rx="15" fill="#fff8ed" stroke="#c47c34" stroke-width="2.5"/>
+      <rect x="20" y="20" width="106" height="28" rx="14" fill="#b8672b"/>
+      <text class="badge" x="37" y="39">VALIDATE</text>
+      <text class="box-title" x="152" y="43">Graph IR + Policy Gate</text>
+      <text class="box-body" x="152" y="72">检查可达性、节点契约、角色隔离、允许边、循环上界和预算</text>
+      <text class="rule" x="152" y="102">示例：Writer 不能直接进入 Done；任何回边必须带 maxAttempts 与 progress check</text>
+    </g>
+
+    <g transform="translate(390 677)">
+      <rect width="850" height="158" rx="15" fill="#edf6f1" stroke="#4f937c" stroke-width="2.5"/>
+      <rect x="20" y="20" width="106" height="28" rx="14" fill="#3f806b"/>
+      <text class="badge" x="37" y="39">EXECUTE</text>
+      <text class="box-title" x="152" y="43">Workflow Runtime → Realized Graph</text>
+      <text class="box-body" x="152" y="72">按数据动态实例化 Agent 节点，执行顺序、fan-out、fan-in、分支和有限循环</text>
+      <g transform="translate(156 94)">
+        <circle cx="20" cy="24" r="18" fill="#dcebf2" stroke="#4f829e" stroke-width="2"/>
+        <circle cx="154" cy="24" r="18" fill="#e5f0eb" stroke="#4f937c" stroke-width="2"/>
+        <circle cx="288" cy="24" r="18" fill="#e5f0eb" stroke="#4f937c" stroke-width="2"/>
+        <circle cx="422" cy="24" r="18" fill="#fff0dd" stroke="#b27732" stroke-width="2"/>
+        <circle cx="556" cy="24" r="18" fill="#f0eaf7" stroke="#8069a7" stroke-width="2"/>
+        <line x1="39" y1="24" x2="134" y2="24" stroke="#3d6478" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <line x1="173" y1="24" x2="268" y2="24" stroke="#3d6478" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <line x1="307" y1="24" x2="402" y2="24" stroke="#3d6478" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <line x1="441" y1="24" x2="536" y2="24" stroke="#3d6478" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <path d="M422 44 C422 78 288 78 288 44" fill="none" stroke="#b56b2f" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arrow-warn)"/>
+        <text class="edge-label" x="4" y="58">Discover</text>
+        <text class="edge-label" x="130" y="58">Workers</text>
+        <text class="edge-label" x="265" y="58">Verify</text>
+        <text class="edge-label" x="397" y="58">Fix</text>
+        <text class="edge-label" x="538" y="58">Done</text>
+      </g>
+    </g>
+  </g>
+
+  <line x1="815" y1="312" x2="815" y2="341" stroke="#3d6478" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="815" y1="466" x2="815" y2="495" stroke="#3d6478" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="815" y1="640" x2="815" y2="669" stroke="#3d6478" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g transform="translate(1290 205)">
+    <rect width="235" height="630" rx="16" fill="#fff" stroke="#9a88b9" stroke-width="2"/>
+    <text class="side-title" x="22" y="42">Graph Engineering</text>
+    <text class="side-body" x="22" y="78">设计节点词汇</text>
+    <text class="side-body" x="22" y="108">限制边与回边</text>
+    <text class="side-body" x="22" y="138">定义 Graph IR</text>
+    <text class="side-body" x="22" y="168">验证生成程序</text>
+    <text class="side-body" x="22" y="198">比较运行图</text>
+    <text class="side-body" x="22" y="228">分析执行 Trace</text>
+    <text class="side-body" x="22" y="258">评测质量与成本</text>
+    <text class="side-body" x="22" y="288">优化拓扑与路由</text>
+    <line x1="22" y1="322" x2="213" y2="322" stroke="#d0c8dd"/>
+    <text class="side-title" x="22" y="360">不是单独一层</text>
+    <text class="side-body" x="22" y="392">它横跨生成、验证、</text>
+    <text class="side-body" x="22" y="422">执行、观测与优化，</text>
+    <text class="side-body" x="22" y="452">把拓扑本身变成</text>
+    <text class="side-body" x="22" y="482">可版本化工程资产。</text>
+  </g>
+
+  <rect x="390" y="858" width="1135" height="42" rx="9" fill="#fff" stroke="#c5d3db"/>
+  <text class="rule" x="420" y="884">约束成立的原因：Workflow Runtime 执行图；Harness 在图外持有权限、状态和完成判定。</text>
+</svg>
