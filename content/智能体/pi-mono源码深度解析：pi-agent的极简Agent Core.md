@@ -334,7 +334,7 @@ toolResult: call_01 → README 内容
 
 ![固定 pi-mono 修订运行出的 Tool Call 事件流，依次显示 user、assistant toolCall、工具执行、toolResult 和最终 assistant 回复](assets/pi-agent-core/10-toolcall-runtime-trace.png)
 
-*图 3：固定修订上的真实 Tool Call 往返。使用仓库自带 faux provider 与一个无外部副作用的 fake `read` Tool 运行focused Vitest，1 个测试通过；截图仅省略时间戳和usage 并重新排版，没有改变事件顺序。*
+*图 3：固定修订上的真实 Tool Call 往返。使用仓库自带 faux provider 与一个无外部副作用的 fake `read` Tool 运行 focused Vitest，1 个测试通过；截图仅省略时间戳和 usage 并重新排版，没有改变事件顺序。完整测试源、命令和规范化事件见附录 C。*
 
 | 维度 | 没有 Tool Call | 带 Tool Call |
 |---|---|---|
@@ -1084,7 +1084,7 @@ Harness 只依赖该集合，不直接依赖每个 provider package。
 
 统一接口仍保留 model metadata、api、thinking level、context window、capabilities 等差异。Pi 没有为了表面统一把供应商能力压成最小公分母，而是让 `Model<Api>` 保留具体 API 类型。
 
-代价是 provider/catalog 代码量很大，并且生成模型目录会快速变化。本文构建时 `npm run build` 实际联网刷新多个模型目录并改动生成文件，之后已恢复 worktree。
+代价是 provider/catalog 代码量很大，并且生成模型目录会快速变化。本轮 `npm run build` 联网后，有 17 个模型目录文件相对固定 SHA 产生 `+250/-106` 行漂移。它们是移动远端输入参与生成的副作用，没有被用于本文源码结论，也没有提交回上游；这恰好说明：固定 Git SHA 并不自动意味着生成目录可复现。
 
 ---
 
@@ -1650,7 +1650,26 @@ pi --mode json -p --no-session
 
 ### 16.3 取消映射到进程生命周期
 
-父 Tool 收到 abort 后，先向子进程发 `SIGTERM`，必要时再 `SIGKILL`。相比只在内存中设一个布尔值，进程边界让取消更真实。
+父 Tool 收到 abort 后会向子进程发 `SIGTERM`，源码也写了 5 秒后升级到 `SIGKILL` 的意图。但这里有一个容易被“看起来正确”骗过的实现缺口：
+
+```ts
+proc.kill("SIGTERM");
+setTimeout(() => {
+  if (!proc.killed) proc.kill("SIGKILL");
+}, 5000);
+```
+
+Node.js 的 [`subprocess.killed`](https://nodejs.org/api/child_process.html#subprocesskilled) 只表示“已经成功调用 `subprocess.kill()` 发出信号”，不表示子进程已经退出。第一次 `SIGTERM` 成功发出后，`proc.killed` 通常已经是 `true`；即使子进程仍活着，5 秒后的分支也不会再发 `SIGKILL`。
+
+对应实现位于固定源码的 [`subagent/index.ts:393-402`](https://github.com/earendil-works/pi/blob/13437ca828894f43f973c630d208b488637d8fa9/packages/coding-agent/examples/extensions/subagent/index.ts#L393-L402)。
+
+因此准确结论不是“Pi 保证 `SIGTERM → SIGKILL`”，而是：
+
+- abort 已经映射到真实进程信号，而不只是内存布尔值；
+- 代码存在升级终止的设计意图；
+- 当前 `proc.killed` gate 不能可靠判断进程存活，强制收束并没有被实现保证。
+
+正确的升级条件应由 `close` / `exit` 状态或显式的 `exited` 标志驱动，而不是把 `killed` 当成“进程已死”。这个细节也是深读源码而不能只读注释和函数名的典型例子。
 
 ### 16.4 为什么不把 Subagent 放进`agentLoop()`
 
@@ -1834,7 +1853,7 @@ RPC 不用宽松的“随便 readline 然后猜 JSON”，而是明确按 LF 分
 | 同文件 edit/write | 主进程 | per-path Promise chain | 是 | Tool 生命周期|
 | Bash | OS 子进程 / 进程树 | 进程级 | 否 | kill process tree |
 | Image resize | Worker Thread | 线程级 | 消息 / transfer | terminate Worker |
-| Subagent | 独立 Pi 进程 | 有界进程池 | 否 | `SIGTERM → SIGKILL` |
+| Subagent | 独立 Pi 进程 | 有界进程池 | 否 | 发 `SIGTERM`；5 秒强杀 fallback 的 `proc.killed` gate 不可靠 |
 | ACP 接入 | pi-acp + Pi RPC 子进程 | 进程 + NDJSON | 否 | ACP cancel → RPC abort |
 
 几个容易混淆的实现点：
@@ -1943,7 +1962,7 @@ Steering、follow-up、parallel tools、pending writes 都是普通数组、Map�
 - provider 原生流式；
 - 独立工具默认并行；
 - Skill 正文按需加载；
-- Tool 输出有界；
+- coding-agent 默认 Tool 对输出做了上限；Core 的 `AgentToolResult` 合约本身不限制自定义 Tool 输出；
 - Core 热路径没有 workflow interpreter；
 - TUI 不在 agent-core 依赖路径；
 - turn snapshot 避免同一请求中反复解析资源。
@@ -1985,7 +2004,7 @@ Popularity 只能说明关注度，不能证明架构正确；真正有意义的
 
 ### 20.3 构建与检查
 
-在 Node `v22.23.1`、固定 SHA 下：
+主构建与检查在 Node `v22.23.1`、固定 SHA 下执行；第二轮非 E2E 全量测试和附录 C 的定向运行又在 Node `v24.14.0` 上复核：
 
 | 检查 | 结果 | 分类 |
 |---|---|---|
@@ -2001,11 +2020,13 @@ Popularity 只能说明关注度，不能证明架构正确；真正有意义的
 | Suite | 结果 | 解释 |
 |---|---|---|
 | `packages/agent` | 15 files / 179 tests passed | Core 全部通过 |
-| `packages/ai` | 78 files passed、25 skipped；566 passed、778 skipped | 大量 provider/live 条件测试跳过 |
-| `packages/coding-agent` | 167 files passed、3 failed、6 skipped；1,573 passed、10 failed、47 skipped | 10 个失败均因本机缺少 `fd` 且下载失败 |
+| `packages/ai` | 78 files passed、25 skipped；566 passed、784 skipped | 大量 provider/live 条件测试跳过 |
+| `packages/coding-agent` | 170 files passed、6 skipped；1,583 passed、47 skipped | 补齐 `tui` 与 `coding-agent` 构建制品后全部非 E2E 测试通过 |
+| `packages/tui` | Node test dot reporter 全部通过 | 作为 workspace `./test.sh` 的一部分执行；不是本文叙事重点 |
 | 定向 headless tests | 9 files passed、3 skipped；92 passed、30 skipped | RPC、JSONL、Session、branch、compaction queue、Extension、Skill |
+| Tool Call 证据测试 | 1 file / 1 test passed | faux provider，无网络 API、密钥或付费 token |
 
-上游 CI 显式安装 `fd`，所以本地 10 个失败分类为**缺失系统依赖**，不是已确认的 Agent Core product failure。
+第一次直接进入全量测试时，coding-agent 因缺少 `packages/tui/dist/index.js` 出现 84 个导入失败；这不是产品断言失败，而是 workspace build 前置条件未满足。补建 `packages/tui` 与 `packages/coding-agent` 后，按仓库规定的 `./test.sh` 重跑，非 E2E suites 通过。把“环境/构建前置失败”和“产品行为失败”分开，是源码审计报告必须保留的证据分类。
 
 ### 20.5 CI 与供应链信号
 
@@ -2112,6 +2133,14 @@ Pi 的 Core 很好，但“简洁”不是没有代价。
 
 **边界**：可以赞赏它的热路径结构，不能把结构优雅等同于所有任务绝对最快。
 
+### 21.11 Subagent 的强制取消 fallback 存在语义缺口
+
+**事实**：示例先发 `SIGTERM`，再用 `if (!proc.killed)` 决定是否在 5 秒后发 `SIGKILL`。
+
+**问题**：Node 的 `proc.killed` 代表“信号已成功发送”，不是“子进程已经退出”。因此忽略 `SIGTERM` 的子进程可能越过预期的强杀路径。
+
+**工程启示**：审查取消逻辑时，必须分别验证“请求了取消、发出了信号、目标已经退出、资源已经回收”四件事。API 字段名不能代替生命周期证据。
+
 ---
 
 ## 22. 工程设计总账：亮点、收益与代价
@@ -2130,12 +2159,24 @@ Pi 的 Core 很好，但“简洁”不是没有代价。
 | Skill metadata 常驻、正文 late binding | Skill 多时 prompt 会膨胀| 发现与正文读取分离；正文可热读 | metadata 变化仍需reload |
 | 资源级 Promise queue | 并行工具可能覆盖同一文件 | 冲突键放在最了解领域的 Tool 层| 只在单进程内有效 |
 | Hook 与 Sandbox 分层| 扩展策略容易被误称为安全 | policy insertion 与 OS enforcement 不混淆 | 生产必须另配容器 / VM |
-| Subagent 作为普通 Tool | 多 Agent 容易侵入 Loop | 进程编排不需要改一行核心循环 | 示例不是生产调度器 |
+| Subagent 作为普通 Tool | 多 Agent 容易侵入 Loop | 进程编排不需要改一行核心循环 | 示例不是生产调度器；当前强杀 fallback 也需修正 |
 | RPC / ACP Adapter | UI、IDE 与 Agent 容易强耦合 | 稳定事件流可在外部翻译协议 | Adapter 要处理兼容与能力缺口 |
 
 一句话概括：
 
-> Pi 把变化快、规模大、需要策略的复杂性放在 Provider、Harness、Tool、Session 和Adapter 边界，把执行热路径压缩成一个可以直接读懂、测试和替换的协议循环。
+> Pi 把变化快、规模大、需要策略的复杂性放在 Provider、Harness、Tool、Session 和 Adapter 边界，把执行热路径压缩成一个可以直接读懂、测试和替换的协议循环。
+
+### 22.1 为什么说它是典范，而不是唯一答案
+
+“典范”指的是 **Agent 执行内核的边界和时序值得学习**，不是宣称 Pi 在所有形态下都占优：
+
+| 系统形态 | 更擅长的问题 | 相对 Pi Core 的取舍 |
+|---|---|---|
+| 显式工作流图运行时 | DAG、节点级重试、可视化审批、跨步骤 checkpoint | 控制面更强，但简单 Tool 往返要承担图解释器与状态机成本 |
+| Actor / 分布式任务运行时 | 多租户调度、故障域、跨机器监督与资源预算 | 隔离和调度更强，但需要消息拓扑、监督树或集群语义 |
+| Pi Agent Core | headless 嵌入、模型—工具闭环、清晰事件流、应用自定义控制面 | 热路径小而透明，但 DAG、强隔离、全局预算必须由外层系统补足 |
+
+所以本文的判断标准不是“功能清单最多”，而是：当问题只要求一个可靠、可嵌入的模型—工具执行循环时，Pi 用很少的机制保住了最关键的不变量。若主要问题已经变成跨机器工作流或多租户资源治理，就应在外层引入更合适的运行时，而不是继续把职责塞回 `agentLoop()`。
 
 ---
 
@@ -2284,7 +2325,7 @@ Skill、Tool、Hook、Session、Compaction 都不是额外堆上去的功能清�
 
 ## 附录 A：验证命令摘要
 
-在固定 SHA、Node 22 shell 中执行：
+在固定 SHA 下执行：
 
 ```bash
 git rev-parse HEAD
@@ -2293,19 +2334,183 @@ git describe --tags --abbrev=0
 npm ci --ignore-scripts --no-audit --no-fund
 npm run build
 npm run check
-npm test
+./test.sh
 npm audit --omit=dev --json
 ```
 
-build 产生的模型 catalog 变化已恢复，审阅 clone 最终保持clean。
+这里使用 `./test.sh` 而不是直接运行全量 Vitest，因为仓库 `AGENTS.md` 明确要求：无 API key 的非 E2E tests 由该脚本统一入口执行。
+
+联网 build 在一次性审阅 clone 中留下 17 个模型 catalog 文件、`+250/-106` 行生成差异。没有清理或伪装这组变化：它们未被用于源码判断，也没有提交；它们被保留为“远端移动输入会破坏固定 SHA 生成复现”的现场证据。
 
 ## 附录 B：本文没有证明什么
 
 - 没有证明 Pi 在所有 Agent benchmark 中速度第一。
 - 没有运行真实付费 provider 的全覆盖测试。
 - 没有把 `main` HEAD 等同于已发布 npm `0.80.10`。
-- 没有把本地缺 `fd` 的 10 个 coding-agent failures 隐藏成全部通过。
+- 没有把首次缺少 workspace 构建制品造成的 84 个导入失败写成产品缺陷；补建后按同一入口重跑通过。
 - 没有把 Hook、project trust 或 Extension 说成 Sandbox。
 - 没有把 Subagent 示例或 experimental orchestrator 说成 Core 内建能力。
 - 没有把 TUI 当作 Agent Core 的主线。
 - 没有把 2026-07-28 复核到的 ACP 生态状态倒推成 2026-02-02 已经存在的能力。
+
+## 附录 C：Tool Call 运行证据如何复现
+
+图 3 不是手写时序图，而是固定源码上的一次真实 Agent 运行。为了让证据链可复核，测试使用仓库自带 faux provider，不访问真实模型 API；fake `read` Tool 只返回固定字符串，没有文件或网络副作用。
+
+一次性测试文件放在 `packages/agent/test/runtime-trace.blog.test.ts`，关键的完整可执行主体如下：
+
+```ts
+import {
+  type AssistantMessage,
+  fauxAssistantMessage,
+  fauxText,
+  fauxToolCall,
+  registerFauxProvider,
+} from "@earendil-works/pi-ai/compat";
+import { type Static, Type } from "typebox";
+import { afterEach, describe, expect, it } from "vitest";
+import { Agent, type AgentEvent, type AgentTool } from "../src/index.ts";
+
+const registrations: Array<ReturnType<typeof registerFauxProvider>> = [];
+const readSchema = Type.Object({ path: Type.String() });
+const readTool: AgentTool<typeof readSchema, { path: string }> = {
+  label: "Read",
+  name: "read",
+  description: "Read one file",
+  parameters: readSchema,
+  execute: async (_id: string, args: Static<typeof readSchema>) => ({
+    content: [{ type: "text" as const, text: "# Pi\nA minimal coding agent core." }],
+    details: { path: args.path },
+  }),
+};
+
+function assistantText(message: AssistantMessage): string {
+  return message.content
+    .filter((block) => block.type === "text")
+    .map((block) => block.text)
+    .join("\n");
+}
+
+function normalize(event: AgentEvent): Record<string, unknown> | undefined {
+  if (event.type === "message_end") {
+    const message = event.message;
+    if (message.role === "user") {
+      return { event: event.type, role: message.role, content: message.content };
+    }
+    if (message.role === "assistant") {
+      return {
+        event: event.type,
+        role: message.role,
+        text: assistantText(message),
+        toolCall: message.content.find((block) => block.type === "toolCall"),
+        stopReason: message.stopReason,
+      };
+    }
+    if (message.role === "toolResult") {
+      return {
+        event: event.type,
+        role: message.role,
+        toolCallId: message.toolCallId,
+        toolName: message.toolName,
+        content: message.content,
+        isError: message.isError,
+      };
+    }
+  }
+  if (event.type === "tool_execution_start") {
+    return {
+      event: event.type,
+      toolCallId: event.toolCallId,
+      toolName: event.toolName,
+      args: event.args,
+    };
+  }
+  if (event.type === "tool_execution_end") {
+    return {
+      event: event.type,
+      toolCallId: event.toolCallId,
+      toolName: event.toolName,
+      isError: event.isError,
+    };
+  }
+  if (event.type === "turn_end") {
+    return { event: event.type, toolResults: event.toolResults.length };
+  }
+  if (event.type === "agent_end") {
+    return { event: event.type, messages: event.messages.length };
+  }
+  return undefined;
+}
+
+afterEach(() => {
+  while (registrations.length > 0) registrations.pop()?.unregister();
+});
+
+describe("blog runtime trace", () => {
+  it("records one Tool Call round trip without a network provider", async () => {
+    const faux = registerFauxProvider();
+    registrations.push(faux);
+    faux.setResponses([
+      fauxAssistantMessage(
+        [
+          fauxText("我先读取 README。"),
+          fauxToolCall("read", { path: "README.md" }, { id: "call_01" }),
+        ],
+        { stopReason: "toolUse" },
+      ),
+      fauxAssistantMessage("README 说明 Pi 是一个极简 Agent Core。"),
+    ]);
+
+    const agent = new Agent({
+      initialState: {
+        systemPrompt: "Answer from the supplied Tool result.",
+        model: faux.getModel(),
+        thinkingLevel: "off",
+        tools: [readTool],
+      },
+    });
+    const events: Array<Record<string, unknown>> = [];
+    agent.subscribe((event) => {
+      const row = normalize(event);
+      if (row) events.push(row);
+    });
+
+    await agent.prompt("README 里如何描述 Pi？");
+    console.log("TRACE_BEGIN");
+    for (const event of events) console.log(JSON.stringify(event));
+    console.log("TRACE_END");
+
+    expect(agent.state.messages.map((message) => message.role)).toEqual([
+      "user",
+      "assistant",
+      "toolResult",
+      "assistant",
+    ]);
+  });
+});
+```
+
+在 `packages/agent` 下实际执行：
+
+```bash
+node node_modules/vitest/dist/cli.js \
+  --run test/runtime-trace.blog.test.ts \
+  --reporter=verbose \
+  --disableConsoleIntercept
+```
+
+测试在 Node `v24.14.0` 上用 22 ms 完成，`TRACE_BEGIN` 与 `TRACE_END` 之间的九条规范化事件是：
+
+```jsonl
+{"event":"message_end","role":"user","content":[{"type":"text","text":"README 里如何描述 Pi？"}]}
+{"event":"message_end","role":"assistant","text":"我先读取 README。","toolCall":{"type":"toolCall","id":"call_01","name":"read","arguments":{"path":"README.md"}},"stopReason":"toolUse"}
+{"event":"tool_execution_start","toolCallId":"call_01","toolName":"read","args":{"path":"README.md"}}
+{"event":"tool_execution_end","toolCallId":"call_01","toolName":"read","isError":false}
+{"event":"message_end","role":"toolResult","toolCallId":"call_01","toolName":"read","content":[{"type":"text","text":"# Pi\nA minimal coding agent core."}],"isError":false}
+{"event":"turn_end","toolResults":1}
+{"event":"message_end","role":"assistant","text":"README 说明 Pi 是一个极简 Agent Core。","stopReason":"stop"}
+{"event":"turn_end","toolResults":0}
+{"event":"agent_end","messages":4}
+```
+
+截图只把这组机器输出排成更适合阅读的纵向布局，并去掉时间与 usage；消息角色、Tool Call 参数、配对 ID、停止原因和事件顺序都保持不变。测试文件在取证后从一次性 clone 删除，没有修改上游仓库。

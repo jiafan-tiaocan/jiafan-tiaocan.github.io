@@ -41,8 +41,8 @@
   <rect class="sub" x="866" y="242" width="310" height="172" rx="20"/>
   <text class="txt h2" x="896" y="282">独立 Pi 子进程</text>
   <text class="txt body" x="896" y="320">独立 context / stdout JSON</text>
-  <text class="txt body" x="896" y="354">SIGTERM → SIGKILL 取消</text>
-  <text class="txt small" x="896" y="386">进程隔离 ≠ 权限隔离</text>
+  <text class="txt body" x="896" y="354">Abort 发 SIGTERM</text>
+  <text class="txt small" x="896" y="386">5s 强杀 gate 不可靠；进程隔离 ≠ 权限隔离</text>
   <path class="arrow" d="M750 560C842 560 820 328 866 328"/>
 
   <rect class="plain" x="866" y="474" width="310" height="152" rx="20"/>

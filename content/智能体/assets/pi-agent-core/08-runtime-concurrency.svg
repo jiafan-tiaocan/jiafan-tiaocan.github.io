@@ -55,7 +55,7 @@
   <text class="txt body" x="1040" y="442">独立 context / JSON event stream</text>
   <text class="txt body" x="1040" y="476">一次最多 8 个任务</text>
   <text class="txt body" x="1040" y="510">并发上限 4</text>
-  <text class="txt small" x="1040" y="538">SIGTERM → SIGKILL</text>
+  <text class="txt small" x="1040" y="538">SIGTERM；5s 强杀 gate 有缺陷</text>
 
   <rect class="worker" x="1010" y="618" width="338" height="160" rx="18"/>
   <text class="txt h2" x="1040" y="658">Image resize Worker</text>
