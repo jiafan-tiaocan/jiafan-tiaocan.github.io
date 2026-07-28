@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1180" role="img" aria-labelledby="title desc">
   <title id="title">人脑、当前 Agent 与未来持续神经流的思考方式对比</title>
-  <desc id="desc">上层展示人脑接收持续多模态输入，以循环工作空间、情境空间和在线可塑性形成连续认知；中层展示当前 Agent 由事件触发，按上下文编译、冻结模型、工具行动和结果写回进行离散状态转移；下层畅想未来模型以持续事件流为输入，在快速状态、神经记忆和慢速权重三个时间尺度上更新。</desc>
+  <desc id="desc">上层展示人脑接收持续多模态输入，以循环工作空间、情境空间和在线可塑性形成连续认知；中层展示当前 Agent 由事件触发，按上下文编译、冻结模型、工具行动和结果写回进行离散状态转移；下层畅想未来模型以持续事件流为输入，由自回归推理决定行动、记忆写入、重放与遗忘，并在快速状态、神经记忆和慢速权重三个时间尺度上更新。</desc>
   <metadata>
     自绘结构与排版，生成式图标由 OpenAI image generation 创建并嵌入。2026-07-28。
     结构依据：ReAct（Yao et al., 2022/2023）、Anthropic《A global workspace in language models》（2026）；
@@ -163,7 +163,7 @@
   <text class="font futureTitle" x="74" y="986">让 Context 变成</text>
   <text class="font futureTitle" x="74" y="1017">持续演化的神经状态</text>
   <text class="font equation" x="74" y="1051">sₜ₊₁ = Fθₜ(sₜ, xₜ, aₜ, rₜ)</text>
-  <text class="font note" x="74" y="1075">xₜ 是不停到来的多模态事件流，而非下一次请求。</text>
+  <text class="font note" x="74" y="1075">AR 同时决定 action、write、replay 与 forget；xₜ 是持续事件流。</text>
 
   <g>
     <rect x="590" y="961" width="152" height="110" rx="20" fill="#103a47" stroke="#2b8290"/>
