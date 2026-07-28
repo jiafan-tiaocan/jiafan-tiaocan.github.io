@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Kimi K3 的三维信息流设计</title>
+  <desc id="desc">Kimi K3 分别用混合 KDA 与 MLA、Attention Residuals、Stable LatentMoE 处理序列长度、网络深度和模型宽度的扩展瓶颈，并以训练与推理系统协同闭环。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#46D9E8"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+      .title { fill:#E6EDF7; font-size:30px; font-weight:700; }
+      .subtitle { fill:#9FB0C6; font-size:18px; }
+      .card-title { fill:#E6EDF7; font-size:23px; font-weight:700; }
+      .body { fill:#C6D1E1; font-size:17px; }
+      .muted { fill:#9FB0C6; font-size:16px; }
+      .tag { fill:#0B1220; font-size:16px; font-weight:700; }
+      .takeaway { fill:#E6EDF7; font-size:20px; font-weight:650; }
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="#0B1220"/>
+  <text x="64" y="58" class="title">Kimi K3：不是一个技巧，而是三条信息流同时扩展</text>
+  <text x="64" y="91" class="subtitle">序列、深度与宽度各自更换承载机制；系统层负责把新结构变成可训练、可服务的模型。</text>
+
+  <rect x="64" y="130" width="330" height="405" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <rect x="435" y="130" width="330" height="405" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <rect x="806" y="130" width="330" height="405" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+
+  <rect x="88" y="156" width="118" height="34" rx="17" fill="#46D9E8"/>
+  <text x="147" y="179" text-anchor="middle" class="tag">序列长度</text>
+  <text x="88" y="225" class="card-title">3× KDA + 1× Gated MLA</text>
+  <text x="88" y="266" class="muted">旧瓶颈</text>
+  <text x="88" y="294" class="body">全局注意力与 KV cache</text>
+  <text x="88" y="319" class="body">随上下文长度增长。</text>
+  <line x1="100" y1="350" x2="350" y2="350" stroke="#31445F" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="88" y="386" class="muted">责任转移</text>
+  <text x="88" y="414" class="body">KDA 用固定递归状态承载</text>
+  <text x="88" y="439" class="body">长序列记忆；周期性 MLA</text>
+  <text x="88" y="464" class="body">保留无约束全局交互。</text>
+  <text x="88" y="505" class="muted">代价：状态更新、回滚与缓存更复杂</text>
+
+  <rect x="459" y="156" width="118" height="34" rx="17" fill="#A78BFA"/>
+  <text x="518" y="179" text-anchor="middle" class="tag">网络深度</text>
+  <text x="459" y="225" class="card-title">Block Attention Residuals</text>
+  <text x="459" y="266" class="muted">旧瓶颈</text>
+  <text x="459" y="294" class="body">残差把历史层均匀累加，</text>
+  <text x="459" y="319" class="body">重要表征可能被深度稀释。</text>
+  <line x1="471" y1="350" x2="721" y2="350" stroke="#31445F" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="459" y="386" class="muted">责任转移</text>
+  <text x="459" y="414" class="body">每层学习伪查询，对嵌入与</text>
+  <text x="459" y="439" class="body">历史 block 表征分配权重，</text>
+  <text x="459" y="464" class="body">按需读取而非一律相加。</text>
+  <text x="459" y="505" class="muted">代价：多一条跨层内存访问路径</text>
+
+  <rect x="830" y="156" width="118" height="34" rx="17" fill="#F6C85F"/>
+  <text x="889" y="179" text-anchor="middle" class="tag">模型宽度</text>
+  <text x="830" y="225" class="card-title">Stable LatentMoE</text>
+  <text x="830" y="266" class="muted">旧瓶颈</text>
+  <text x="830" y="294" class="body">更多专家与更多激活专家</text>
+  <text x="830" y="319" class="body">会放大通信、失衡和溢出。</text>
+  <line x1="842" y1="350" x2="1092" y2="350" stroke="#31445F" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="830" y="386" class="muted">责任转移</text>
+  <text x="830" y="414" class="body">16/896 路由专家在 3584 维</text>
+  <text x="830" y="439" class="body">潜空间工作；RMSNorm、</text>
+  <text x="830" y="464" class="body">SiTU-GLU 与 QB 保持稳定。</text>
+  <text x="830" y="505" class="muted">代价：路由与专家并行必须共同设计</text>
+
+  <path d="M229 535 L229 574 L600 574" fill="none" stroke="#31445F" stroke-width="2"/>
+  <path d="M600 535 L600 604" fill="none" stroke="#31445F" stroke-width="2"/>
+  <path d="M971 535 L971 574 L600 574" fill="none" stroke="#31445F" stroke-width="2"/>
+  <rect x="157" y="604" width="886" height="70" rx="20" fill="#16253B" stroke="#5DD39E" stroke-width="2"/>
+  <text x="600" y="633" text-anchor="middle" class="takeaway">系统闭环：KDA Context Parallelism · MoonEP · QAT · 混合缓存 · 专用 kernel</text>
+  <text x="600" y="658" text-anchor="middle" class="muted">真正的工程亮点，是模型结构与训练/服务系统从一开始就互相约束。</text>
+</svg>
