@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1280" viewBox="0 0 1600 1280" role="img" aria-labelledby="title desc">
+  <title id="title">家务与养老通用机器人技术栈、热度、主流组合路线与企业关系</title>
+  <desc id="desc">从身体与执行器、感知、实时控制、VLA、推理、世界模型、数据训练到安全运营的八层技术栈，并标出全身人形、轮式移动操作、开放平台和照护协作四种组合路线及代表企业。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#111a30"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="0.5" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#020617" flood-opacity="0.46"/>
+    </filter>
+    <style>
+      .font { font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+      .muted { fill: #94a3b8; }
+      .main { fill: #f8fafc; }
+      .chip { fill: #152238; stroke: #334155; stroke-width: 1.5; }
+      .chiptext { fill: #dbeafe; font-size: 18px; font-weight: 600; }
+      .rowlabel { fill: #f8fafc; font-size: 22px; font-weight: 700; }
+      .rowsub { fill: #94a3b8; font-size: 15px; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1280" fill="url(#bg)"/>
+  <rect x="58" y="45" width="1484" height="1190" rx="30" fill="#0b1528" stroke="#22314a"/>
+  <text x="92" y="102" class="font main" font-size="36" font-weight="800">家务与养老“AGI 机器人”：不是一个模型，而是一套持续运行的系统</text>
+  <text x="92" y="142" class="font muted" font-size="18">技术热度与公司关系截至 2026-07-28；热度代表研发与产业活动，不代表已经可靠落地</text>
+  <line x1="92" y1="169" x2="1508" y2="169" stroke="url(#accent)" stroke-width="6" stroke-linecap="round"/>
+
+  <text x="92" y="210" class="font muted" font-size="17" font-weight="700">系统层</text>
+  <text x="330" y="210" class="font muted" font-size="17" font-weight="700">核心模块与代表技术 / 企业</text>
+  <text x="1395" y="210" class="font muted" font-size="17" font-weight="700">热度</text>
+
+  <g class="font" filter="url(#shadow)">
+    <rect x="86" y="228" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="263" class="rowlabel">照护交互与业务</text>
+    <text x="110" y="289" class="rowsub">意图、计划、IoT 与接管</text>
+    <rect x="330" y="247" width="194" height="44" rx="22" class="chip"/><text x="427" y="275" text-anchor="middle" class="chiptext">多模态 HRI / Agent</text>
+    <rect x="540" y="247" width="194" height="44" rx="22" class="chip"/><text x="637" y="275" text-anchor="middle" class="chiptext">用户模型 / 长期记忆</text>
+    <rect x="750" y="247" width="214" height="44" rx="22" class="chip"/><text x="857" y="275" text-anchor="middle" class="chiptext">Caregiver / 远程专家</text>
+    <rect x="980" y="247" width="250" height="44" rx="22" class="chip"/><text x="1105" y="275" text-anchor="middle" class="chiptext">ElliQ · 1X · LG ThinQ</text>
+    <g fill="#f59e0b"><circle cx="1382" cy="269" r="9"/><circle cx="1410" cy="269" r="9"/><circle cx="1438" cy="269" r="9"/><circle cx="1466" cy="269" r="9"/></g>
+    <circle cx="1494" cy="269" r="9" fill="#334155"/>
+
+    <rect x="86" y="324" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="359" class="rowlabel">慢速推理与任务编排</text>
+    <text x="110" y="385" class="rowsub">0.1–2 Hz：规划与验证</text>
+    <rect x="330" y="343" width="210" height="44" rx="22" class="chip"/><text x="435" y="371" text-anchor="middle" class="chiptext">Embodied VLM / LLM</text>
+    <rect x="556" y="343" width="188" height="44" rx="22" class="chip"/><text x="650" y="371" text-anchor="middle" class="chiptext">技能库 / 行为树</text>
+    <rect x="760" y="343" width="270" height="44" rx="22" class="chip"/><text x="895" y="371" text-anchor="middle" class="chiptext">Gemini ER 1.6 · Helix S2</text>
+    <rect x="1046" y="343" width="182" height="44" rx="22" class="chip"/><text x="1137" y="371" text-anchor="middle" class="chiptext">π0.7 高层策略</text>
+    <g fill="#f59e0b"><circle cx="1382" cy="365" r="9"/><circle cx="1410" cy="365" r="9"/><circle cx="1438" cy="365" r="9"/><circle cx="1466" cy="365" r="9"/></g>
+    <circle cx="1494" cy="365" r="9" fill="#334155"/>
+
+    <rect x="86" y="420" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="455" class="rowlabel">世界模型与长期记忆</text>
+    <text x="110" y="481" class="rowsub">后果预测、恢复与偏好</text>
+    <rect x="330" y="439" width="190" height="44" rx="22" class="chip"/><text x="425" y="467" text-anchor="middle" class="chiptext">视觉子目标 / 反事实</text>
+    <rect x="536" y="439" width="190" height="44" rx="22" class="chip"/><text x="631" y="467" text-anchor="middle" class="chiptext">情景 / 语义记忆</text>
+    <rect x="742" y="439" width="242" height="44" rx="22" class="chip"/><text x="863" y="467" text-anchor="middle" class="chiptext">π0.7 · 1XWM · FastWAM</text>
+    <rect x="1000" y="439" width="228" height="44" rx="22" class="chip"/><text x="1114" y="467" text-anchor="middle" class="chiptext">ElliQ 长期用户模型</text>
+    <g fill="#ef4444"><circle cx="1382" cy="461" r="9"/><circle cx="1410" cy="461" r="9"/><circle cx="1438" cy="461" r="9"/><circle cx="1466" cy="461" r="9"/><circle cx="1494" cy="461" r="9"/></g>
+
+    <rect x="86" y="516" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="551" class="rowlabel">VLA 与通用技能</text>
+    <text x="110" y="577" class="rowsub">5–50 Hz：闭环动作块</text>
+    <rect x="330" y="535" width="192" height="44" rx="22" class="chip"/><text x="426" y="563" text-anchor="middle" class="chiptext">Flow / Diffusion Policy</text>
+    <rect x="538" y="535" width="268" height="44" rx="22" class="chip"/><text x="672" y="563" text-anchor="middle" class="chiptext">π0.7 · GR00T N1.7 · Gemini</text>
+    <rect x="822" y="535" width="202" height="44" rx="22" class="chip"/><text x="923" y="563" text-anchor="middle" class="chiptext">Helix · Redwood</text>
+    <rect x="1040" y="535" width="188" height="44" rx="22" class="chip"/><text x="1134" y="563" text-anchor="middle" class="chiptext">ACT-2 · WALL-A</text>
+    <g fill="#ef4444"><circle cx="1382" cy="557" r="9"/><circle cx="1410" cy="557" r="9"/><circle cx="1438" cy="557" r="9"/><circle cx="1466" cy="557" r="9"/><circle cx="1494" cy="557" r="9"/></g>
+
+    <rect x="86" y="612" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="647" class="rowlabel">三维与多模态感知</text>
+    <text x="110" y="673" class="rowsub">RGB-D、触觉、力觉、状态</text>
+    <rect x="330" y="631" width="180" height="44" rx="22" class="chip"/><text x="420" y="659" text-anchor="middle" class="chiptext">VLM + 3D Grounding</text>
+    <rect x="526" y="631" width="174" height="44" rx="22" class="chip"/><text x="613" y="659" text-anchor="middle" class="chiptext">掌内视觉 / 触觉</text>
+    <rect x="716" y="631" width="260" height="44" rx="22" class="chip"/><text x="846" y="659" text-anchor="middle" class="chiptext">Figure · 1X · Gemini ER</text>
+    <rect x="992" y="631" width="236" height="44" rx="22" class="chip"/><text x="1110" y="659" text-anchor="middle" class="chiptext">稠密地图 / 人体意图</text>
+    <g fill="#ef4444"><circle cx="1382" cy="653" r="9"/><circle cx="1410" cy="653" r="9"/><circle cx="1438" cy="653" r="9"/><circle cx="1466" cy="653" r="9"/><circle cx="1494" cy="653" r="9"/></g>
+
+    <rect x="86" y="708" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="743" class="rowlabel">全身与接触控制</text>
+    <text x="110" y="769" class="rowsub">200–1000 Hz：平衡与急停</text>
+    <rect x="330" y="727" width="184" height="44" rx="22" class="chip"/><text x="422" y="755" text-anchor="middle" class="chiptext">WBC / MPC / 阻抗</text>
+    <rect x="530" y="727" width="214" height="44" rx="22" class="chip"/><text x="637" y="755" text-anchor="middle" class="chiptext">RL 运动先验 / Sim2Real</text>
+    <rect x="760" y="727" width="228" height="44" rx="22" class="chip"/><text x="874" y="755" text-anchor="middle" class="chiptext">Helix S0 · 1X Mobility</text>
+    <rect x="1004" y="727" width="224" height="44" rx="22" class="chip"/><text x="1116" y="755" text-anchor="middle" class="chiptext">独立安全控制器</text>
+    <g fill="#ef4444"><circle cx="1382" cy="749" r="9"/><circle cx="1410" cy="749" r="9"/><circle cx="1438" cy="749" r="9"/><circle cx="1466" cy="749" r="9"/><circle cx="1494" cy="749" r="9"/></g>
+
+    <rect x="86" y="804" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="839" class="rowlabel">数据 / 仿真 / 后训练</text>
+    <text x="110" y="865" class="rowsub">人类视频、失败与合成数据</text>
+    <rect x="330" y="823" width="194" height="44" rx="22" class="chip"/><text x="427" y="851" text-anchor="middle" class="chiptext">Data Factory / Teleop</text>
+    <rect x="540" y="823" width="212" height="44" rx="22" class="chip"/><text x="646" y="851" text-anchor="middle" class="chiptext">Isaac · MuJoCo · Cosmos</text>
+    <rect x="768" y="823" width="212" height="44" rx="22" class="chip"/><text x="874" y="851" text-anchor="middle" class="chiptext">LeRobot · openpi</text>
+    <rect x="996" y="823" width="232" height="44" rx="22" class="chip"/><text x="1112" y="851" text-anchor="middle" class="chiptext">Figure Go-Big · Sunday</text>
+    <g fill="#ef4444"><circle cx="1382" cy="845" r="9"/><circle cx="1410" cy="845" r="9"/><circle cx="1438" cy="845" r="9"/><circle cx="1466" cy="845" r="9"/><circle cx="1494" cy="845" r="9"/></g>
+
+    <rect x="86" y="900" width="1428" height="84" rx="15" fill="#101d32" stroke="#263752"/>
+    <text x="110" y="935" class="rowlabel">身体 / 执行器 / 运行时</text>
+    <text x="110" y="961" class="rowsub">人形 / 轮式，ROS 2 与边缘算力</text>
+    <rect x="330" y="919" width="224" height="44" rx="22" class="chip"/><text x="442" y="947" text-anchor="middle" class="chiptext">柔顺驱动 / 灵巧手</text>
+    <rect x="570" y="919" width="206" height="44" rx="22" class="chip"/><text x="673" y="947" text-anchor="middle" class="chiptext">ROS 2 Lyrical LTS</text>
+    <rect x="792" y="919" width="176" height="44" rx="22" class="chip"/><text x="880" y="947" text-anchor="middle" class="chiptext">Jetson Thor</text>
+    <rect x="984" y="919" width="244" height="44" rx="22" class="chip"/><text x="1106" y="947" text-anchor="middle" class="chiptext">Figure · 1X · Memo · LG</text>
+    <g fill="#ef4444"><circle cx="1382" cy="941" r="9"/><circle cx="1410" cy="941" r="9"/><circle cx="1438" cy="941" r="9"/><circle cx="1466" cy="941" r="9"/><circle cx="1494" cy="941" r="9"/></g>
+  </g>
+
+  <text x="92" y="1032" class="font main" font-size="24" font-weight="800">四种主流组合方式</text>
+  <g class="font">
+    <rect x="86" y="1052" width="348" height="134" rx="18" fill="#10243a" stroke="#38bdf8" stroke-width="2"/>
+    <text x="108" y="1084" fill="#7dd3fc" font-size="20" font-weight="800">R1 全栈人形：一副身体贯通全部层</text>
+    <text x="108" y="1116" fill="#e2e8f0" font-size="16">Agent → VLA → 全身控制 → 人形本体</text>
+    <text x="108" y="1147" fill="#bae6fd" font-size="17" font-weight="700">Figure · 1X（Tesla 仍以工业为先）</text>
+    <text x="108" y="1173" fill="#94a3b8" font-size="14">优点：人类环境兼容；难点：跌倒、成本、可靠性</text>
+
+    <rect x="450" y="1052" width="348" height="134" rx="18" fill="#0f2a2b" stroke="#2dd4bf" stroke-width="2"/>
+    <text x="472" y="1084" fill="#5eead4" font-size="20" font-weight="800">R2 轮式移动操作：先把家务做稳</text>
+    <text x="472" y="1116" fill="#e2e8f0" font-size="16">地图 / 技能库 + VLA + 双臂 + 轮式底盘</text>
+    <text x="472" y="1147" fill="#99f6e4" font-size="17" font-weight="700">Sunday · LG · 自变量 · Hello Robot</text>
+    <text x="472" y="1173" fill="#94a3b8" font-size="14">优点：稳、轻、低能耗；难点：楼梯与低位作业</text>
+
+    <rect x="814" y="1052" width="348" height="134" rx="18" fill="#20213b" stroke="#a78bfa" stroke-width="2"/>
+    <text x="836" y="1084" fill="#c4b5fd" font-size="20" font-weight="800">R3 开放平台组装：身体与智能解耦</text>
+    <text x="836" y="1116" fill="#e2e8f0" font-size="16">ROS 2 + LeRobot / GR00T / openpi + Isaac</text>
+    <text x="836" y="1147" fill="#ddd6fe" font-size="17" font-weight="700">NVIDIA · Google · PI · Hugging Face</text>
+    <text x="836" y="1173" fill="#94a3b8" font-size="14">优点：可复现与选型快；难点：集成责任仍归团队</text>
+
+    <rect x="1178" y="1052" width="336" height="134" rx="18" fill="#332517" stroke="#f59e0b" stroke-width="2"/>
+    <text x="1200" y="1084" fill="#fcd34d" font-size="20" font-weight="800">R4 照护协作：能力围绕人类服务网</text>
+    <text x="1200" y="1116" fill="#e2e8f0" font-size="16">陪伴 / 取物 / 康复 + 照护者 + 远程接管</text>
+    <text x="1200" y="1147" fill="#fde68a" font-size="17" font-weight="700">ElliQ · Stretch · Fourier</text>
+    <text x="1200" y="1173" fill="#94a3b8" font-size="14">优点：价值清晰；难点：医疗边界、隐私与责任</text>
+  </g>
+
+  <text x="92" y="1217" class="font muted" font-size="15">核心判断：前沿架构正收敛为“慢推理 + 快 VLA + 超快安全控制 + 始终在线的人类运营与数据闭环”。</text>
+</svg>
