@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <title>Unlimited OCR 与具身持续动态 OCR 的能力边界</title>
+  <desc>左侧展示 Unlimited OCR 对一次性静态视觉前缀和有界输出工作记忆的处理，右侧展示具身连续视觉还需要帧选择、文字轨迹聚合、有界视觉记忆和动作闭环。</desc>
+  <defs>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#F6C85F"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="720" rx="26" fill="#0B1220"/>
+  <text x="60" y="62" fill="#E6EDF7" font-size="30" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">从长文档到具身视觉：真正被“固定”的只有输出历史</text>
+  <text x="60" y="96" fill="#9FB0C6" font-size="18"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">Unlimited OCR 证明了有界工作记忆可支撑长时程抄录；动态视觉仍需要管理持续到来的参考信息。</text>
+
+  <rect x="48" y="130" width="520" height="470" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="76" y="170" fill="#46D9E8" font-size="24" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">论文已经解决：静态参考 + 有界输出记忆</text>
+
+  <text x="76" y="210" fill="#9FB0C6" font-size="17"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">所有页面先进入 prefill</text>
+  <rect x="76" y="228" width="104" height="78" rx="12" fill="#182943" stroke="#46D9E8"/>
+  <rect x="196" y="228" width="104" height="78" rx="12" fill="#182943" stroke="#46D9E8"/>
+  <rect x="316" y="228" width="104" height="78" rx="12" fill="#182943" stroke="#46D9E8"/>
+  <text x="128" y="275" text-anchor="middle" fill="#E6EDF7" font-size="19"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">Page 1</text>
+  <text x="248" y="275" text-anchor="middle" fill="#E6EDF7" font-size="19"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">Page 2</text>
+  <text x="368" y="275" text-anchor="middle" fill="#E6EDF7" font-size="19"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">Page 40+</text>
+  <text x="451" y="273" fill="#9FB0C6" font-size="28"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">…</text>
+
+  <path d="M248 318 L248 352" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow-cyan)"/>
+  <rect x="76" y="366" width="424" height="76" rx="14" fill="#152A39" stroke="#46D9E8" stroke-width="2"/>
+  <text x="288" y="397" text-anchor="middle" fill="#E6EDF7" font-size="20" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">固定参考前缀 P：视觉 token + prompt</text>
+  <text x="288" y="426" text-anchor="middle" fill="#9FB0C6" font-size="16"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">对解码长度固定；对页面数量并不固定</text>
+
+  <path d="M288 454 L288 482" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow-cyan)"/>
+  <rect x="76" y="494" width="424" height="76" rx="14" fill="#251F3D" stroke="#A78BFA" stroke-width="2"/>
+  <text x="288" y="525" text-anchor="middle" fill="#E6EDF7" font-size="20" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">R-SWA 解码器：最近 n=128 个输出 token</text>
+  <text x="288" y="554" text-anchor="middle" fill="#9FB0C6" font-size="16"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">KV cache 上界为 |P| + n</text>
+
+  <rect x="600" y="130" width="552" height="470" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="628" y="170" fill="#F6C85F" font-size="24" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">具身仍待解决：持续到来的视觉参考</text>
+
+  <text x="628" y="210" fill="#9FB0C6" font-size="17"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">相机帧随运动、遮挡和视角变化不断到达</text>
+  <rect x="628" y="228" width="102" height="70" rx="12" fill="#182943" stroke="#F6C85F"/>
+  <rect x="744" y="228" width="102" height="70" rx="12" fill="#182943" stroke="#F6C85F"/>
+  <rect x="860" y="228" width="102" height="70" rx="12" fill="#182943" stroke="#F6C85F"/>
+  <rect x="976" y="228" width="102" height="70" rx="12" fill="#182943" stroke="#F6C85F"/>
+  <text x="679" y="270" text-anchor="middle" fill="#E6EDF7" font-size="18"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">t−2</text>
+  <text x="795" y="270" text-anchor="middle" fill="#E6EDF7" font-size="18"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">t−1</text>
+  <text x="911" y="270" text-anchor="middle" fill="#E6EDF7" font-size="18"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">t</text>
+  <text x="1027" y="270" text-anchor="middle" fill="#E6EDF7" font-size="18"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">t+1</text>
+
+  <path d="M853 310 L853 338" stroke="#F6C85F" stroke-width="3" marker-end="url(#arrow-amber)"/>
+  <rect x="628" y="350" width="214" height="88" rx="14" fill="#332A19" stroke="#F6C85F" stroke-width="2"/>
+  <text x="735" y="383" text-anchor="middle" fill="#E6EDF7" font-size="19" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">帧选择与文字轨迹</text>
+  <text x="735" y="410" text-anchor="middle" fill="#9FB0C6" font-size="16"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">去重、跟踪、跨帧融合</text>
+
+  <rect x="864" y="350" width="242" height="88" rx="14" fill="#183027" stroke="#5DD39E" stroke-width="2"/>
+  <text x="985" y="383" text-anchor="middle" fill="#E6EDF7" font-size="19" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">有界视觉参考池</text>
+  <text x="985" y="410" text-anchor="middle" fill="#9FB0C6" font-size="16"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">按对象、地点与任务检索/淘汰</text>
+
+  <path d="M842 394 L856 394" stroke="#F6C85F" stroke-width="3" marker-end="url(#arrow-amber)"/>
+  <path d="M985 450 L985 478" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow-cyan)"/>
+  <rect x="628" y="490" width="478" height="80" rx="14" fill="#251F3D" stroke="#A78BFA" stroke-width="2"/>
+  <text x="867" y="521" text-anchor="middle" fill="#E6EDF7" font-size="20" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">R-SWA 工作记忆 + 可修正的文字信念</text>
+  <text x="867" y="550" text-anchor="middle" fill="#9FB0C6" font-size="16"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">把“读到了什么”送给场景记忆与动作策略</text>
+
+  <rect x="48" y="626" width="1104" height="58" rx="16" fill="#2A1B24" stroke="#FF6B6B" stroke-width="2"/>
+  <text x="600" y="661" text-anchor="middle" fill="#FFD7D7" font-size="20" font-weight="700"
+        font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">关键缺口：R-SWA 限制了输出历史，却没有自动限制动态视觉前缀；后者才是具身持续感知的主战场。</text>
+</svg>
