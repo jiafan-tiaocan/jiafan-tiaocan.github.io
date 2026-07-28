@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="920" viewBox="0 0 1400 920" role="img" aria-labelledby="title desc">
+  <title id="title">pi-mono 仓库地图与 Agent Core 代码规模</title>
+  <desc id="desc">pi-ai 位于模型协议底层，packages/agent 提供 Agent Core，coding-agent 在其上增加工具、Extension、RPC 和 CLI；TUI、实验性 orchestrator、外部 pi-acp 和 Python 封装位于外围。右侧展示 packages/agent 内部代码量。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.panel{fill:#fff;stroke:#c8d2df;stroke-width:2}.ai{fill:#eef6ff;stroke:#4583c2;stroke-width:2}.core{fill:#f2edff;stroke:#7c5dc7;stroke-width:2.5}.app{fill:#fff2e5;stroke:#d18031;stroke-width:2}.side{fill:#edf8f1;stroke:#3e9464;stroke-width:2}.muted{fill:#f3f5f8;stroke:#9ba8ba;stroke-width:2;stroke-dasharray:8 6}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#536178}.tiny{font-size:12px;fill:#66758b}.bar{fill:#7c5dc7}.bar2{fill:#b29ce8}.bar3{fill:#d8cef4}.arrow{stroke:#59677c;stroke-width:2.4;fill:none;marker-end:url(#m)}.dash{stroke:#7b8798;stroke-width:2;fill:none;stroke-dasharray:8 6;marker-end:url(#m)}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#59677c"/></marker>
+  </defs>
+  <rect class="bg" width="1400" height="920" rx="24"/>
+  <text class="txt h1" x="48" y="58">先看仓库，再看循环：pi-mono 的依赖方向与复杂性分布</text>
+
+  <rect class="panel" x="42" y="92" width="810" height="768" rx="22"/>
+  <text class="txt h2" x="72" y="132">Monorepo 运行时地图</text>
+
+  <rect class="ai" x="92" y="690" width="650" height="116" rx="18"/>
+  <text class="txt h2" x="120" y="730">packages/ai</text>
+  <text class="txt body" x="120" y="762">Model · Provider · Message · Tool schema · streaming</text>
+  <text class="txt small" x="600" y="730">23,807 LOC</text>
+
+  <rect class="core" x="92" y="512" width="650" height="134" rx="18"/>
+  <text class="txt h2" x="120" y="553">packages/agent · Agent Core</text>
+  <text class="txt body" x="120" y="585">agentLoop · Agent · Harness · Session · Skill · Compaction</text>
+  <text class="txt small" x="120" y="617">8,168 LOC；执行热路径仅 1,797 LOC</text>
+
+  <rect class="app" x="92" y="318" width="650" height="148" rx="18"/>
+  <text class="txt h2" x="120" y="360">packages/coding-agent · 产品与集成面</text>
+  <text class="txt body" x="120" y="394">read / bash / edit / write · Extension · ResourceLoader</text>
+  <text class="txt body" x="120" y="426">SDK · JSON / RPC · CLI / interactive mode</text>
+  <text class="txt small" x="600" y="360">54,703 LOC</text>
+
+  <rect class="side" x="92" y="164" width="196" height="104" rx="16"/>
+  <text class="txt h2" x="118" y="204">Python 系统</text>
+  <text class="txt small" x="118" y="236">封装 Core / RPC</text>
+
+  <rect class="muted" x="316" y="164" width="196" height="104" rx="16"/>
+  <text class="txt h2" x="344" y="204">packages/tui</text>
+  <text class="txt small" x="344" y="236">12,181 LOC · 非主线</text>
+
+  <rect class="muted" x="540" y="164" width="260" height="104" rx="16"/>
+  <text class="txt h2" x="568" y="204">orchestrator / pi-acp</text>
+  <text class="txt small" x="568" y="236">实验编排 / 外部协议适配</text>
+
+  <path class="arrow" d="M417 690V654"/>
+  <path class="arrow" d="M417 512V474"/>
+  <path class="arrow" d="M190 318V276"/>
+  <path class="dash" d="M414 318V276"/>
+  <path class="dash" d="M670 318V276"/>
+
+  <rect class="panel" x="884" y="92" width="474" height="768" rx="22"/>
+  <text class="txt h2" x="914" y="132">packages/agent 的 8,168 行放在哪里</text>
+  <text class="txt small" x="914" y="160">行数用于定位复杂性，不代表重要性</text>
+
+  <text class="txt body" x="914" y="215">执行热路径 · Loop + Agent + Types</text>
+  <rect class="bar" x="914" y="234" width="92" height="30" rx="8"/>
+  <text class="txt small" x="1018" y="255">1,797 · 22%</text>
+
+  <text class="txt body" x="914" y="319">会话控制平面 · Harness 全部能力</text>
+  <rect class="bar2" x="914" y="338" width="307" height="30" rx="8"/>
+  <text class="txt small" x="1233" y="359">5,957 · 73%</text>
+
+  <text class="txt body" x="914" y="423">Proxy / exports</text>
+  <rect class="bar3" x="914" y="442" width="30" height="30" rx="8"/>
+  <text class="txt small" x="956" y="463">414 · 5%</text>
+
+  <line x1="914" y1="516" x2="1328" y2="516" stroke="#d8dee8" stroke-width="2"/>
+  <text class="txt h2" x="914" y="558">逐层进入源码</text>
+  <text class="txt body" x="914" y="602">1 · 先读 792 行 agent-loop.ts</text>
+  <text class="txt body" x="914" y="642">2 · 再读 575 行 agent.ts</text>
+  <text class="txt body" x="914" y="682">3 · 用 Harness 理解会话生命周期</text>
+  <text class="txt body" x="914" y="722">4 · 用 Session / Skill / Compaction</text>
+  <text class="txt body" x="936" y="752">理解长期运行与资源边界</text>
+  <text class="txt small" x="914" y="814">Core 的美不是“全仓库只有几百行”，</text>
+  <text class="txt small" x="914" y="838">而是热路径小，复杂性各自有家。</text>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720" role="img" aria-labelledby="title desc">
+  <title id="title">ACP、Pi RPC 与 Agent Core 的协议边界</title>
+  <desc id="desc">编辑器作为 ACP Client 与独立 pi-acp Adapter 进程通信，Adapter 为每个会话启动 pi mode rpc 子进程，并把 Pi AgentEvent 翻译成 ACP session update；Agent Core 的循环无需修改。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.client{fill:#eef6ff;stroke:#4583c2;stroke-width:2}.adapter{fill:#fff2e5;stroke:#d18031;stroke-width:2}.rpc{fill:#edf8f1;stroke:#3e9464;stroke-width:2}.core{fill:#f2edff;stroke:#7c5dc7;stroke-width:2}.note{fill:#fff;stroke:#c8d2df;stroke-width:2}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#536178}.arrow{stroke:#59677c;stroke-width:2.4;fill:none;marker-end:url(#m)}.back{stroke:#7c5dc7;stroke-width:2.4;fill:none;marker-end:url(#v)}.label{font-size:12px;fill:#536178;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#59677c"/></marker>
+    <marker id="v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#7c5dc7"/></marker>
+  </defs>
+  <rect class="bg" width="1400" height="720" rx="24"/>
+  <text class="txt h1" x="48" y="58">ACP 没有进入 agentLoop：它复用了 Pi 已有的 headless 事件边界</text>
+
+  <rect class="client" x="58" y="154" width="278" height="220" rx="20"/>
+  <text class="txt h2" x="88" y="198">Editor / ACP Client</text>
+  <text class="txt body" x="88" y="238">启动与控制 Agent</text>
+  <text class="txt body" x="88" y="272">显示消息、思考、Tool</text>
+  <text class="txt body" x="88" y="306">取消 / 权限 / Session</text>
+  <text class="txt small" x="88" y="344">ACP v1 · JSON-RPC / stdio</text>
+
+  <rect class="adapter" x="392" y="154" width="278" height="220" rx="20"/>
+  <text class="txt h2" x="422" y="198">pi-acp Adapter</text>
+  <text class="txt body" x="422" y="238">独立 Node.js 进程</text>
+  <text class="txt body" x="422" y="272">ACP ↔ Pi RPC 翻译</text>
+  <text class="txt body" x="422" y="306">每个 Session 管一个 Pi</text>
+  <text class="txt small" x="422" y="344">外部仓库，不属于 pi-mono Core</text>
+
+  <rect class="rpc" x="726" y="154" width="278" height="220" rx="20"/>
+  <text class="txt h2" x="756" y="198">pi --mode rpc</text>
+  <text class="txt body" x="756" y="238">coding-agent 子进程</text>
+  <text class="txt body" x="756" y="272">NDJSON command / event</text>
+  <text class="txt body" x="756" y="306">stdout 协议专用</text>
+  <text class="txt small" x="756" y="344">RPC 是产品适配层</text>
+
+  <rect class="core" x="1060" y="154" width="282" height="220" rx="20"/>
+  <text class="txt h2" x="1090" y="198">Pi Agent Core</text>
+  <text class="txt body" x="1090" y="238">AgentEvent / Tool event</text>
+  <text class="txt body" x="1090" y="272">Session / lifecycle</text>
+  <text class="txt body" x="1090" y="306">agentLoop() 不感知 ACP</text>
+  <text class="txt small" x="1090" y="344">稳定事件流是复用支点</text>
+
+  <path class="arrow" d="M336 232H392"/>
+  <path class="arrow" d="M670 232H726"/>
+  <path class="arrow" d="M1004 232H1060"/>
+  <path class="back" d="M1060 308H1004"/>
+  <path class="back" d="M726 308H670"/>
+  <path class="back" d="M392 308H336"/>
+  <text class="label" x="346" y="218">prompt / cancel</text>
+  <text class="label" x="678" y="218">RPC commands</text>
+  <text class="label" x="1011" y="218">调用</text>
+  <text class="label" x="1012" y="334">events</text>
+  <text class="label" x="676" y="334">NDJSON</text>
+  <text class="label" x="342" y="334">session/update</text>
+
+  <rect class="note" x="58" y="456" width="1284" height="184" rx="20"/>
+  <text class="txt h2" x="88" y="500">三个协议不要混在一起</text>
+  <text class="txt body" x="88" y="542">Tool Call · LLM ↔ Agent Loop：模型表达“调用什么工具、参数是什么”</text>
+  <text class="txt body" x="88" y="578">MCP · Agent / Host ↔ Tool Server：发现并调用外部工具、资源和 Prompt</text>
+  <text class="txt body" x="88" y="614">ACP · Editor / Client ↔ Coding Agent：启动、控制、观察一个完整 Agent Runtime</text>
+</svg>

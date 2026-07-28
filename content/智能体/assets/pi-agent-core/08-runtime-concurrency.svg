@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="940" viewBox="0 0 1400 940" role="img" aria-labelledby="title desc">
+  <title id="title">Pi Agent Core 的进程、线程与异步执行模型</title>
+  <desc id="desc">主 Node.js 进程中的单个 JavaScript event loop 承载 agentLoop、Provider 流、Promise 工具任务、顺序事件监听与 Session 写入；Shell 与 Subagent 使用操作系统子进程，图片缩放使用边缘 Worker Thread。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fb}.proc{fill:#fff;stroke:#516174;stroke-width:3}.loop{fill:#f2edff;stroke:#7c5dc7;stroke-width:2}.async{fill:#eef6ff;stroke:#4583c2;stroke-width:2}.seq{fill:#fff2e5;stroke:#d18031;stroke-width:2}.child{fill:#edf8f1;stroke:#3e9464;stroke-width:2}.worker{fill:#fff;stroke:#9ba8ba;stroke-width:2;stroke-dasharray:8 6}.txt{fill:#182235;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif}.h1{font-size:30px;font-weight:700}.h2{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#536178}.arrow{stroke:#59677c;stroke-width:2.4;fill:none;marker-end:url(#m)}.dash{stroke:#7b8798;stroke-width:2;fill:none;stroke-dasharray:8 6;marker-end:url(#m)}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#59677c"/></marker>
+  </defs>
+  <rect class="bg" width="1400" height="940" rx="24"/>
+  <text class="txt h1" x="48" y="58">“并行 Tool”不等于“每个 Tool 一条线程”</text>
+
+  <rect class="proc" x="48" y="92" width="908" height="760" rx="26"/>
+  <text class="txt h2" x="78" y="132">主 Node.js 进程 · 单个 JavaScript Event Loop</text>
+  <text class="txt small" x="618" y="132">Core 没有自定义 scheduler 或 actor runtime</text>
+
+  <rect class="loop" x="98" y="178" width="808" height="112" rx="18"/>
+  <text class="txt h2" x="128" y="218">agentLoop() · async function</text>
+  <text class="txt body" x="128" y="252">await 让出 event loop；下一段 continuation 在异步事件就绪后继续</text>
+
+  <rect class="async" x="98" y="344" width="372" height="154" rx="18"/>
+  <text class="txt h2" x="128" y="384">Provider streaming</text>
+  <text class="txt body" x="128" y="420">网络与流式事件可交错</text>
+  <text class="txt small" x="128" y="454">AbortSignal 取消请求</text>
+
+  <rect class="async" x="534" y="344" width="372" height="154" rx="18"/>
+  <text class="txt h2" x="564" y="384">Promise.all Tool tasks</text>
+  <text class="txt body" x="564" y="420">I/O 等待重叠；不创建线程</text>
+  <text class="txt small" x="564" y="454">CPU-heavy Tool 仍会阻塞主线程</text>
+
+  <rect class="seq" x="98" y="554" width="372" height="184" rx="18"/>
+  <text class="txt h2" x="128" y="594">顺序 barrier</text>
+  <text class="txt body" x="128" y="632">状态 reducer</text>
+  <text class="txt body" x="128" y="664">逐个 await listener</text>
+  <text class="txt body" x="128" y="696">Session / pending writes</text>
+
+  <rect class="seq" x="534" y="554" width="372" height="184" rx="18"/>
+  <text class="txt h2" x="564" y="594">资源级并发控制</text>
+  <text class="txt body" x="564" y="632">同文件：per-path Promise chain</text>
+  <text class="txt body" x="564" y="664">不同文件：仍可并行</text>
+  <text class="txt small" x="564" y="704">仅当前进程内有效，不是 OS 锁</text>
+
+  <path class="arrow" d="M502 290V324H284V344"/>
+  <path class="arrow" d="M502 290V324H720V344"/>
+  <path class="arrow" d="M284 498V554"/>
+  <path class="arrow" d="M720 498V554"/>
+
+  <rect class="child" x="1010" y="150" width="338" height="154" rx="18"/>
+  <text class="txt h2" x="1040" y="190">Shell 子进程 / 进程树</text>
+  <text class="txt body" x="1040" y="226">child_process.spawn()</text>
+  <text class="txt small" x="1040" y="264">Abort → kill process tree</text>
+
+  <rect class="child" x="1010" y="366" width="338" height="190" rx="18"/>
+  <text class="txt h2" x="1040" y="406">Subagent Pi 子进程</text>
+  <text class="txt body" x="1040" y="442">独立 context / JSON event stream</text>
+  <text class="txt body" x="1040" y="476">一次最多 8 个任务</text>
+  <text class="txt body" x="1040" y="510">并发上限 4</text>
+  <text class="txt small" x="1040" y="538">SIGTERM → SIGKILL</text>
+
+  <rect class="worker" x="1010" y="618" width="338" height="160" rx="18"/>
+  <text class="txt h2" x="1040" y="658">Image resize Worker</text>
+  <text class="txt body" x="1040" y="696">coding-agent 边缘能力</text>
+  <text class="txt small" x="1040" y="734">packages/agent 不依赖 Worker Thread</text>
+
+  <path class="arrow" d="M906 420H982V227H1010"/>
+  <path class="arrow" d="M906 444H982V461H1010"/>
+  <path class="dash" d="M906 470H982V698H1010"/>
+
+  <text class="txt small" x="78" y="810">真正的设计取舍：外部 I/O 尽量并发，状态归约与持久化刻意串行；</text>
+  <text class="txt small" x="78" y="834">OS 进程、Worker Thread 与 Promise task 被明确区分，而不是统称“协程”。</text>
+  <text class="txt small" x="1010" y="834">进程隔离不等于权限隔离；</text>
+  <text class="txt small" x="1010" y="858">Sandbox 仍须位于更外层。</text>
+</svg>
