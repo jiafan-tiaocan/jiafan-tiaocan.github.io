@@ -68,6 +68,9 @@ plugins:
       position: right
       priority: 30
       condition: has-toc
+  - source: ./plugins/plain-article-images
+    enabled: true
+    order: 55
   - source: github:quartz-community/crawl-links
     enabled: true
     options:

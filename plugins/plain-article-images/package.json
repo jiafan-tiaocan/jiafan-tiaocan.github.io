@@ -1,0 +1,21 @@
+{
+  "name": "@jiafan/plain-article-images",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "main": "./src/index.js",
+  "quartz": {
+    "name": "plain-article-images",
+    "displayName": "Plain Article Images",
+    "description": "Removes image links that only point back to the image itself.",
+    "category": "transformer",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 55,
+    "defaultEnabled": true
+  }
+}
