@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1260" viewBox="0 0 1700 1260">
+  <title>模型自主迭代的三条假设生成主循环</title>
+  <desc>数据诊断、技术路线图与最新论文三条循环共同生成模型候选，经假设编译器映射到特征交叉、损失函数、网络结构与训练策略，再进入受治理的实验与评测闭环。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#536273"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#2f6fb5"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#7652a8"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#2d7d63"/>
+    </marker>
+    <style>
+      .title{font:700 42px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .sub{font:23px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#596579}
+      .h{font:700 28px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .h2{font:700 24px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033}
+      .t{font:22px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#334155}
+      .small{font:19px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#465569}
+      .white{fill:#fff}
+      .line{fill:none;stroke:#536273;stroke-width:5;marker-end:url(#arrow)}
+      .blueLine{fill:none;stroke:#2f6fb5;stroke-width:5;marker-end:url(#arrowBlue)}
+      .purpleLine{fill:none;stroke:#7652a8;stroke-width:5;marker-end:url(#arrowPurple)}
+      .greenLine{fill:none;stroke:#2d7d63;stroke-width:5;marker-end:url(#arrowGreen)}
+      .feedback{fill:none;stroke:#7c3aed;stroke-width:4;stroke-dasharray:11 9;marker-end:url(#arrowPurple)}
+      .node{stroke-width:3}
+    </style>
+  </defs>
+
+  <rect width="1700" height="1260" fill="#f7f9fc"/>
+  <text x="850" y="58" text-anchor="middle" class="title">模型自主迭代的假设生成引擎</text>
+  <text x="850" y="96" text-anchor="middle" class="sub">三条主 Loop 决定“为什么改、改哪里”；Harness 决定“怎样验证、能否晋级”</text>
+
+  <rect x="65" y="135" width="500" height="370" rx="22" fill="#e7f1ff" stroke="#2f6fb5" class="node"/>
+  <rect x="65" y="135" width="500" height="66" rx="22" fill="#2f6fb5"/>
+  <text x="315" y="178" text-anchor="middle" class="h white">Loop A · 数据与失败证据驱动</text>
+  <text x="100" y="242" class="h2">1 发现异常</text>
+  <text x="100" y="275" class="t">误差切片 · 随访 · 漂移 · 梯度冲突</text>
+  <text x="100" y="325" class="h2">2 证明问题</text>
+  <text x="100" y="358" class="t">噪声检验 · 选择机制 · 时间外回放</text>
+  <text x="100" y="408" class="h2">3 定位机制</text>
+  <text x="100" y="441" class="t">数据偏置 / 目标错配 / 容量与结构不足</text>
+  <text x="315" y="482" text-anchor="middle" class="small">最强先验：来自当前业务与真实失败</text>
+
+  <rect x="600" y="135" width="500" height="370" rx="22" fill="#f2ecff" stroke="#7652a8" class="node"/>
+  <rect x="600" y="135" width="500" height="66" rx="22" fill="#7652a8"/>
+  <text x="850" y="178" text-anchor="middle" class="h white">Loop B · 技术路线图驱动</text>
+  <text x="635" y="242" class="h2">1 论文沉淀为 Technique Card</text>
+  <text x="635" y="275" class="t">问题签名 · 机制 · 前提 · 失败模式</text>
+  <text x="635" y="325" class="h2">2 路线图不是论文清单</text>
+  <text x="635" y="358" class="t">互补 / 冲突 / 替代 / 组合顺序</text>
+  <text x="635" y="408" class="h2">3 历史结果更新路线先验</text>
+  <text x="635" y="441" class="t">本任务成功率 · 成本 · 可部署性</text>
+  <text x="850" y="482" text-anchor="middle" class="small">组织复利：把日常阅读编译成搜索算子</text>
+
+  <rect x="1135" y="135" width="500" height="370" rx="22" fill="#e8f6ef" stroke="#2d7d63" class="node"/>
+  <rect x="1135" y="135" width="500" height="66" rx="22" fill="#2d7d63"/>
+  <text x="1385" y="178" text-anchor="middle" class="h white">Loop C · 最新论文驱动</text>
+  <text x="1170" y="242" class="h2">1 连续发现与去重</text>
+  <text x="1170" y="275" class="t">论文 · 官方代码 · 版本 · 许可证</text>
+  <text x="1170" y="325" class="h2">2 新颖性与适配性分开评分</text>
+  <text x="1170" y="358" class="t">机制增量 · 任务匹配 · 工程代价</text>
+  <text x="1170" y="408" class="h2">3 先复现，再做领域适配</text>
+  <text x="1170" y="441" class="t">隔离分支 · 最小消融 · 失败回收</text>
+  <text x="1385" y="482" text-anchor="middle" class="small">探索前沿：新不等于可信，更不等于可上线</text>
+
+  <path d="M315 505C315 558 610 548 715 600" class="blueLine"/>
+  <path d="M850 505V590" class="purpleLine"/>
+  <path d="M1385 505C1385 558 1090 548 985 600" class="greenLine"/>
+
+  <rect x="570" y="600" width="560" height="118" rx="20" fill="#fff1bf" stroke="#d4a321" class="node"/>
+  <text x="850" y="646" text-anchor="middle" class="h">Hypothesis Compiler / 假设编译器</text>
+  <text x="850" y="682" text-anchor="middle" class="t">问题证据 → 机制判断 → 单一主变量 → 可证伪预期</text>
+
+  <path d="M850 718V758" class="line"/>
+  <rect x="65" y="765" width="1570" height="190" rx="22" fill="#ffffff" stroke="#cbd5e1" class="node"/>
+  <text x="850" y="805" text-anchor="middle" class="h">模型搜索算子库</text>
+
+  <rect x="95" y="832" width="230" height="92" rx="15" fill="#e7f1ff" stroke="#2f6fb5" stroke-width="2"/>
+  <text x="210" y="870" text-anchor="middle" class="h2">数据与采样</text>
+  <text x="210" y="903" text-anchor="middle" class="small">标签 · 随访 · 重采样</text>
+
+  <rect x="345" y="832" width="230" height="92" rx="15" fill="#e7f1ff" stroke="#2f6fb5" stroke-width="2"/>
+  <text x="460" y="870" text-anchor="middle" class="h2">特征交叉</text>
+  <text x="460" y="903" text-anchor="middle" class="small">显式 · 注意力 · 自动选择</text>
+
+  <rect x="595" y="820" width="260" height="116" rx="15" fill="#fff1bf" stroke="#d4a321" stroke-width="3"/>
+  <text x="725" y="863" text-anchor="middle" class="h2">网络结构</text>
+  <text x="725" y="897" text-anchor="middle" class="small">共享 / 专属 · 门控 · Adapter</text>
+  <text x="725" y="923" text-anchor="middle" class="small">NAS · 模块组合 · 容量分配</text>
+
+  <rect x="875" y="820" width="260" height="116" rx="15" fill="#fff1bf" stroke="#d4a321" stroke-width="3"/>
+  <text x="1005" y="863" text-anchor="middle" class="h2">Loss 与梯度</text>
+  <text x="1005" y="897" text-anchor="middle" class="small">重加权 · 鲁棒目标</text>
+  <text x="1005" y="923" text-anchor="middle" class="small">多任务平衡 · 梯度冲突</text>
+
+  <rect x="1155" y="832" width="210" height="92" rx="15" fill="#e8f6ef" stroke="#2d7d63" stroke-width="2"/>
+  <text x="1260" y="870" text-anchor="middle" class="h2">训练策略</text>
+  <text x="1260" y="903" text-anchor="middle" class="small">优化器 · 日程 · 正则</text>
+
+  <rect x="1385" y="832" width="220" height="92" rx="15" fill="#e8f6ef" stroke="#2d7d63" stroke-width="2"/>
+  <text x="1495" y="870" text-anchor="middle" class="h2">校准与决策</text>
+  <text x="1495" y="903" text-anchor="middle" class="small">分场景 · 阈值 · 策略层</text>
+
+  <path d="M850 955V995" class="line"/>
+  <rect x="135" y="1002" width="400" height="112" rx="18" fill="#e4efff" stroke="#3b76c3" class="node"/>
+  <text x="335" y="1046" text-anchor="middle" class="h">Experiment Contract</text>
+  <text x="335" y="1082" text-anchor="middle" class="t">数据版本 · 最小 diff · 预算 · 预期</text>
+
+  <path d="M535 1058H650" class="line"/>
+  <rect x="655" y="1002" width="390" height="112" rx="18" fill="#fff1bf" stroke="#d4a321" class="node"/>
+  <text x="850" y="1046" text-anchor="middle" class="h">独立 Evaluator</text>
+  <text x="850" y="1082" text-anchor="middle" class="t">主指标 · 分群 · 成本 · 复跑</text>
+
+  <path d="M1045 1058H1160" class="line"/>
+  <rect x="1165" y="1002" width="400" height="112" rx="18" fill="#f2ecff" stroke="#7652a8" class="node"/>
+  <text x="1365" y="1046" text-anchor="middle" class="h">Evidence Memory</text>
+  <text x="1365" y="1082" text-anchor="middle" class="t">正负结果 · 适用条件 · 路线先验</text>
+
+  <path d="M1210 1114V1148H35V470H65" class="feedback"/>
+  <path d="M1260 1002C1210 980 1145 960 1145 760V560C1145 525 1100 510 1060 505" class="feedback"/>
+  <path d="M1515 1002H1665V470H1635" class="feedback"/>
+
+  <rect x="170" y="1180" width="1360" height="54" rx="14" fill="#ffffff" stroke="#d8dee8" stroke-width="2"/>
+  <text x="850" y="1216" text-anchor="middle" class="t">少量随机探索不是第四套系统：它是防止三条主 Loop 过早收敛的多样性预算</text>
+</svg>
