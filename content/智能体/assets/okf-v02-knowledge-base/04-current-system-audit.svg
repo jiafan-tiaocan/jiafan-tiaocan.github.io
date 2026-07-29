@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1120" viewBox="0 0 1680 1120" role="img" aria-labelledby="title desc">
+  <title id="title">当前 Vault、神童、飓创、Mem-OS 目标与 OKF v0.2 的能力审计</title>
+  <desc id="desc">矩阵比较五个对象在文件可读性、来源、生命周期、提交回滚、权限作用域、读取门禁和可证明计算方面的覆盖。OKF 强在交换契约，神童强在受控写入，飓创强在领域导航与确定性执行，Mem-OS 目标覆盖更完整但并非全部已经实现。</desc>
+  <defs>
+    <style>
+      .font{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+      .title{font-size:34px;font-weight:760;fill:#25283a}
+      .sub{font-size:18px;fill:#666b80}
+      .head{font-size:21px;font-weight:740;fill:#303348}
+      .row{font-size:19px;font-weight:700;fill:#35384c}
+      .cell{font-size:17px;fill:#4d5268}
+      .strong{fill:#e9f7f0;stroke:#9ed1b5}
+      .partial{fill:#fff6e5;stroke:#dfc07b}
+      .weak{fill:#fff0ee;stroke:#e4aaa2}
+      .scope{fill:#f1f2f7;stroke:#c8ccda}
+      .grid{stroke:#d7dbe8;stroke-width:1.5}
+    </style>
+  </defs>
+  <rect width="1680" height="1120" rx="30" fill="#f8f9fc"/>
+  <text class="font title" x="60" y="62">谁做到了什么：不要把“兼容 OKF”误写成“拥有 Mem-OS”</text>
+  <text class="font sub" x="60" y="98">绿色为强覆盖，金色为部分覆盖，红色为明显缺口，灰色表示该能力不属于此层的责任。</text>
+
+  <g transform="translate(55 145)">
+    <rect x="0" y="0" width="1570" height="850" rx="22" fill="#fff" stroke="#d7dbe8" stroke-width="2"/>
+    <rect x="0" y="0" width="1570" height="92" rx="22" fill="#eef1f8"/>
+    <text class="font head" x="135" y="55" text-anchor="middle">能力</text>
+    <text class="font head" x="425" y="42" text-anchor="middle">当前 Vault</text>
+    <text class="font sub" x="425" y="68" text-anchor="middle">+ Quartz</text>
+    <text class="font head" x="700" y="55" text-anchor="middle">神童</text>
+    <text class="font head" x="975" y="55" text-anchor="middle">飓创</text>
+    <text class="font head" x="1245" y="42" text-anchor="middle">Mem-OS</text>
+    <text class="font sub" x="1245" y="68" text-anchor="middle">目标设计</text>
+    <text class="font head" x="1490" y="42" text-anchor="middle">OKF</text>
+    <text class="font sub" x="1490" y="68" text-anchor="middle">v0.2</text>
+
+    <g class="grid">
+      <path d="M270 0V850M560 0V850M840 0V850M1110 0V850M1380 0V850"/>
+      <path d="M0 92H1570M0 200H1570M0 308H1570M0 416H1570M0 524H1570M0 632H1570M0 740H1570"/>
+    </g>
+
+    <text class="font row" x="22" y="151">文件可读与链接图</text>
+    <rect class="strong" x="292" y="112" width="246" height="68" rx="13"/><text class="font cell" x="415" y="142" text-anchor="middle">Markdown + 双链</text><text class="font cell" x="415" y="166" text-anchor="middle">公开投影稳定</text>
+    <rect class="strong" x="582" y="112" width="236" height="68" rx="13"/><text class="font cell" x="700" y="153" text-anchor="middle">目录 + 索引</text>
+    <rect class="strong" x="862" y="112" width="226" height="68" rx="13"/><text class="font cell" x="975" y="142" text-anchor="middle">README 导航</text><text class="font cell" x="975" y="166" text-anchor="middle">领域目录</text>
+    <rect class="strong" x="1132" y="112" width="226" height="68" rx="13"/><text class="font cell" x="1245" y="153" text-anchor="middle">Published View</text>
+    <rect class="strong" x="1402" y="112" width="166" height="68" rx="13"/><text class="font cell" x="1485" y="142" text-anchor="middle">Bundle</text><text class="font cell" x="1485" y="166" text-anchor="middle">path ID</text>
+
+    <text class="font row" x="22" y="259">来源与概念级血缘</text>
+    <rect class="partial" x="292" y="220" width="246" height="68" rx="13"/><text class="font cell" x="415" y="250" text-anchor="middle">正文引用丰富</text><text class="font cell" x="415" y="274" text-anchor="middle">结构化覆盖极低</text>
+    <rect class="strong" x="582" y="220" width="236" height="68" rx="13"/><text class="font cell" x="700" y="250" text-anchor="middle">个人 KB 有来源</text><text class="font cell" x="700" y="274" text-anchor="middle">共享 KB 较弱</text>
+    <rect class="weak" x="862" y="220" width="226" height="68" rx="13"/><text class="font cell" x="975" y="250" text-anchor="middle">当前来源账本弱</text><text class="font cell" x="975" y="274" text-anchor="middle">需 Source Registry</text>
+    <rect class="strong" x="1132" y="220" width="226" height="68" rx="13"/><text class="font cell" x="1245" y="250" text-anchor="middle">Source / Episode</text><text class="font cell" x="1245" y="274" text-anchor="middle">derived_from</text>
+    <rect class="strong" x="1402" y="220" width="166" height="68" rx="13"/><text class="font cell" x="1485" y="250" text-anchor="middle">sources</text><text class="font cell" x="1485" y="274" text-anchor="middle">footnote ID</text>
+
+    <text class="font row" x="22" y="367">生命周期与时效</text>
+    <rect class="weak" x="292" y="328" width="246" height="68" rx="13"/><text class="font cell" x="415" y="358" text-anchor="middle">date / publish</text><text class="font cell" x="415" y="382" text-anchor="middle">不等于 freshness</text>
+    <rect class="partial" x="582" y="328" width="236" height="68" rx="13"/><text class="font cell" x="700" y="358" text-anchor="middle">版本与回滚较强</text><text class="font cell" x="700" y="382" text-anchor="middle">时间冲突仍待补</text>
+    <rect class="weak" x="862" y="328" width="226" height="68" rx="13"/><text class="font cell" x="975" y="358" text-anchor="middle">目录会漂移</text><text class="font cell" x="975" y="382" text-anchor="middle">缺发布快照</text>
+    <rect class="strong" x="1132" y="328" width="226" height="68" rx="13"/><text class="font cell" x="1245" y="358" text-anchor="middle">状态机 + 双时间</text><text class="font cell" x="1245" y="382" text-anchor="middle">supersede / retire</text>
+    <rect class="strong" x="1402" y="328" width="166" height="68" rx="13"/><text class="font cell" x="1485" y="358" text-anchor="middle">status</text><text class="font cell" x="1485" y="382" text-anchor="middle">stale_after</text>
+
+    <text class="font row" x="22" y="475">写入提交与回滚</text>
+    <rect class="partial" x="292" y="436" width="246" height="68" rx="13"/><text class="font cell" x="415" y="466" text-anchor="middle">发布投影可恢复</text><text class="font cell" x="415" y="490" text-anchor="middle">Vault 写入无统一 CAS</text>
+    <rect class="strong" x="582" y="436" width="236" height="68" rx="13"/><text class="font cell" x="700" y="466" text-anchor="middle">hash / 原子替换</text><text class="font cell" x="700" y="490" text-anchor="middle">账本 / 回滚</text>
+    <rect class="weak" x="862" y="436" width="226" height="68" rx="13"/><text class="font cell" x="975" y="466" text-anchor="middle">部分路径直接覆盖</text><text class="font cell" x="975" y="490" text-anchor="middle">缺统一事务</text>
+    <rect class="strong" x="1132" y="436" width="226" height="68" rx="13"/><text class="font cell" x="1245" y="466" text-anchor="middle">Proposal → Commit</text><text class="font cell" x="1245" y="490" text-anchor="middle">CAS / Outbox</text>
+    <rect class="scope" x="1402" y="436" width="166" height="68" rx="13"/><text class="font cell" x="1485" y="478" text-anchor="middle">范围外</text>
+
+    <text class="font row" x="22" y="583">Scope / ACL / 隐私</text>
+    <rect class="partial" x="292" y="544" width="246" height="68" rx="13"/><text class="font cell" x="415" y="574" text-anchor="middle">本地私有 + 单篇公开</text><text class="font cell" x="415" y="598" text-anchor="middle">无概念级读取策略</text>
+    <rect class="partial" x="582" y="544" width="236" height="68" rx="13"/><text class="font cell" x="700" y="574" text-anchor="middle">个人 / 团队分层</text><text class="font cell" x="700" y="598" text-anchor="middle">细粒度仍待补</text>
+    <rect class="partial" x="862" y="544" width="226" height="68" rx="13"/><text class="font cell" x="975" y="574" text-anchor="middle">prod / pre 隔离</text><text class="font cell" x="975" y="598" text-anchor="middle">概念 ACL 不完整</text>
+    <rect class="strong" x="1132" y="544" width="226" height="68" rx="13"/><text class="font cell" x="1245" y="574" text-anchor="middle">Scope / ACL</text><text class="font cell" x="1245" y="598" text-anchor="middle">sensitivity</text>
+    <rect class="scope" x="1402" y="544" width="166" height="68" rx="13"/><text class="font cell" x="1485" y="574" text-anchor="middle">Trust tier</text><text class="font cell" x="1485" y="598" text-anchor="middle">不是访问控制</text>
+
+    <text class="font row" x="22" y="691">读取门禁与上下文</text>
+    <rect class="weak" x="292" y="652" width="246" height="68" rx="13"/><text class="font cell" x="415" y="682" text-anchor="middle">检索后直接阅读</text><text class="font cell" x="415" y="706" text-anchor="middle">无 Trust Gate</text>
+    <rect class="partial" x="582" y="652" width="236" height="68" rx="13"/><text class="font cell" x="700" y="682" text-anchor="middle">渐进索引读取</text><text class="font cell" x="700" y="706" text-anchor="middle">策略仍需统一</text>
+    <rect class="strong" x="862" y="652" width="226" height="68" rx="13"/><text class="font cell" x="975" y="682" text-anchor="middle">实体先消歧</text><text class="font cell" x="975" y="706" text-anchor="middle">高风险确定性执行</text>
+    <rect class="strong" x="1132" y="652" width="226" height="68" rx="13"/><text class="font cell" x="1245" y="682" text-anchor="middle">Retrieval Plan</text><text class="font cell" x="1245" y="706" text-anchor="middle">Context Compiler</text>
+    <rect class="partial" x="1402" y="652" width="166" height="68" rx="13"/><text class="font cell" x="1485" y="682" text-anchor="middle">提供信号</text><text class="font cell" x="1485" y="706" text-anchor="middle">不规定门禁</text>
+
+    <text class="font row" x="22" y="799">可证明计算</text>
+    <rect class="weak" x="292" y="760" width="246" height="68" rx="13"/><text class="font cell" x="415" y="802" text-anchor="middle">未实现</text>
+    <rect class="weak" x="582" y="760" width="236" height="68" rx="13"/><text class="font cell" x="700" y="802" text-anchor="middle">未形成通用契约</text>
+    <rect class="partial" x="862" y="760" width="226" height="68" rx="13"/><text class="font cell" x="975" y="790" text-anchor="middle">确定性抽取已有</text><text class="font cell" x="975" y="814" text-anchor="middle">但非运行回执证明</text>
+    <rect class="partial" x="1132" y="760" width="226" height="68" rx="13"/><text class="font cell" x="1245" y="790" text-anchor="middle">指标类知识需要</text><text class="font cell" x="1245" y="814" text-anchor="middle">一般文本不强求</text>
+    <rect class="strong" x="1402" y="760" width="166" height="68" rx="13"/><text class="font cell" x="1485" y="790" text-anchor="middle">executor</text><text class="font cell" x="1485" y="814" text-anchor="middle">attester</text>
+  </g>
+
+  <g transform="translate(60 1030)">
+    <circle cx="12" cy="0" r="8" fill="#5b68a8"/>
+    <text class="font sub" x="32" y="7">结论：OKF 是跨系统的最小信任描述层；Mem-OS 是知识真正生效、演进与退出的运行内核。</text>
+  </g>
+</svg>

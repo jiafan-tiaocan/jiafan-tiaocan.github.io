@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title desc">
+  <title id="title">个人知识库的 Vault、Quartz 与选择性 OKF 双投影架构</title>
+  <desc id="desc">Vault 继续作为唯一事实源，一条路径通过现有发布器投影到 Quartz 博客，另一条仅选择高价值知识，经隐私过滤、字段映射、链接重写、索引日志生成和一致性校验后形成 OKF Bundle；Agent 在读取正文前通过 Trust Gate，再交给 Context Compiler。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#5d66a8"/></marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#3f8f70"/></marker>
+    <style>
+      .font{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+      .title{font-size:34px;font-weight:760;fill:#25283b}
+      .sub{font-size:18px;fill:#666b80}
+      .head{font-size:25px;font-weight:740;fill:#2f3247}
+      .body{font-size:18px;fill:#50546a}
+      .small{font-size:16px;fill:#6b7086}
+      .mono{font-family:"SFMono-Regular","Cascadia Code",monospace;font-size:17px;fill:#3f4359}
+      .box{fill:#fff;stroke:#cfd4e5;stroke-width:2}
+      .flow{stroke:#5d66a8;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .green{stroke:#3f8f70;stroke-width:3;fill:none;marker-end:url(#arrowGreen)}
+      .dash{stroke:#aab0c7;stroke-width:2.5;stroke-dasharray:8 8;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1600" height="1040" rx="30" fill="#f7f8fc"/>
+  <text class="font title" x="65" y="64">不要迁移整个 Vault：在边界上增加一条可重建、可验证的 OKF 投影</text>
+  <text class="font sub" x="65" y="100">源文件只维护一次；公开阅读和 Agent 消费使用不同投影、不同门禁。</text>
+
+  <g transform="translate(60 170)">
+    <rect class="box" width="330" height="680" rx="24" fill="#eef5ff"/>
+    <text class="font head" x="165" y="54" text-anchor="middle">Obsidian Vault</text>
+    <text class="font small" x="165" y="84" text-anchor="middle">唯一事实源</text>
+    <rect x="30" y="125" width="270" height="100" rx="16" fill="#fff" stroke="#bfd0e7"/>
+    <text class="font body" x="52" y="162">公开技术文章</text>
+    <text class="font small" x="52" y="193">noteType · date · tags</text>
+    <rect x="30" y="250" width="270" height="100" rx="16" fill="#fff" stroke="#bfd0e7"/>
+    <text class="font body" x="52" y="287">私有笔记与工作材料</text>
+    <text class="font small" x="52" y="318">默认不得进入公开 Bundle</text>
+    <rect x="30" y="375" width="270" height="100" rx="16" fill="#fff" stroke="#bfd0e7"/>
+    <text class="font body" x="52" y="412">动态研究与公司资料</text>
+    <text class="font small" x="52" y="443">需要 freshness 与复核等级</text>
+    <rect x="30" y="500" width="270" height="120" rx="16" fill="#fff" stroke="#bfd0e7"/>
+    <text class="font body" x="52" y="537">计算型结论</text>
+    <text class="font small" x="52" y="568">市场规模 · 指标 · 评测</text>
+    <text class="font small" x="52" y="596">才考虑 Attested Computation</text>
+  </g>
+
+  <path class="flow" d="M390 300H500"/>
+  <text class="font small" x="445" y="277" text-anchor="middle">现有路径</text>
+
+  <g transform="translate(500 180)">
+    <rect class="box" width="350" height="255" rx="22" fill="#fff7e7"/>
+    <text class="font head" x="175" y="50" text-anchor="middle">Quartz Publisher</text>
+    <text class="font body" x="32" y="96">单篇选择 · 附件解析</text>
+    <text class="font body" x="32" y="130">Frontmatter / 标签校验</text>
+    <text class="font body" x="32" y="164">构建 · Git · 部署 · 页面验收</text>
+    <text class="font small" x="32" y="210">目标：人类阅读与公开展示</text>
+  </g>
+  <path class="flow" d="M850 307H960"/>
+  <g transform="translate(960 210)">
+    <rect class="box" width="265" height="190" rx="22" fill="#fffaf0"/>
+    <text class="font head" x="132" y="52" text-anchor="middle">Quartz Blog</text>
+    <text class="font body" x="132" y="95" text-anchor="middle">日期 · 字数 · 标签</text>
+    <text class="font body" x="132" y="130" text-anchor="middle">全文搜索 · 目录 · RSS</text>
+    <text class="font small" x="132" y="162" text-anchor="middle">不承担 Agent Trust Gate</text>
+  </g>
+
+  <path class="green" d="M390 625H500"/>
+  <text class="font small" x="445" y="602" text-anchor="middle">新增路径</text>
+
+  <g transform="translate(500 500)">
+    <rect width="490" height="400" rx="24" fill="#eef8f3" stroke="#a9d5bf" stroke-width="2.5"/>
+    <text class="font head" x="245" y="50" text-anchor="middle">Selective OKF Projector</text>
+    <g transform="translate(28 80)">
+      <rect class="box" width="205" height="80" rx="14"/><text class="font body" x="102" y="34" text-anchor="middle">1. 选择与隐私过滤</text><text class="font small" x="102" y="60" text-anchor="middle">scope · publish · sensitivity</text>
+      <rect class="box" x="230" width="205" height="80" rx="14"/><text class="font body" x="332" y="34" text-anchor="middle">2. 字段映射</text><text class="font small" x="332" y="60" text-anchor="middle">type ≠ noteType</text>
+      <rect class="box" y="105" width="205" height="80" rx="14"/><text class="font body" x="102" y="139" text-anchor="middle">3. 链接与来源</text><text class="font small" x="102" y="165" text-anchor="middle">标准 Markdown · sources</text>
+      <rect class="box" x="230" y="105" width="205" height="80" rx="14"/><text class="font body" x="332" y="139" text-anchor="middle">4. 渐进索引</text><text class="font small" x="332" y="165" text-anchor="middle">index.md · log.md</text>
+      <rect class="box" y="210" width="435" height="80" rx="14"/><text class="font body" x="217" y="244" text-anchor="middle">5. CI：Conformance · broken links · drift · expiry</text><text class="font small" x="217" y="270" text-anchor="middle">投影失败不修改 Vault；输出可随时重建</text>
+    </g>
+  </g>
+
+  <path class="green" d="M990 700H1070"/>
+  <g transform="translate(1070 520)">
+    <rect class="box" width="255" height="360" rx="22" fill="#f1efff"/>
+    <text class="font head" x="127" y="52" text-anchor="middle">OKF Bundle</text>
+    <text class="font mono" x="28" y="100">type</text>
+    <text class="font mono" x="28" y="134">sources</text>
+    <text class="font mono" x="28" y="168">generated / verified</text>
+    <text class="font mono" x="28" y="202">status / stale_after</text>
+    <text class="font mono" x="28" y="236">index.md / log.md</text>
+    <text class="font small" x="28" y="286">只包含可共享的 Concept</text>
+    <text class="font small" x="28" y="316">与 Vault 路径建立映射账本</text>
+  </g>
+
+  <path class="green" d="M1325 700H1390"/>
+  <g transform="translate(1390 500)">
+    <rect width="170" height="405" rx="22" fill="#edf8f3" stroke="#9ed0b7" stroke-width="2.5"/>
+    <text class="font head" x="85" y="52" text-anchor="middle">Trust Gate</text>
+    <text class="font small" x="85" y="96" text-anchor="middle">scope 允许</text>
+    <text class="font small" x="85" y="128" text-anchor="middle">status = stable</text>
+    <text class="font small" x="85" y="160" text-anchor="middle">尚未过期</text>
+    <text class="font small" x="85" y="192" text-anchor="middle">trust ≥ 阈值</text>
+    <path d="M30 225H140" stroke="#b8c4bf"/>
+    <text class="font body" x="85" y="268" text-anchor="middle">Context</text>
+    <text class="font body" x="85" y="297" text-anchor="middle">Compiler</text>
+    <text class="font small" x="85" y="345" text-anchor="middle">失败则警告、</text>
+    <text class="font small" x="85" y="371" text-anchor="middle">降级或拒绝</text>
+  </g>
+
+  <g transform="translate(65 945)">
+    <rect width="1490" height="58" rx="16" fill="#fff" stroke="#d3d7e6"/>
+    <text class="font body" x="745" y="37" text-anchor="middle">关键边界：Vault 管“写什么”，OKF 投影管“怎样交换”，Trust Gate 管“这次能不能读”，Mem-OS 管“读后怎样影响行动”。</text>
+  </g>
+</svg>
