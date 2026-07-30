@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Seedance 2.0 可能的多模态音视频联合生成架构</title>
+  <desc id="desc">从用户指令与多种参考素材开始，经素材绑定、模态编码、参考记忆和条件画布，进入视频与音频双流联合扩散 Transformer，再经视觉与音频解码；右侧显示多任务预训练、监督微调、奖励对齐与蒸馏。</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#101a2e"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123e52"/>
+      <stop offset=".52" stop-color="#2d2855"/>
+      <stop offset="1" stop-color="#463048"/>
+    </linearGradient>
+    <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+    <marker id="arr2" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L11,5.5 L0,11 Z" fill="#7dd3fc"/>
+    </marker>
+    <marker id="arrAmber" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L11,5.5 L0,11 Z" fill="#fbbf24"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .eyebrow { font-size: 19px; font-weight: 700; letter-spacing: 2px; fill: #67e8f9; }
+      .title { font-size: 38px; font-weight: 760; fill: #f8fafc; }
+      .sub { font-size: 19px; fill: #a8b4ca; }
+      .lane { font-size: 17px; font-weight: 760; fill: #7dd3fc; letter-spacing: 1px; }
+      .box-title { font-size: 20px; font-weight: 760; fill: #f8fafc; }
+      .box-body { font-size: 16px; fill: #cfdaea; }
+      .small { font-size: 14px; fill: #9eabc0; }
+      .core-title { font-size: 25px; font-weight: 780; fill: #fff; }
+      .core-body { font-size: 17px; fill: #e7eef8; }
+      .legend { font-size: 15px; fill: #b8c5d9; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1100" rx="34" fill="url(#bg2)"/>
+  <text x="66" y="60" class="eyebrow">HYPOTHESIS ARCHITECTURE · 非官方结构图</text>
+  <text x="66" y="108" class="title">一个同时解释多参考、编辑、多镜头与原生音频的最小可行拓扑</text>
+  <text x="66" y="141" class="sub">实线继承公开前代；虚线是为满足 2.0 产品契约而必须出现、但实现细节未公开的模块</text>
+
+  <text x="66" y="196" class="lane">① 创作意图与素材</text>
+  <g filter="url(#shadow2)">
+    <rect x="66" y="215" width="206" height="92" rx="20" fill="#11263a" stroke="#2dd4bf"/>
+    <rect x="292" y="215" width="206" height="92" rx="20" fill="#11263a" stroke="#2dd4bf"/>
+    <rect x="518" y="215" width="206" height="92" rx="20" fill="#11263a" stroke="#2dd4bf"/>
+    <rect x="744" y="215" width="206" height="92" rx="20" fill="#11263a" stroke="#2dd4bf"/>
+  </g>
+  <text x="169" y="250" text-anchor="middle" class="box-title">自然语言 / 分镜</text>
+  <text x="169" y="279" text-anchor="middle" class="box-body">动作、对白、运镜、节奏</text>
+  <text x="395" y="250" text-anchor="middle" class="box-title">最多 9 张图片</text>
+  <text x="395" y="279" text-anchor="middle" class="box-body">主体、场景、风格、道具</text>
+  <text x="621" y="250" text-anchor="middle" class="box-title">最多 3 段视频</text>
+  <text x="621" y="279" text-anchor="middle" class="box-body">动作、镜头、特效、续写</text>
+  <text x="847" y="250" text-anchor="middle" class="box-title">最多 3 段音频</text>
+  <text x="847" y="279" text-anchor="middle" class="box-body">声音、节奏、人物音色</text>
+
+  <rect x="1000" y="205" width="320" height="112" rx="22" fill="#2c294c" stroke="#fbbf24" stroke-width="2" stroke-dasharray="10 7"/>
+  <text x="1160" y="244" text-anchor="middle" class="box-title">多模态 Planner / Asset Binder</text>
+  <text x="1160" y="273" text-anchor="middle" class="box-body">@素材编号 → 主体 / 风格 / 动作 / 声音角色</text>
+  <text x="1160" y="298" text-anchor="middle" class="small">前代已有 Prompt Engineering；2.0 是否由同一模型承担未知</text>
+
+  <path d="M272 260 H985" fill="none" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+  <path d="M498 260 H985" fill="none" stroke="#7dd3fc" stroke-width="3"/>
+  <path d="M724 260 H985" fill="none" stroke="#7dd3fc" stroke-width="3"/>
+  <path d="M950 260 H985" fill="none" stroke="#7dd3fc" stroke-width="3"/>
+
+  <g filter="url(#shadow2)">
+    <rect x="66" y="392" width="258" height="112" rx="20" fill="#123347" stroke="#38bdf8"/>
+    <rect x="346" y="392" width="258" height="112" rx="20" fill="#123347" stroke="#38bdf8"/>
+    <rect x="626" y="392" width="258" height="112" rx="20" fill="#33294c" stroke="#a78bfa"/>
+    <rect x="906" y="392" width="414" height="112" rx="20" fill="#3a3040" stroke="#fbbf24" stroke-width="2" stroke-dasharray="10 7"/>
+  </g>
+  <text x="195" y="431" text-anchor="middle" class="box-title">Text Encoder</text>
+  <text x="195" y="460" text-anchor="middle" class="box-body">密集描述 / 镜头级 Caption</text>
+  <text x="195" y="483" text-anchor="middle" class="small">1.0 已公开 LLM 文本条件</text>
+  <text x="475" y="431" text-anchor="middle" class="box-title">Causal Video VAE</text>
+  <text x="475" y="460" text-anchor="middle" class="box-body">图像、视频、编辑源 → 时空 Latent</text>
+  <text x="475" y="483" text-anchor="middle" class="small">1.0 明确公开；2.0 规格未知</text>
+  <text x="755" y="431" text-anchor="middle" class="box-title">Audio Codec / VAE</text>
+  <text x="755" y="460" text-anchor="middle" class="box-body">双声道波形 → 连续声学 Latent</text>
+  <text x="755" y="483" text-anchor="middle" class="small">音频模块存在；Codec 未公开</text>
+  <text x="1113" y="431" text-anchor="middle" class="box-title">Role + Asset + Space-Time Embedding</text>
+  <text x="1113" y="460" text-anchor="middle" class="box-body">区分“生成目标 / 保留区域 / 身份 / 风格 / 动作 / 声音”</text>
+  <text x="1113" y="483" text-anchor="middle" class="small">多份不对齐参考可组合的必要条件；具体编码未知</text>
+
+  <path d="M1160 317 V365 H195 V382" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+  <path d="M1160 365 H475 V382" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+  <path d="M1160 365 H755 V382" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+  <path d="M1160 317 V382" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+  <rect x="58" y="344" width="338" height="36" rx="8" fill="#091523"/>
+  <text x="66" y="372" class="lane">② 模态编码与角色化 Token</text>
+
+  <g filter="url(#shadow2)">
+    <rect x="66" y="580" width="386" height="112" rx="22" fill="#112b3f" stroke="#2dd4bf"/>
+    <rect x="472" y="580" width="386" height="112" rx="22" fill="#2d294c" stroke="#a78bfa" stroke-width="2" stroke-dasharray="10 7"/>
+    <rect x="878" y="580" width="442" height="112" rx="22" fill="#3d2d43" stroke="#fbbf24" stroke-width="2" stroke-dasharray="10 7"/>
+  </g>
+  <text x="259" y="620" text-anchor="middle" class="box-title">Masked Target Canvas</text>
+  <text x="259" y="649" text-anchor="middle" class="box-body">首帧 / 原视频 / 保留区 / 待生成区 + 二值或软 Mask</text>
+  <text x="259" y="674" text-anchor="middle" class="small">继承 1.0 的 clean/noisy latent 条件化</text>
+  <text x="665" y="620" text-anchor="middle" class="box-title">Reference Memory</text>
+  <text x="665" y="649" text-anchor="middle" class="box-body">主体、风格、动作、镜头、特效与音色 Token Bank</text>
+  <text x="665" y="674" text-anchor="middle" class="small">更适合多份、非像素对齐的素材</text>
+  <text x="1099" y="620" text-anchor="middle" class="box-title">Shot Script + Shared Physical Time</text>
+  <text x="1099" y="649" text-anchor="middle" class="box-body">镜头边界 / shot_id / 音视频归一化时间坐标 / 节奏锚点</text>
+  <text x="1099" y="674" text-anchor="middle" class="small">解释多镜头叙事与音画同步；精确形式未知</text>
+
+  <path d="M475 504 V550 H259 V570" fill="none" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+  <path d="M475 550 H665 V570" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+  <path d="M195 504 V540 H1099 V570" fill="none" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+  <path d="M755 504 V530 H1099" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7"/>
+  <path d="M1113 504 V570" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+  <rect x="58" y="531" width="548" height="36" rx="8" fill="#0a1524"/>
+  <text x="66" y="559" class="lane">③ 条件组织：对齐条件走画布，不对齐参考进记忆</text>
+
+  <text x="66" y="746" class="lane">④ 原生音视频联合生成核心</text>
+  <rect x="66" y="768" width="1254" height="185" rx="28" fill="url(#core)" stroke="#7dd3fc" stroke-width="2" filter="url(#shadow2)"/>
+  <rect x="100" y="810" width="350" height="102" rx="21" fill="#0d3446" stroke="#2dd4bf"/>
+  <rect x="520" y="797" width="346" height="128" rx="24" fill="#312c51" stroke="#c4b5fd" stroke-width="2"/>
+  <rect x="936" y="810" width="350" height="102" rx="21" fill="#432e42" stroke="#f59e0b"/>
+  <text x="275" y="846" text-anchor="middle" class="core-title">Video Latent DiT Stream</text>
+  <text x="275" y="876" text-anchor="middle" class="core-body">时空因子化 Attention / MM-RoPE</text>
+  <text x="275" y="900" text-anchor="middle" class="small">预测视觉 Flow velocity</text>
+  <text x="693" y="834" text-anchor="middle" class="core-title">Blockwise Joint Module</text>
+  <text x="693" y="866" text-anchor="middle" class="core-body">Video ⇄ Audio 双向 Cross-Attention</text>
+  <text x="693" y="892" text-anchor="middle" class="core-body">Reference / Text 条件注入 + 门控</text>
+  <text x="693" y="915" text-anchor="middle" class="small">1.5 明确有双分支与联合模块；接线未公开</text>
+  <text x="1111" y="846" text-anchor="middle" class="core-title">Audio Latent DiT Stream</text>
+  <text x="1111" y="876" text-anchor="middle" class="core-body">语音 / 音效 / 环境 / 音乐联合建模</text>
+  <text x="1111" y="900" text-anchor="middle" class="small">预测音频 Flow velocity</text>
+  <path d="M450 861 H506" fill="none" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arr2)"/>
+  <path d="M936 861 H880" fill="none" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arr2)"/>
+  <path d="M506 887 H450" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#arrAmber)"/>
+  <path d="M880 887 H936" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#arrAmber)"/>
+  <path d="M259 692 V756 H275" fill="none" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+  <path d="M665 692 V744 H693 V785" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+  <path d="M1099 692 V756 H1111" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrAmber)"/>
+
+  <g>
+    <rect x="1360" y="215" width="180" height="738" rx="24" fill="#0d1728" stroke="#3b516b"/>
+    <text x="1450" y="255" text-anchor="middle" class="lane">训练飞轮</text>
+    <rect x="1382" y="285" width="136" height="74" rx="16" fill="#15364a"/>
+    <text x="1450" y="315" text-anchor="middle" class="box-title">多任务数据</text>
+    <text x="1450" y="340" text-anchor="middle" class="small">生成 / 引用 / 编辑</text>
+    <path d="M1450 359 V388" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+    <rect x="1382" y="398" width="136" height="74" rx="16" fill="#21304a"/>
+    <text x="1450" y="428" text-anchor="middle" class="box-title">联合预训练</text>
+    <text x="1450" y="453" text-anchor="middle" class="small">Flow Matching</text>
+    <path d="M1450 472 V501" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+    <rect x="1382" y="511" width="136" height="74" rx="16" fill="#312c51"/>
+    <text x="1450" y="541" text-anchor="middle" class="box-title">精选 SFT</text>
+    <text x="1450" y="566" text-anchor="middle" class="small">复杂动作 / 多条件</text>
+    <path d="M1450 585 V614" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+    <rect x="1382" y="624" width="136" height="96" rx="16" fill="#3b2e47"/>
+    <text x="1450" y="654" text-anchor="middle" class="box-title">多维奖励对齐</text>
+    <text x="1450" y="679" text-anchor="middle" class="small">结构 / 运动 / 美学</text>
+    <text x="1450" y="701" text-anchor="middle" class="small">音频 / 同步 / 参考</text>
+    <path d="M1450 720 V749" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+    <rect x="1382" y="759" width="136" height="96" rx="16" fill="#46313f"/>
+    <text x="1450" y="789" text-anchor="middle" class="box-title">低 NFE 蒸馏</text>
+    <text x="1450" y="814" text-anchor="middle" class="small">Fast / 量化 / 稀疏</text>
+    <text x="1450" y="836" text-anchor="middle" class="small">并行 / Kernel</text>
+    <path d="M1360 668 H1333" stroke="#fbbf24" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#arrAmber)"/>
+  </g>
+
+  <text x="66" y="1010" class="lane">⑤ 解码与产品输出</text>
+  <rect x="66" y="1028" width="390" height="50" rx="17" fill="#123347" stroke="#2dd4bf"/>
+  <text x="261" y="1060" text-anchor="middle" class="box-title">Diffusion Refiner → 480p / 720p 视频</text>
+  <rect x="478" y="1028" width="390" height="50" rx="17" fill="#3d2d43" stroke="#f59e0b"/>
+  <text x="673" y="1060" text-anchor="middle" class="box-title">Audio Decoder → 双声道音频</text>
+  <rect x="890" y="1028" width="430" height="50" rx="17" fill="#1a2c3f" stroke="#38bdf8"/>
+  <text x="1105" y="1060" text-anchor="middle" class="box-title">封装 4–15 秒多镜头音视频成片</text>
+  <path d="M275 953 V1018" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+  <path d="M1111 953 V990 H673 V1018" fill="none" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+  <path d="M456 1053 H468" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+  <path d="M868 1053 H880" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arr2)"/>
+
+  <line x1="1368" y1="1008" x2="1414" y2="1008" stroke="#67e8f9" stroke-width="4"/>
+  <text x="1424" y="1014" class="legend">前代公开</text>
+  <line x1="1368" y1="1045" x2="1414" y2="1045" stroke="#fbbf24" stroke-width="4" stroke-dasharray="9 7"/>
+  <text x="1424" y="1051" class="legend">本文推演</text>
+</svg>

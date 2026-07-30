@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Seedance 从 1.0、1.5 Pro 到 2.0 的因果演进路线</title>
+  <desc id="desc">三代模型从无声视频底座、原生音视频联合生成，演进到支持文字图片音频视频参考与编辑的多模态创作引擎，并区分公开事实和本文推断。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#121d35"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123e52"/>
+      <stop offset="1" stop-color="#17304e"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2d2855"/>
+      <stop offset="1" stop-color="#18374d"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#463048"/>
+      <stop offset="1" stop-color="#1d3b49"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity=".32"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#7dd3fc"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .eyebrow { font-size: 20px; font-weight: 700; letter-spacing: 2px; fill: #67e8f9; }
+      .title { font-size: 42px; font-weight: 760; fill: #f8fafc; }
+      .subtitle { font-size: 22px; fill: #a8b4ca; }
+      .phase { font-size: 25px; font-weight: 760; fill: #f8fafc; }
+      .date { font-size: 17px; font-weight: 650; fill: #7dd3fc; }
+      .label { font-size: 16px; font-weight: 700; fill: #67e8f9; letter-spacing: 1px; }
+      .body { font-size: 18px; fill: #dbe7f5; }
+      .muted { font-size: 17px; fill: #a8b4ca; }
+      .bottom-title { font-size: 21px; font-weight: 760; fill: #f8fafc; }
+      .pill { font-size: 17px; font-weight: 650; fill: #e7f8ff; }
+      .legend { font-size: 16px; fill: #b8c5d9; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" rx="36" fill="url(#bg)"/>
+  <circle cx="1410" cy="110" r="190" fill="#22d3ee" opacity=".045"/>
+  <circle cx="120" cy="780" r="220" fill="#a78bfa" opacity=".04"/>
+
+  <text x="70" y="68" class="eyebrow">CAUSAL EVOLUTION · 公开证据 + 有边界的推演</text>
+  <text x="70" y="120" class="title">Seedance 的升级，不是把视频 DiT 单纯做大</text>
+  <text x="70" y="158" class="subtitle">每一代都把上一个瓶颈改写成新的表示、条件接口或训练目标</text>
+
+  <path d="M505 385 C540 385 548 385 575 385" fill="none" stroke="#7dd3fc" stroke-width="5" marker-end="url(#arrow)"/>
+  <text x="536" y="354" text-anchor="middle" class="muted">补上声音</text>
+  <path d="M1030 385 C1064 385 1072 385 1100 385" fill="none" stroke="#7dd3fc" stroke-width="5" marker-end="url(#arrow)"/>
+  <text x="1064" y="354" text-anchor="middle" class="muted">统一参考与编辑</text>
+
+  <g filter="url(#shadow)">
+    <rect x="60" y="205" width="445" height="405" rx="28" fill="url(#g1)" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="585" y="205" width="445" height="405" rx="28" fill="url(#g2)" stroke="#8b5cf6" stroke-width="2"/>
+    <rect x="1110" y="205" width="430" height="405" rx="28" fill="url(#g3)" stroke="#f59e0b" stroke-width="2"/>
+  </g>
+
+  <g>
+    <text x="92" y="252" class="date">2025 · 公开结构</text>
+    <text x="92" y="291" class="phase">Seedance 1.0｜无声视频底座</text>
+    <text x="92" y="332" class="label">前一瓶颈</text>
+    <text x="92" y="362" class="body">高分辨率长序列太贵，T2V 与 I2V 割裂</text>
+    <text x="92" y="405" class="label">关键改写</text>
+    <text x="92" y="436" class="body">因果 3D VAE + 时空因子化 MMDiT</text>
+    <text x="92" y="466" class="body">Flow Matching + 多镜头 MM-RoPE</text>
+    <text x="92" y="496" class="body">480p 基座 + Diffusion Refiner</text>
+    <text x="92" y="539" class="label">新暴露的问题</text>
+    <text x="92" y="569" class="muted">没有原生音频；任意素材还不是统一条件</text>
+  </g>
+
+  <g>
+    <text x="617" y="252" class="date">2025-12 · 公开到模块级</text>
+    <text x="617" y="291" class="phase">Seedance 1.5 Pro｜原生音视频</text>
+    <text x="617" y="332" class="label">前一瓶颈</text>
+    <text x="617" y="362" class="body">后配声音无法稳定保证语义和时间同步</text>
+    <text x="617" y="405" class="label">关键改写</text>
+    <text x="617" y="436" class="body">双分支 Video/Audio DiT</text>
+    <text x="617" y="466" class="body">跨模态联合模块 + 混合任务预训练</text>
+    <text x="617" y="496" class="body">音视频 SFT / RLHF + 联合 Refiner</text>
+    <text x="617" y="539" class="label">新暴露的问题</text>
+    <text x="617" y="569" class="muted">输入仍偏文本/首帧；创作素材难以组合绑定</text>
+  </g>
+
+  <g>
+    <text x="1142" y="252" class="date">2026-02 · 产品事实，结构未披露</text>
+    <text x="1142" y="291" class="phase">Seedance 2.0｜多模态创作引擎</text>
+    <text x="1142" y="332" class="label">公开能力</text>
+    <text x="1142" y="362" class="body">文字 / 图片 / 音频 / 视频混合输入</text>
+    <text x="1142" y="392" class="body">多参考、编辑、续写、延长、15 秒多镜头</text>
+    <text x="1142" y="435" class="label" fill="#fbbf24">最可能的结构升级（推演）</text>
+    <text x="1142" y="466" class="body">角色化 Reference Token / 条件画布</text>
+    <text x="1142" y="496" class="body">统一物理时间轴上的音视频双流融合</text>
+    <text x="1142" y="526" class="body">覆盖编辑与引用的任务混合 + 更强奖励模型</text>
+    <text x="1142" y="569" class="muted">未知：参数量、Codec、注入位置、训练损失</text>
+  </g>
+
+  <g>
+    <rect x="60" y="660" width="1480" height="160" rx="26" fill="#0c1728" stroke="#29435f"/>
+    <text x="92" y="700" class="bottom-title">三代之后趋于稳定的“生产级生成栈”</text>
+
+    <rect x="92" y="728" width="206" height="54" rx="27" fill="#123e52"/>
+    <text x="195" y="762" text-anchor="middle" class="pill">时空 Codec / VAE</text>
+    <rect x="318" y="728" width="214" height="54" rx="27" fill="#183a50"/>
+    <text x="425" y="762" text-anchor="middle" class="pill">Latent Flow / DiT</text>
+    <rect x="552" y="728" width="238" height="54" rx="27" fill="#2d2855"/>
+    <text x="671" y="762" text-anchor="middle" class="pill">多模态条件与时间对齐</text>
+    <rect x="810" y="728" width="216" height="54" rx="27" fill="#342746"/>
+    <text x="918" y="762" text-anchor="middle" class="pill">密集描述 / Planner</text>
+    <rect x="1046" y="728" width="202" height="54" rx="27" fill="#3d2d43"/>
+    <text x="1147" y="762" text-anchor="middle" class="pill">SFT / 多维奖励</text>
+    <rect x="1268" y="728" width="236" height="54" rx="27" fill="#40343a"/>
+    <text x="1386" y="762" text-anchor="middle" class="pill">Refiner / 蒸馏 / 系统优化</text>
+  </g>
+
+  <line x1="72" y1="858" x2="128" y2="858" stroke="#67e8f9" stroke-width="4"/>
+  <text x="140" y="864" class="legend">公开论文或产品事实</text>
+  <line x1="360" y1="858" x2="416" y2="858" stroke="#fbbf24" stroke-width="4" stroke-dasharray="10 8"/>
+  <text x="428" y="864" class="legend">本文高/中可信推演</text>
+  <line x1="655" y1="858" x2="711" y2="858" stroke="#fb7185" stroke-width="4" stroke-dasharray="3 9"/>
+  <text x="723" y="864" class="legend">仍无公开证据，等待论文或代码证伪</text>
+</svg>
