@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">U-Net 在密集预测技术路线中的位置</title>
+  <desc id="desc">从 2012 年滑窗像素分类器，经 2014 年 FCN，到 2015 年 U-Net，再到后来的扩散 U-Net。图中区分原论文继承的基础、真正组合的机制与不属于原论文的后世改造。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#46D9E8"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+      .title { fill: #E6EDF7; font-size: 30px; font-weight: 700; }
+      .subtitle { fill: #9FB0C6; font-size: 18px; }
+      .year { fill: #46D9E8; font-size: 22px; font-weight: 700; }
+      .card-title { fill: #E6EDF7; font-size: 21px; font-weight: 700; }
+      .body { fill: #C8D3E2; font-size: 17px; }
+      .small { fill: #9FB0C6; font-size: 15px; }
+      .takeaway { fill: #E6EDF7; font-size: 19px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="680" fill="#0B1220"/>
+  <text x="60" y="65" class="title">U-Net 不是凭空出现的“U 形网络”</text>
+  <text x="60" y="98" class="subtitle">它继承全卷积密集预测，再把多尺度定位、小样本训练与大图推理组织成一套可工作的系统</text>
+
+  <line x1="290" y1="315" x2="330" y2="315" stroke="#46D9E8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="575" y1="315" x2="615" y2="315" stroke="#46D9E8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="860" y1="315" x2="900" y2="315" stroke="#46D9E8" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="55" y="150" width="235" height="330" rx="18" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="80" y="190" class="year">2012</text>
+  <text x="80" y="227" class="card-title">滑窗 CNN</text>
+  <text x="80" y="263" class="body">一个 patch</text>
+  <text x="80" y="292" class="body">只预测中心像素</text>
+  <line x1="80" y1="328" x2="265" y2="328" stroke="#31445F" stroke-width="2"/>
+  <text x="80" y="362" class="small">问题：</text>
+  <text x="80" y="386" class="small">重叠 patch 重复计算；</text>
+  <text x="80" y="410" class="small">大上下文与精定位冲突</text>
+  <text x="80" y="452" class="small">Cireșan et al., NIPS 2012</text>
+
+  <rect x="340" y="150" width="235" height="330" rx="18" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="365" y="190" class="year">2014 / 2015</text>
+  <text x="365" y="227" class="card-title">FCN</text>
+  <text x="365" y="263" class="body">整图一次前向</text>
+  <text x="365" y="292" class="body">直接输出像素网格</text>
+  <line x1="365" y1="328" x2="550" y2="328" stroke="#31445F" stroke-width="2"/>
+  <text x="365" y="362" class="small">已经具备：</text>
+  <text x="365" y="386" class="small">全卷积、上采样、</text>
+  <text x="365" y="410" class="small">深浅层 skip 融合</text>
+  <text x="365" y="452" class="small">Long et al., arXiv 2014</text>
+
+  <rect x="625" y="135" width="235" height="360" rx="18" fill="#17243A" stroke="#F6C85F" stroke-width="3"/>
+  <text x="650" y="178" class="year" fill="#F6C85F">2015</text>
+  <text x="650" y="215" class="card-title">原始 U-Net</text>
+  <text x="650" y="251" class="body">对称扩张路径</text>
+  <text x="650" y="280" class="body">同尺度 copy + crop</text>
+  <text x="650" y="309" class="body">再 concat 后卷积</text>
+  <line x1="650" y1="338" x2="835" y2="338" stroke="#455B78" stroke-width="2"/>
+  <text x="650" y="372" class="small">同时配套：</text>
+  <text x="650" y="395" class="small">弹性增强、边界加权、</text>
+  <text x="650" y="418" class="small">overlap-tile 大图推理</text>
+  <text x="650" y="467" class="small">Ronneberger et al., MICCAI 2015</text>
+
+  <rect x="910" y="150" width="235" height="330" rx="18" fill="#111C2E" stroke="#A78BFA" stroke-width="2" stroke-dasharray="9 7"/>
+  <text x="935" y="190" class="year" fill="#A78BFA">后来</text>
+  <text x="935" y="227" class="card-title">扩散 U-Net</text>
+  <text x="935" y="263" class="body">保留多尺度骨架</text>
+  <text x="935" y="292" class="body">任务改为估计噪声 / 速度</text>
+  <line x1="935" y1="328" x2="1120" y2="328" stroke="#31445F" stroke-width="2"/>
+  <text x="935" y="362" class="small">新增时间条件、</text>
+  <text x="935" y="386" class="small">残差块、Attention、</text>
+  <text x="935" y="410" class="small">文本等条件注入</text>
+  <text x="935" y="452" class="small">不属于 2015 论文证据</text>
+
+  <rect x="55" y="535" width="1090" height="95" rx="16" fill="#0F1A2B" stroke="#31445F" stroke-width="2"/>
+  <circle cx="88" cy="582" r="10" fill="#F6C85F"/>
+  <text x="115" y="574" class="takeaway">记忆点：U-Net 把精确定位的责任放进可学习的对称解码路径，</text>
+  <text x="115" y="603" class="takeaway">但它既没有发明密集预测，也没有在 2015 年验证生成或扩散。</text>
+</svg>
