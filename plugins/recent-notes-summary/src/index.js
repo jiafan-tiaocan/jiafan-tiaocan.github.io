@@ -9,7 +9,7 @@ const defaults = {
   batchSize: 4,
   showTags: true,
   excerptLength: 120,
-  chartMonths: 24,
+  chartMonths: 0,
 }
 
 const contentTypes = {
@@ -77,7 +77,16 @@ function recentMonthKeys(count) {
 }
 
 function publicationTimeline(pages, cfg, locale, count) {
-  const months = recentMonthKeys(count).map((key) => ({
+  const keys =
+    count > 0
+      ? recentMonthKeys(count)
+      : [
+          ...new Set(
+            pages.map((page) => monthKey(pageDate(page, cfg))).filter((key) => key.length > 0),
+          ),
+        ].sort()
+
+  const months = keys.map((key) => ({
     key,
     label: monthLabel(key, locale),
     counts: Object.fromEntries(Object.keys(contentTypes).map((type) => [type, 0])),
@@ -312,10 +321,16 @@ function RecentNotesSummary(userOptions = {}) {
 
     const initialLimit = Math.max(1, Number(options.initialLimit) || defaults.initialLimit)
     const batchSize = Math.max(1, Number(options.batchSize) || defaults.batchSize)
-    const chartMonths = Math.max(1, Number(options.chartMonths) || defaults.chartMonths)
+    const requestedChartMonths = Number(options.chartMonths)
+    const chartMonths =
+      Number.isFinite(requestedChartMonths) && requestedChartMonths > 0
+        ? Math.floor(requestedChartMonths)
+        : 0
     const hasMore = pages.length > initialLimit
     const timeline = publicationTimeline(pages, cfg, locale, chartMonths)
     const maxMonthTotal = Math.max(1, ...timeline.map((month) => month.total))
+    const chartLabel =
+      chartMonths > 0 ? `近 ${chartMonths} 个月文章数量` : "全部历史中有文章月份的文章数量"
 
     const className = [displayClass, "recent-notes", "with-summary"].filter(Boolean).join(" ")
 
@@ -334,7 +349,7 @@ function RecentNotesSummary(userOptions = {}) {
         {
           class: "publication-chart",
           "data-publication-chart": "",
-          "aria-label": `近 ${chartMonths} 个月文章数量`,
+          "aria-label": chartLabel,
         },
         h(
           "ul",

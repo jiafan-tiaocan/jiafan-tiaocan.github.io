@@ -1,6 +1,6 @@
 {
   "name": "@jiafan/recent-notes-summary",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -11,9 +11,9 @@
   "quartz": {
     "name": "recent-notes-summary",
     "displayName": "Recent Notes with Summary",
-    "description": "Displays recently published notes with frontmatter descriptions and text excerpts as fallback.",
+    "description": "Displays published notes with a full-history active-month chart and summaries.",
     "category": "component",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
     "defaultOrder": 50,
@@ -24,7 +24,7 @@
       "batchSize": 4,
       "showTags": true,
       "excerptLength": 120,
-      "chartMonths": 24
+      "chartMonths": 0
     },
     "components": {
       "RecentNotesSummary": {
