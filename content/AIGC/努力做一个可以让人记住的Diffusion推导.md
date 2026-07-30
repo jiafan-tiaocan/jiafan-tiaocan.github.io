@@ -1028,6 +1028,8 @@ def make_score_fn(epsilon_model):
 
 这里的 `epsilon_model` 可以是 U-Net、DiT 或其他带时间条件的网络。采样器并不关心网络结构，只需要它最终提供 $s_\theta(x_t,t)$。
 
+这个 U-Net 指的是从 2015 分割架构演化出的**时间条件去噪器**，不是原论文网络的直接复用。[[论文解读：U-Net: Convolutional Networks for Biomedical Image Segmentation]] 中的原始模型学习“干净图像 $\rightarrow$ 像素标签”，其核心信息路径是多尺度收缩—扩张与同尺度特征拼接；扩散 U-Net 则学习“带噪状态 $(x_t,t,c)\rightarrow$ 噪声、score 或 velocity”，并额外加入时间嵌入、残差块以及常见的 Attention/Cross-Attention。两者共享空间组织先验，但监督、输入输出和论文证据完全不同。
+
 ### 反向 SDE：Euler–Maruyama 实现
 
 理论公式中的反向 SDE 从 $t=1$ 积分到 $t=0$，因此 $dt<0$。代码为了减少符号错误，定义正步长 $h=t_i-t_{i+1}>0$。于是一次更新是：
