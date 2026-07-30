@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">Stable Video Diffusion 图生视频的双路图像条件</title>
+  <desc id="desc">参考图像同时经过 CLIP 图像编码器形成语义条件，并经过加噪和 VAE 编码形成低层外观条件；后者沿时间复制，与视频噪声潜变量按通道拼接成八通道输入，送入含时序模块的 Video U-Net。</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#ECFEFF"/>
+    </linearGradient>
+    <filter id="shadow2" x="-12%" y="-12%" width="124%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0F172A" flood-opacity=".11"/>
+    </filter>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#0F766E"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="820" rx="28" fill="url(#bg2)"/>
+  <text x="70" y="76" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="34" font-weight="700" fill="#0F172A">同一张参考图，走两条条件路径</text>
+  <text x="70" y="118" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="21" fill="#475569">语义条件回答“画谁”，拼接条件回答“首帧具体长什么样”</text>
+
+  <g filter="url(#shadow2)">
+    <rect x="70" y="310" width="190" height="160" rx="22" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="3"/>
+    <rect x="365" y="168" width="230" height="120" rx="20" fill="#EFF6FF" stroke="#60A5FA" stroke-width="3"/>
+    <rect x="365" y="500" width="230" height="120" rx="20" fill="#ECFDF5" stroke="#2DD4BF" stroke-width="3"/>
+    <rect x="695" y="480" width="250" height="160" rx="20" fill="#F0FDFA" stroke="#14B8A6" stroke-width="3"/>
+    <rect x="1030" y="278" width="300" height="240" rx="24" fill="#FFFFFF" stroke="#818CF8" stroke-width="4"/>
+  </g>
+
+  <rect x="103" y="342" width="124" height="96" rx="12" fill="#DBEAFE"/>
+  <circle cx="165" cy="375" r="22" fill="#F59E0B"/>
+  <path d="M125 425 Q165 382 205 425" fill="#2563EB"/>
+  <text x="165" y="508" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="21" font-weight="700" fill="#0F172A">参考图 I₍cond₎</text>
+
+  <text x="480" y="216" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="24" font-weight="700" fill="#1D4ED8">冻结 CLIP 图像编码器</text>
+  <text x="480" y="254" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">cᵢ：跨注意力语义条件</text>
+
+  <text x="480" y="544" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="23" font-weight="700" fill="#0F766E">小噪声增强 + VAE</text>
+  <text x="480" y="582" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">z₍cond₎：4 通道外观 latent</text>
+
+  <text x="820" y="525" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="23" font-weight="700" fill="#0F766E">沿时间轴复制</text>
+  <g fill="#99F6E4" stroke="#0F766E" stroke-width="2">
+    <rect x="747" y="558" width="112" height="54" rx="8"/>
+    <rect x="767" y="548" width="112" height="54" rx="8"/>
+    <rect x="787" y="538" width="112" height="54" rx="8"/>
+  </g>
+  <text x="820" y="670" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="19" fill="#334155">不做 mask；每帧共享同一条件 latent</text>
+
+  <text x="1180" y="330" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="26" font-weight="700" fill="#4338CA">Video U-Net</text>
+  <text x="1180" y="372" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">空间层之后插入</text>
+  <text x="1180" y="405" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">时序卷积 + 时序注意力</text>
+  <rect x="1080" y="434" width="200" height="46" rx="12" fill="#EEF2FF"/>
+  <text x="1180" y="464" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" font-weight="700" fill="#4338CA">8 通道输入 → 4 通道输出</text>
+
+  <rect x="687" y="286" width="270" height="104" rx="18" fill="#FFF7ED" stroke="#FB923C" stroke-width="3"/>
+  <text x="822" y="328" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="23" font-weight="700" fill="#C2410C">视频噪声 latent zₜ</text>
+  <text x="822" y="363" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">T×4×H/8×W/8</text>
+
+  <path d="M260 365 C310 365 310 228 350 228" fill="none" stroke="#2563EB" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <path d="M260 418 C310 418 310 560 350 560" fill="none" stroke="#0F766E" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <path d="M595 228 C820 228 920 250 1015 320" fill="none" stroke="#2563EB" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <line x1="595" y1="560" x2="680" y2="560" stroke="#0F766E" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <path d="M945 560 C990 560 1000 505 1030 485" fill="none" stroke="#0F766E" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <path d="M957 338 L1015 365" fill="none" stroke="#C2410C" stroke-width="4" marker-end="url(#arrow2)"/>
+
+  <rect x="490" y="720" width="420" height="58" rx="16" fill="#0F172A"/>
+  <text x="700" y="757" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="21" font-weight="600" fill="#FFFFFF">U-Net 输入：[ zₜ ; repeat(z₍cond₎, T) ]</text>
+</svg>

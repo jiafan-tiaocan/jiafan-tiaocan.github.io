@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Stable Video Diffusion 三阶段训练路线</title>
+  <desc id="desc">从 Stable Diffusion 2.1 图像预训练，经大规模筛选视频预训练，再到小规模高质量高分辨率微调；图中标出各阶段的数据、分辨率、训练步数与承担的责任。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#EEF2FF"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0F172A" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="760" rx="28" fill="url(#bg)"/>
+  <text x="70" y="78" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="34" font-weight="700" fill="#0F172A">SVD 把视频质量拆成三次学习</text>
+  <text x="70" y="120" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="21" fill="#475569">先学“画得像”，再学“动得对”，最后学“在高分辨率下动得好”</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="178" width="360" height="420" rx="24" fill="#FFFFFF" stroke="#93C5FD" stroke-width="3"/>
+    <rect x="520" y="178" width="360" height="420" rx="24" fill="#FFFFFF" stroke="#A5B4FC" stroke-width="3"/>
+    <rect x="970" y="178" width="360" height="420" rx="24" fill="#FFFFFF" stroke="#F9A8D4" stroke-width="3"/>
+  </g>
+
+  <circle cx="118" cy="226" r="26" fill="#2563EB"/>
+  <text x="118" y="235" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">1</text>
+  <text x="158" y="235" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="26" font-weight="700" fill="#0F172A">图像预训练</text>
+  <text x="108" y="296" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="21" fill="#334155">
+    <tspan x="108" dy="0">起点：Stable Diffusion 2.1</tspan>
+    <tspan x="108" dy="40">先转为连续时间 EDM</tspan>
+    <tspan x="108" dy="40">256×384，30k steps</tspan>
+    <tspan x="108" dy="40">前 1k steps 只调时间嵌入</tspan>
+  </text>
+  <line x1="108" y1="474" x2="392" y2="474" stroke="#DBEAFE" stroke-width="2"/>
+  <text x="108" y="515" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" font-weight="700" fill="#1D4ED8">承担的责任</text>
+  <text x="108" y="550" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">空间纹理、物体与语义先验</text>
+
+  <circle cx="568" cy="226" r="26" fill="#4F46E5"/>
+  <text x="568" y="235" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">2</text>
+  <text x="608" y="235" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="26" font-weight="700" fill="#0F172A">视频预训练</text>
+  <text x="558" y="296" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="21" fill="#334155">
+    <tspan x="558" dy="0">插入时序卷积与时序注意力</tspan>
+    <tspan x="558" dy="40">LVD-F：152M 个筛选 Clip</tspan>
+    <tspan x="558" dy="40">14×256×384，150k steps</tspan>
+    <tspan x="558" dy="40">14×320×576，100k steps</tspan>
+  </text>
+  <line x1="558" y1="474" x2="842" y2="474" stroke="#E0E7FF" stroke-width="2"/>
+  <text x="558" y="515" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" font-weight="700" fill="#4338CA">承担的责任</text>
+  <text x="558" y="550" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">跨帧运动与时间一致性先验</text>
+
+  <circle cx="1018" cy="226" r="26" fill="#DB2777"/>
+  <text x="1018" y="235" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">3</text>
+  <text x="1058" y="235" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="26" font-weight="700" fill="#0F172A">高质量微调</text>
+  <text x="1008" y="296" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="21" fill="#334155">
+    <tspan x="1008" dy="0">约 1M 个高质量视频样本</tspan>
+    <tspan x="1008" dy="40">576×1024，50k steps</tspan>
+    <tspan x="1008" dy="40">噪声分布进一步移向高噪声</tspan>
+    <tspan x="1008" dy="40">派生 T2V / I2V / 多视角任务</tspan>
+  </text>
+  <line x1="1008" y1="474" x2="1292" y2="474" stroke="#FCE7F3" stroke-width="2"/>
+  <text x="1008" y="515" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" font-weight="700" fill="#BE185D">承担的责任</text>
+  <text x="1008" y="550" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="20" fill="#334155">高分辨率观感与任务适配</text>
+
+  <line x1="440" y1="388" x2="505" y2="388" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="890" y1="388" x2="955" y2="388" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="200" y="646" width="1000" height="64" rx="18" fill="#0F172A"/>
+  <text x="700" y="686" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="22" font-weight="600" fill="#FFFFFF">关键证据：Stage II 的数据质量差异不会被 Stage III “洗掉”，而会延续到最终模型</text>
+</svg>
