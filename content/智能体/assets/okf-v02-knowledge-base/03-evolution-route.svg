@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920" role="img" aria-labelledby="title desc">
   <title id="title">从文件式知识库到 OKF v0.2 与受治理 Mem-OS 的演进路线</title>
-  <desc id="desc">文件式知识库先解决知识可读与可积累，OKF v0.1 解决可交换，v0.2 增加读取前信任信号；当前知识库已具备 Vault 到 Quartz 的发布控制，但仍需选择性 OKF 投影和读取门禁，完整治理继续由 Mem-OS 承担。</desc>
+  <desc id="desc">文件式知识库先解决知识可读与可积累，OKF v0.1 解决可交换，v0.2 把读取前信任信号组织成跨系统契约；当前知识库已具备 Vault 到 Quartz 的发布接口，但仍需选择性 OKF 投影和 Trust Gate 执行契约，完整治理继续由 Mem-OS 承担。</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
       <path d="M0 0L0 6L9 3z" fill="#5967a8"/>
@@ -21,7 +21,7 @@
   </defs>
   <rect width="1600" height="920" rx="30" fill="#f7f8fc"/>
   <text class="font title" x="70" y="64">知识库演进的因果主线：可积累 → 可交换 → 可判断 → 可治理</text>
-  <text class="font sub" x="70" y="98">OKF 解决格式边界上的信任信号；Mem-OS 继续负责写入、权限、冲突、上下文与评测。</text>
+  <text class="font sub" x="70" y="98">OKF 定义信任契约；Projector 与 Trust Gate 提供消费接口；Mem-OS 负责运行治理。</text>
 
   <g transform="translate(55 155)">
     <rect class="card" width="270" height="385" rx="22" fill="#eef6ff"/>
@@ -58,7 +58,7 @@
   <g transform="translate(685 155)">
     <rect class="card" width="300" height="385" rx="22" fill="#edf9f3"/>
     <text class="font time" x="28" y="42">2026-07 · OKF v0.2</text>
-    <text class="font phase" x="28" y="82">读取前信任信号</text>
+    <text class="font phase" x="28" y="82">跨系统信任契约</text>
     <text class="font body" x="28" y="126">sources · generated</text>
     <text class="font body" x="28" y="158">verified · stale_after</text>
     <text class="font body" x="28" y="190">Attested Computation</text>
@@ -74,14 +74,14 @@
   <g transform="translate(1030 155)">
     <rect class="card" width="270" height="385" rx="22" fill="#fff7e8"/>
     <text class="font time" x="28" y="42">当前知识库</text>
-    <text class="font phase" x="28" y="82">Vault → Quartz</text>
+    <text class="font phase" x="28" y="82">发布接口已成形</text>
     <text class="font body" x="28" y="126">唯一事实源</text>
     <text class="font body" x="28" y="158">单篇发布 · 构建验收</text>
     <text class="font label" x="28" y="214">已经做到</text>
-    <text class="font body" x="28" y="248">投影控制与回滚</text>
+    <text class="font body" x="28" y="248">人读投影与回滚</text>
     <text class="font label" x="28" y="302">尚未做到</text>
-    <text class="font body" x="28" y="336">信任字段全库覆盖</text>
-    <text class="font body" x="28" y="368">消费前 Trust Gate</text>
+    <text class="font body" x="28" y="336">信任契约选择性覆盖</text>
+    <text class="font body" x="28" y="368">Agent 契约执行接口</text>
   </g>
 
   <path class="flow" d="M1300 347H1345"/>
@@ -89,7 +89,7 @@
   <g transform="translate(1345 155)">
     <rect class="card" width="200" height="385" rx="22" fill="#eef7f5"/>
     <text class="font time" x="22" y="42">建议</text>
-    <text class="font phase" x="22" y="82">选择性投影</text>
+    <text class="font phase" x="22" y="82">契约落成接口</text>
     <text class="font body" x="22" y="130">高变化</text>
     <text class="font body" x="22" y="164">高复用</text>
     <text class="font body" x="22" y="198">高错误代价</text>
@@ -103,13 +103,13 @@
     <rect width="1440" height="220" rx="24" fill="#fff" stroke="#d7dbea" stroke-width="2"/>
     <text class="font label" x="35" y="48">稳定责任分层</text>
     <rect x="35" y="78" width="410" height="92" rx="16" fill="#f2f0ff" stroke="#bcb5e5"/>
-    <text class="font phase" x="240" y="116" text-anchor="middle">OKF｜交换与读取前信号</text>
-    <text class="font small" x="240" y="148" text-anchor="middle">怎样携带来源、信任、时效与计算契约</text>
+    <text class="font phase" x="240" y="116" text-anchor="middle">OKF｜跨系统信任契约</text>
+    <text class="font small" x="240" y="148" text-anchor="middle">怎样声明来源、复核、时效与计算约束</text>
     <rect x="515" y="78" width="410" height="92" rx="16" fill="#edf8f3" stroke="#add7c2"/>
-    <text class="font phase" x="720" y="116" text-anchor="middle">Mem-OS｜状态与运行治理</text>
-    <text class="font small" x="720" y="148" text-anchor="middle">怎样准入、冲突、授权、编译、评测与遗忘</text>
+    <text class="font phase" x="720" y="116" text-anchor="middle">Trust Gate｜契约执行接口</text>
+    <text class="font small" x="720" y="148" text-anchor="middle">怎样过滤、警告、降级、拒绝并编译上下文</text>
     <rect x="995" y="78" width="410" height="92" rx="16" fill="#fff5e4" stroke="#e2c483"/>
-    <text class="font phase" x="1200" y="116" text-anchor="middle">Quartz｜公开阅读视图</text>
-    <text class="font small" x="1200" y="148" text-anchor="middle">怎样渲染、搜索、展示与部署公开文章</text>
+    <text class="font phase" x="1200" y="116" text-anchor="middle">Mem-OS｜状态与运行治理</text>
+    <text class="font small" x="1200" y="148" text-anchor="middle">怎样准入、冲突、授权、评测、回滚与遗忘</text>
   </g>
 </svg>

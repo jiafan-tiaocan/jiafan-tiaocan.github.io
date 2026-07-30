@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title desc">
-  <title id="title">个人知识库的 Vault、Quartz 与选择性 OKF 双投影架构</title>
-  <desc id="desc">Vault 继续作为唯一事实源，一条路径通过现有发布器投影到 Quartz 博客，另一条仅选择高价值知识，经隐私过滤、字段映射、链接重写、索引日志生成和一致性校验后形成 OKF Bundle；Agent 在读取正文前通过 Trust Gate，再交给 Context Compiler。</desc>
+  <title id="title">个人知识库的 OKF 契约投影与 Agent 消费接口</title>
+  <desc id="desc">Vault 继续作为唯一事实源，一条路径通过现有发布器投影到 Quartz 人类阅读接口，另一条仅选择高价值知识，经隐私过滤、字段映射、链接重写、索引日志生成和一致性校验后形成 OKF 信任契约；Agent 通过 Trust Gate 接口执行契约，再交给 Context Compiler。</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#5d66a8"/></marker>
     <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#3f8f70"/></marker>
@@ -19,8 +19,8 @@
     </style>
   </defs>
   <rect width="1600" height="1040" rx="30" fill="#f7f8fc"/>
-  <text class="font title" x="65" y="64">不要迁移整个 Vault：在边界上增加一条可重建、可验证的 OKF 投影</text>
-  <text class="font sub" x="65" y="100">源文件只维护一次；公开阅读和 Agent 消费使用不同投影、不同门禁。</text>
+  <text class="font title" x="65" y="64">不要迁移整个 Vault：在边界上生成 OKF 契约，并实现消费接口</text>
+  <text class="font sub" x="65" y="100">源文件只维护一次；Quartz 是人类阅读接口，OKF + Trust Gate 是 Agent 契约接口。</text>
 
   <g transform="translate(60 170)">
     <rect class="box" width="330" height="680" rx="24" fill="#eef5ff"/>
@@ -79,7 +79,7 @@
   <path class="green" d="M990 700H1070"/>
   <g transform="translate(1070 520)">
     <rect class="box" width="255" height="360" rx="22" fill="#f1efff"/>
-    <text class="font head" x="127" y="52" text-anchor="middle">OKF Bundle</text>
+    <text class="font head" x="127" y="52" text-anchor="middle">OKF Contract</text>
     <text class="font mono" x="28" y="100">type</text>
     <text class="font mono" x="28" y="134">sources</text>
     <text class="font mono" x="28" y="168">generated / verified</text>
@@ -92,7 +92,8 @@
   <path class="green" d="M1325 700H1390"/>
   <g transform="translate(1390 500)">
     <rect width="170" height="405" rx="22" fill="#edf8f3" stroke="#9ed0b7" stroke-width="2.5"/>
-    <text class="font head" x="85" y="52" text-anchor="middle">Trust Gate</text>
+    <text class="font head" x="85" y="45" text-anchor="middle">消费接口</text>
+    <text class="font small" x="85" y="72" text-anchor="middle">Trust Gate</text>
     <text class="font small" x="85" y="96" text-anchor="middle">scope 允许</text>
     <text class="font small" x="85" y="128" text-anchor="middle">status = stable</text>
     <text class="font small" x="85" y="160" text-anchor="middle">尚未过期</text>
@@ -106,6 +107,6 @@
 
   <g transform="translate(65 945)">
     <rect width="1490" height="58" rx="16" fill="#fff" stroke="#d3d7e6"/>
-    <text class="font body" x="745" y="37" text-anchor="middle">关键边界：Vault 管“写什么”，OKF 投影管“怎样交换”，Trust Gate 管“这次能不能读”，Mem-OS 管“读后怎样影响行动”。</text>
+    <text class="font body" x="745" y="37" text-anchor="middle">关键边界：Vault 管“写什么”，OKF 定义“怎样交换”，接口决定“这次能不能读”，Mem-OS 管“读后怎样影响行动”。</text>
   </g>
 </svg>

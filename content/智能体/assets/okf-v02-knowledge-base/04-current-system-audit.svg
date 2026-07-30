@@ -90,6 +90,6 @@
 
   <g transform="translate(60 1030)">
     <circle cx="12" cy="0" r="8" fill="#5b68a8"/>
-    <text class="font sub" x="32" y="7">结论：OKF 是跨系统的最小信任描述层；Mem-OS 是知识真正生效、演进与退出的运行内核。</text>
+    <text class="font sub" x="32" y="7">结论：OKF 是跨系统的最小信任契约；接口负责执行契约，Mem-OS 负责知识生效、演进与退出。</text>
   </g>
 </svg>

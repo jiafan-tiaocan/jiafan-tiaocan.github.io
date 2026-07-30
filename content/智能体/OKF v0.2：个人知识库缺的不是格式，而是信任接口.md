@@ -1,9 +1,9 @@
 ---
 type: Technical Review
-title: "OKF v0.2：个人知识库缺的不是格式，而是信任接口"
+title: "OKF v0.2：契约与接口"
 aliases:
   - "五花八门的思考/OKF v0.2：个人知识库缺的不是格式，而是信任接口"
-description: "从 OKF v0.2 的信任信号出发，实测审计当前 Vault→Quartz 知识库、神童与飓创实践及 Mem-OS 目标设计，给出选择性投影而非全库迁移的落地方案。"
+description: "以契约与接口为主线审视 OKF v0.2：规范怎样定义可交换的信任契约，当前 Vault、神童、飓创与 Mem-OS 又怎样把契约变成真正影响 Agent 行为的接口。"
 tags:
   - Open-Knowledge-Format
   - 知识工程
@@ -17,7 +17,7 @@ publish: true
 status: draft
 generated:
   by: codex/gpt-5
-  at: 2026-07-29T19:22:42+08:00
+  at: 2026-07-30T11:06:00+08:00
 stale_after: 2026-10-29
 sources:
   - id: okf-v02-spec
@@ -48,21 +48,26 @@ sources:
     title: Local implementation audit
 ---
 
-# OKF v0.2：个人知识库缺的不是格式，而是信任接口
+# OKF v0.2：契约与接口
 
-[![从 Markdown Wiki、OKF v0.1、OKF v0.2 到选择性信任投影的演进主线；下方区分 OKF、Mem-OS 与 Quartz 的职责](assets/okf-v02-knowledge-base/03-evolution-route.svg)](assets/okf-v02-knowledge-base/03-evolution-route.svg)
+[![从 Markdown Wiki、OKF v0.1、OKF v0.2 到选择性信任投影的演进主线；下方区分信任契约、消费接口与 Mem-OS 治理内核](assets/okf-v02-knowledge-base/03-evolution-route.svg)](assets/okf-v02-knowledge-base/03-evolution-route.svg)
 
-*图 1　知识库从“可积累”走向“可交换、可判断、可治理”的因果主线。OKF 负责跨系统交换和读取前信号，Mem-OS 负责知识写入、演进与运行治理，Quartz 负责公开阅读。自绘图；依据 OKF v0.2 固定版本规范、当前 Vault→Quartz 发布链路与本文 Mem-OS 实现审计。*
+*图 1　知识库从“可积累”走向“可交换、可判断、可治理”的因果主线。OKF 把读取前信号组织成跨系统契约，Projector 与 Trust Gate 把契约变成消费接口，Mem-OS 继续负责知识写入、演进与运行治理。自绘图；依据 OKF v0.2 固定版本规范、当前 Vault→Quartz 发布链路与本文 Mem-OS 实现审计。*
 
-先给结论：**我们已经有一个不错的 Markdown 知识库和一条相当严格的公开发布链，但还没有一个真正按信任信号工作的 Agent 知识消费接口。** 神童、飓创以及此前提出的 Mem-OS，分别做到了受控写入、领域化读取和较完整的治理设计，却也都不能简单写成“已经实现 OKF”或“已经拥有 Mem-OS”。OKF v0.2 值得采用，但不值得把整个 Vault 原地迁移成一个 Bundle；更合适的做法，是在 Vault 边界上增加一条可重建的选择性 OKF 投影，并让 Agent 在读取正文之前真正执行 Trust Gate。
+先给结论：**OKF v0.2 更适合被理解为一份轻量的信任契约，而不是一套已经可调用的信任接口。** 它约定生产者怎样声明来源、生成、复核、时效与计算，消费者怎样解释这些信号；Projector、Trust Gate 和 Context Compiler 才是让契约真正影响 Agent 行为的接口。我们已经有一个不错的 Markdown 知识库和一条严格的公开发布接口，却还没有完整的 Agent 契约执行接口。
 
-这个判断比“给每篇 Markdown 加几个字段”更严格。因为信任接口必须同时回答三个问题：
+神童、飓创以及此前提出的 Mem-OS，分别做到了受控写入、领域化读取和较完整的治理设计，却也都不能简单写成“已经实现 OKF”或“已经拥有 Mem-OS”。OKF v0.2 值得采用，但不值得把整个 Vault 原地迁移成一个 Bundle；更合适的做法，是在 Vault 边界上增加一条可重建的选择性 OKF 投影，再由消费接口执行本地风险策略。
 
-1. **描述层**：知识是否携带来源、生成者、复核者、生命周期与计算契约；
-2. **运行层**：消费者是否真的依据这些信号决定拒绝、降级、警告或读取；
-3. **治理层**：知识如何被准入、更新、冲突裁决、授权、回滚、评测和退出。
+本文所说的“信任契约”是对 OKF 工程作用的归纳，不是规范中的正式类型名。为了避免把几个相邻概念混成一句口号，需要先分清四层：
 
-OKF 主要覆盖第一层，并为第二层提供输入；Mem-OS 应负责第二、三层。只有字段而没有消费者策略，叫“长得像 OKF”；只有检索、记忆和写入而没有来源与生命周期，叫“能工作但难以判断能不能信”。
+| 层次 | 它回答的问题 | 主要承担者 |
+|---|---|---|
+| 格式 | 文件怎样解析、链接和交换 | Markdown、Bundle 结构 |
+| 契约 | 信任信号代表什么，生产者和消费者各承担什么责任 | OKF v0.2 |
+| 接口 | 契约怎样进入过滤、警告、降级和拒绝等控制流 | Projector、Trust Gate、Context Compiler |
+| 治理 | 知识怎样准入、冲突裁决、授权、回滚、评测和退出 | Mem-OS、Agent Runtime |
+
+只有字段而没有消费策略，是一份没有被执行的静态契约；只有本地门禁而没有共同语义，是一套难以跨系统复用的私有接口。契约和接口接上之后，信任信号才会从“可展示元数据”变成“可执行控制流”。
 
 > **阅读路线**
 >
@@ -75,13 +80,13 @@ OKF 主要覆盖第一层，并为第二层提供输入；Mem-OS 应负责第二
 >
 > 本文的规范结论固定在 GoogleCloudPlatform/knowledge-catalog 提交 `3fcbb9f`，实现审计快照为 2026-07-29。公开版隐去了内部仓库地址、凭据、人员和业务数据，只保留可解释的机制、计数与差距。由于 OKF 是规范与示例仓库，不是学术论文，本文没有“论文原图”；视觉证据由两张真实界面截图和三张基于固定规范、源码及本地实现审计的自绘结构图组成。
 
-## 1. OKF v0.2 真正增加的不是格式，而是读取前判断
+## 1. OKF v0.2：从交换约定到信任契约
 
-### 1.1 v0.1 解决交换，v0.2 才开始回答“能不能信”
+### 1.1 v0.1 约定怎样交换，v0.2 继续约定怎样判断
 
 Open Knowledge Format 把一个目录定义为 Knowledge Bundle，把每份带 YAML Frontmatter 的 Markdown 定义为 Concept。路径就是 ID，标准 Markdown 链接形成概念图；除保留的 `index.md`、`log.md` 外，每个 `.md` 只强制要求一个非空 `type`。它不规定统一类型词表，也不规定数据库、向量检索、服务端或 Agent Runtime。[^okf-v02-spec]
 
-这个设计延续了 LLM Wiki 一类“文件就是知识、链接就是结构、人和 Agent 共读”的实践，但把生产者和消费者之间原本隐含的约定变成了最低限度的交换契约。[^llm-wiki] v0.1 解决的是“另一套工具能否读懂这批文件”；v0.2 继续追问：当 Agent 一次能发现成百上千个 Concept 时，能否在付出正文读取和上下文成本之前，先判断某条知识来自哪里、由谁生成、是否复核、有没有过期、某个数字是不是按约定方式算出来的？
+这个设计延续了 LLM Wiki 一类“文件就是知识、链接就是结构、人和 Agent 共读”的实践，但把生产者和消费者之间原本隐含的约定变成了最低限度的交换契约。[^llm-wiki] v0.1 主要回答“另一套工具能否读懂这批文件”；v0.2 则把契约扩展到信任判断：当 Agent 一次能发现成百上千个 Concept 时，生产者要声明哪些事实，消费者又能否在付出正文读取和上下文成本之前，判断某条知识来自哪里、由谁生成、是否复核、有没有过期、某个数字是不是按约定方式算出来的？
 
 | v0.2 字段或机制 | 它回答的问题 | 它没有保证什么 |
 |---|---|---|
@@ -96,11 +101,11 @@ Open Knowledge Format 把一个目录定义为 Knowledge Bundle，把每份带 Y
 
 [![Google 官方 Acme Retail OKF v0.2 可视化器：左侧为 Bundle 概念图，右侧 Gross margin 页面同时显示 stable、human reviewed、stale after、generated、verified、sources 和 Attested Computation](assets/okf-v02-knowledge-base/01-google-acme-retail-visualizer.png)](assets/okf-v02-knowledge-base/01-google-acme-retail-visualizer.png)
 
-*图 2　Google 官方 Acme Retail Bundle 的真实可视化界面。左侧是 Concept 链接图，右侧不是只展示正文，而是把生命周期、复核等级、时效、来源和计算契约一起呈现；这正是“信任信号成为消费者界面”的含义。截图来自固定提交中的 [Acme Retail 示例 Bundle](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/3fcbb9f828c2f23d109c855ee403c3a4c81f3a96/okf/bundles/acme_retail)，获取于 2026-07-29。*
+*图 2　Google 官方 Acme Retail Bundle 的真实可视化界面。左侧是 Concept 链接图，右侧把生命周期、复核等级、时效、来源和计算契约一起呈现：OKF 定义了契约内容，可视化器则提供了读取契约的界面。截图来自固定提交中的 [Acme Retail 示例 Bundle](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/3fcbb9f828c2f23d109c855ee403c3a4c81f3a96/okf/bundles/acme_retail)，获取于 2026-07-29。*
 
 ### 1.2 Trust tier 是派生值，不是作者自报分数
 
-OKF 没有让生产者写一个 `confidence: 0.93`。这是正确的：不同消费者、不同风险场景对“可信”的解释不一样，而且自报分数本身也会过期。规范只保存相对客观的事件和信号，让消费者派生自己的门禁。
+OKF 没有让生产者写一个 `confidence: 0.93`。这是正确的：不同消费者、不同风险场景对“可信”的解释不一样，而且自报分数本身也会过期。契约只保存相对客观的事件和信号，让消费者通过自己的接口派生门禁。
 
 假设 Concept 为 \(c\)，读取时间为 \(t\)，任务风险为 \(r\)，一个最小可执行门禁可以写成：
 
@@ -158,7 +163,7 @@ def eligible(concept: dict, today: date, minimum: str) -> tuple[bool, str]:
     return True, "accepted"
 ```
 
-真正落地时还要补 `scope / sensitivity / task_risk`，并记录这次门禁为何接受或拒绝。关键不在代码行数，而在于：**消费者必须把元数据变成控制流。**
+真正落地时还要补 `scope / sensitivity / task_risk`，并记录这次门禁为何接受或拒绝。关键不在代码行数，而在于：**接口必须把契约中的元数据变成控制流。**
 
 ### 1.3 Attested Computation 证明“按规定算了”，不证明“规定正确”
 
@@ -169,9 +174,9 @@ v0.2 最有新意的部分，是把计算拆成独立的 `type: Attested Computa
 - `verified`：文档级、低频，确认**定义**仍符合政策；
 - attestation：调用级、每次运行，确认**执行**符合已验证定义。
 
-因此，一篇普通技术随笔不需要 Attested Computation；市场规模、评测分数、经营指标和高风险决策数字才值得承担这套成本。v0.2 也仍把统一回执协议、Attester ABI、沙箱和缓存推迟到未来版本。它提供了接口形状，还没有提供完整运行时。[^okf-v02-blog]
+因此，一篇普通技术随笔不需要 Attested Computation；市场规模、评测分数、经营指标和高风险决策数字才值得承担这套成本。v0.2 也仍把统一回执协议、Attester ABI、沙箱和缓存推迟到未来版本。它约定了计算契约和接口形状，却没有提供完整运行时。[^okf-v02-blog]
 
-## 2. 我们当前维护的知识库：发布控制很强，信任消费很弱
+## 2. 当前知识库：发布接口很强，契约消费很弱
 
 ### 2.1 先区分三个对象：Vault、发布器、公开站点
 
@@ -183,11 +188,11 @@ v0.2 最有新意的部分，是把计算拆成独立的 `type: Attested Computa
 
 这条链路已经解决了很多 Mem-OS 式的工程问题：源与投影单向映射、发布前 clean-tree 预检、失败恢复、重命名时显式替换旧投影、构建后检查公式、图片和横向溢出。它远比“复制 Markdown 到网站目录”可靠。
 
-但这三层都没有把 OKF 信任字段变成 Agent 的读取策略。发布器会检查 `title / description / date / publish / tags`，却不检查 `type / sources / generated / verified / status / stale_after`；Quartz 页面也不会根据这些字段拒绝陈旧内容、区分机器复核与人工复核，或把 Attestation 失败暴露给读者。
+但这三层都没有把 OKF 契约变成 Agent 的读取策略。发布器会检查 `title / description / date / publish / tags`，却不检查 `type / sources / generated / verified / status / stale_after`；Quartz 页面也不会根据这些字段拒绝陈旧内容、区分机器复核与人工复核，或把 Attestation 失败暴露给读者。我们拥有的是成熟的人类发布接口，不是契约驱动的 Agent 消费接口。
 
 [![当前线上 Quartz 文章真实页面：标题下只展示日期、字数和标签，正文可读，但没有来源、复核等级、时效或计算证明的消费者界面](assets/okf-v02-knowledge-base/02-current-quartz-article.png)](assets/okf-v02-knowledge-base/02-current-quartz-article.png)
 
-*图 3　本篇旧版思考卡片在线上 Quartz 中的真实页面。页面很好地完成了人类阅读，却只展示日期、字数和标签，没有消费 `sources / generated / status / stale_after`；Frontmatter 即使已经存在，也还没有成为信任接口。截图来自[当前公开页面](https://jiafan-tiaocan.github.io/%E4%BA%94%E8%8A%B1%E5%85%AB%E9%97%A8%E7%9A%84%E6%80%9D%E8%80%83/okf-v0.2%EF%BC%9A%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E7%BC%BA%E7%9A%84%E4%B8%8D%E6%98%AF%E6%A0%BC%E5%BC%8F%EF%BC%8C%E8%80%8C%E6%98%AF%E4%BF%A1%E4%BB%BB%E6%8E%A5%E5%8F%A3)，获取于 2026-07-29。*
+*图 3　本篇旧版思考卡片在线上 Quartz 中的真实页面。页面很好地完成了人类阅读，却只展示日期、字数和标签，没有消费 `sources / generated / status / stale_after`；Frontmatter 已经包含部分契约字段，公开界面却没有执行这份契约。截图来自[旧版公开页面](https://jiafan-tiaocan.github.io/%E4%BA%94%E8%8A%B1%E5%85%AB%E9%97%A8%E7%9A%84%E6%80%9D%E8%80%83/okf-v0.2%EF%BC%9A%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E7%BC%BA%E7%9A%84%E4%B8%8D%E6%98%AF%E6%A0%BC%E5%BC%8F%EF%BC%8C%E8%80%8C%E6%98%AF%E4%BF%A1%E4%BB%BB%E6%8E%A5%E5%8F%A3)，获取于 2026-07-29。*
 
 ### 2.2 用数据回答“有没有做到”
 
@@ -213,7 +218,7 @@ v0.2 最有新意的部分，是把计算拆成独立的 `type: Attested Computa
 - 已有 `status` 还承载 3D 打印生产阶段等领域状态，不能直接等价为 OKF 的 `draft / stable / deprecated`；
 - Vault 中含私人笔记和工作材料，合规可读不等于有权公开或有权进入 Agent 上下文。
 
-还有两个很实际的漂移信号：当前 38 篇源文件声明 `publish: true`，Quartz 实际有 37 份文章投影；一份人工维护的发布说明仍记录“当前公开集合为 4”，而实际早已是 37。Git 和自动发布减少了内容丢失，却不能自动保证清单、意图和真实投影永远一致。**这正是信任接口需要 drift check 的原因。**
+还有两个很实际的漂移信号：当前 38 篇源文件声明 `publish: true`，Quartz 实际有 37 份文章投影；一份人工维护的发布说明仍记录“当前公开集合为 4”，而实际早已是 37。Git 和自动发布减少了内容丢失，却不能自动保证清单、意图和真实投影永远一致。**契约声明与接口真实状态之间的差异，正是 drift check 应该发现的问题。**
 
 ### 2.3 本篇文章本身就是一个反例
 
@@ -231,7 +236,7 @@ v0.2 最有新意的部分，是把计算拆成独立的 `type: Attested Computa
 
 [![能力矩阵对比当前 Vault 与 Quartz、神童、飓创、Mem-OS 目标设计和 OKF v0.2，在来源、生命周期、写入回滚、权限、读取门禁和可证明计算上的覆盖程度](assets/okf-v02-knowledge-base/04-current-system-audit.svg)](assets/okf-v02-knowledge-base/04-current-system-audit.svg)
 
-*图 4　五个对象的能力审计。绿色是强覆盖，金色是部分覆盖，红色是明显缺口，灰色表示不属于该层职责。结论不是谁“更先进”，而是谁解决了哪一段问题：OKF 是最小信任描述层，Mem-OS 是知识真正生效、演进与退出的运行内核。自绘图；依据本地实现快照、[[Agent系统构建中的 Mem-OS：让知识与经验形成复利|既有 Mem-OS 长文]]与 OKF v0.2 固定版本规范。*
+*图 4　五个对象的能力审计。绿色是强覆盖，金色是部分覆盖，红色是明显缺口，灰色表示不属于该层职责。结论不是谁“更先进”，而是谁解决了哪一段问题：OKF 是跨系统的最小信任契约，Projector 与 Trust Gate 是消费接口，Mem-OS 是知识真正生效、演进与退出的运行内核。自绘图；依据本地实现快照、[[Agent系统构建中的 Mem-OS：让知识与经验形成复利|既有 Mem-OS 长文]]与 OKF v0.2 固定版本规范。*
 
 回答“那篇 Mem-OS 文章有没有做到”之前，必须先区分三个层次：
 
@@ -324,11 +329,11 @@ $$
 
 这也解释了为什么“全库一键加字段”是错误方向。OKF 的 Conformance 很宽松，缺少可选字段不能拒绝 Bundle；但我们的业务门禁可以更严格。**标准负责互操作，组织负责风险策略。**
 
-## 5. 推荐架构：Vault 不动，在边界上做双投影
+## 5. 从契约到接口：Vault 不动，在边界上做双投影
 
 [![Vault 作为唯一事实源，同时投影到 Quartz Blog 和选择性 OKF Bundle；OKF 路径包含隐私过滤、字段映射、链接与来源转换、渐进索引、CI，并在 Agent 读取前经过 Trust Gate 和 Context Compiler](assets/okf-v02-knowledge-base/05-selective-okf-projection.svg)](assets/okf-v02-knowledge-base/05-selective-okf-projection.svg)
 
-*图 5　推荐的双投影架构。公开博客和 Agent 消费不是同一个产品：Quartz 继续服务人类阅读，选择性 OKF Projector 只导出允许共享且值得治理的 Concept；Trust Gate 决定“这次能不能读”，Mem-OS 决定“读后怎样影响行动”。自绘图；依据当前单向发布模型、OKF v0.2 规范与本文审计。*
+*图 5　推荐的双投影架构。公开博客和 Agent 消费不是同一个产品：Quartz 提供人类阅读接口，选择性 OKF Projector 生成信任契约，Trust Gate 执行契约并决定“这次能不能读”，Mem-OS 决定“读后怎样影响行动”。自绘图；依据当前单向发布模型、OKF v0.2 规范与本文审计。*
 
 ### 5.1 为什么是投影，不是迁移
 
@@ -339,7 +344,7 @@ Vault 已经承担写作体验、双链、附件和私人工作材料。如果�
 3. Obsidian 双链、嵌入和目录约定并非标准 Markdown Bundle；
 4. 私人内容的“格式可读”会被误解为“允许共享”。
 
-投影的好处是：源文件只维护一次，输出可以随时重建，投影失败不修改 Vault。它还允许 Quartz 与 OKF 采用不同策略——一篇文章可以公开给人读，但因为过期或未复核而暂时不供 Agent 执行性消费。
+投影的好处是：源文件只维护一次，输出可以随时重建，投影失败不修改 Vault。它还允许 Quartz 与 OKF 采用不同策略——一篇文章可以通过公开接口供人阅读，但因为过期或未复核而暂时不进入 Agent 的契约执行接口。
 
 ### 5.2 字段不能机械改名，要建立语义映射
 
@@ -360,7 +365,7 @@ Vault 已经承担写作体验、双链、附件和私人工作材料。如果�
 
 ### 5.3 Projector 的最小流水线
 
-第一版不需要搭建新数据库，甚至不需要服务化。一个确定性 CLI 就够：
+第一版不需要搭建新数据库，甚至不需要服务化。Projector 本质上是 Vault 与 OKF 之间的契约适配器，一个确定性 CLI 就够：
 
 ```text
 select
@@ -397,7 +402,7 @@ CI 至少要失败于：
 1. **Pre-retrieval filter**：按 Scope、生命周期、过期状态和最低 trust tier 缩小候选；
 2. **Post-retrieval decision**：结合任务风险、claim 来源、冲突和 Attestation 结果，决定原文、摘要、警告、降级或拒绝。
 
-通过门禁的内容再交给 Context Compiler，按 Policy、Fact、Preference、Procedure 使用不同表示。OKF 告诉系统“这份知识携带了什么信号”，Mem-OS 决定“这个任务里信号如何影响行动”。
+通过门禁的内容再交给 Context Compiler，按 Policy、Fact、Preference、Procedure 使用不同表示。OKF 契约告诉系统“这份知识声明了什么”，Trust Gate 接口决定“这次能不能读”，Mem-OS 决定“读后怎样影响行动”。
 
 ## 6. 落地顺序与验收：先证明门禁有效，再扩大覆盖
 
@@ -457,9 +462,9 @@ source_snapshot
 
 不要用“有多少篇加了字段”作为成功指标。真正的成功是：高风险任务里，过期或低信任知识不再悄悄进入上下文；发生错误时，系统能回答它来自哪份 Source、谁复核过、为何被选中、怎样撤回。
 
-## 7. 结论：OKF 应成为边界协议，而不是新一轮知识库重构
+## 7. 结论：OKF 定义契约，接口必须另行实现
 
-OKF v0.2 的价值，不是证明 Markdown 还能加多少 YAML。它第一次把 Agent 大规模消费知识时最缺的四类信号放进一个轻量、可移植的接口：来源、生成与复核、生命周期、受认可计算。它也诚实地没有声称自己解决身份认证、访问控制、写入事务、冲突、检索、上下文编译和运行时治理。
+OKF v0.2 的价值，不是证明 Markdown 还能加多少 YAML。它把 Agent 大规模消费知识时最缺的四类信号组织成一份轻量、可移植的契约：来源、生成与复核、生命周期、受认可计算。它也诚实地没有声称自己已经提供身份认证、访问控制、写入事务、冲突、检索、上下文编译和运行时治理接口。
 
 对当前知识库，答案是：
 
@@ -469,7 +474,7 @@ OKF v0.2 的价值，不是证明 Markdown 还能加多少 YAML。它第一次�
 - **飓创是否做到？** 领域导航与高风险确定性执行较强，来源、快照、事务和运行证明仍不完整。
 - **是否需要做到？** 需要，但只对高变化、高复用、高错误代价且会驱动 Agent 行动的知识做到；普通私人笔记和稳定人读文章不应被迫承担同样流程。
 
-最稳妥的下一步不是迁移 139 份 Markdown，而是挑 10 个 Concept，建立一条选择性 OKF 投影和一个真的会拒绝内容的 Trust Gate。**格式只有在改变消费者行为时，才成为信任接口。**
+最稳妥的下一步不是迁移 139 份 Markdown，而是挑 10 个 Concept，建立一条选择性 OKF 契约投影和一个真的会拒绝内容的 Trust Gate。**契约负责让信任可以被共同理解，接口负责让信任真正改变消费者行为。**
 
 ## 参考资料
 
