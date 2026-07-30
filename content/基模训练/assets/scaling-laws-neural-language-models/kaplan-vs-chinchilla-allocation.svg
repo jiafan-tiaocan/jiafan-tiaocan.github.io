@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Kaplan 与 Chinchilla 的计算最优扩展指数对比</title>
+  <desc id="desc">Kaplan 2020 将算力增长更多分配给模型参数，指数为 0.73，训练数据指数为 0.27；Chinchilla 2022 的代表性结果接近 0.50 和 0.50。图中同时给出算力增加十倍时的倍率。</desc>
+  <rect width="1200" height="720" fill="#0B1220"/>
+  <style>
+    text { font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+    .title { fill: #E6EDF7; font-size: 34px; font-weight: 700; }
+    .subtitle { fill: #9FB0C6; font-size: 19px; }
+    .card-title { fill: #E6EDF7; font-size: 25px; font-weight: 700; }
+    .label { fill: #E6EDF7; font-size: 20px; font-weight: 600; }
+    .small { fill: #9FB0C6; font-size: 17px; }
+    .value { fill: #E6EDF7; font-size: 25px; font-weight: 700; }
+    .takeaway { fill: #E6EDF7; font-size: 20px; font-weight: 650; }
+  </style>
+
+  <text x="64" y="70" class="title">同样增加训练算力，模型和数据应该怎样一起长？</text>
+  <text x="64" y="105" class="subtitle">下方是最优规模随算力增长的幂指数；它不是“算力百分比”，而是 C 增长时 N 与训练 Token 的增长速度。</text>
+
+  <rect x="64" y="145" width="1072" height="214" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="92" y="188" class="card-title">Kaplan et al., 2020</text>
+  <text x="92" y="218" class="small">Nₒₚₜ ∝ C⁰·⁷³，训练 Token ∝ C⁰·²⁷</text>
+
+  <text x="92" y="267" class="label">增长指数</text>
+  <rect x="230" y="244" width="632" height="42" rx="10" fill="#16243A"/>
+  <rect x="230" y="244" width="461" height="42" rx="10" fill="#A78BFA"/>
+  <rect x="691" y="244" width="171" height="42" rx="10" fill="#F6C85F"/>
+  <text x="446" y="273" text-anchor="middle" class="value">参数 0.73</text>
+  <text x="777" y="273" text-anchor="middle" class="value">Token 0.27</text>
+  <text x="900" y="262" class="small">算力 ×10：</text>
+  <text x="900" y="296" class="takeaway">参数 ×5.37 · Token ×1.86</text>
+  <text x="92" y="330" class="small">原论文的资源判断：更大的模型、较少的数据增量、显著早停。</text>
+
+  <rect x="64" y="383" width="1072" height="214" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="92" y="426" class="card-title">Hoffmann et al.（Chinchilla）, 2022</text>
+  <text x="92" y="456" class="small">代表性估计 Nₒₚₜ ∝ C⁰·⁵⁰，训练 Token ∝ C⁰·⁵⁰；三种方法给出的范围约为 0.46–0.50 / 0.50–0.54。</text>
+
+  <text x="92" y="505" class="label">增长指数</text>
+  <rect x="230" y="482" width="632" height="42" rx="10" fill="#16243A"/>
+  <rect x="230" y="482" width="316" height="42" rx="10" fill="#A78BFA"/>
+  <rect x="546" y="482" width="316" height="42" rx="10" fill="#F6C85F"/>
+  <text x="388" y="511" text-anchor="middle" class="value">参数 0.50</text>
+  <text x="704" y="511" text-anchor="middle" class="value">Token 0.50</text>
+  <text x="900" y="500" class="small">算力 ×10：</text>
+  <text x="900" y="534" class="takeaway">参数 ×3.16 · Token ×3.16</text>
+  <text x="92" y="568" class="small">后续修正：仍然不必把模型训到收敛，但应把更多预算给训练数据。</text>
+
+  <rect x="64" y="626" width="1072" height="54" rx="14" fill="#16243A"/>
+  <circle cx="92" cy="653" r="7" fill="#46D9E8"/>
+  <text x="112" y="660" class="takeaway">框架被继承，指数被改写：scaling law 最可靠的用途是校准当前训练配方，而不是背诵一个永久常数。</text>
+</svg>
