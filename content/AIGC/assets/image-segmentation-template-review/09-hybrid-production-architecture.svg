@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1880" height="820" viewBox="0 0 1880 820">
+  <defs>
+    <linearGradient id="ocean" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08264f"/>
+      <stop offset="1" stop-color="#0d7a96"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101c49"/>
+      <stop offset="1" stop-color="#4d3e92"/>
+    </linearGradient>
+    <linearGradient id="softBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#edf4ff"/>
+      <stop offset="1" stop-color="#f6fbff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#18233a" flood-opacity=".14"/>
+    </filter>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#2f6df6"/>
+    </marker>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#c9d5e8" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1880" height="820" fill="#ffffff"/>
+  
+    <text x="70" y="70" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="38" font-weight="750" fill="#172033" text-anchor="start">推荐生产架构：开放理解、确定性执行、可编辑验收</text><text x="70" y="108" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="21" font-weight="400" fill="#5f6b7a" text-anchor="start">模型不是整条链路；稳定性来自版本化 Schema、门禁、工具回放与失败样本闭环</text>
+    <rect x="65" y="260" width="235" height="150" rx="22" fill="#ffffff" stroke="#102a54" stroke-width="4"/>
+        <text x="182.5" y="315" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="800" fill="#102a54" text-anchor="middle">1</text>
+        <text x="182.5" y="358" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#172033" text-anchor="middle">输入规范化</text>
+        <line x1="300" y1="335" x2="355" y2="335" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/><rect x="365" y="260" width="235" height="150" rx="22" fill="#ffffff" stroke="#7857d8" stroke-width="4"/>
+        <text x="482.5" y="315" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="800" fill="#7857d8" text-anchor="middle">2</text>
+        <text x="482.5" y="358" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#172033" text-anchor="middle">VLM 语义解析</text>
+        <line x1="600" y1="335" x2="655" y2="335" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/><rect x="665" y="260" width="235" height="150" rx="22" fill="#ffffff" stroke="#2f6df6" stroke-width="4"/>
+        <text x="782.5" y="315" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="800" fill="#2f6df6" text-anchor="middle">3</text>
+        <text x="782.5" y="358" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#172033" text-anchor="middle">契约门禁</text>
+        <line x1="900" y1="335" x2="955" y2="335" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/><rect x="965" y="260" width="235" height="150" rx="22" fill="#ffffff" stroke="#ff7a45" stroke-width="4"/>
+        <text x="1082.5" y="315" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="800" fill="#ff7a45" text-anchor="middle">4</text>
+        <text x="1082.5" y="358" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#172033" text-anchor="middle">工具执行</text>
+        <line x1="1200" y1="335" x2="1255" y2="335" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/><rect x="1265" y="260" width="235" height="150" rx="22" fill="#ffffff" stroke="#13a9c7" stroke-width="4"/>
+        <text x="1382.5" y="315" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="800" fill="#13a9c7" text-anchor="middle">5</text>
+        <text x="1382.5" y="358" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#172033" text-anchor="middle">模版写入</text>
+        <line x1="1500" y1="335" x2="1555" y2="335" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/><rect x="1565" y="260" width="235" height="150" rx="22" fill="#ffffff" stroke="#19a974" stroke-width="4"/>
+        <text x="1682.5" y="315" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="800" fill="#19a974" text-anchor="middle">6</text>
+        <text x="1682.5" y="358" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#172033" text-anchor="middle">编辑验收</text>
+        
+    <rect x="65" y="505" width="1735" height="170" rx="24" fill="#f7f9fc" stroke="#d2dbea" stroke-width="2"/>
+    <text x="100" y="550" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="750" fill="#172033" text-anchor="start">每层必须留下可回归证据</text>
+    <rect x="100" y="580" width="230" height="42" rx="21" fill="#102a54" stroke="#102a54" stroke-width="1"/><text x="215" y="609" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">输入哈希</text>
+    <rect x="350" y="580" width="230" height="42" rx="21" fill="#7857d8" stroke="#7857d8" stroke-width="1"/><text x="465" y="609" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">模型与 Prompt 版本</text>
+    <rect x="600" y="580" width="230" height="42" rx="21" fill="#2f6df6" stroke="#2f6df6" stroke-width="1"/><text x="715" y="609" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">Schema 版本</text>
+    <rect x="850" y="580" width="230" height="42" rx="21" fill="#ff7a45" stroke="#ff7a45" stroke-width="1"/><text x="965" y="609" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">mask / 擦除结果</text>
+    <rect x="1100" y="580" width="230" height="42" rx="21" fill="#13a9c7" stroke="#13a9c7" stroke-width="1"/><text x="1215" y="609" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">图层操作日志</text>
+    <rect x="1350" y="580" width="230" height="42" rx="21" fill="#19a974" stroke="#19a974" stroke-width="1"/><text x="1465" y="609" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">编辑成功率</text>
+    <rect x="1600" y="580" width="160" height="42" rx="21" fill="#e94d5c" stroke="#e94d5c" stroke-width="1"/><text x="1680" y="609" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">回退原因</text>
+    <line x1="1680" y1="410" x2="1680" y2="505" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+    <text x="65" y="770" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="750" fill="#102a54" text-anchor="start">真正的端到端指标：结构能解析 → 元素找完整 → 位置可用 → 背景干净 → 图层可改 → 重排后仍合法。</text>
+  
+</svg>

@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="980" viewBox="0 0 1900 980">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#315efb"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#e8722a"/>
+    </marker>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#edf4ff"/>
+      <stop offset="1" stop-color="#f8fbff"/>
+    </linearGradient>
+    <linearGradient id="project" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7f3ff"/>
+      <stop offset="1" stop-color="#fff8f1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1900" height="980" fill="#ffffff"/>
+  <rect x="55" y="45" width="1790" height="110" rx="24" fill="url(#header)" stroke="#c8d8ef" stroke-width="2"/>
+  <text x="90" y="92" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="38" font-weight="750" fill="#172033">从 Bounding Box 到可编辑图层</text>
+  <text x="90" y="132" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="21" fill="#566277">技术演进不是“框被 mask 淘汰”，而是语义定位、像素边界、背景恢复与设计关系逐步分工</text>
+
+  <text x="60" y="205" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="750" fill="#172033">能力演进：每次升级都在补上一种旧输出无法表达的信息</text>
+
+  <g font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif">
+    <rect x="60" y="235" width="305" height="225" rx="22" fill="#f7faff" stroke="#a9c5f5" stroke-width="2"/>
+    <text x="88" y="275" font-size="18" font-weight="700" fill="#315efb">2015 · U-Net</text>
+    <text x="88" y="315" font-size="25" font-weight="750" fill="#172033">密集语义分割</text>
+    <text x="88" y="353" font-size="19" fill="#566277">“每个像素是什么？”</text>
+    <rect x="88" y="378" width="116" height="38" rx="19" fill="#315efb"/>
+    <text x="146" y="404" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">class mask</text>
+    <text x="88" y="442" font-size="17" fill="#8b4d35">瓶颈：不区分同类实例</text>
+
+    <line x1="365" y1="348" x2="405" y2="348" stroke="#315efb" stroke-width="4" marker-end="url(#arrow)"/>
+
+    <rect x="415" y="235" width="305" height="225" rx="22" fill="#f8f7ff" stroke="#c1b6ef" stroke-width="2"/>
+    <text x="443" y="275" font-size="18" font-weight="700" fill="#7756d9">2017 · Mask R-CNN</text>
+    <text x="443" y="315" font-size="25" font-weight="750" fill="#172033">实例分割</text>
+    <text x="443" y="353" font-size="19" fill="#566277">“这是哪个对象的像素？”</text>
+    <rect x="443" y="378" width="150" height="38" rx="19" fill="#7756d9"/>
+    <text x="518" y="404" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">box + mask</text>
+    <text x="443" y="442" font-size="17" fill="#8b4d35">瓶颈：类别封闭、标注昂贵</text>
+
+    <line x1="720" y1="348" x2="760" y2="348" stroke="#315efb" stroke-width="4" marker-end="url(#arrow)"/>
+
+    <rect x="770" y="235" width="305" height="225" rx="22" fill="#f4fbff" stroke="#96d3df" stroke-width="2"/>
+    <text x="798" y="275" font-size="18" font-weight="700" fill="#138ea6">2022 · YOLOv7</text>
+    <text x="798" y="315" font-size="25" font-weight="750" fill="#172033">实时目标检测</text>
+    <text x="798" y="353" font-size="19" fill="#566277">“已知对象在哪里？”</text>
+    <rect x="798" y="378" width="118" height="38" rx="19" fill="#138ea6"/>
+    <text x="857" y="404" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">bbox</text>
+    <text x="798" y="442" font-size="17" fill="#8b4d35">瓶颈：框不等于像素边界</text>
+
+    <line x1="1075" y1="348" x2="1115" y2="348" stroke="#315efb" stroke-width="4" marker-end="url(#arrow)"/>
+
+    <rect x="1125" y="235" width="335" height="225" rx="22" fill="#f4fff9" stroke="#9bdabd" stroke-width="2"/>
+    <text x="1153" y="275" font-size="18" font-weight="700" fill="#199c69">2023–2024</text>
+    <text x="1153" y="315" font-size="25" font-weight="750" fill="#172033">Grounding + SAM 2</text>
+    <text x="1153" y="353" font-size="19" fill="#566277">“按语言找框，再按提示找边界”</text>
+    <rect x="1153" y="378" width="192" height="38" rx="19" fill="#199c69"/>
+    <text x="1249" y="404" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">text → box → mask</text>
+    <text x="1153" y="442" font-size="17" fill="#8b4d35">瓶颈：业务角色仍需全局语义</text>
+
+    <line x1="1460" y1="348" x2="1500" y2="348" stroke="#315efb" stroke-width="4" marker-end="url(#arrow)"/>
+
+    <rect x="1510" y="235" width="335" height="225" rx="22" fill="#fff8f2" stroke="#f2bf9d" stroke-width="2"/>
+    <text x="1538" y="275" font-size="18" font-weight="700" fill="#e8722a">2025 · Qwen2.5-VL</text>
+    <text x="1538" y="315" font-size="25" font-weight="750" fill="#172033">结构化视觉理解</text>
+    <text x="1538" y="353" font-size="19" fill="#566277">“它在版式中承担什么角色？”</text>
+    <rect x="1538" y="378" width="216" height="38" rx="19" fill="#e8722a"/>
+    <text x="1646" y="404" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle">role + bbox + JSON</text>
+    <text x="1538" y="442" font-size="17" fill="#8b4d35">边界：仍需像素工具与编辑器</text>
+  </g>
+
+  <rect x="55" y="505" width="1790" height="405" rx="28" fill="url(#project)" stroke="#d9c9ed" stroke-width="2"/>
+  <text x="90" y="552" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="750" fill="#172033">项目路线：不是一个“YOLO 分割器”，而是一条按元素性质分配责任的混合工作流</text>
+
+  <g font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif">
+    <rect x="90" y="610" width="190" height="110" rx="20" fill="#ffffff" stroke="#2c426b" stroke-width="3"/>
+    <text x="185" y="655" font-size="21" font-weight="750" fill="#172033" text-anchor="middle">广告成品图</text>
+    <text x="185" y="689" font-size="17" fill="#566277" text-anchor="middle">单层像素</text>
+
+    <line x1="280" y1="665" x2="340" y2="665" stroke="#315efb" stroke-width="4" marker-end="url(#arrow)"/>
+
+    <rect x="350" y="585" width="225" height="82" rx="18" fill="#eef5ff" stroke="#8fb4f3" stroke-width="2"/>
+    <text x="462" y="618" font-size="19" font-weight="750" fill="#172033" text-anchor="middle">Logo</text>
+    <text x="462" y="647" font-size="16" fill="#315efb" text-anchor="middle">YOLOv7 bbox → 原块保留</text>
+
+    <rect x="350" y="682" width="225" height="82" rx="18" fill="#eef5ff" stroke="#8fb4f3" stroke-width="2"/>
+    <text x="462" y="715" font-size="19" font-weight="750" fill="#172033" text-anchor="middle">文字</text>
+    <text x="462" y="744" font-size="16" fill="#315efb" text-anchor="middle">OCR box → 可编辑文字层</text>
+
+    <rect x="600" y="585" width="270" height="82" rx="18" fill="#f3efff" stroke="#b8a7e8" stroke-width="2"/>
+    <text x="735" y="618" font-size="19" font-weight="750" fill="#172033" text-anchor="middle">主视觉</text>
+    <text x="735" y="647" font-size="16" fill="#7756d9" text-anchor="middle">Qwen2.5-VL bbox → 区域抠图</text>
+
+    <rect x="600" y="682" width="270" height="82" rx="18" fill="#effaf5" stroke="#98d5b8" stroke-width="2"/>
+    <text x="735" y="715" font-size="19" font-weight="750" fill="#172033" text-anchor="middle">按钮</text>
+    <text x="735" y="744" font-size="16" fill="#199c69" text-anchor="middle">GroundingDINO bbox → SAM2 mask</text>
+
+    <line x1="575" y1="625" x2="600" y2="625" stroke="#315efb" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="575" y1="723" x2="600" y2="723" stroke="#315efb" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <line x1="870" y1="674" x2="945" y2="674" stroke="#315efb" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="955" y="610" width="245" height="128" rx="20" fill="#ffffff" stroke="#e8722a" stroke-width="3"/>
+    <text x="1077" y="650" font-size="20" font-weight="750" fill="#172033" text-anchor="middle">合并前景 mask</text>
+    <text x="1077" y="683" font-size="16" fill="#566277" text-anchor="middle">检查外扩、相邻元素污染</text>
+    <text x="1077" y="714" font-size="16" fill="#e8722a" text-anchor="middle">不是简单框内全删</text>
+
+    <line x1="1200" y1="674" x2="1260" y2="674" stroke="#e8722a" stroke-width="4" marker-end="url(#arrowOrange)"/>
+    <rect x="1270" y="610" width="250" height="128" rx="20" fill="#fff7ef" stroke="#e8722a" stroke-width="3"/>
+    <text x="1395" y="650" font-size="20" font-weight="750" fill="#172033" text-anchor="middle">恢复背景</text>
+    <text x="1395" y="684" font-size="16" fill="#566277" text-anchor="middle">FLUX.1 Fill + 移除 LoRA</text>
+    <text x="1395" y="714" font-size="16" fill="#566277" text-anchor="middle">+ LaMa 互相约束</text>
+
+    <line x1="1520" y1="674" x2="1580" y2="674" stroke="#315efb" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="1590" y="595" width="215" height="158" rx="22" fill="#eefaf5" stroke="#28a873" stroke-width="3"/>
+    <text x="1697" y="638" font-size="21" font-weight="750" fill="#172033" text-anchor="middle">Sketch 模版</text>
+    <text x="1697" y="672" font-size="16" fill="#566277" text-anchor="middle">背景 / 元素 / 文字</text>
+    <text x="1697" y="702" font-size="16" fill="#566277" text-anchor="middle">图层、层级与编辑验收</text>
+    <text x="1697" y="735" font-size="17" font-weight="700" fill="#28a873" text-anchor="middle">终点不是一张新图</text>
+  </g>
+
+  <rect x="350" y="807" width="1170" height="66" rx="18" fill="#fff2ea" stroke="#f0b48e" stroke-width="2"/>
+  <text x="935" y="849" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="750" fill="#9c461d" text-anchor="middle">关键纠正：YOLOv7 在项目中负责 Logo 的 BBox 检测；像素分割只在需要透明边界的局部资产上按需使用。</text>
+
+  <text x="60" y="952" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="700" fill="#304666">本文归纳；项目阶段以存档材料为准，公开模型机制以对应论文和官方仓库为准。</text>
+</svg>
