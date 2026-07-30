@@ -735,6 +735,7 @@ Table 1 的 $O(1)$ 最大路径是结构分析：任意两个位置经过一层�
 
 在本知识库中：
 
+- [[论文解读：BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding]] 只继承原始 Transformer 的 Encoder：这里的输入 $X$ 对应 BERT 的 token、segment 与 position embedding 之和，Encoder 输出 $H$ 对应每个 token 的上下文表示 $T_i$；原始 Decoder、causal self-attention 与 Encoder–Decoder Cross-Attention 全部删除。BERT 论文实际验证的是 MLM 让这套 Encoder 能在所有层联合使用左右上下文，并通过少量任务输出头迁移到分类、标注和抽取式问答；WordPiece、`[CLS]/[SEP]`、80/10/10 遮蔽、NSP 与端到端微调都超出了 2017 年 Transformer 论文的证据，不能被倒算成原始架构已经完成的实践。
 - [[论文解读：Scalable Diffusion Models with Transformers]] 把 Self-Attention 用在 VAE latent patch 上；原始 DiT 用 adaLN-Zero 注入时间和类别，而不是把所有条件都交给 Cross-Attention；
 - [[努力做一个可以让人记住的Diffusion推导]] 中，Stable Diffusion 的 U-Net 让图像 latent 作为 Query、文本 token 作为 K/V；
 - [[论文解读：StreamingTalker: Audio-driven 3D Facial Animation with Autoregressive Diffusion Model]] 中，causal self-attention 管历史运动，audio–motion cross-attention 管语音条件。
