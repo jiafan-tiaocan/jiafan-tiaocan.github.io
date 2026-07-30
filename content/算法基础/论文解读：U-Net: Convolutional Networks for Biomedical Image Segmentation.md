@@ -7,7 +7,7 @@ tags:
   - 图像分割
   - 医学图像
   - 卷积神经网络
-date: 2015-06-01
+date: 2023-02-01
 noteType: paper
 publish: true
 aliases:
@@ -23,7 +23,7 @@ aliases:
 官方材料：[作者项目页与 2015 Caffe 发布包](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)。
 
 > [!note] 时间线说明
-> 原稿于 **2015-05-18** 提交 arXiv，Springer 于 **2015-11-18** 首次在线。本文按技术史月份归入 **2015 年 6 月**，Frontmatter 使用 `2015-06-01` 作为月粒度排序锚点，并不把它冒充成论文的正式发表日；本文证据复核于 **2026-07-30**。
+> 原稿于 **2015-05-18** 提交 arXiv，Springer 于 **2015-11-18** 首次在线。本文在博客中的日期按知识库整理时间归入 **2023 年 2 月**，Frontmatter 使用 `2023-02-01` 作为月粒度排序锚点，并不把它冒充成论文的正式发表日；本文证据复核于 **2026-07-30**。
 
 图表复用说明：Springer 页面标注论文版权为 © 2015 Springer International Publishing Switzerland，arXiv 使用的是非独占分发许可而非 CC 许可。下文仅保留评论和教学所必需的原图，完整标注 Figure 编号和一手来源，不主张图片版权；处理与哈希记录保存在同目录 `assets/unet-paper/sources.md`，作为 Vault 内审计文件，不构成公开正文依赖。
 
