@@ -196,35 +196,132 @@ Caption 消融有一个反直觉结果：只看 Elo，简单的中间帧 CoCa Ca
 
 串联所有过滤后，LVD 从约 577M 缩到 **LVD-F 的 152M**。它不是某个单项比例的简单乘积，因为各类低质量样本存在重叠。
 
-## 五、Video U-Net 到底改了什么
+## 五、从 SD 2.1 到 SVD：完整网络结构到底改了什么
 
-### 5.1 从二维空间网络变成“空间之后再混时间”
+先纠正一个容易造成误解的说法：**SVD 不是“把 Stable Diffusion 的 2D U-Net 换成一个 3D U-Net”**。它保留 SD2.1 的 latent diffusion 管线和多尺度 U 形空间骨架，再把时间模块插到对应空间模块之后。论文明确说架构沿用前作 [Align Your Latents / Video LDM](https://arxiv.org/abs/2304.08818)；SVD 的结构贡献更多是继承、放大并通过数据课程验证这套做法，而不是重新发明一种视频主干。
 
-输入视频先由 VAE 编码到 latent space，U-Net 仍保留 SD2.1 的多尺度空间路径。时间信息不是把所有帧摊成一张大图，而是在每个空间模块后增加沿帧维度的混合：
+还要分清三个经常被混在一起的层次：
+
+1. **完整生成管线**：条件编码器、VAE、去噪器、采样器；
+2. **Video U-Net 主干**：Down / Middle / Up、跨尺度 Skip，以及内部的时空模块；
+3. **公开 I2V 条件接口**：参考图双路条件、FPS、motion bucket、conditioning augmentation。
+
+### 5.1 一张图先看懂：骨架没换，时间路径被插了进去
+
+![Stable Diffusion 2.1 与 Stable Video Diffusion 的完整管线和 Video U-Net 结构差异](assets/stable-video-diffusion-paper/sd21-vs-svd-video-unet.svg)
+
+*本文据论文补充材料 Appendix D–E、Video LDM 与官方固定源码重绘。左图表达 SD2.1 的心智模型，不是逐层复刻原始配置；右图的 8→4 通道、CLIP 图像条件和微条件专指公开 I2V 配置。论文主模型新增 656M 时间参数、Video U-Net 合计 1.521B；这两个数字不能自动套到所有后续 checkpoint。*
+
+两者的共同点比差异更重要：输入都先进入 latent space，去噪器都使用四级多尺度 Down / Middle / Up 路径，Down 特征仍通过 Skip Connection 送到对称的 Up Block。**所谓从 SD 到 SVD，不是推翻空间生成器，而是在同一分辨率层级上让特征多走一条时间支路。**
+
+| 比较项 | Stable Diffusion 2.1 | Stable Video Diffusion |
+|---|---|---|
+| 基本对象 | 一次处理一张图的 latent | 实现中常把 Batch 与帧合并，逐帧处理空间特征 |
+| 输入输出 | 通常 4 通道带噪 latent → 4 通道预测 | 论文 T2V base 仍以视频 latent 为核心；公开 I2V 为 8 通道输入 → 4 通道输出 |
+| ResBlock | 2D 空间卷积 | 空间 ResBlock 后接时间 ResBlock |
+| Attention | 帧内 self-attention / cross-attention | 空间 Transformer 后接时间 Transformer |
+| U 形路径 | 四级 Down、Middle、四级 Up、Skip | 保留相同多尺度拓扑，每级内部换成时空 Block |
+| 条件 | 文本条件、扩散噪声步 | 任务相关的文本或图像条件；公开 I2V 另有 FPS、运动、条件噪声微条件 |
+| 解码 | 图像 VAE Decoder | 带时间卷积的 `VideoDecoder`，利用邻帧信息减轻逐帧解码闪烁 |
+| 初始化与训练 | 图像模型 | 空间层由 SD2.1 初始化；SVD 随后同时训练空间层和新增时间层 |
+
+> [!important] 这里的“U-Net”不是 2015 年分割模型的原样复用
+> SVD 继承的是现代 latent diffusion U-Net：多尺度编码—解码与 Skip 是 U-Net 骨架，内部单元已经是带 timestep 调制的 ResBlock 和 Transformer / Cross-Attention。理解 SVD 时，不能把它想成“经典分割 U-Net 外面再包一层视频模块”。
+
+### 5.2 打开一个 Block：`(B·T,C,H,W)` 怎样真的开始“看时间”
+
+![Stable Video Diffusion 的 VideoResBlock 与 SpatialVideoTransformer 张量流](assets/stable-video-diffusion-paper/svd-spatiotemporal-block-tensor-flow.svg)
+
+*本文据固定提交中的 [`VideoResBlock`](https://github.com/Stability-AI/generative-models/blob/e8cd657656fa5d61688191730d0e03242bf4ed44/sgm/modules/diffusionmodules/video_model.py#L17-L86)、[`SpatialVideoTransformer`](https://github.com/Stability-AI/generative-models/blob/e8cd657656fa5d61688191730d0e03242bf4ed44/sgm/modules/video_attention.py#L147-L301) 与 [`AlphaBlender`](https://github.com/Stability-AI/generative-models/blob/e8cd657656fa5d61688191730d0e03242bf4ed44/sgm/modules/diffusionmodules/util.py#L342-L399) 重绘。橙色步骤只是张量重排；复杂度式是本文根据张量流给出的推导，不是论文实验结果。*
+
+#### A. 时间卷积：只沿帧轴看邻居
+
+设 U-Net 某层特征为：
 
 $$
-h'
+x\in\mathbb R^{(B\cdot T)\times C\times H\times W}
+$$
+
+`VideoResBlock` 先复用原来的 2D `ResBlock`，此时 $B\cdot T$ 可以理解为“把每一帧当成 Batch 中的一张图”。随后源码执行：
+
+$$
+(B\cdot T,C,H,W)
+\longrightarrow
+(B,C,T,H,W)
+$$
+
+再进入 3D `ResBlock`。公开 SVD-XT 1.1 配置的卷积核是 $3\times1\times1$：时间尺寸为 3，空间尺寸都是 1。因此它让同一空间坐标 $(h,w)$ 读取前后帧，但不会在这一支里再次扩大二维空间感受野。可以把职责记成：
+
+- 空间 ResBlock：这一帧的局部纹理应该怎么画；
+- 时间 ResBlock：这个位置相邻三帧应该怎样连续变化。
+
+时间结果并非简单加回空间结果，而是由 `AlphaBlender` 融合：
+
+$$
+h_{\mathrm{out}}
 =
-h_{\mathrm{spatial}}
+\alpha h_{\mathrm{spatial}}
 +
-\alpha\,
-h_{\mathrm{temporal}}
+(1-\alpha)h_{\mathrm{temporal}}
 $$
 
-这里是结构层面的示意，不是论文给出的唯一实现公式。核心含义是：同一帧先建立空间表征，再让相同空间位置和压缩后的 token 跨帧交换信息。论文还使用独立的 temporal cross-attention，因此可以探索“空间 Prompt 描述内容、时间 Prompt 描述运动”的分工，不过这只是补充材料中的早期探针，并非稳定可控的正式接口。
+公开配置使用 `learned_with_images`。对视频帧，$\alpha$ 由一个可学习标量经 Sigmoid 得到；对 `image_only_indicator` 标记的图像样本，源码令 $\alpha=1$，即只走空间结果。这个细节解释了为什么同一骨架可以联合接收图像与视频样本，又不强迫静态图像产生虚构的时间变化。
 
-### 5.2 当前官方 SVD-XT 配置能补充哪些实现事实
+#### B. 时间注意力：把“同一位置的多帧”排成一句话
 
-官方 `svd_xt.yaml` 在固定提交中给出的公开图生视频配置包括：
+`SpatialVideoTransformer` 的空间支路先把一帧展成 $H\cdot W$ 个 token：
 
-- `VideoUNet` 输入 8 通道、输出 4 通道；
-- base channel 为 320，通道倍率为 `[1, 2, 4, 4]`，每级 2 个 ResBlock；
-- OpenCLIP 图像编码器冻结，context dimension 为 1024；
-- 附加条件包含 `fps_id`、`motion_bucket_id` 与 `cond_aug`；
-- VAE latent 为 4 通道，解码器使用带时间卷积的 `VideoDecoder`；
-- 采样使用 EDM Euler 与随帧线性变化的 guidance。
+$$
+(B\cdot T,C,H,W)
+\longrightarrow
+(B\cdot T,H\cdot W,C)
+$$
 
-这些配置能帮助理解发布 checkpoint，但不能反推为论文所有 T2V 消融模型都逐项相同。论文的小规模数据筛选实验、base model 与最终 I2V release 处在不同训练语境。
+空间 Transformer 在每帧内部完成 self-attention 和条件 cross-attention。时间支路随后把张量重组为：
+
+$$
+(B\cdot T,H\cdot W,C)
+\longrightarrow
+(B\cdot H\cdot W,T,C)
+$$
+
+现在一条长度为 $T$ 的 token 序列代表“固定空间位置在所有帧中的演化”。`VideoTransformerBlock` 对它做 temporal self-attention，并在未禁用时做 temporal cross-attention；源码还加入帧位置 embedding，使网络知道第 0 帧和第 20 帧不是同一个时间位置。
+
+这叫**因子化时空注意力**：先做帧内空间注意力，再做跨帧时间注意力。若忽略通道常数，直接对全部 $T\cdot H\cdot W$ token 做全注意力的复杂度是：
+
+$$
+\mathcal O\!\left((T H W)^2\right)
+$$
+
+因子化后的主项变成：
+
+$$
+\mathcal O\!\left(T(HW)^2+HW\,T^2\right)
+$$
+
+它既保留了“空间看全图、时间看跨帧”的语义分工，也避免一次全时空注意力的巨大开销。代价是空间与时间的交互要经过分步传播，而不是任意两个时空 token 一步直连。
+
+### 5.3 多尺度 Video U-Net 具体长什么样
+
+在官方 SVD-XT 1.1 配置中，`VideoUNet` 的 base channel 是 320，通道倍率为 `[1, 2, 4, 4]`，因此四个尺度的主通道数是 320、640、1280、1280；每级包含 2 个 ResBlock，attention resolutions 为 `[4, 2, 1]`，Middle Block 仍是 Res–Attention–Res。Down 路径保存的特征会在 Up 路径逐级 `cat` 回去，所以时间模块并没有取消 U-Net 对局部边缘、布局和高频细节的多尺度保真。
+
+公开配置把 `SpatialTransformer` 与 `VideoTransformerBlock` 成对组织；把 2D `ResBlock` 与使用 $3\times1\times1$ 核的时间 `ResBlock` 成对组织。论文所说的“在每个空间卷积和注意力层后插入对应时间层”，落到源码里就是这两类可重复的时空单元。
+
+> [!note] 论文事实与公开 checkpoint 配置的边界
+> - **论文直接披露**：空间层由 SD2.1 初始化；新增 656M 时间参数，U-Net 合计 1.521B；空间层不冻结，而是与时间层一起训练。
+> - **官方源码可见**：公开 SVD-XT 1.1 使用 8→4 通道 `VideoUNet`、`[1,2,4,4]` 通道倍率、`3×1×1` 时间卷积、`learned_with_images` 融合、1024 维图像 context，以及带时间卷积的 VAE Decoder。
+> - **不能混写**：论文中的 T2V base、筛选消融小模型、SVD / SVD-XT 与后来的 SVD-XT 1.1 不是同一个配置文件；后者只能帮助打开实现，不能反推所有论文实验逐项相同。
+
+### 5.4 这套结构对二次开发意味着什么
+
+最容易踩错的不是卷积核，而是维度语义。空间模块习惯处理 `(B·T,C,H,W)`，时间模块又要恢复 `(B,C,T,H,W)` 或 `(B·H·W,T,C)`。因此给 SVD 增加 Pose、深度、光流或逐帧 Mask 时，必须先回答：
+
+- 条件是在每帧空间位置注入，还是作为整段视频的时间条件注入？
+- Batch 与帧展平时采用什么顺序，条件 tensor 是否使用完全相同的 `rearrange`？
+- 条件需要进入 Down、Middle、Up 的哪些尺度，是否跟随 Skip？
+- 图像样本和视频样本混训时，`image_only_indicator` 是否正确传到所有 `AlphaBlender`？
+
+这也是后续 MimicMotion 不能只说“在 SVD 上加 Pose”的原因：真正的结构贡献必须落实到**在哪个尺度、哪个分支、什么张量形状、如何与原时空特征融合**。
 
 ## 六、图生视频为什么要让参考图走两条路
 
@@ -235,7 +332,7 @@ SVD 的 I2V 不是简单把首帧塞进 U-Net。参考图同时承担两种不�
 
 ![Stable Video Diffusion 图生视频中参考图经过 CLIP 与 VAE 的双路条件，并与视频噪声 latent 拼接](assets/stable-video-diffusion-paper/svd-i2v-conditioning.svg)
 
-*图 3　本文根据论文 §4.3、补充材料与官方 `svd_xt.yaml` 自绘。8 通道输入来自 4 通道视频噪声 latent 与 4 通道参考图 latent 的拼接；CLIP embedding 不在通道维拼接，而是进入 cross-attention。*
+*本文根据论文 §4.3、补充材料与官方 `svd_xt_1_1.yaml` 重绘。8 通道输入来自 4 通道视频噪声 latent 与 4 通道参考图 latent 的拼接；CLIP embedding 不在通道维拼接，而是进入 cross-attention。*
 
 训练时，作者先给参考图加入少量噪声：
 

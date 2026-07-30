@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Stable Video Diffusion 时空残差块与时空 Transformer 的张量流</title>
+  <desc id="desc">上半部分展示 VideoResBlock：逐帧二维空间残差块后将张量从批次帧合并形状重排为五维视频张量，使用三乘一乘一的时间残差块，再由 AlphaBlender 融合。下半部分展示 SpatialVideoTransformer：先在每帧的空间 token 上注意，再把相同空间位置跨帧重组为时间序列执行时间注意力，最后融合并恢复原形状。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#ECFEFF"/>
+    </linearGradient>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="11" flood-color="#0F172A" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#0F766E"/>
+    </marker>
+    <style>
+      .font{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+      .h1{font-size:36px;font-weight:750;fill:#0F172A}
+      .sub{font-size:21px;fill:#475569}
+      .section{font-size:27px;font-weight:750;fill:#0F172A}
+      .label{font-size:20px;font-weight:700;fill:#0F172A}
+      .small{font-size:18px;fill:#334155}
+      .tiny{font-size:16px;fill:#475569}
+      .white{fill:#FFFFFF}
+      .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:17px;fill:#0F172A}
+    </style>
+  </defs>
+
+  <rect width="1600" height="1080" rx="30" fill="url(#bg)"/>
+  <text x="70" y="72" class="font h1">打开一个 SVD 时空 Block：同一特征，先看空间，再看时间</text>
+  <text x="70" y="112" class="font sub">蓝色沿用 SD 的逐帧空间计算；青色只在时间维混合；橙色代表纯张量重排，不学习参数</text>
+
+  <!-- legend -->
+  <g>
+    <rect x="1022" y="54" width="27" height="27" rx="7" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+    <text x="1061" y="75" class="font tiny">空间</text>
+    <rect x="1143" y="54" width="27" height="27" rx="7" fill="#CCFBF1" stroke="#14B8A6" stroke-width="2"/>
+    <text x="1182" y="75" class="font tiny">时间</text>
+    <rect x="1264" y="54" width="27" height="27" rx="7" fill="#FFEDD5" stroke="#F97316" stroke-width="2"/>
+    <text x="1303" y="75" class="font tiny">重排</text>
+    <rect x="1385" y="54" width="27" height="27" rx="7" fill="#F3E8FF" stroke="#A855F7" stroke-width="2"/>
+    <text x="1424" y="75" class="font tiny">条件 / 融合</text>
+  </g>
+
+  <!-- top panel -->
+  <g filter="url(#shadow)">
+    <rect x="58" y="150" width="1484" height="375" rx="25" fill="#FFFFFF" stroke="#93C5FD" stroke-width="3"/>
+  </g>
+  <circle cx="101" cy="197" r="22" fill="#2563EB"/>
+  <text x="101" y="205" text-anchor="middle" class="font label white">1</text>
+  <text x="137" y="205" class="font section">VideoResBlock：3×1×1 只看相邻帧，不在空间上再次卷积</text>
+
+  <g>
+    <rect x="88" y="260" width="176" height="110" rx="17" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2.5"/>
+    <text x="176" y="299" text-anchor="middle" class="font label">输入特征</text>
+    <text x="176" y="334" text-anchor="middle" class="mono">(B·T,C,H,W)</text>
+
+    <rect x="324" y="246" width="216" height="138" rx="18" fill="#DBEAFE" stroke="#3B82F6" stroke-width="3"/>
+    <text x="432" y="288" text-anchor="middle" class="font label">空间 ResBlock</text>
+    <text x="432" y="322" text-anchor="middle" class="font small">2D Conv + timestep emb</text>
+    <text x="432" y="354" text-anchor="middle" class="font tiny">每一帧独立复用同一组权重</text>
+
+    <rect x="600" y="246" width="218" height="138" rx="18" fill="#FFEDD5" stroke="#F97316" stroke-width="3"/>
+    <text x="709" y="288" text-anchor="middle" class="font label">重排时间维</text>
+    <text x="709" y="322" text-anchor="middle" class="mono">(B,C,T,H,W)</text>
+    <text x="709" y="354" text-anchor="middle" class="font tiny">只是 reshape / rearrange</text>
+
+    <rect x="878" y="246" width="232" height="138" rx="18" fill="#CCFBF1" stroke="#14B8A6" stroke-width="3"/>
+    <text x="994" y="288" text-anchor="middle" class="font label">时间 ResBlock</text>
+    <text x="994" y="322" text-anchor="middle" class="font small">3D Conv，kernel = 3×1×1</text>
+    <text x="994" y="354" text-anchor="middle" class="font tiny">同一 (h,w) 看前后帧</text>
+
+    <rect x="1170" y="246" width="222" height="138" rx="18" fill="#F3E8FF" stroke="#A855F7" stroke-width="3"/>
+    <text x="1281" y="288" text-anchor="middle" class="font label">AlphaBlender</text>
+    <text x="1281" y="322" text-anchor="middle" class="font small">α·空间 + (1−α)·时间</text>
+    <text x="1281" y="354" text-anchor="middle" class="font tiny">α 可学习；图像帧保持空间支路</text>
+
+    <rect x="1432" y="260" width="82" height="110" rx="17" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2.5"/>
+    <text x="1473" y="299" text-anchor="middle" class="font label">输出</text>
+    <text x="1473" y="334" text-anchor="middle" class="font tiny">BTCHW</text>
+  </g>
+
+  <line x1="264" y1="315" x2="309" y2="315" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="540" y1="315" x2="585" y2="315" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="818" y1="315" x2="863" y2="315" stroke="#0F766E" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <line x1="1110" y1="315" x2="1155" y2="315" stroke="#0F766E" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <line x1="1392" y1="315" x2="1417" y2="315" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <path d="M432 384 C432 452 1182 452 1240 399" fill="none" stroke="#3B82F6" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#arrow)"/>
+  <text x="826" y="460" text-anchor="middle" class="font small" fill="#1D4ED8">空间结果作为一条旁路，和时间处理后的结果做可学习融合</text>
+  <text x="88" y="495" class="font tiny">源码锚点：VideoResBlock.forward；公开 I2V 配置 video_kernel_size = [3,1,1]，merge_strategy = learned_with_images</text>
+
+  <!-- bottom panel -->
+  <g filter="url(#shadow)">
+    <rect x="58" y="558" width="1484" height="455" rx="25" fill="#FFFFFF" stroke="#2DD4BF" stroke-width="3"/>
+  </g>
+  <circle cx="101" cy="605" r="22" fill="#0F766E"/>
+  <text x="101" y="613" text-anchor="middle" class="font label white">2</text>
+  <text x="137" y="613" class="font section">SpatialVideoTransformer：空间注意力看一帧，时间注意力看同一位置的多帧</text>
+
+  <g>
+    <rect x="88" y="665" width="184" height="118" rx="17" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2.5"/>
+    <text x="180" y="704" text-anchor="middle" class="font label">二维特征图</text>
+    <text x="180" y="739" text-anchor="middle" class="mono">(B·T,C,H,W)</text>
+    <text x="180" y="766" text-anchor="middle" class="font tiny">每帧一张 feature map</text>
+
+    <rect x="332" y="650" width="252" height="148" rx="18" fill="#DBEAFE" stroke="#3B82F6" stroke-width="3"/>
+    <text x="458" y="690" text-anchor="middle" class="font label">空间 Transformer</text>
+    <text x="458" y="725" text-anchor="middle" class="mono">(B·T, H·W, C)</text>
+    <text x="458" y="757" text-anchor="middle" class="font tiny">帧内 self-attn</text>
+    <text x="458" y="781" text-anchor="middle" class="font tiny">+ 图像 / 文本 cross-attn</text>
+
+    <rect x="644" y="650" width="252" height="148" rx="18" fill="#FFEDD5" stroke="#F97316" stroke-width="3"/>
+    <text x="770" y="690" text-anchor="middle" class="font label">按空间位置重组</text>
+    <text x="770" y="725" text-anchor="middle" class="mono">(B·H·W, T, C)</text>
+    <text x="770" y="757" text-anchor="middle" class="font tiny">每个 (h,w) 变成一条</text>
+    <text x="770" y="781" text-anchor="middle" class="font tiny">长度为 T 的时间序列</text>
+
+    <rect x="956" y="650" width="252" height="148" rx="18" fill="#CCFBF1" stroke="#14B8A6" stroke-width="3"/>
+    <text x="1082" y="690" text-anchor="middle" class="font label">时间 Transformer</text>
+    <text x="1082" y="725" text-anchor="middle" class="font small">temporal self-attn</text>
+    <text x="1082" y="757" text-anchor="middle" class="font tiny">+ temporal cross-attn</text>
+    <text x="1082" y="781" text-anchor="middle" class="font tiny">+ 帧位置 embedding</text>
+
+    <rect x="1268" y="650" width="246" height="148" rx="18" fill="#F3E8FF" stroke="#A855F7" stroke-width="3"/>
+    <text x="1391" y="690" text-anchor="middle" class="font label">融合并恢复形状</text>
+    <text x="1391" y="725" text-anchor="middle" class="font small">AlphaBlender + residual</text>
+    <text x="1391" y="757" text-anchor="middle" class="mono">(B·T,C,H,W)</text>
+    <text x="1391" y="781" text-anchor="middle" class="font tiny">继续进入下一层</text>
+  </g>
+
+  <line x1="272" y1="724" x2="317" y2="724" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="584" y1="724" x2="629" y2="724" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="896" y1="724" x2="941" y2="724" stroke="#0F766E" stroke-width="4" marker-end="url(#arrowTeal)"/>
+  <line x1="1208" y1="724" x2="1253" y2="724" stroke="#0F766E" stroke-width="4" marker-end="url(#arrowTeal)"/>
+
+  <rect x="88" y="842" width="690" height="120" rx="18" fill="#EFF6FF" stroke="#93C5FD" stroke-width="2.5"/>
+  <text x="114" y="880" class="font label" fill="#1D4ED8">为什么不直接对 T·H·W 个 token 做一次全注意力？</text>
+  <text x="114" y="916" class="font small">因子化后，空间与时间分别建模：</text>
+  <text x="114" y="946" class="font small">T·(H·W)² + H·W·T²，而不是 (T·H·W)²。</text>
+
+  <rect x="822" y="842" width="692" height="120" rx="18" fill="#ECFDF5" stroke="#5EEAD4" stroke-width="2.5"/>
+  <text x="848" y="880" class="font label" fill="#0F766E">这张图最重要的工程含义</text>
+  <text x="848" y="916" class="font small">Batch 与帧维频繁合并 / 拆开；新增 Pose、深度等逐帧条件时，</text>
+  <text x="848" y="946" class="font small">必须严格对齐 `(B,T)` 的展平顺序，否则形状正确、语义却会错帧。</text>
+
+  <text x="88" y="991" class="font tiny">源码锚点：SpatialVideoTransformer.forward 与 VideoTransformerBlock._forward；复杂度式为本文据因子化张量流给出的推导，不是论文实验结论。</text>
+</svg>
