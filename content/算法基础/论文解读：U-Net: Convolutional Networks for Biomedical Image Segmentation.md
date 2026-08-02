@@ -22,8 +22,6 @@ aliases:
 发表：[arXiv:1505.04597](https://arxiv.org/abs/1505.04597)，2015-05-18 提交；MICCAI 2015；[Springer](https://doi.org/10.1007/978-3-319-24574-4_28) 于 2015-11-18 首次在线。  
 官方材料：[作者项目页与 2015 Caffe 发布包](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)。
 
-图表复用说明：Springer 页面标注论文版权为 © 2015 Springer International Publishing Switzerland，arXiv 使用的是非独占分发许可而非 CC 许可。下文仅保留评论和教学所必需的原图，完整标注 Figure 编号和一手来源，不主张图片版权；处理与哈希记录保存在同目录 `assets/unet-paper/sources.md`，作为 Vault 内审计文件，不构成公开正文依赖。
-
 一周后只需留下一个画面：**左边不断缩小的特征图负责扩大视野，右边不断放大的特征图负责恢复位置；横向连接把“这里原来长什么样”送回解码器。**
 
 ## 1　先看一个会失败的场景：两枚挨在一起的细胞
