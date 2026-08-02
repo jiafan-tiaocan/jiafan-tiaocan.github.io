@@ -20,8 +20,6 @@ publish: true
 论文：Jacob Devlin、Ming-Wei Chang、Kenton Lee、Kristina Toutanova，**BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding**，NAACL-HLT 2019。  
 原始材料：[ACL Anthology](https://aclanthology.org/N19-1423/) · [论文 PDF](https://aclanthology.org/N19-1423.pdf) · [arXiv](https://arxiv.org/abs/1810.04805) · [Google 官方实现](https://github.com/google-research/bert) · [本文审计的初始公开代码版本](https://github.com/google-research/bert/tree/fe354751d7de010f60d362ae8d9343849ec39456)
 
-**图表复用说明：** ACL Anthology 对 2016 年及以后材料采用 [CC BY 4.0](https://aclanthology.org/faq/copyright/)。下文论文原图来自官方 arXiv source 或 ACL PDF，仅转为 PNG 或裁去无关页面区域；每处都保留 Figure/Table 编号、来源与证据边界。教学图会明确标为“本文重绘”。
-
 ## 一、先看真正的矛盾：双向网络为什么会“泄题”
 
 假设输入是：
