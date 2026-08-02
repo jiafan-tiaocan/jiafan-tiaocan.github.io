@@ -21,16 +21,6 @@ aliases:
 >
 > Skill、Tool、Hook、持久化、Subagent、Sandbox 在这套设计中有清楚的位置：Skill 是按需披露的程序性上下文；Tool 是类型化副作用；Hook 是生命周期插槽；Session 是追加式事件树；Subagent 是 Core 之上的组合模式；Sandbox 则明确属于进程和操作系统边界。Pi 的“简洁”不是功能少，而是**没有把不同层次的问题揉成同一个抽象**。
 
-> [!note] 时间线说明
-> 本文按 2026-02-02 归档；源码证据于 2026-07-20 固定并复核，2026-07-28 补充 Tool Call 运行证据与 ACP 生态边界。后文出现的后续能力，不代表它们在归档日已经以完全相同的形态存在。
-
-> [!tip] 三条阅读路线
-> - **只想理解 Agent Core：** 先看仓库地图、Tool Call、`agentLoop()`、`Agent` 与 `AgentHarness`。
-> - **准备实现长期Agent：** 再读 Tool / Hook、Skill、Session、Compaction 与 Branch。
-> - **准备嵌入生产系统：** 最后读 Subagent、Sandbox、RPC / ACP、进程模型与限制。
->
-> 读者只需熟悉基本的 TypeScript 与 `async/await`；不需要了解 Pi 的 TUI。
-
 ## 0. 先说结论：为什么它配得上 Agent Core 典范
 
 如果把界面、CLI、模型供应商和具体工具全部拿掉，一个 Agent 最少还剩什么？
