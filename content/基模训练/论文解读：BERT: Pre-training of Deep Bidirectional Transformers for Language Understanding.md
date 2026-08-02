@@ -20,16 +20,7 @@ publish: true
 论文：Jacob Devlin、Ming-Wei Chang、Kenton Lee、Kristina Toutanova，**BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding**，NAACL-HLT 2019。  
 原始材料：[ACL Anthology](https://aclanthology.org/N19-1423/) · [论文 PDF](https://aclanthology.org/N19-1423.pdf) · [arXiv](https://arxiv.org/abs/1810.04805) · [Google 官方实现](https://github.com/google-research/bert) · [本文审计的初始公开代码版本](https://github.com/google-research/bert/tree/fe354751d7de010f60d362ae8d9343849ec39456)
 
-**时间说明：** 论文于 2018 年 10 月提交 arXiv，2019 年 6 月发表于 NAACL；本笔记按知识库编排放在 **2023-03-01**，论文、源码与后续反证于 **2026-07-30** 重新核验。不要把归档日期误读为论文发表时间或当年的实践时间。
-
 **图表复用说明：** ACL Anthology 对 2016 年及以后材料采用 [CC BY 4.0](https://aclanthology.org/faq/copyright/)。下文论文原图来自官方 arXiv source 或 ACL PDF，仅转为 PNG 或裁去无关页面区域；每处都保留 Figure/Table 编号、来源与证据边界。教学图会明确标为“本文重绘”。
-
-本文面向已经知道 token、矩阵乘法、softmax 和基本 Transformer 结构的读者。Self-Attention、Q/K/V、残差与 FFN 的完整推导可先看 [[论文解读：Attention Is All You Need]]。阅读路线：
-
-1. 只想抓住直觉：读第一、二、八、十一节；
-2. 想真正理解 MLM：读第三、四节；
-3. 想复现原始配方：读五、六、九节；
-4. 想判断论文证据强弱：读七、八、十节。
 
 ## 一、先看真正的矛盾：双向网络为什么会“泄题”
 
