@@ -23,14 +23,6 @@ code_revision: "CompVis/latent-diffusion@a506df5756472e2ebaf9078affdde2c4f1502cd
 论文：Robin Rombach、Andreas Blattmann、Dominik Lorenz、Patrick Esser、Björn Ommer，**High-Resolution Image Synthesis with Latent Diffusion Models**，CVPR 2022 Oral。  
 主来源：[CVF 论文页](https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html)｜[论文 PDF](https://openaccess.thecvf.com/content/CVPR2022/papers/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.pdf)｜[补充材料](https://openaccess.thecvf.com/content/CVPR2022/supplemental/Rombach_High-Resolution_Image_Synthesis_CVPR_2022_supplemental.pdf)｜[arXiv v2](https://arxiv.org/abs/2112.10752v2)｜[官方代码](https://github.com/CompVis/latent-diffusion/tree/a506df5756472e2ebaf9078affdde2c4f1502cd4)
 
-> [!note] 版本、命名与证据边界
-> - 论文最早于 **2021-12-20** 提交，本文以 **2022-04-13 的 arXiv v2 / CVPR 2022 版本**为论文事实来源。v2 更新了 1.45B 文生图模型、ImageNet 结果、Classifier-Free Guidance 与用户研究。
-> - 日常所说的“Stable Diffusion 原始论文”通常就是这篇 LDM 论文，但二者不能画等号：论文提出并验证系统骨架；**Stable Diffusion v1 是论文之后的一套具体 checkpoint、文本编码器、训练数据与训练配方**。
-> - “论文事实”指正文、补充材料直接陈述或测量的内容；“源码事实”分别锚定官方 LDM 提交 `a506df5` 与 Stable Diffusion v1 提交 `21f890f`；“本文推导”会显式标注。
-> - arXiv v2 标注的是 [non-exclusive distribution license](https://arxiv.org/licenses/nonexclusive-distrib/1.0/)，不是明确授权第三方再发布的 CC 许可。因此公开版不转载 CVF PDF 裁切：需要核对原始曲线或样例时直接链接论文；正文内的栅格图来自作者官方 MIT 仓库，另有三张明确标注的教学示意图。
-
-这是一篇长文。只想建立直觉，读第 1、3、8、12 节；想把图片结构、数学目标与代码真正接起来，直接读第 4–7 节，尤其是第 5 节；想判断证据强弱，重点读第 8、9 节；想把论文与 Stable Diffusion v1 的真实配置对齐，直接读第 10 节。第 5 节会在本文内完成必要的 ELBO 桥接；需要完整推导时再看 [[努力做一个可以让人记住的Diffusion推导]]。U 形多尺度骨架和 Cross-Attention 的基础分别见 [[论文解读：U-Net: Convolutional Networks for Biomedical Image Segmentation]] 与 [[论文解读：Attention Is All You Need]]。
-
 ## 一、先纠正一个名字带来的误会：论文模型不等于 SD v1
 
 这篇论文回答的是一个**模型类别**问题：怎样让 Diffusion 不再把绝大多数算力消耗在高分辨率像素上，同时保留图像结构和多种条件接口？它给出的答案叫 **Latent Diffusion Model，LDM**。
