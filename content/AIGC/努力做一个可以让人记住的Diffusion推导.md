@@ -1473,6 +1473,11 @@ generated_points = sample_flow(model, solver="heun")
 - 早期DDPM通常直接在像素空间加噪，而Stable Diffusion先将图片压缩到latent space，再逐步加噪和去噪，并通过cross-attention引入文字条件。
 - SD3采用Rectified Flow训练目标与MMDiT架构，而不是照搬经典DDPM的U-Net噪声预测方案。
 - 经典SD = latent diffusion + 文本条件+ VAE +去噪网络+Sampler
+
+> [!note] 从本文推导到原始 LDM 论文
+> 本文前半使用 $x_t$ 推导像素空间 Diffusion；Rombach 等人的 [[论文解读：High-Resolution Image Synthesis with Latent Diffusion Models]] 没有改写这条概率路径，而是先固定一个轻度感知压缩的自编码器，再把状态替换为 $z_0=\mathcal E(x)$ 与 $z_t=\alpha_tz_0+\sigma_t\epsilon$。对应到本文符号，就是 $x_t\rightarrow z_t$、$\alpha_t\rightarrow\sqrt{\bar\alpha_t}$、$\sigma_t\rightarrow\sqrt{1-\bar\alpha_t}$；训练仍是随机一个 $t$ 预测噪声，推理仍是采样器反复调用同一个去噪网络。
+>
+> 原论文真正验证的是三件事：轻度压缩能把反复计算移出 RGB 空间；$f=4$–$8$ 在效率与重建上限之间形成甜点区；Cross-Attention 能让文本、类别和布局共享同一个 U-Net 条件接口。后来的 Stable Diffusion v1 在此骨架上换成冻结的 CLIP ViT-L/14、860M U-Net、512×512 数据课程和专门支持 CFG 的条件丢弃训练；下文使用的 Diffusers `stable-diffusion-v1-5` 又是这一后续家族的工程接口，不能把它的全部配置反写成 LDM 论文已经验证的事实。
 ## SD图解
 这里会非常推崇[SD图解](https://jalammar.github.io/illustrated-stable-diffusion/)这篇文章，我们保留一些精髓部分，可以直接看视频。本文事实上也参考了这篇文章的推理逻辑。
 
