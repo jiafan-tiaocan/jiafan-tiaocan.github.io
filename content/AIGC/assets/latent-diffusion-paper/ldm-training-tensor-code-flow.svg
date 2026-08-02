@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="810" viewBox="0 0 1440 810" role="img" aria-labelledby="title desc">
+  <title id="title">一张训练图片如何变成一个 Latent Diffusion 训练样本</title>
+  <desc id="desc">从 RGB 图像经过冻结的 VAE Encoder 得到 z0，随机抽取时刻和噪声构造 zt，U-Net 结合文本条件预测噪声，最后通过均方误差更新 U-Net。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#F6C85F"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="810" fill="#0B1220"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="60" y="64" fill="#E6EDF7" font-size="38" font-weight="700">一张训练图片如何变成一个 LDM 训练样本</text>
+    <text x="60" y="101" fill="#9FB0C6" font-size="20">同一条链同时标出张量、网络职责与代码动作；蓝色是已知计算，紫色是可学习网络，黄色是监督信号。</text>
+
+    <!-- Stage cards -->
+    <rect x="55" y="150" width="310" height="470" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+    <rect x="395" y="150" width="310" height="470" rx="22" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+    <rect x="735" y="150" width="310" height="470" rx="22" fill="#111C2E" stroke="#A78BFA" stroke-width="2"/>
+    <rect x="1075" y="150" width="310" height="470" rx="22" fill="#111C2E" stroke="#F6C85F" stroke-width="2"/>
+
+    <text x="80" y="192" fill="#46D9E8" font-size="22" font-weight="700">① 定义数据空间</text>
+    <text x="420" y="192" fill="#46D9E8" font-size="22" font-weight="700">② 构造一道训练题</text>
+    <text x="760" y="192" fill="#A78BFA" font-size="22" font-weight="700">③ U-Net 作答</text>
+    <text x="1100" y="192" fill="#F6C85F" font-size="22" font-weight="700">④ 用正确答案评分</text>
+
+    <!-- Card 1 -->
+    <rect x="82" y="225" width="256" height="74" rx="14" fill="#17263D" stroke="#46D9E8"/>
+    <text x="210" y="254" fill="#E6EDF7" text-anchor="middle" font-size="19" font-weight="600">RGB 图像 x</text>
+    <text x="210" y="282" fill="#9FB0C6" text-anchor="middle" font-size="17">[B, 3, 512, 512]</text>
+    <line x1="210" y1="300" x2="210" y2="331" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="82" y="337" width="256" height="90" rx="14" fill="#17263D" stroke="#46D9E8"/>
+    <text x="210" y="369" fill="#E6EDF7" text-anchor="middle" font-size="19" font-weight="600">冻结的 VAE Encoder</text>
+    <text x="210" y="397" fill="#9FB0C6" text-anchor="middle" font-size="17">encode(x).sample()</text>
+    <text x="210" y="419" fill="#5DD39E" text-anchor="middle" font-size="16">requires_grad = false</text>
+    <line x1="210" y1="428" x2="210" y2="459" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="82" y="465" width="256" height="96" rx="14" fill="#17263D" stroke="#46D9E8"/>
+    <text x="210" y="497" fill="#E6EDF7" text-anchor="middle" font-size="20" font-weight="700">干净 latent z₀</text>
+    <text x="210" y="526" fill="#9FB0C6" text-anchor="middle" font-size="17">[B, 4, 64, 64]</text>
+    <text x="210" y="551" fill="#9FB0C6" text-anchor="middle" font-size="16">乘 scale_factor</text>
+
+    <!-- Card 2 -->
+    <rect x="422" y="225" width="118" height="62" rx="12" fill="#2A2630" stroke="#F6C85F"/>
+    <text x="481" y="252" fill="#F6C85F" text-anchor="middle" font-size="18" font-weight="700">随机时刻 t</text>
+    <text x="481" y="276" fill="#9FB0C6" text-anchor="middle" font-size="15">每图一个</text>
+    <rect x="558" y="225" width="120" height="62" rx="12" fill="#2A2630" stroke="#F6C85F"/>
+    <text x="618" y="252" fill="#F6C85F" text-anchor="middle" font-size="18" font-weight="700">真实噪声 ε</text>
+    <text x="618" y="276" fill="#9FB0C6" text-anchor="middle" font-size="15">N(0, I)</text>
+    <line x1="481" y1="288" x2="481" y2="322" stroke="#F6C85F" stroke-width="2.5" marker-end="url(#arrow-amber)"/>
+    <line x1="618" y1="288" x2="618" y2="322" stroke="#F6C85F" stroke-width="2.5" marker-end="url(#arrow-amber)"/>
+    <rect x="422" y="330" width="256" height="118" rx="14" fill="#17263D" stroke="#46D9E8"/>
+    <text x="550" y="365" fill="#E6EDF7" text-anchor="middle" font-size="20" font-weight="700">已知前向过程 q</text>
+    <text x="550" y="399" fill="#E6EDF7" text-anchor="middle" font-size="17">zₜ = √ᾱₜ z₀ + √(1−ᾱₜ) ε</text>
+    <text x="550" y="431" fill="#46D9E8" text-anchor="middle" font-size="16">scheduler.add_noise</text>
+    <line x1="550" y1="449" x2="550" y2="480" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="422" y="486" width="256" height="75" rx="14" fill="#17263D" stroke="#46D9E8"/>
+    <text x="550" y="516" fill="#E6EDF7" text-anchor="middle" font-size="20" font-weight="700">带噪 latent zₜ</text>
+    <text x="550" y="545" fill="#9FB0C6" text-anchor="middle" font-size="17">[B, 4, 64, 64]</text>
+
+    <!-- Card 3 -->
+    <rect x="762" y="225" width="256" height="74" rx="14" fill="#241F3A" stroke="#A78BFA"/>
+    <text x="890" y="255" fill="#E6EDF7" text-anchor="middle" font-size="19" font-weight="600">输入：zₜ + timestep</text>
+    <text x="890" y="282" fill="#9FB0C6" text-anchor="middle" font-size="16">空间状态 + 当前噪声级别</text>
+    <line x1="890" y1="300" x2="890" y2="329" stroke="#A78BFA" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="762" y="337" width="256" height="124" rx="14" fill="#241F3A" stroke="#A78BFA"/>
+    <text x="890" y="370" fill="#A78BFA" text-anchor="middle" font-size="21" font-weight="700">可训练 U-Net</text>
+    <text x="890" y="401" fill="#E6EDF7" text-anchor="middle" font-size="17">Down → Middle → Up</text>
+    <text x="890" y="428" fill="#9FB0C6" text-anchor="middle" font-size="16">ResBlock · Skip · Attention</text>
+    <text x="890" y="452" fill="#F6C85F" text-anchor="middle" font-size="16">文本 c 通过 Cross-Attention 注入</text>
+    <line x1="890" y1="462" x2="890" y2="491" stroke="#A78BFA" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="762" y="499" width="256" height="62" rx="14" fill="#241F3A" stroke="#A78BFA"/>
+    <text x="890" y="526" fill="#E6EDF7" text-anchor="middle" font-size="19" font-weight="700">预测噪声 ε̂θ</text>
+    <text x="890" y="551" fill="#9FB0C6" text-anchor="middle" font-size="16">形状与 zₜ、ε 完全相同</text>
+
+    <!-- Card 4 -->
+    <rect x="1102" y="225" width="256" height="86" rx="14" fill="#2A2630" stroke="#F6C85F"/>
+    <text x="1230" y="257" fill="#F6C85F" text-anchor="middle" font-size="18" font-weight="700">正确答案</text>
+    <text x="1230" y="288" fill="#E6EDF7" text-anchor="middle" font-size="19">真实 ε</text>
+    <line x1="1230" y1="312" x2="1230" y2="345" stroke="#F6C85F" stroke-width="3" marker-end="url(#arrow-amber)"/>
+    <rect x="1102" y="353" width="256" height="126" rx="14" fill="#2A2630" stroke="#F6C85F"/>
+    <text x="1230" y="385" fill="#E6EDF7" text-anchor="middle" font-size="20" font-weight="700">噪声预测 MSE</text>
+    <text x="1230" y="421" fill="#E6EDF7" text-anchor="middle" font-size="18">‖ ε − ε̂θ(zₜ,t,c) ‖²</text>
+    <text x="1230" y="451" fill="#F6C85F" text-anchor="middle" font-size="16">一个随机 t 的简化局部目标</text>
+    <line x1="1230" y1="480" x2="1230" y2="508" stroke="#5DD39E" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="1102" y="516" width="256" height="45" rx="12" fill="#17372F" stroke="#5DD39E"/>
+    <text x="1230" y="545" fill="#5DD39E" text-anchor="middle" font-size="17" font-weight="700">反向传播只更新 U-Net</text>
+
+    <!-- Between-card arrows -->
+    <line x1="365" y1="386" x2="386" y2="386" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="705" y1="386" x2="726" y2="386" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="1045" y1="386" x2="1066" y2="386" stroke="#A78BFA" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <!-- Bottom takeaway -->
+    <rect x="55" y="658" width="1330" height="104" rx="18" fill="#101B2B" stroke="#31445F" stroke-width="2"/>
+    <text x="82" y="697" fill="#E6EDF7" font-size="20" font-weight="700">读图结论</text>
+    <text x="82" y="730" fill="#9FB0C6" font-size="18">训练第二阶段时，Encoder 每张图只运行一次，Decoder 不参与；真正被 ELBO 训练的是 U-Net 参数化的反向一步。</text>
+    <text x="82" y="756" fill="#9FB0C6" font-size="18">随机抽一个 t 并不是省略理论，而是在用蒙特卡洛方法估计重加权时间步目标的求和。</text>
+  </g>
+</svg>

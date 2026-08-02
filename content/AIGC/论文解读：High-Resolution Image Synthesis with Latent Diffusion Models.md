@@ -8,17 +8,17 @@ tags:
   - Stable-Diffusion
   - 图像生成
   - 生成模型
-date: 2021-12-20
+date: 2023-06-24
 noteType: paper
 publish: true
 paper_version: "CVPR 2022 / arXiv:2112.10752v2"
-last_verified: 2026-08-02
+last_verified: 2026-08-03
 code_revision: "CompVis/latent-diffusion@a506df5756472e2ebaf9078affdde2c4f1502cd4; CompVis/stable-diffusion@21f890f9da3cfbeaba8e2ac3c425ee9e998d5229"
 ---
 
 # 论文解读：High-Resolution Image Synthesis with Latent Diffusion Models
 
-> **核心判断：这篇论文没有改变 Diffusion 的概率路径，而是把“反复在高分辨率 RGB 上计算”的责任拆开了——预训练自编码器先做一次轻度的感知压缩，Diffusion 只在保留二维结构的 latent 上学习语义分布；最关键的证据不是漂亮样片，而是 Figure 5 的压缩率实验：压得太少，训练仍然慢；压得太狠，生成质量的上限又被第一阶段锁死。**
+> **核心判断：先固定自编码器，令 $z_0=\mathcal E(x)$；从这一刻起，$z_0$ 就占据 DDPM 理论中“数据 $x_0$”的位置。LDM 仍用 Diffusion ELBO 约束 $\log p_\theta(z_0\mid c)$，U-Net 参数化其中每个反向条件分布，代码里的噪声预测误差则是逐步 KL 的可计算、重加权形式。论文真正改变的是这套概率建模发生的状态空间：预训练自编码器先做一次感知压缩，Diffusion 再在二维 latent 上学习语义分布。最关键的证据是 Figure 5：压得太少，训练仍然慢；压得太狠，生成质量上限又被第一阶段锁死。**
 
 论文：Robin Rombach、Andreas Blattmann、Dominik Lorenz、Patrick Esser、Björn Ommer，**High-Resolution Image Synthesis with Latent Diffusion Models**，CVPR 2022 Oral。  
 主来源：[CVF 论文页](https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html)｜[论文 PDF](https://openaccess.thecvf.com/content/CVPR2022/papers/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.pdf)｜[补充材料](https://openaccess.thecvf.com/content/CVPR2022/supplemental/Rombach_High-Resolution_Image_Synthesis_CVPR_2022_supplemental.pdf)｜[arXiv v2](https://arxiv.org/abs/2112.10752v2)｜[官方代码](https://github.com/CompVis/latent-diffusion/tree/a506df5756472e2ebaf9078affdde2c4f1502cd4)
@@ -27,9 +27,9 @@ code_revision: "CompVis/latent-diffusion@a506df5756472e2ebaf9078affdde2c4f1502cd
 > - 论文最早于 **2021-12-20** 提交，本文以 **2022-04-13 的 arXiv v2 / CVPR 2022 版本**为论文事实来源。v2 更新了 1.45B 文生图模型、ImageNet 结果、Classifier-Free Guidance 与用户研究。
 > - 日常所说的“Stable Diffusion 原始论文”通常就是这篇 LDM 论文，但二者不能画等号：论文提出并验证系统骨架；**Stable Diffusion v1 是论文之后的一套具体 checkpoint、文本编码器、训练数据与训练配方**。
 > - “论文事实”指正文、补充材料直接陈述或测量的内容；“源码事实”分别锚定官方 LDM 提交 `a506df5` 与 Stable Diffusion v1 提交 `21f890f`；“本文推导”会显式标注。
-> - arXiv v2 标注的是 [non-exclusive distribution license](https://arxiv.org/licenses/nonexclusive-distrib/1.0/)，不是明确授权第三方再发布的 CC 许可。因此公开版不转载 CVF PDF 裁切：需要核对原始曲线或样例时直接链接论文；正文内的栅格图来自作者官方 MIT 仓库，另有一张明确标注的教学示意图。
+> - arXiv v2 标注的是 [non-exclusive distribution license](https://arxiv.org/licenses/nonexclusive-distrib/1.0/)，不是明确授权第三方再发布的 CC 许可。因此公开版不转载 CVF PDF 裁切：需要核对原始曲线或样例时直接链接论文；正文内的栅格图来自作者官方 MIT 仓库，另有三张明确标注的教学示意图。
 
-这是一篇长文。只想建立直觉，读第 1、3、8、12 节；想弄清训练与推理，读第 4–7 节；想判断证据强弱，重点读第 8、9 节；想把论文与 Stable Diffusion v1 的真实配置对齐，直接读第 10 节。扩散的 ELBO、噪声预测与 Score 推导可先看 [[努力做一个可以让人记住的Diffusion推导]]；U 形多尺度骨架和 Cross-Attention 的基础分别见 [[论文解读：U-Net: Convolutional Networks for Biomedical Image Segmentation]] 与 [[论文解读：Attention Is All You Need]]。
+这是一篇长文。只想建立直觉，读第 1、3、8、12 节；想把图片结构、数学目标与代码真正接起来，直接读第 4–7 节，尤其是第 5 节；想判断证据强弱，重点读第 8、9 节；想把论文与 Stable Diffusion v1 的真实配置对齐，直接读第 10 节。第 5 节会在本文内完成必要的 ELBO 桥接；需要完整推导时再看 [[努力做一个可以让人记住的Diffusion推导]]。U 形多尺度骨架和 Cross-Attention 的基础分别见 [[论文解读：U-Net: Convolutional Networks for Biomedical Image Segmentation]] 与 [[论文解读：Attention Is All You Need]]。
 
 ## 一、先纠正一个名字带来的误会：论文模型不等于 SD v1
 
@@ -88,12 +88,15 @@ $$
 f=\frac{H}{h}=\frac{W}{w}.
 $$
 
-这里最容易误解的是“VAE”三个字。论文的第一阶段不是只用像素 MSE 和标准 ELBO 的朴素 VAE，而是沿用 VQGAN 路线，把**感知损失、Patch 判别器和很轻的 latent 正则**组合起来：
+这里最容易误解的是“VAE”三个字。论文的第一阶段不是只用像素 MSE 和标准 ELBO 的朴素 VAE，而是沿用 [[论文解读：Taming Transformers for High-Resolution Image Synthesis|VQGAN]] 路线，把**感知损失、Patch 判别器和很轻的 latent 正则**组合起来：
 
 - 感知损失让重建结果保留人眼在意的结构与纹理；
 - Patch 对抗目标约束局部结果落在真实图像流形附近，减轻纯 $L_1/L_2$ 的模糊；
 - KL-reg 只施加约 $10^{-6}$ 权重的轻微 KL 约束，VQ-reg 则使用高容量码本；
 - 训练第二阶段时，第一阶段被固定，不再同时拉扯“重建好”和“先验好”两个目标。
+
+> [!note] “沿用 VQGAN”不等于 Stable Diffusion 使用 VQGAN 的完整生成系统
+> VQGAN 论文先把图像量化成离散码本索引，再由自回归 Transformer 逐 token 生成；LDM 真正继承的是“感知损失 + PatchGAN 训练高质量压缩器，再冻结第一阶段”的职责划分。LDM 同时实验 VQ-reg 与连续 KL-reg，Stable Diffusion v1 选择后者，因此没有离散码本；第二阶段也已从自回归 Transformer 换成 latent 上的 Diffusion U-Net。完整前因见 [[论文解读：Taming Transformers for High-Resolution Image Synthesis]]。
 
 先看论文 [Figure 1](https://openaccess.thecvf.com/content/CVPR2022/papers/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.pdf#page=2) 的局部细节：同样观察盘子边缘、人物眼睛和发丝，轻度下采样的 $f=4$ 重建更接近输入；更激进的压缩会把后续生成模型永远无法恢复的信息提前丢掉。下面是作者官方仓库给出的另一组第一阶段重建对照，放大框让这种不可逆损失更容易看见。
 
@@ -106,48 +109,174 @@ $$
 > [!important] $f$ 只描述空间边长，不等于总张量缩小倍数
 > 以 Stable Diffusion v1 的具体配置为例，$512\times512\times3$ 会变成 $64\times64\times4$。空间位置减少 $8^2=64$ 倍，标量元素从 786,432 减到 16,384，即 48 倍。这个比值有助于建立直觉，但不能直接当成 U-Net FLOPs 或显存的精确缩减倍数，因为通道数、特征层级、Attention 和实现开销也会变化。
 
-## 五、第二阶段：Diffusion 公式几乎没变，只把 $x$ 换成了 $z$
+## 五、关键桥梁：把论文 Figure 3、ELBO、U-Net 和代码放进同一张图
 
-先对干净 latent 加噪：
+“把 $x_t$ 换成 $z_t$”在代数上没有错，却很容易让人误以为 ELBO 被留在了像素空间，而 LDM 只是额外套了一个 VAE。真正完整的关系是：**Encoder 先定义新的数据分布 $z_0\sim q_{\mathcal E}(z)$；随后 DDPM 的前向链、ELBO、Score 与反向网络全部在这个分布上重新成立。**
+
+### 5.1 先分清两种 KL：它们属于两个训练阶段
+
+Stable Diffusion 的资料里会同时遇到两种 KL，这正是最容易断线的地方：
+
+| 出现位置 | 约束对象 | 更新谁 | 在系统里的职责 |
+|---|---|---|---|
+| 第一阶段自编码器的 KL-reg | $q_\phi(z_0\mid x)$ 与简单先验之间的距离 | 训练自编码器时更新 Encoder/Decoder | 让连续 latent 受到轻微正则，便于后续建模 |
+| 第二阶段 Diffusion ELBO 的逐步 KL | 正确反向后验 $q(z_{t-1}\mid z_t,z_0)$ 与模型反向分布 $p_\theta(z_{t-1}\mid z_t,c)$ | 训练 LDM 时主要更新 U-Net | 让从噪声回到真实 latent 的每一步都可学习 |
+
+第一阶段还混合感知损失和 PatchGAN，对应的不是一个干净、端到端联合优化的“整套 SD 图像 ELBO”。论文采用的是**分阶段训练**：先得到可重建图像的表示空间并冻结，再在这个空间里训练一个 Diffusion prior。
+
+### 5.2 先读论文 Figure 3：哪些盒子属于哪一阶段
+
+看作者的系统图时先只找四件事：左侧 Encoder 把像素变成 $z_0$；中间 U-Net 接收某个带噪 $z_t$；右侧条件编码器把文本、布局或语义图变成 $c$；最左侧 Decoder 只负责把最终 latent 还原成图像。
+
+![论文原图 Figure 3 的作者官方仓库版本：像素经编码器进入 latent；U-Net 在 latent 中反复去噪；文本、语义图或图像条件经领域编码器后，通过 Cross-Attention 或拼接进入网络。](assets/latent-diffusion-paper/official-ldm-model-figure.png)
+
+*论文原图 Figure 3 的作者官方仓库版本；它保留论文方法图的核心结构。来源：[CompVis/latent-diffusion 固定提交中的 `modelfigure.png`](https://github.com/CompVis/latent-diffusion/blob/a506df5756472e2ebaf9078affdde2c4f1502cd4/assets/modelfigure.png)，仓库采用 [MIT License](https://github.com/CompVis/latent-diffusion/blob/a506df5756472e2ebaf9078affdde2c4f1502cd4/LICENSE)。*
+
+这张图定义了系统职责，却没有展开两件事：$z_t$ 如何由 $z_0$ 构造，以及 U-Net 为什么要预测噪声。下面两张教学图专门打开这两个隐藏层。
+
+### 5.3 一张 512×512 图片在训练代码里到底怎样流动
+
+下面用 Stable Diffusion v1 的典型形状建立具体直觉；论文里的其他 LDM 会因 $f$、输入分辨率和通道数不同而改变形状，但计算关系相同。
+
+![本文教学图：一张 512×512 RGB 图片经过冻结 VAE 得到 64×64×4 latent，前向加噪得到 z_t，带 Cross-Attention 的 U-Net 预测噪声，再与真实噪声计算训练损失。](assets/latent-diffusion-paper/ldm-training-tensor-code-flow.svg)
+
+*本文根据 LDM 论文 §3.2–3.3、Figure 3 与官方固定源码重绘；它把论文图未展示的张量形状、训练监督和代码动作放到同一条链上，不是论文原图。*
+
+这张图最需要记住的不是尺寸，而是**谁知道答案**：
+
+- 前向过程自己采样了 $\epsilon$，所以训练代码知道正确噪声是什么；
+- U-Net 看不到干净 $z_0$ 和真实 $\epsilon$，只看到 $z_t$、时刻 $t$ 与条件 $c$；
+- Decoder 不参与第二阶段训练；它不会替 U-Net 提供像素重建误差；
+- 反向传播只要求 U-Net 从当前状态中恢复那份被加入的噪声。
+
+### 5.4 ELBO 约束的不是 VAE，而是 U-Net 参数化的反向链
+
+把 Encoder 冻结后，定义：
 
 $$
-z_0=\mathcal E(x),
-\qquad
-z_t=\alpha_t z_0+\sigma_t\epsilon,
-\qquad
-\epsilon\sim\mathcal N(0,I).
+q(z_{1:T}\mid z_0)
+=
+\prod_{t=1}^{T}q(z_t\mid z_{t-1}),
 $$
 
-再训练带时间条件的 U-Net 预测噪声：
+$$
+p_\theta(z_{0:T}\mid c)
+=
+p(z_T)\prod_{t=1}^{T}p_\theta(z_{t-1}\mid z_t,c).
+$$
+
+这里的 $q$ 是没有可训练参数的前向加噪链；$p_\theta$ 是生成时真正要运行的反向链。我们希望真实 $z_0$ 在条件 $c$ 下获得高概率，但 $\log p_\theta(z_0\mid c)$ 需要积分掉整条未知轨迹。于是使用已知的 $q$ 构造下界：
+
+$$
+\log p_\theta(z_0\mid c)
+\ge
+\underbrace{
+\mathbb E_{q(z_{1:T}\mid z_0)}
+\left[
+\log p_\theta(z_{0:T}\mid c)
+-
+\log q(z_{1:T}\mid z_0)
+\right]
+}_{\operatorname{ELBO}(z_0,c)}.
+$$
+
+负 ELBO 可以拆成终点项、逐步反向项与最后一步重建项；主要的可训练部分是：
+
+$$
+\mathcal L_{t-1}
+=
+\mathbb E_q
+\left[
+D_{\mathrm{KL}}
+\left(
+q(z_{t-1}\mid z_t,z_0)
+\,\Vert\,
+p_\theta(z_{t-1}\mid z_t,c)
+\right)
+\right].
+$$
+
+这个 KL 可以直接翻译成一道监督题：
+
+- $q(z_{t-1}\mid z_t,z_0)$：训练时知道干净 $z_0$，因此可以解析算出“正确的反向一步”；
+- $p_\theta(z_{t-1}\mid z_t,c)$：模型只能根据 $z_t$、$t$ 和条件 $c$ 猜反向一步；
+- U-Net 的输出负责参数化第二个分布，因此逐步 KL 最终训练的是 U-Net，而不是已冻结的 Encoder。
+
+ELBO 的作用不是在网络图里新增一个盒子，而是把“提高整张 latent 的生成概率”拆成“每个反向小步都接近正确后验”。如果所有小步都学得足够好，就能从 $z_T\sim\mathcal N(0,I)$ 串回真实 latent 分布。
+
+### 5.5 为什么逐步 KL 最后只剩噪声 MSE
+
+前向后验和模型反向分布都用高斯表示。方差不由 U-Net 自由输出时，高斯之间的 KL 可化为均值误差：
+
+$$
+D_{\mathrm{KL}}(q\Vert p_\theta)
+\propto
+\left\|
+\tilde\mu_t(z_t,z_0)
+-
+\mu_\theta(z_t,t,c)
+\right\|_2^2.
+$$
+
+再用噪声预测参数化 $\mu_\theta$，每个时间步的 ELBO 项就变成带权噪声误差：
+
+$$
+\mathcal L_{t-1}
+\propto
+w_t
+\left\|
+\epsilon
+-
+\epsilon_\theta(z_t,t,c)
+\right\|_2^2.
+$$
+
+LDM 论文使用与 DDPM 相同的简化、重加权目标，实践中直接优化：
 
 $$
 \mathcal L_{\mathrm{LDM}}
 =
-\mathbb E_{x,\epsilon,t}
+\mathbb E_{x,c,t,\epsilon}
 \left[
 \left\|
-\epsilon-\epsilon_\theta(z_t,t)
+\epsilon
+-
+\epsilon_\theta(z_t,t,c)
 \right\|_2^2
-\right].
-$$
-
-如果与 [[努力做一个可以让人记住的Diffusion推导]] 对照，本文的符号只是：
-
-$$
-\alpha_t\leftrightarrow\sqrt{\bar\alpha_t},
+\right],
 \qquad
-\sigma_t\leftrightarrow\sqrt{1-\bar\alpha_t},
-\qquad
-x_t\rightarrow z_t.
+z_0=\mathcal E(x).
 $$
 
-因此 LDM 没有发明新的前向马尔可夫链、ELBO 或 Score Matching；它改变的是**状态空间和系统分工**。这一点非常重要：换 DDPM、DDIM 或后来的采样器，解决的是“怎样沿概率路径走”；换到 latent，解决的是“每一步在哪里算”。
+![本文教学图：Latent Diffusion 从最大化 log p(z0|c) 出发，经 ELBO、逐步反向 KL、高斯均值误差，最终得到代码中的噪声预测 MSE。](assets/latent-diffusion-paper/ldm-elbo-to-noise-mse.svg)
 
-## 六、训练与推理：Encoder、U-Net、Decoder 并不同时做同一件事
+*本文根据 DDPM 论文 §2–3、LDM 论文 §3.2 与官方 `p_losses` 实现重绘；图中把严格带权 ELBO 项与实践使用的简化目标分开标注。*
 
-### 6.1 训练第二阶段
+这也把 Score Matching 接了回来。由
 
-一批图像只需：
+$$
+z_t=\alpha_t z_0+\sigma_t\epsilon
+$$
+
+可得前向条件分布的 score：
+
+$$
+\nabla_{z_t}\log q(z_t\mid z_0)
+=
+-\frac{\epsilon}{\sigma_t}.
+$$
+
+因此同一份 U-Net 输出可以使用三种语言理解：
+
+| 观察角度 | U-Net 在做什么 |
+|---|---|
+| ELBO | 让模型反向分布接近正确的一步后验 |
+| Score Matching | 估计当前带噪 latent 朝高密度区域移动的方向 |
+| 训练代码 | 预测加入 $z_0$ 的噪声并计算 MSE |
+
+它们不是三个互相拼接的算法，而是同一个训练信号的概率、几何与工程表述。
+
+### 5.6 最后把公式逐行对回代码
 
 ```python
 with torch.no_grad():
@@ -160,29 +289,49 @@ noise_pred = unet(z_t, t, context=condition_tokens)
 loss = mse(noise_pred, noise)
 ```
 
-训练时每个样本随机抽一个 $t$，不需要把同一张图完整去噪 $T$ 次。官方 LDM 源码把 `first_stage_model` 切到 `eval()`、覆盖其 `train` 行为并令全部参数 `requires_grad=False`；随后从高斯后验采样 latent，再乘 `scale_factor`。这正是“先固定感知空间，再学习生成先验”的工程落点。[源码：固定第一阶段并缩放 latent](https://github.com/CompVis/latent-diffusion/blob/a506df5756472e2ebaf9078affdde2c4f1502cd4/ldm/models/diffusion/ddpm.py#L498-L549)
+| 数学对象 | 代码动作 | 网络结构中的位置 |
+|---|---|---|
+| $z_0=\mathcal E(x)$ | `autoencoder.encode(images)` | 冻结 VAE Encoder，只定义数据空间 |
+| $t\sim U\{1,\ldots,T\}$ | `random_timesteps` | timestep embedding 告诉 U-Net 当前噪声级别 |
+| $q(z_t\mid z_0)$ | `alpha*z_0 + sigma*noise` | scheduler 的已知计算，没有可学习参数 |
+| $\epsilon_\theta(z_t,t,c)$ | `unet(..., context=...)` | Down/Middle/Up、Skip、ResBlock 与 Cross-Attention 共同实现这个函数 |
+| $\|\epsilon-\epsilon_\theta\|^2$ | `mse(noise_pred, noise)` | 一个随机时间步对简化、重加权目标求和的蒙特卡洛估计 |
 
-### 6.2 文生图推理
+官方固定源码中的 [`p_losses`](https://github.com/CompVis/latent-diffusion/blob/a506df5756472e2ebaf9078affdde2c4f1502cd4/ldm/models/diffusion/ddpm.py#L1012-L1045) 同时命名了 `loss_simple` 与带时间权重的 `loss_vlb`，并允许用 `original_elbo_weight` 配置二者的组合；这恰好保留了“理论 ELBO—实践简化损失”的工程边界。第一阶段的冻结与 latent 缩放见[同文件对应实现](https://github.com/CompVis/latent-diffusion/blob/a506df5756472e2ebaf9078affdde2c4f1502cd4/ldm/models/diffusion/ddpm.py#L498-L549)。
 
-推理时没有输入图像，因此 Encoder 根本不在主循环里：
+## 六、训练和推理是两张不同的计算图
+
+### 6.1 训练：随机抽一个 $t$，只学习一道局部反向题
+
+ELBO 看起来对 $T$ 个时间步求和，但训练不需要让同一张图真的走完整条加噪或去噪链。随机抽取 $t$、直接由闭式公式得到 $z_t$，就是对时间步求和的蒙特卡洛估计。
+
+一次训练迭代中：Encoder 每张图运行一次，Decoder 不运行，U-Net 也只运行一次；梯度只更新 U-Net 及论文设定中需要联合训练的条件器。这就是为什么训练代码只有一次 `unet(...)`，而不是一个长度为 $T$ 的循环。
+
+### 6.2 推理：没有 ELBO，也没有输入图像，只有反复调用同一个 U-Net
+
+文生图从高斯噪声开始：
 
 $$
-z_T\sim\mathcal N(0,I)
-\longrightarrow
-z_{T-1}\longrightarrow\cdots\longrightarrow z_0
+z_T\sim\mathcal N(0,I),
+\qquad
+\hat\epsilon_t=\epsilon_\theta(z_t,t,c),
+\qquad
+z_{t-1}=\operatorname{Sampler}(z_t,\hat\epsilon_t,t),
+$$
+
+$$
+z_T\longrightarrow z_{T-1}\longrightarrow\cdots\longrightarrow z_0
 \xrightarrow{\mathcal D}
 \tilde x.
 $$
+
+推理时没有 `loss`，ELBO 也不会作为模块运行；它已经通过训练塑造了 U-Net。Sampler 读取 U-Net 的输出，按照 DDPM ancestral、DDIM 或其他数值规则更新状态。DDIM 主要改变的是如何复用同一个已训练噪声预测器走反向路径，不会把 Encoder 或 ELBO 塞回推理循环。
 
 真正昂贵的是 U-Net 被采样器反复调用；Decoder 只在最后运行一次。LDM 降低了每次 U-Net 调用的空间成本，但没有消除串行调用，因此论文也明确承认它仍比 GAN 的一次前向慢。
 
 ## 七、Cross-Attention：让不同条件共享一个去噪骨架
 
-论文的第二个重要贡献不是“支持文本”这么窄，而是给 U-Net 设计了一个通用条件接口。先看作者同时放在官方仓库 README 中的方法图：左侧自编码器负责像素与 latent 的边界，中间 U-Net 负责每一步去噪，右侧领域编码器 $\tau_\theta$ 把文本、语义图、图像或其他条件变成表示；条件既可以拼接，也可以通过 Cross-Attention 注入。
-
-![LDM 官方方法图：像素经编码器进入 latent；U-Net 在 latent 中反复去噪；文本、语义图或图像条件经领域编码器后，通过 Cross-Attention 或拼接进入网络。](assets/latent-diffusion-paper/official-ldm-model-figure.png)
-
-*作者官方方法图，也是论文 Figure 3 的核心结构。来源：[CompVis/latent-diffusion 固定提交中的 `modelfigure.png`](https://github.com/CompVis/latent-diffusion/blob/a506df5756472e2ebaf9078affdde2c4f1502cd4/assets/modelfigure.png)，仓库采用 [MIT License](https://github.com/CompVis/latent-diffusion/blob/a506df5756472e2ebaf9078affdde2c4f1502cd4/LICENSE)。*
+论文的第二个重要贡献不是“支持文本”这么窄，而是给 U-Net 设计了一个通用条件接口。回看第 5 节的 Figure 3：右侧领域编码器 $\tau_\theta$ 把文本、语义图、图像或其他条件变成表示；条件既可以与 $z_t$ 拼接，也可以通过 Cross-Attention 注入 U-Net。这里的 $c$ 不是 ELBO 之外的附加装饰，它直接进入每一个模型反向分布 $p_\theta(z_{t-1}\mid z_t,c)$。
 
 设 U-Net 第 $i$ 层空间特征展平后为 $\varphi_i(z_t)\in\mathbb R^{N\times d_i}$，条件编码为 $\tau_\theta(y)\in\mathbb R^{M\times d_\tau}$：
 
@@ -329,7 +478,7 @@ Stable Diffusion v1 的训练资源也只能按模型卡描述：硬件为 **32�
 
 这篇论文把几条已有知识线索接了起来：
 
-- [[努力做一个可以让人记住的Diffusion推导]] 负责解释为什么噪声预测能学习反向过程；本文只把其中的 $x_t$ 换成 $z_t$，并解释为什么值得换。
+- [[努力做一个可以让人记住的Diffusion推导]] 给出像素空间里的完整概率推导；本文进一步说明 $z_0=\mathcal E(x)$ 如何成为新的“数据”，并把 latent 上的 ELBO、逐步 KL、Score、U-Net 与噪声预测代码重新接成同一条链。
 - [[论文解读：Attention Is All You Need]] 给出 Q/K/V 的通用机制；本文展示它怎样变成图像空间 Query 读取文本或布局 token 的接口。
 - [[论文解读：U-Net: Convolutional Networks for Biomedical Image Segmentation]] 解释多尺度 U 形骨架；LDM 保留这个空间归纳偏置，但内部块已加入 timestep 调制、残差与 Transformer。
 - [[论文解读：Scalable Diffusion Models with Transformers]] 继续沿用 VAE latent 和扩散外循环，只把去噪主干从 U-Net 换成 Transformer。
@@ -337,9 +486,10 @@ Stable Diffusion v1 的训练资源也只能按模型卡描述：硬件为 **32�
 
 ## 十四、一周后应该记住什么
 
-1. **LDM 的创新不是新扩散公式，而是把感知压缩与语义生成拆成两个阶段。**
-2. **压缩率存在甜点区：太轻省不了算力，太重先毁掉生成上限；Figure 5 比样片更能说明这篇论文。**
-3. **Cross-Attention 把条件变成通用接口；Stable Diffusion v1 在此骨架上更换了文本编码器、数据与训练配方，它不是论文模型的同义词。**
+1. **Encoder 输出的 $z_0$ 就是 DDPM 理论里的新“数据 $x_0$”；ELBO 没有消失，而是改为约束 $\log p_\theta(z_0\mid c)$。**
+2. **逐步 KL、Score 与噪声 MSE 是同一训练信号的三种语言；U-Net 参数化反向一步，Sampler 在推理时反复使用它。**
+3. **LDM 的系统创新是把感知压缩与语义生成拆成两个阶段；压缩太轻省不了算力，太重又会毁掉生成上限。**
+4. **Cross-Attention 把条件变成通用接口；Stable Diffusion v1 在此骨架上更换了文本编码器、数据与训练配方，它不是论文模型的同义词。**
 
 ## 参考资料与固定证据
 
@@ -357,7 +507,7 @@ Stable Diffusion v1 的训练资源也只能按模型卡描述：硬件为 **32�
 
 ### 文中官方仓库图片的许可声明
 
-文中 `official-ldm-model-figure.png`、`official-ldm-reconstruction.png` 与 `official-ldm-text2img-preview.png` 是作者官方仓库相应资产的未修改副本。版权与许可声明如下；`ldm-compression-sweet-spot.svg` 为本文自绘，不属于该声明的覆盖范围。
+文中 `official-ldm-model-figure.png`、`official-ldm-reconstruction.png` 与 `official-ldm-text2img-preview.png` 是作者官方仓库相应资产的未修改副本。版权与许可声明如下；`ldm-compression-sweet-spot.svg`、`ldm-training-tensor-code-flow.svg` 与 `ldm-elbo-to-noise-mse.svg` 为本文自绘，不属于该声明的覆盖范围。
 
 <details>
 <summary>MIT License（CompVis/latent-diffusion）</summary>

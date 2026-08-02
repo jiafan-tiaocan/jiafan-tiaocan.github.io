@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="840" viewBox="0 0 1440 840" role="img" aria-labelledby="title desc">
+  <title id="title">Latent Diffusion 的 ELBO 如何变成噪声预测均方误差</title>
+  <desc id="desc">从最大化 latent 数据 z0 的条件似然开始，经变分下界分解为逐时间步 KL；固定高斯方差后变成反向均值误差，再通过噪声参数化得到训练代码中的噪声预测均方误差。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#46D9E8"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="840" fill="#0B1220"/>
+  <g font-family="Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="60" y="62" fill="#E6EDF7" font-size="38" font-weight="700">ELBO 如何收缩成代码里的一行噪声 MSE</text>
+    <text x="60" y="98" fill="#9FB0C6" font-size="20">这里的 z₀ 是 Encoder 输出的干净 latent；从这一步开始，它就占据 DDPM 理论中 x₀ 的位置。</text>
+
+    <!-- Step 1 -->
+    <rect x="170" y="132" width="1100" height="92" rx="18" fill="#111C2E" stroke="#F6C85F" stroke-width="2"/>
+    <text x="205" y="168" fill="#F6C85F" font-size="18" font-weight="700">全局目标</text>
+    <text x="720" y="170" fill="#E6EDF7" text-anchor="middle" font-size="25" font-weight="700">让真实 latent 获得更高概率：max log pθ(z₀ | c)</text>
+    <text x="720" y="203" fill="#9FB0C6" text-anchor="middle" font-size="17">困难：必须积分掉所有未知中间状态 z₁ … zT</text>
+
+    <line x1="720" y1="225" x2="720" y2="256" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <!-- Step 2 -->
+    <rect x="170" y="264" width="1100" height="92" rx="18" fill="#111C2E" stroke="#46D9E8" stroke-width="2"/>
+    <text x="205" y="300" fill="#46D9E8" font-size="18" font-weight="700">变分桥梁</text>
+    <text x="720" y="302" fill="#E6EDF7" text-anchor="middle" font-size="24" font-weight="700">用已知前向链 q(z₁:T | z₀) 构造 log pθ(z₀ | c) 的 ELBO</text>
+    <text x="720" y="335" fill="#9FB0C6" text-anchor="middle" font-size="17">ELBO 不是网络模块，而是把“整体似然”拆成可训练局部问题的恒等式</text>
+
+    <line x1="720" y1="357" x2="720" y2="388" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <!-- Step 3 -->
+    <rect x="100" y="396" width="1240" height="126" rx="18" fill="#111C2E" stroke="#46D9E8" stroke-width="2"/>
+    <text x="135" y="432" fill="#46D9E8" font-size="18" font-weight="700">逐步分解</text>
+    <text x="720" y="438" fill="#E6EDF7" text-anchor="middle" font-size="22" font-weight="700">Σt  KL( q(zₜ₋₁ | zₜ, z₀)  ‖  pθ(zₜ₋₁ | zₜ, c) )</text>
+    <text x="355" y="479" fill="#F6C85F" text-anchor="middle" font-size="17" font-weight="700">q：训练时知道 z₀，可解析计算“正确一步”</text>
+    <text x="1080" y="479" fill="#A78BFA" text-anchor="middle" font-size="17" font-weight="700">pθ：U-Net 根据 zₜ、t、条件 c 猜“反向一步”</text>
+    <line x1="715" y1="455" x2="715" y2="500" stroke="#31445F" stroke-width="2" stroke-dasharray="7 7"/>
+
+    <line x1="720" y1="523" x2="720" y2="554" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <!-- Step 4 -->
+    <rect x="170" y="562" width="1100" height="82" rx="18" fill="#111C2E" stroke="#A78BFA" stroke-width="2"/>
+    <text x="205" y="597" fill="#A78BFA" font-size="18" font-weight="700">高斯化简</text>
+    <text x="720" y="599" fill="#E6EDF7" text-anchor="middle" font-size="22" font-weight="700">方差固定后，两个高斯的 KL ∝ ‖ μq(zₜ,z₀) − μθ(zₜ,t,c) ‖²</text>
+    <text x="720" y="628" fill="#9FB0C6" text-anchor="middle" font-size="16">U-Net 不必直接输出分布；只要参数化反向均值所需的信息</text>
+
+    <line x1="720" y1="645" x2="720" y2="676" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <!-- Step 5 -->
+    <rect x="170" y="684" width="1100" height="92" rx="18" fill="#17372F" stroke="#5DD39E" stroke-width="2"/>
+    <text x="205" y="720" fill="#5DD39E" font-size="18" font-weight="700">噪声参数化</text>
+    <text x="720" y="721" fill="#E6EDF7" text-anchor="middle" font-size="24" font-weight="700">加权 ELBO 项 ∝ wt ‖ ε − εθ(zₜ,t,c) ‖²</text>
+    <text x="720" y="754" fill="#5DD39E" text-anchor="middle" font-size="18" font-weight="700">实践中的 Lsimple：随机一个 t，直接执行 mse(noise_pred, noise)</text>
+
+    <text x="720" y="815" fill="#9FB0C6" text-anchor="middle" font-size="18">一句话：ELBO 规定“每一步要接近正确后验”；U-Net 负责给出这一步；噪声 MSE 是它在代码中的可计算形态。</text>
+  </g>
+</svg>
