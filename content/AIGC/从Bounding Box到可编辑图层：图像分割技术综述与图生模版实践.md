@@ -10,7 +10,7 @@ tags:
   - SAM2
   - Qwen2.5-VL
   - 图生模版
-date: 2026-07-30
+date: 2025-07-30
 noteType: technical
 publish: true
 last_verified: 2026-07-30
