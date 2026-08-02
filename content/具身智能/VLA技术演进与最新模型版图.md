@@ -30,9 +30,6 @@ publish: true
 
 *图 1　VLA 的历史不是单线的模型升级，而是语义、动作、本体、时间与学习信号的责任重新分配。本文归纳，主要依据 [RT-1](https://arxiv.org/abs/2212.06817)、[RT-2](https://arxiv.org/abs/2307.15818)、[Open X-Embodiment](https://arxiv.org/abs/2310.08864)、[$\pi_0$](https://www.pi.website/download/pi0.pdf) 与 [$\pi_{0.7}$](https://www.pi.website/download/pi07.pdf)；节点不代表同一基准上的名次。*
 
-> [!note] 证据边界
-> 本文中的模型结构、数据规模和实验结果来自论文、技术报告或官方仓库；跨模型的因果路线属于本文归纳。厂商自评只说明其报告条件下的结果，不构成跨机器人、跨任务的统一排名。
-
 # 零、先用一个机械臂案例看懂 VLM 与 VLA
 
 ## 0.1 两者不是“多了一个输出字母”这么简单
