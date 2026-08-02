@@ -24,15 +24,6 @@ code_revision: "OpenAI/CLIP@d05afc436d78f1c48dc0dbf8e5980a9d471f35f6"
 论文：Alec Radford、Jong Wook Kim、Chris Hallacy、Aditya Ramesh、Gabriel Goh、Sandhini Agarwal、Girish Sastry、Amanda Askell、Pamela Mishkin、Jack Clark、Gretchen Krueger、Ilya Sutskever，**Learning Transferable Visual Models From Natural Language Supervision**，ICML 2021，PMLR 139:8748–8763。  
 主来源：[PMLR 论文页](https://proceedings.mlr.press/v139/radford21a.html)｜[论文 PDF](https://proceedings.mlr.press/v139/radford21a/radford21a.pdf)｜[arXiv v1](https://arxiv.org/abs/2103.00020v1)｜[论文源码包](https://arxiv.org/e-print/2103.00020)｜[OpenAI 官方介绍](https://openai.com/index/clip/)｜[官方代码固定提交](https://github.com/openai/CLIP/tree/d05afc436d78f1c48dc0dbf8e5980a9d471f35f6)｜[官方 Model Card](https://github.com/openai/CLIP/blob/d05afc436d78f1c48dc0dbf8e5980a9d471f35f6/model-card.md)
 
-> [!note] 版本、图像复用与证据边界
-> - 论文于 **2021-02-26** 提交 arXiv，后发表于 ICML 2021；本文以唯一的 arXiv v1 与 PMLR 正式版本为论文事实来源。
-> - 本文按知识库时间线归档于 **2023-04-01**；这只是文章展示日期，不代表论文发布日期或证据核验时间。外部证据最后核验于 **2026-08-03**。
-> - 官方仓库只公开了推理代码、评测示例和权重，没有公开 400M 图文数据与完整训练程序。本文把“论文描述”“公开推理源码”“本文推导”分开，不用推理代码替训练实现背书。
-> - arXiv 页面标注非独占分发许可，PMLR PDF 标注版权归作者，并非明确的 CC 图像复用许可。公开版不转载论文原图：正文只链接正式论文，并使用明确标注的本文重绘图解释机制与汇总实验数字；本地 Vault 另存原图供私人核验，不进入公开投影。
-> - 文中“论文事实”是正文或附录直接陈述/测量的结果；“源码事实”锚定 `d05afc4`；“本文推导”与“开放问题”会显式标注。
-
-本文面向已经知道 softmax、交叉熵、图像 Encoder 与 Transformer 的读者，不要求预先掌握对比学习。只想形成直觉，读第一、三、六、九、十三节；想看公式与张量，读第四、五节；想复现论文配方，读第七、十节；想判断论文到底证明了什么，重点读第八、九、十一节。
-
 ## 一、先看一个旧分类器答不了的问题
 
 假设已经有一个只认识 ImageNet 1000 类的图像模型。今天拿来一批仓库照片，想区分：
