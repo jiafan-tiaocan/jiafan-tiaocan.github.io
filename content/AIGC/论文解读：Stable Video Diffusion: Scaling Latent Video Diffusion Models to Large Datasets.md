@@ -24,12 +24,6 @@ code_revision: "e8cd657656fa5d61688191730d0e03242bf4ed44"
 论文：Andreas Blattmann, Tim Dockhorn, Sumith Kulal, Daniel Mendelevitch, Maciej Kilian, Dominik Lorenz, Yam Levi, Zion English, Vikram Voleti, Adam Letts, Varun Jampani, Robin Rombach. **Stable Video Diffusion: Scaling Latent Video Diffusion Models to Large Datasets**. CVPR 2024.  
 主来源：[论文页](https://arxiv.org/abs/2311.15127)｜[官方 PDF](https://stability.ai/s/stable_video_diffusion.pdf)｜[论文源码](https://arxiv.org/e-print/2311.15127)｜[官方代码](https://github.com/Stability-AI/generative-models/tree/e8cd657656fa5d61688191730d0e03242bf4ed44)｜[SVD XT 1.1 模型卡](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt-1-1)
 
-> [!note] 版本与证据边界
-> - 本文以 **CVPR 2024 论文 / arXiv v1** 为论文事实来源，以官方仓库提交 `e8cd657` 为公开实现锚点。论文讨论的是一个包含文本生视频、图生视频、插帧和多视角适配的模型家族；日常所说的“SVD”却常特指公开的图生视频 checkpoint，两者不能完全画等号。
-> - **SVD XT 1.1 是论文之后发布的迭代权重，不是论文实验中的原始 checkpoint。** 模型卡固定训练条件为 6 FPS、motion bucket 127，输出 25 帧；下游项目使用 1.1 时，应按后续权重而非论文原版描述。
-> - 论文图像按 arXiv 页面标注的 CC BY 4.0 复用；代码、模型权重与商业使用条件分别受各自许可证约束，不能互相替代。
-> - “论文证明”仅指论文直接比较或测量的结论；“源码可见”指公开配置中的实现事实；“本文推论”会显式标注，不把工程经验写成作者已经验证的结论。
-
 ## 一、先看一个容易误判的问题：视频脏，是模型不够大吗
 
 把一个成熟的文生图 U-Net 加上时序卷积、时序注意力，再用视频微调，看起来已经具备一条完整的视频生成路线。但原始互联网视频包含几类图像数据没有的“毒性”：
