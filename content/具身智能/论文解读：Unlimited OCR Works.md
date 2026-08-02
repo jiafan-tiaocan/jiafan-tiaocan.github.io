@@ -31,14 +31,7 @@ noteType: paper
 - 论文：Youyang Yin 等，*Unlimited OCR Works: Welcome the Era of One-shot Long-horizon Parsing*，2026-06-22；
 - 官方仓库：[`baidu/Unlimited-OCR@4ba2ea3`](https://github.com/baidu/Unlimited-OCR/tree/4ba2ea3eb384757710bc7f7678922b0b61045448)；
 - 模型代码与配置：[`baidu/Unlimited-OCR@27a5997`](https://huggingface.co/baidu/Unlimited-OCR/tree/27a5997fa0524f9adcf9e2f3d5e7d3f784434fa5)；
-- 证据复核日期：2026-07-27。论文尚是 arXiv 技术报告，本文未发现独立复现实验。
-
-## 阅读路线
-
-- 只想抓住直觉：读“先给一句人话解释”、实验审计与最后的记忆胶囊；
-- 想理解模型：重点读 R-SWA、KV cache 与源码实现；
-- 关心具身智能：直接看“为什么这仍然是具身智能问题”及后续系统蓝图；
-- 想部署：务必看 one-shot 与逐页并发接口的区别。
+- 论文尚是 arXiv 技术报告，本文未发现独立复现实验。
 
 ## 一、先给一句人话解释：把原件钉在桌上，只保留刚写过的一小段
 
