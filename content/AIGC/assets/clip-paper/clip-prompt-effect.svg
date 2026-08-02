@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">CLIP Prompt 设计与文本嵌入集成的效果</title>
+  <desc id="desc">图中按论文报告展示 ImageNet 上默认模板相对裸类别名提升 1.3 点，80 个模板的文本嵌入集成再提升 3.5 点，组合接近 5 点；36 个数据集平均组合提升也接近 5 点。</desc>
+  <defs>
+    <linearGradient id="bgp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1020"/><stop offset="1" stop-color="#1c1635"/></linearGradient>
+    <linearGradient id="barp" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#ec4899"/></linearGradient>
+    <marker id="ap" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#94a3b8"/></marker>
+  </defs>
+  <rect width="1200" height="500" rx="28" fill="url(#bgp)"/>
+  <text x="56" y="58" fill="#f8fafc" font-family="Arial, Noto Sans SC, sans-serif" font-size="30" font-weight="700">Prompt 是 zero-shot 分类器的一部分</text>
+  <text x="56" y="90" fill="#94a3b8" font-family="Arial, Noto Sans SC, sans-serif" font-size="17">本文按论文 §3.1 / Figure 4 汇总 · 不是原始曲线复刻</text>
+
+  <g font-family="Arial, Noto Sans SC, sans-serif">
+    <rect x="56" y="134" width="268" height="222" rx="22" fill="#111827" stroke="#475569"/>
+    <text x="82" y="174" fill="#cbd5e1" font-size="18" font-weight="700">基线：裸类别名</text>
+    <rect x="82" y="203" width="216" height="56" rx="12" fill="#1e293b"/>
+    <text x="190" y="238" text-anchor="middle" fill="#f8fafc" font-size="24">boxer</text>
+    <text x="82" y="296" fill="#94a3b8" font-size="16">任务语境缺失，词义可能含混</text>
+    <text x="82" y="326" fill="#64748b" font-size="15">模型权重保持不变</text>
+
+    <path d="M324 245H374" stroke="#94a3b8" stroke-width="3" marker-end="url(#ap)"/>
+    <rect x="386" y="134" width="326" height="222" rx="22" fill="#21183d" stroke="#8b5cf6"/>
+    <text x="412" y="174" fill="#e9d5ff" font-size="18" font-weight="700">默认上下文模板</text>
+    <rect x="412" y="203" width="274" height="56" rx="12" fill="#302050"/>
+    <text x="549" y="238" text-anchor="middle" fill="#f3e8ff" font-size="21">a photo of a boxer</text>
+    <text x="412" y="303" fill="#c4b5fd" font-size="42" font-weight="700">+1.3</text>
+    <text x="529" y="302" fill="#cbd5e1" font-size="16">ImageNet 准确率点</text>
+    <text x="412" y="331" fill="#94a3b8" font-size="15">相对只写类别名</text>
+
+    <path d="M712 245H762" stroke="#94a3b8" stroke-width="3" marker-end="url(#ap)"/>
+    <rect x="774" y="134" width="370" height="222" rx="22" fill="#30152f" stroke="#ec4899"/>
+    <text x="800" y="174" fill="#fbcfe8" font-size="18" font-weight="700">80 个模板的文本嵌入集成</text>
+    <rect x="800" y="203" width="318" height="56" rx="12" fill="url(#barp)" opacity="0.28"/>
+    <text x="959" y="238" text-anchor="middle" fill="#fdf2f8" font-size="19">多种语境 → 先编码 → 再平均</text>
+    <text x="800" y="303" fill="#f472b6" font-size="42" font-weight="700">+3.5</text>
+    <text x="917" y="302" fill="#cbd5e1" font-size="16">额外准确率点</text>
+    <text x="800" y="331" fill="#94a3b8" font-size="15">在默认模板提升之上</text>
+  </g>
+
+  <rect x="56" y="386" width="1088" height="68" rx="18" fill="#0f172a" stroke="#334155"/>
+  <text x="88" y="428" fill="#f8fafc" font-family="Arial, Noto Sans SC, sans-serif" font-size="22" font-weight="700">组合结论：</text>
+  <text x="230" y="428" fill="#f9a8d4" font-family="Arial, Noto Sans SC, sans-serif" font-size="22" font-weight="700">ImageNet 接近 +5 点</text>
+  <circle cx="502" cy="421" r="4" fill="#64748b"/>
+  <text x="526" y="428" fill="#e2e8f0" font-family="Arial, Noto Sans SC, sans-serif" font-size="20">36 个数据集平均组合提升也接近 5 点</text>
+  <text x="1108" y="428" text-anchor="end" fill="#94a3b8" font-family="Arial, Noto Sans SC, sans-serif" font-size="15">文本向量可预计算</text>
+  <text x="600" y="483" text-anchor="middle" fill="#64748b" font-family="Arial, Noto Sans SC, sans-serif" font-size="14">数值来自论文报告；Prompt 经验证集反馈开发，因此不等于盲测泛化保证</text>
+</svg>

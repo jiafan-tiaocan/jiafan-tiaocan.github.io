@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">CLIP 从批内图文对比训练到 zero-shot 分类</title>
+  <desc id="desc">左侧展示图像和文本分别编码后形成批内相似度矩阵并学习对角线配对；右侧展示类别描述经过文本编码器生成分类器权重，再与新图像向量比较。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/><stop offset="1" stop-color="#111b33"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="650" rx="28" fill="url(#bg)"/>
+  <text x="60" y="62" fill="#f8fafc" font-family="Arial, Noto Sans SC, sans-serif" font-size="31" font-weight="700">同一个相似度接口，贯穿预训练与新任务</text>
+  <text x="60" y="96" fill="#94a3b8" font-family="Arial, Noto Sans SC, sans-serif" font-size="18">本文重绘 · 依据论文 Figure 1、§2.3、§2.4</text>
+
+  <rect x="48" y="126" width="700" height="464" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <rect x="70" y="147" width="132" height="38" rx="19" fill="#0c4a6e"/>
+  <text x="136" y="173" text-anchor="middle" fill="#bae6fd" font-family="Arial, Noto Sans SC, sans-serif" font-size="19" font-weight="700">① 批内训练</text>
+
+  <g font-family="Arial, Noto Sans SC, sans-serif">
+    <rect x="88" y="224" width="140" height="72" rx="15" fill="#13294b" stroke="#38bdf8"/>
+    <text x="158" y="254" text-anchor="middle" fill="#e0f2fe" font-size="20" font-weight="700">图像 batch</text>
+    <text x="158" y="280" text-anchor="middle" fill="#7dd3fc" font-size="16">I₁ … Iₙ</text>
+    <rect x="88" y="380" width="140" height="72" rx="15" fill="#2e1a47" stroke="#c084fc"/>
+    <text x="158" y="410" text-anchor="middle" fill="#f3e8ff" font-size="20" font-weight="700">文本 batch</text>
+    <text x="158" y="436" text-anchor="middle" fill="#d8b4fe" font-size="16">T₁ … Tₙ</text>
+
+    <rect x="286" y="220" width="142" height="80" rx="16" fill="url(#blue)"/>
+    <text x="357" y="253" text-anchor="middle" fill="white" font-size="19" font-weight="700">Image</text>
+    <text x="357" y="278" text-anchor="middle" fill="white" font-size="19" font-weight="700">Encoder</text>
+    <rect x="286" y="376" width="142" height="80" rx="16" fill="url(#violet)"/>
+    <text x="357" y="409" text-anchor="middle" fill="white" font-size="19" font-weight="700">Text</text>
+    <text x="357" y="434" text-anchor="middle" fill="white" font-size="19" font-weight="700">Encoder</text>
+
+    <path d="M228 260H278" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M228 416H278" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M428 260H474" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M428 416H474" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="490" y="214" width="226" height="250" rx="18" fill="#111827" stroke="#64748b"/>
+    <text x="603" y="246" text-anchor="middle" fill="#f8fafc" font-size="19" font-weight="700">N × N 相似度矩阵</text>
+    <g transform="translate(529 271)">
+      <rect width="148" height="148" rx="8" fill="#172033"/>
+      <g fill="#334155">
+        <rect x="4" y="4" width="31" height="31" rx="4"/><rect x="40" y="4" width="31" height="31" rx="4"/><rect x="76" y="4" width="31" height="31" rx="4"/><rect x="112" y="4" width="31" height="31" rx="4"/>
+        <rect x="4" y="40" width="31" height="31" rx="4"/><rect x="40" y="40" width="31" height="31" rx="4"/><rect x="76" y="40" width="31" height="31" rx="4"/><rect x="112" y="40" width="31" height="31" rx="4"/>
+        <rect x="4" y="76" width="31" height="31" rx="4"/><rect x="40" y="76" width="31" height="31" rx="4"/><rect x="76" y="76" width="31" height="31" rx="4"/><rect x="112" y="76" width="31" height="31" rx="4"/>
+        <rect x="4" y="112" width="31" height="31" rx="4"/><rect x="40" y="112" width="31" height="31" rx="4"/><rect x="76" y="112" width="31" height="31" rx="4"/><rect x="112" y="112" width="31" height="31" rx="4"/>
+      </g>
+      <g fill="#22c55e"><rect x="4" y="4" width="31" height="31" rx="4"/><rect x="40" y="40" width="31" height="31" rx="4"/><rect x="76" y="76" width="31" height="31" rx="4"/><rect x="112" y="112" width="31" height="31" rx="4"/></g>
+    </g>
+    <text x="603" y="445" text-anchor="middle" fill="#86efac" font-size="17">拉高真实配对（对角线）</text>
+    <text x="398" y="535" text-anchor="middle" fill="#cbd5e1" font-size="17">一批配对样本 → 两个方向的 N 类交叉熵</text>
+  </g>
+
+  <rect x="770" y="126" width="382" height="464" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <rect x="792" y="147" width="178" height="38" rx="19" fill="#3b1d70"/>
+  <text x="881" y="173" text-anchor="middle" fill="#e9d5ff" font-family="Arial, Noto Sans SC, sans-serif" font-size="19" font-weight="700">② Zero-shot 推理</text>
+  <g font-family="Arial, Noto Sans SC, sans-serif">
+    <rect x="804" y="218" width="192" height="94" rx="16" fill="#2e1a47" stroke="#c084fc"/>
+    <text x="900" y="247" text-anchor="middle" fill="#f3e8ff" font-size="17" font-weight="700">类别描述 + Prompt</text>
+    <text x="900" y="275" text-anchor="middle" fill="#d8b4fe" font-size="15">“a photo of a wet box”</text>
+    <text x="900" y="298" text-anchor="middle" fill="#d8b4fe" font-size="15">“a photo of a dry box”</text>
+    <path d="M996 265H1031" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="1040" y="222" width="86" height="86" rx="16" fill="url(#violet)"/>
+    <text x="1083" y="258" text-anchor="middle" fill="white" font-size="16" font-weight="700">Text</text>
+    <text x="1083" y="281" text-anchor="middle" fill="white" font-size="16" font-weight="700">Encoder</text>
+
+    <rect x="804" y="372" width="122" height="78" rx="16" fill="#13294b" stroke="#38bdf8"/>
+    <text x="865" y="404" text-anchor="middle" fill="#e0f2fe" font-size="17" font-weight="700">新图像</text>
+    <text x="865" y="430" text-anchor="middle" fill="#7dd3fc" font-size="15">image vector</text>
+    <path d="M926 411H976" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="988" y="348" width="138" height="126" rx="18" fill="#14231b" stroke="#22c55e"/>
+    <text x="1057" y="381" text-anchor="middle" fill="#bbf7d0" font-size="17" font-weight="700">比较相似度</text>
+    <text x="1057" y="412" text-anchor="middle" fill="#86efac" font-size="15">文本向量 =</text>
+    <text x="1057" y="434" text-anchor="middle" fill="#86efac" font-size="15">分类器权重</text>
+    <text x="1057" y="458" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="700">选择最高分</text>
+    <path d="M1083 308V338" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="961" y="531" text-anchor="middle" fill="#cbd5e1" font-size="17">换类别文本，不更新模型参数</text>
+  </g>
+  <text x="600" y="624" text-anchor="middle" fill="#64748b" font-family="Arial, Noto Sans SC, sans-serif" font-size="15">结构性解释图，不代表实验曲线或性能证明</text>
+</svg>

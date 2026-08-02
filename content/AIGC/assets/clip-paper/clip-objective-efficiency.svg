@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">CLIP 目标函数的相对学习效率阶梯</title>
+  <desc id="desc">自回归 Caption 为起点，改成词袋预测后约三倍学习效率，再改成整句图文对比后相对词袋预测约四倍；论文指标是达到相同 zero-shot ImageNet 准确率所需处理的图像数。</desc>
+  <defs>
+    <linearGradient id="bgo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#08121d"/><stop offset="1" stop-color="#10291f"/></linearGradient>
+    <marker id="ao" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto"><path d="M0 0L11 5.5L0 11Z" fill="#86efac"/></marker>
+  </defs>
+  <rect width="1200" height="520" rx="28" fill="url(#bgo)"/>
+  <text x="56" y="60" fill="#f8fafc" font-family="Arial, Noto Sans SC, sans-serif" font-size="30" font-weight="700">减少无关责任，换来更高的 zero-shot 学习效率</text>
+  <text x="56" y="93" fill="#94a3b8" font-family="Arial, Noto Sans SC, sans-serif" font-size="17">本文按论文 §2.2 / Figure 2 汇总 · 倍数是相对样本效率，不是 FLOPs 或墙钟时间</text>
+
+  <g font-family="Arial, Noto Sans SC, sans-serif">
+    <rect x="56" y="150" width="286" height="236" rx="22" fill="#111827" stroke="#475569" stroke-width="2"/>
+    <circle cx="92" cy="187" r="18" fill="#334155"/><text x="92" y="194" text-anchor="middle" fill="white" font-size="18" font-weight="700">1</text>
+    <text x="122" y="194" fill="#f8fafc" font-size="21" font-weight="700">自回归 Caption</text>
+    <text x="82" y="242" fill="#cbd5e1" font-size="17">逐 token 预测</text>
+    <text x="82" y="273" fill="#cbd5e1" font-size="17">承担词序、措辞与完整生成</text>
+    <rect x="82" y="309" width="234" height="49" rx="12" fill="#1e293b"/>
+    <text x="199" y="341" text-anchor="middle" fill="#94a3b8" font-size="19">学习效率基线</text>
+
+    <path d="M342 268H433" stroke="#86efac" stroke-width="4" marker-end="url(#ao)"/>
+    <rect x="358" y="209" width="62" height="42" rx="20" fill="#14532d"/>
+    <text x="389" y="237" text-anchor="middle" fill="#bbf7d0" font-size="20" font-weight="700">≈3×</text>
+
+    <rect x="446" y="150" width="286" height="236" rx="22" fill="#10241a" stroke="#22c55e" stroke-width="2"/>
+    <circle cx="482" cy="187" r="18" fill="#166534"/><text x="482" y="194" text-anchor="middle" fill="white" font-size="18" font-weight="700">2</text>
+    <text x="512" y="194" fill="#f8fafc" font-size="21" font-weight="700">词袋预测</text>
+    <text x="472" y="242" fill="#d1fae5" font-size="17">预测文本里有哪些词</text>
+    <text x="472" y="273" fill="#d1fae5" font-size="17">不再为词序与完整句子付费</text>
+    <rect x="472" y="309" width="234" height="49" rx="12" fill="#143322"/>
+    <text x="589" y="341" text-anchor="middle" fill="#86efac" font-size="19">约 3× 于 Caption</text>
+
+    <path d="M732 268H823" stroke="#5eead4" stroke-width="4" marker-end="url(#ao)"/>
+    <rect x="748" y="209" width="62" height="42" rx="20" fill="#134e4a"/>
+    <text x="779" y="237" text-anchor="middle" fill="#99f6e4" font-size="20" font-weight="700">≈4×</text>
+
+    <rect x="836" y="150" width="308" height="236" rx="22" fill="#0d2929" stroke="#2dd4bf" stroke-width="2"/>
+    <circle cx="872" cy="187" r="18" fill="#0f766e"/><text x="872" y="194" text-anchor="middle" fill="white" font-size="18" font-weight="700">3</text>
+    <text x="902" y="194" fill="#f8fafc" font-size="21" font-weight="700">整句图文对比</text>
+    <text x="862" y="242" fill="#ccfbf1" font-size="17">只判断整段文本与图像是否配对</text>
+    <text x="862" y="273" fill="#ccfbf1" font-size="17">直接服务检索与分类接口</text>
+    <rect x="862" y="309" width="256" height="49" rx="12" fill="#103a38"/>
+    <text x="990" y="341" text-anchor="middle" fill="#5eead4" font-size="19">再约 4× 于词袋预测</text>
+  </g>
+
+  <rect x="56" y="420" width="1088" height="58" rx="16" fill="#0f172a" stroke="#334155"/>
+  <text x="600" y="456" text-anchor="middle" fill="#e2e8f0" font-family="Arial, Noto Sans SC, sans-serif" font-size="18">论文横轴：处理的图像数量　｜　比较口径：达到相同 zero-shot ImageNet 准确率</text>
+  <text x="600" y="503" text-anchor="middle" fill="#64748b" font-family="Arial, Noto Sans SC, sans-serif" font-size="14">这组消融支持“目标更贴近迁移接口”，不证明对比学习在所有任务上都优于生成</text>
+</svg>

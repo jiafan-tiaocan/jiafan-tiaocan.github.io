@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">CLIP 对称对比损失：同一批配对样本形成两个 N 分类问题</title>
+  <desc id="desc">左侧是四组图像文本配对，中间是四乘四相似度矩阵，对角线是真实配对；右侧说明按行与按列分别做交叉熵，最后取平均。</desc>
+  <defs>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#F6C85F"/>
+    </marker>
+    <style>
+      .font { font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+      .title { font-size: 30px; font-weight: 700; fill: #E6EDF7; }
+      .subtitle { font-size: 18px; fill: #9FB0C6; }
+      .label { font-size: 19px; font-weight: 600; fill: #E6EDF7; }
+      .body { font-size: 17px; fill: #C7D3E3; }
+      .small { font-size: 15px; fill: #9FB0C6; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="680" fill="#0B1220"/>
+  <text x="56" y="58" class="font title">一批配对样本，其实训练了两个 N 类分类器</text>
+  <text x="56" y="91" class="font subtitle">同一张相似度矩阵，按行回答“这张图配哪段文本”，按列回答“这段文本配哪张图”。</text>
+
+  <rect x="54" y="128" width="250" height="430" rx="18" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="78" y="165" class="font label">① 一个 batch：4 组真配对</text>
+  <text x="78" y="194" class="font small">一般写作 N；这里用 4 便于阅读</text>
+
+  <g class="font">
+    <rect x="80" y="225" width="74" height="56" rx="10" fill="#18372F" stroke="#5DD39E" stroke-width="2"/>
+    <text x="117" y="260" text-anchor="middle" class="label">I₁</text>
+    <rect x="184" y="225" width="94" height="56" rx="10" fill="#2A2145" stroke="#A78BFA" stroke-width="2"/>
+    <text x="231" y="260" text-anchor="middle" class="label">T₁</text>
+    <line x1="154" y1="253" x2="181" y2="253" stroke="#5DD39E" stroke-width="2" stroke-dasharray="5 5"/>
+
+    <rect x="80" y="302" width="74" height="56" rx="10" fill="#18372F" stroke="#5DD39E" stroke-width="2"/>
+    <text x="117" y="337" text-anchor="middle" class="label">I₂</text>
+    <rect x="184" y="302" width="94" height="56" rx="10" fill="#2A2145" stroke="#A78BFA" stroke-width="2"/>
+    <text x="231" y="337" text-anchor="middle" class="label">T₂</text>
+    <line x1="154" y1="330" x2="181" y2="330" stroke="#5DD39E" stroke-width="2" stroke-dasharray="5 5"/>
+
+    <rect x="80" y="379" width="74" height="56" rx="10" fill="#18372F" stroke="#5DD39E" stroke-width="2"/>
+    <text x="117" y="414" text-anchor="middle" class="label">I₃</text>
+    <rect x="184" y="379" width="94" height="56" rx="10" fill="#2A2145" stroke="#A78BFA" stroke-width="2"/>
+    <text x="231" y="414" text-anchor="middle" class="label">T₃</text>
+    <line x1="154" y1="407" x2="181" y2="407" stroke="#5DD39E" stroke-width="2" stroke-dasharray="5 5"/>
+
+    <rect x="80" y="456" width="74" height="56" rx="10" fill="#18372F" stroke="#5DD39E" stroke-width="2"/>
+    <text x="117" y="491" text-anchor="middle" class="label">I₄</text>
+    <rect x="184" y="456" width="94" height="56" rx="10" fill="#2A2145" stroke="#A78BFA" stroke-width="2"/>
+    <text x="231" y="491" text-anchor="middle" class="label">T₄</text>
+    <line x1="154" y1="484" x2="181" y2="484" stroke="#5DD39E" stroke-width="2" stroke-dasharray="5 5"/>
+  </g>
+
+  <path d="M310 342 C332 342, 336 342, 357 342" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrowCyan)"/>
+
+  <rect x="366" y="128" width="392" height="430" rx="18" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="390" y="165" class="font label">② 归一化 embedding 的相似度矩阵</text>
+  <text x="390" y="194" class="font small mono">Sᵢⱼ = exp(t) · cos(Iᵢ, Tⱼ)</text>
+
+  <g class="font">
+    <text x="454" y="236" text-anchor="middle" class="small">T₁</text>
+    <text x="520" y="236" text-anchor="middle" class="small">T₂</text>
+    <text x="586" y="236" text-anchor="middle" class="small">T₃</text>
+    <text x="652" y="236" text-anchor="middle" class="small">T₄</text>
+    <text x="706" y="236" text-anchor="middle" class="small">文本</text>
+
+    <text x="407" y="280" class="small">I₁</text>
+    <text x="407" y="346" class="small">I₂</text>
+    <text x="407" y="412" class="small">I₃</text>
+    <text x="407" y="478" class="small">I₄</text>
+    <text x="400" y="525" class="small">图像</text>
+
+    <g fill="#17243A" stroke="#31445F" stroke-width="1.5">
+      <rect x="424" y="249" width="60" height="60" rx="6"/><rect x="490" y="249" width="60" height="60" rx="6"/><rect x="556" y="249" width="60" height="60" rx="6"/><rect x="622" y="249" width="60" height="60" rx="6"/>
+      <rect x="424" y="315" width="60" height="60" rx="6"/><rect x="490" y="315" width="60" height="60" rx="6"/><rect x="556" y="315" width="60" height="60" rx="6"/><rect x="622" y="315" width="60" height="60" rx="6"/>
+      <rect x="424" y="381" width="60" height="60" rx="6"/><rect x="490" y="381" width="60" height="60" rx="6"/><rect x="556" y="381" width="60" height="60" rx="6"/><rect x="622" y="381" width="60" height="60" rx="6"/>
+      <rect x="424" y="447" width="60" height="60" rx="6"/><rect x="490" y="447" width="60" height="60" rx="6"/><rect x="556" y="447" width="60" height="60" rx="6"/><rect x="622" y="447" width="60" height="60" rx="6"/>
+    </g>
+    <g fill="#163B4B" stroke="#46D9E8" stroke-width="2.5">
+      <rect x="424" y="249" width="60" height="60" rx="6"/>
+      <rect x="490" y="315" width="60" height="60" rx="6"/>
+      <rect x="556" y="381" width="60" height="60" rx="6"/>
+      <rect x="622" y="447" width="60" height="60" rx="6"/>
+    </g>
+    <g class="body" text-anchor="middle">
+      <text x="454" y="286">✓</text><text x="520" y="286">×</text><text x="586" y="286">×</text><text x="652" y="286">×</text>
+      <text x="454" y="352">×</text><text x="520" y="352">✓</text><text x="586" y="352">×</text><text x="652" y="352">×</text>
+      <text x="454" y="418">×</text><text x="520" y="418">×</text><text x="586" y="418">✓</text><text x="652" y="418">×</text>
+      <text x="454" y="484">×</text><text x="520" y="484">×</text><text x="586" y="484">×</text><text x="652" y="484">✓</text>
+    </g>
+  </g>
+
+  <path d="M706 269 L706 492" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrowCyan)"/>
+  <text x="717" y="367" transform="rotate(90 717 367)" class="font small" fill="#46D9E8">按行 softmax：图像找文本</text>
+  <path d="M439 525 L665 525" fill="none" stroke="#F6C85F" stroke-width="3" marker-end="url(#arrowAmber)"/>
+  <text x="552" y="549" text-anchor="middle" class="font small" fill="#F6C85F">按列 softmax：文本找图像</text>
+
+  <path d="M764 342 C783 342, 791 342, 811 342" fill="none" stroke="#46D9E8" stroke-width="3" marker-end="url(#arrowCyan)"/>
+
+  <rect x="820" y="128" width="326" height="430" rx="18" fill="#111C2E" stroke="#31445F" stroke-width="2"/>
+  <text x="846" y="165" class="font label">③ 对角线是标签，不是类别名</text>
+
+  <rect x="846" y="208" width="274" height="112" rx="14" fill="#163B4B" stroke="#46D9E8" stroke-width="2"/>
+  <text x="866" y="242" class="font label" fill="#46D9E8">图像 → 文本</text>
+  <text x="866" y="272" class="font body">每一行从 N 段文本中</text>
+  <text x="866" y="298" class="font body">选回自己的配对文本。</text>
+
+  <rect x="846" y="340" width="274" height="112" rx="14" fill="#3B331C" stroke="#F6C85F" stroke-width="2"/>
+  <text x="866" y="374" class="font label" fill="#F6C85F">文本 → 图像</text>
+  <text x="866" y="404" class="font body">每一列从 N 张图像中</text>
+  <text x="866" y="430" class="font body">选回自己的配对图像。</text>
+
+  <text x="983" y="494" text-anchor="middle" class="font label mono">L = (Lᵢ→ₜ + Lₜ→ᵢ) / 2</text>
+  <text x="983" y="525" text-anchor="middle" class="font small">同一批数据同时约束两个检索方向</text>
+
+  <rect x="54" y="586" width="1092" height="62" rx="14" fill="#14283A" stroke="#46D9E8" stroke-width="2"/>
+  <text x="78" y="623" class="font body"><tspan font-weight="700" fill="#46D9E8">记忆点：</tspan>batch size N 决定每个样本同时看到 N−1 个批内负例；它不是语义类别总数，错误负例也可能出现在非对角位置。</text>
+</svg>
