@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">LDM 空间压缩率的系统权衡</title>
+  <desc id="desc">从 f 等于 1 到 32，扩散计算负担逐渐下降，第一阶段的信息保留上限也逐渐下降。f 等于 4 到 8 是论文实验显示的稳健甜点区。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="compute" x1="0" x2="1">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="ceiling" x1="0" x2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="520" rx="28" fill="url(#bg)"/>
+  <text x="70" y="68" fill="#f8fafc" font-family="Inter, PingFang SC, sans-serif" font-size="30" font-weight="700">空间压缩率 f 的系统权衡</text>
+  <text x="70" y="104" fill="#cbd5e1" font-family="Inter, PingFang SC, sans-serif" font-size="17">教学示意 · 定性结构来自论文 Figure 5 · 不是原始曲线重绘</text>
+
+  <text x="70" y="158" fill="#fecdd3" font-family="Inter, PingFang SC, sans-serif" font-size="17" font-weight="600">扩散计算负担</text>
+  <path d="M245 142 H1090 L1025 174 H245 Z" fill="url(#compute)"/>
+  <text x="265" y="165" fill="#fff1f2" font-family="Inter, PingFang SC, sans-serif" font-size="15">高</text>
+  <text x="1010" y="165" fill="#e2e8f0" font-family="Inter, PingFang SC, sans-serif" font-size="15">低</text>
+
+  <text x="70" y="219" fill="#bae6fd" font-family="Inter, PingFang SC, sans-serif" font-size="17" font-weight="600">信息保留上限</text>
+  <path d="M245 194 H1025 L1090 226 H245 Z" fill="url(#ceiling)"/>
+  <text x="265" y="217" fill="#e0f2fe" font-family="Inter, PingFang SC, sans-serif" font-size="15">高</text>
+  <text x="1025" y="217" fill="#bfdbfe" font-family="Inter, PingFang SC, sans-serif" font-size="15">低</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="270" width="300" height="150" rx="20" fill="#311827" stroke="#fb7185" stroke-width="2"/>
+    <rect x="450" y="250" width="300" height="190" rx="20" fill="#0f2f2a" stroke="#34d399" stroke-width="3"/>
+    <rect x="830" y="270" width="300" height="150" rx="20" fill="#13234a" stroke="#60a5fa" stroke-width="2"/>
+  </g>
+
+  <text x="220" y="311" text-anchor="middle" fill="#fda4af" font-family="Inter, PingFang SC, sans-serif" font-size="24" font-weight="700">f = 1–2</text>
+  <text x="220" y="348" text-anchor="middle" fill="#f8fafc" font-family="Inter, PingFang SC, sans-serif" font-size="21" font-weight="600">算力瓶颈</text>
+  <text x="220" y="380" text-anchor="middle" fill="#cbd5e1" font-family="Inter, PingFang SC, sans-serif" font-size="16">像素级细节仍由扩散承担</text>
+
+  <text x="600" y="292" text-anchor="middle" fill="#6ee7b7" font-family="Inter, PingFang SC, sans-serif" font-size="16" font-weight="700">论文实验的稳健区间</text>
+  <text x="600" y="334" text-anchor="middle" fill="#a7f3d0" font-family="Inter, PingFang SC, sans-serif" font-size="28" font-weight="800">f = 4–8</text>
+  <text x="600" y="373" text-anchor="middle" fill="#f8fafc" font-family="Inter, PingFang SC, sans-serif" font-size="22" font-weight="600">计算与重建上限平衡</text>
+  <text x="600" y="407" text-anchor="middle" fill="#cbd5e1" font-family="Inter, PingFang SC, sans-serif" font-size="16">先去掉感知冗余，再学习语义分布</text>
+
+  <text x="980" y="311" text-anchor="middle" fill="#93c5fd" font-family="Inter, PingFang SC, sans-serif" font-size="24" font-weight="700">f = 16–32</text>
+  <text x="980" y="348" text-anchor="middle" fill="#f8fafc" font-family="Inter, PingFang SC, sans-serif" font-size="21" font-weight="600">信息瓶颈</text>
+  <text x="980" y="380" text-anchor="middle" fill="#cbd5e1" font-family="Inter, PingFang SC, sans-serif" font-size="16">第一阶段过早锁死生成上限</text>
+
+  <line x1="110" y1="474" x2="1090" y2="474" stroke="#64748b" stroke-width="2"/>
+  <path d="M1090 474 l-14 -8 v16 z" fill="#94a3b8"/>
+  <text x="600" y="505" text-anchor="middle" fill="#94a3b8" font-family="Inter, PingFang SC, sans-serif" font-size="15">空间下采样因子 f 增大 → latent 空间更小</text>
+</svg>
