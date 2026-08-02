@@ -508,6 +508,3 @@ Self-evolution 很容易形成循环论证：模型产生经验，再用自己�
 3. METR, [Time Horizon 1.1](https://metr.org/blog/2026-1-29-time-horizon-1-1/), 2026。
 4. Kwa et al., [Measuring AI Ability to Complete Long Software Tasks](https://arxiv.org/abs/2503.14499), NeurIPS 2025。
 5. Pan et al., [Natural-Language Agent Harnesses](https://arxiv.org/abs/2603.25723), 2026。
-
-> [!info] 版本说明
-> 本文基于 2026-07-16 提交的 OpenReview 版本撰写。由于该领域更新极快，文中的论文数量统计和平台状态只对应本次阅读时点；核心概念应结合后续修订与原始研究重新核验。
