@@ -1,6 +1,6 @@
 ---
 title: "Agent Self-Evolution：从反馈闭环到可验证的系统进化"
-description: "从 Runtime 可观测性、五层评测树和四条学习 Loop 出发，把真实用户使用、专家经验、实践结果与 Badcase 接入同一套可验证、可回滚的 Agent Learning Harness。"
+description: "从 Runtime 可观测性、五层评测树、任务—轨迹—产物—经济价值四张审计表和四条学习 Loop 出发，把真实反馈接入可验证、可回滚的 Agent Learning Harness。"
 tags:
   - Agent
   - Self-Evolution
@@ -39,7 +39,7 @@ publish: true
 
 真正困难的通常不是生成候选，而是决定**应该改什么、凭什么相信它更好、谁有权让它生效**。
 
-> **时间说明**：本文按主题归档日期显示为 2026-06-01；正文初稿与一手资料复核完成于 2026-07-24。文中“截至 2026 年 7 月”的能力状态指复核时间，不代表归档日在当时已经具备这些信息。
+> **时间说明**：本文按主题归档日期显示为 2026-06-01；正文初稿与主要一手资料复核完成于 2026-07-24，第 11.1 节“四张评测审计表”及相关评测误差、经济性证据补充于 2026-08-02。文中涉及能力状态的日期指对应复核时间，不代表归档日在当时已经具备这些信息。
 
 ### 阅读路线
 
@@ -228,6 +228,8 @@ $$
 [![Agent 系统五层评测树：从可观测性可信度、工程稳定性、协作过程、任务产物到业务结果](assets/agent-self-evolution/06-five-layer-evaluation-tree.svg)](assets/agent-self-evolution/06-five-layer-evaluation-tree.svg)
 
 *图 4（本文重绘）：L0 和 L1 决定运行是否具备比较资格，L2 评估 Agent 是否以合理方式完成任务，L3 按任务类型评价产物，L4 回到用户和业务结果。右侧不是职位表，而是按可确定性划分自动规则、Model Judge、人工标注与生产验证。证据锚点：[Anthropic Agent Evals](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) 与 [Phoenix Tracing Tutorial](https://arize.com/docs/phoenix/tracing/tutorial)；五层分类是本文的工程归纳。*
+
+五层树回答的是“系统的哪一层好或坏”，第 11.1 节的四张审计表回答的是“评测结论按什么顺序才成立”：先证明任务与评测器有效，再判断轨迹、最终产物和经济价值。二者不是两套互斥分类，而是**系统分层 × 审计流程**两张正交地图。尤其要注意，任务有效性不是 Agent 的得分项，而是这条 Case 能否进入分母的前置资格。
 
 ### 5.1 L0：可观测性可信度
 
@@ -607,7 +609,99 @@ $$
 
 模型、Prompt、Skill、Tool、知识、权限、Runtime 和环境任一变化，都可能改变结果。没有完整 Manifest 的分数不可比较。
 
-### 11.1 一条 Case 必须包含什么
+### 11.1 四张审计表：任务、轨迹、产物与经济价值
+
+Agent 评测不能从“这次成功了吗”直接跳到总分。更可靠的协议是依次完成四张表：
+
+```text
+任务是否有效
+→ 行为轨迹是否合理
+→ 最终产物是否正确
+→ 经济价值是否为正
+```
+
+这四张表不是可以互相补偿的四个加权维度，而是有先后关系的审计门。每张表至少输出 `pass / fail / disputed / not_applicable`、证据位置和失败原因；上游没有成立，下游分数就不能把它“平均回来”。
+
+#### 表一：任务是否有效
+
+| 审计问题 | 可执行门禁或指标 | 必须保留的证据 |
+|---|---|---|
+| 任务契约是否完整 | 目标、初始状态、允许与禁止动作、成功和失败条件没有关键歧义 | Task Spec、权限策略、目标状态断言 |
+| 任务本身是否可完成 | 参考路径能够通过；Fixture、账号、网页和外部依赖仍然可用 | Fixture 版本、环境快照、参考运行 |
+| Grader 是否评价了真正目标 | 接受等价正确路径；能看到决定性视觉或状态证据；多个断言不互相冲突 | Grader 代码、输入证据、争议复核记录 |
+| Case 是否可治理 | 有来源、切片、版本、污染检查、争议状态与退役条件 | Case Registry、数据血缘、变更记录 |
+
+这一表应单独统计 `broken-task rate`、评测器假阴性、争议率和退役率。2026 年的一项 Computer-use Benchmark 审计复核了 150 条公开的失败轨迹，发现 15.3% 的 FAIL 判定错误，其中 10.7% 是评测器假阴性，4.7% 是任务损坏；它进一步证明，坏任务不能算作 Agent 失败。[How Benchmarks Mis-Score Computer-Use Agents](https://arxiv.org/abs/2607.28367)
+
+任务表失败时，正确结果是 `benchmark_defect` 或 `disputed`，并从正式能力分母中隔离，而不是给 Agent 记零分。被测 Agent 也不能修改任务、Fixture、隐藏断言和 Grader。
+
+#### 表二：行为轨迹是否合理
+
+| 审计问题 | 可执行门禁或指标 | 必须保留的证据 |
+|---|---|---|
+| 计划是否围绕任务推进 | 关键步骤有证据依据；没有持续目标漂移和无依据跳跃 | Plan 版本、Decision Span、证据引用 |
+| Tool 与 Subagent 是否使用得当 | 路由正确；无效调用、重复劳动和可避免串行受控 | Tool I/O、Handoff、Trace Tree、时间线 |
+| 状态与权限是否安全 | 满足前置条件、审批、幂等与作用域；没有隐蔽副作用 | Permission Event、State Diff、审批记录 |
+| 反馈、恢复与停止是否可靠 | 新反馈真正改变策略；失败能够恢复；只有拿到完成证据才停止 | Checkpoint、重试原因、Verifier 结果、终止原因 |
+
+“合理”不等于复刻唯一 Golden Trace。Agent 可以发现比人类参考路径更短的正确路线；轨迹审计应约束目标、因果、权限和副作用，而不是惩罚所有路径差异。反过来，最终答案碰巧正确，也不能掩盖越权、重复副作用或不可恢复的执行路径。
+
+轨迹 Judge 本身也要校准。OSReward 对跨平台 Computer-use 轨迹的研究发现，主流 VLM Judge 普遍存在把失败判成成功的宽松偏差；可靠模型又可能贵得难以全量运行。因此高风险轨迹仍需确定性规则、多个证据视角和人工抽检共同兜底，不能让单个 VLM 独立签发通过结论。[OSReward](https://arxiv.org/abs/2607.28609)
+
+#### 表三：最终产物是否正确
+
+| 审计问题 | 可执行门禁或指标 | 必须保留的证据 |
+|---|---|---|
+| 外部 Outcome 是否发生 | 目标状态断言通过，而不是 Agent 自报完成 | 数据库或页面状态、测试、业务事件 |
+| Deliverable 是否达到任务 Rubric | 正确、完整、可复核，并满足该任务类型的专业要求 | 最终 Artifact、Rubric 分项、证据链接 |
+| 是否没有不可接受的附带损害 | 禁止结果、安全红线和范围外修改均未发生 | Forbidden Assertions、Diff、审计日志 |
+| 下游是否真正可用 | 用户或系统可以消费，不需要重新完成主体工作 | 接受记录、返工量、专家抽检 |
+
+这里必须区分“完成了工程动作”和“解决了核心问题”。两项开放式 AI 研究的 Shadow Eval 中，Agent 在六天和数千美元计算预算下完成了工程搭建，却没有实质推进研究问题，最终均被原作者明确拒绝。若只检查代码仓库是否完整，就会把工程产物误判成研究成功。[Can AI agents conduct open-ended AI research?](https://arxiv.org/abs/2607.27191)
+
+#### 表四：经济价值是否为正
+
+| 审计问题 | 可执行指标 | 必须保留的证据 |
+|---|---|---|
+| 结果创造了多少价值 | 任务价格、人工替代时间、决策改善、避免损失或可接受的代理价值 | 人工基线、价值口径、采用或 Outcome 数据 |
+| 机器成本是多少 | 模型、Tool、基础设施、存储、网络、重试和观察窗口成本 | Usage 与账单、Runtime Metric |
+| 人类负担是多少 | 澄清、审批、复核、修改、接管与返工分钟数 | Review Event、工时抽样、返工记录 |
+| 风险与机会成本是多少 | 失败概率乘以损失，外加延迟、锁定和维护成本 | 事故样本、风险模型、SLA 与回滚记录 |
+
+一个最小净价值表达式是：
+
+$$
+V_{\text{net}}
+=
+V_{\text{accepted outcome}}
+-C_{\text{model/tool/infra}}
+-C_{\text{human review/rework}}
+-\mathbb{E}[L_{\text{risk}}]
+$$
+
+同时保留本文已经使用的单位指标：
+
+$$
+\text{Cost per accepted, safe outcome}
+=
+\frac{\text{机器成本} + \text{人类成本}}{\text{被接受且安全的结果数}}
+$$
+
+经济价值不等同于直接收入。研究、安全和内部决策任务可以使用专家时间、避免损失或决策质量的保守影子价格，但必须公开口径和不确定性，不能制造虚假的精确数字。OmegaUse-OfficeVal 为 100 个长程办公任务同时记录人工劳动时间和任务价格代理；这些任务平均需要人类 2.32 小时。论文发现 Agent 虽然普遍更快、更便宜，却仍未达到人类交付质量，说明“推理成本低”不能直接推出“单位有效产出更便宜”。[OmegaUse-OfficeVal](https://arxiv.org/abs/2607.27155)
+
+最终门禁应按下面的语义解释：
+
+```text
+任务无效                       → 修 Benchmark，不评价 Agent
+任务有效，但轨迹违反硬约束     → 拒绝；正确产物不能抵消越权与风险
+轨迹可接受，但产物未通过       → 能执行不等于完成任务
+产物通过，但净价值不为正       → 有能力，但暂不具备部署经济性
+四表均通过                     → 才有资格进入 Shadow / Canary
+```
+
+正经济价值永远不能抵消安全红线；负经济价值也不等于模型没有能力，它只说明当前模型、Harness、成本结构或人工流程还不足以支持生产采用。
+
+### 11.2 一条 Case 必须包含什么
 
 ```yaml
 case_id: "support-017"
@@ -627,7 +721,7 @@ graders: ["code", "model", "human-sampled"]
 
 高质量 Case 还需要一个已知可行的参考解，证明任务本身可完成、Fixture 正确、Grader 没有互相冲突。若大量 Trial 的 `pass@100` 仍为零，首先应该审查任务与评测器，而不是立即判断 Agent 没能力。Anthropic 也特别强调了这个排错顺序。
 
-### 11.2 评测要覆盖结果、过程和系统行为
+### 11.3 评测要覆盖结果、过程和系统行为
 
 | 维度 | 典型指标 |
 |---|---|
@@ -648,7 +742,7 @@ $$
 
 即每一个被用户或下游系统接受、且没有违反安全边界的结果，需要多少机器成本与人类注意力。
 
-### 11.3 Grader 应像“瑞士奶酪”一样分层
+### 11.4 Grader 应像“瑞士奶酪”一样分层
 
 - **Code-based Grader**：Schema、单测、静态分析、状态断言、权限和预算；便宜、稳定、优先使用。
 - **Model-based Grader**：语义质量、风格、覆盖度与复杂 Rubric；必须与专家校准并允许返回“不确定”。
@@ -657,7 +751,7 @@ $$
 
 高风险硬门禁不能只由 LLM Judge 决定；同一个模型家族也不应既产生候选、又生成 Case、又独立打分、再批准上线。
 
-### 11.4 Benchmark 也会进化，但不能在本轮移动球门
+### 11.5 Benchmark 也会进化，但不能在本轮移动球门
 
 新 Badcase 应经过脱敏、去重、可复现性和质量审核后进入候选 Case 池。Benchmark Registry 要记录来源、切片、评分标准与版本。
 
@@ -872,10 +966,11 @@ Prompt、Tool、Skill、Knowledge、Subagent 和模型一起变，得到的只�
 2. **ReAct 式执行 Loop 让 Agent 在一次任务中适应；Self-Evolution 要让经验跨 Episode 变成版本化资产。**
 3. **时间尺度、学习来源和优化资产是三个正交维度；专家、实践、指标与 Badcase 四条来源 Loop 共享同一套证据和晋级协议。**
 4. **评测不是优化之后的验收，而是决定哪个候选能存活的选择机制；先过可观测性、稳定性与安全门禁，再比较多目标收益。**
-5. **固定模型后，可优化面主要是 Prompt、Skill、Tool、Knowledge、Subagent 组织、Runtime 与产品接口；先诊断，再打开最小搜索空间。**
-6. **个人知识不自动等于通用知识；经验必须带来源、范围、反例、有效期和版本，经过跨 Case 验证以后再晋升。**
-7. **真实用户反馈和业务指标是证据源，不是天然 Reward；必须有版本血缘、对照与因果边界。**
-8. **成熟的自进化不是 Agent 获得无限自改权限，而是系统让每次改进都可证伪、可回滚、可审计。**
+5. **Agent 评测要依次回答四个问题：任务是否有效、轨迹是否合理、产物是否正确、经济价值是否为正；四者是串行门禁，不是能互相补偿的总分维度。**
+6. **固定模型后，可优化面主要是 Prompt、Skill、Tool、Knowledge、Subagent 组织、Runtime 与产品接口；先诊断，再打开最小搜索空间。**
+7. **个人知识不自动等于通用知识；经验必须带来源、范围、反例、有效期和版本，经过跨 Case 验证以后再晋升。**
+8. **真实用户反馈和业务指标是证据源，不是天然 Reward；必须有版本血缘、对照与因果边界。**
+9. **成熟的自进化不是 Agent 获得无限自改权限，而是系统让每次改进都可证伪、可回滚、可审计。**
 
 归根结底，Agent Self-Evolution 的“Self”不是指一个模型独自完成所有工作，而是指系统已经把**运行观测、经验获取、假设生成、候选实验、独立评测、资产晋级和生产反馈**闭合成了稳定机制。模型可以提出下一步；只有 Learning Harness、真实环境和组织治理共同确认以后，那一步才有资格成为系统的新能力。
 
@@ -893,3 +988,7 @@ Prompt、Tool、Skill、Knowledge、Subagent 和模型一起变，得到的只�
 - Andrej Karpathy, [AutoResearch](https://github.com/karpathy/autoresearch), 2026.
 - Nous Research, [Hermes Agent Self-Evolution](https://github.com/NousResearch/hermes-agent-self-evolution), 2026.
 - Weco AI, [AIDE²: The First Evidence of Recursive Self-Improvement](https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement), 2026.
+- Zihan Dong et al., [How Benchmarks Mis-Score Computer-Use Agents](https://arxiv.org/abs/2607.28367), preprint, 2026.
+- Qiushi Sun et al., [OSReward: Instituting Standardized Evaluation for Cross-Platform Computer-Use Reward Models](https://arxiv.org/abs/2607.28609), work in progress, 2026.
+- Peter Kirgis et al., [Can AI agents conduct open-ended AI research? Early evidence from two case studies](https://arxiv.org/abs/2607.27191), preprint, 2026.
+- Jingbo Zhou et al., [OmegaUse-OfficeVal: Benchmarking LLM Agents on Long-Horizon Office-Suite Tasks with Economic Grounding](https://arxiv.org/abs/2607.27155), preprint, 2026.
