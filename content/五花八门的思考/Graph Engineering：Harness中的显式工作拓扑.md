@@ -29,12 +29,6 @@ Agent 系统最初依赖模型在上下文中临场决定下一步。随后，�
 
 这里的 Harness 指承载权限、状态、预算、验证与恢复的系统级执行包络。Anthropic 也会把单个 Dynamic Workflow 称为“针对当前任务即时生成的 Harness”。两种说法并不矛盾：**系统级 Harness 托管一个由 Workflow 描述的任务级 Harness，后者再实例化具体 Graph。**
 
-> [!note] 证据边界
-> - Claude Code Dynamic Workflow 的产品行为以 Anthropic 官方文档为准。
-> - 2026 年 3 月 31 日，Claude Code 的 npm 包因 source map 打包错误暴露了内部源码；这是[发布包泄露](https://www.theregister.com/software/2026/03/31/anthropic-accidentally-exposes-claude-code-source-code/5227940)，不是以开源许可证发布。本文不依赖泄露源码，只分析已经公开的产品文档与运行界面。
-> - Agentic Computation Graphs 综述目前是 arXiv v1 预印本；本文借用其统一定义，不把综述观点当成已建立的行业标准。
-> - 文中的 Graph IR、静态验证器和 Harness 分层属于工程归纳，不是 Anthropic 对 Claude Code 内部实现的完整说明。
-
 ## 1. Workflow 不是 Graph，但它是一种图程序
 
 在日常语言里，Workflow 通常只是“先做什么、后做什么”。Claude Code 的 Dynamic Workflow 更严格：它是 Claude 根据任务生成的一段 JavaScript 编排程序，由与主对话分离的 Workflow Runtime 在后台执行。
