@@ -21,8 +21,6 @@ aliases:
 论文：Ashish Vaswani et al., **Attention Is All You Need**, NIPS 2017。  
 原始材料：[arXiv](https://arxiv.org/abs/1706.03762) · [NIPS 论文页](https://papers.neurips.cc/paper/7181-attention-is-all-you-need) · [NIPS 评审](https://papers.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Reviews.html) · [原始 Tensor2Tensor 代码库](https://github.com/tensorflow/tensor2tensor)
 
-图表复用说明：论文 PDF 首页明确允许在注明出处的学术或新闻作品中复用表格和图片。下文原图均取自官方论文 source/PDF，保留原面板与数值，只裁去无关页边空白；解释性 SVG 会明确标为“本文重绘”。
-
 本文面向能读懂矩阵乘法、softmax 和基本神经网络的读者，不预设已经掌握 Transformer。文章只用一套记号，把原论文中的三种 Attention 放进同一张地图：
 
 1. Encoder Self-Attention：输入序列内部互相读取；
