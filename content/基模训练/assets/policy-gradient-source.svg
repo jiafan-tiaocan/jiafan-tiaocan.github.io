@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
+  <title id="title">策略梯度的梯度来源</title>
+  <desc id="desc">上半部分展示策略参数经过动作概率、离散采样和外部环境得到奖励，普通反向传播在离散采样与外部环境处中断。下半部分展示 REINFORCE 将已采样动作代入可微的 log 概率，并用停止梯度的奖励加权，使梯度从损失沿 log 概率返回策略参数。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071426"/>
+      <stop offset="1" stop-color="#102b4c"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#132944"/>
+      <stop offset="1" stop-color="#193a5d"/>
+    </linearGradient>
+    <filter id="shadow" x="-12%" y="-20%" width="124%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020817" flood-opacity="0.42"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#63c8ff"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#69e1b0"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#8ca8c3"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="860" rx="30" fill="url(#bg)"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif">
+    <text x="66" y="70" fill="#f4f8ff" font-size="38" font-weight="700">奖励不能直接反传时，梯度从哪里来？</text>
+    <text x="66" y="108" fill="#a7bed5" font-size="21">前向交互照常发生；改变的是反向求导的路径</text>
+
+    <rect x="54" y="142" width="1332" height="290" rx="22" fill="#0d2037" stroke="#335f84" stroke-width="2"/>
+    <text x="82" y="183" fill="#ffcf70" font-size="23" font-weight="700">A　真实前向过程：能产生结果，但没有端到端梯度</text>
+
+    <g filter="url(#shadow)">
+      <rect x="82" y="225" width="190" height="88" rx="16" fill="url(#card)" stroke="#4d7ba1"/>
+      <rect x="328" y="225" width="190" height="88" rx="16" fill="url(#card)" stroke="#4d7ba1"/>
+      <rect x="574" y="225" width="190" height="88" rx="16" fill="url(#card)" stroke="#b56d73"/>
+      <rect x="820" y="225" width="190" height="88" rx="16" fill="url(#card)" stroke="#b56d73"/>
+      <rect x="1066" y="225" width="236" height="88" rx="16" fill="url(#card)" stroke="#4d7ba1"/>
+    </g>
+
+    <text x="177" y="259" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">策略参数 θ</text>
+    <text x="177" y="289" text-anchor="middle" fill="#a7bed5" font-size="18">神经网络权重</text>
+    <text x="423" y="259" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">动作概率 πθ</text>
+    <text x="423" y="289" text-anchor="middle" fill="#a7bed5" font-size="18">连续、可微</text>
+    <text x="669" y="259" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">采样动作 a</text>
+    <text x="669" y="289" text-anchor="middle" fill="#ffb4b8" font-size="18">A / B 或 Token ID</text>
+    <text x="915" y="259" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">外部环境</text>
+    <text x="915" y="289" text-anchor="middle" fill="#ffb4b8" font-size="18">真人 / 编译器 / API</text>
+    <text x="1184" y="259" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">奖励 R</text>
+    <text x="1184" y="289" text-anchor="middle" fill="#a7bed5" font-size="18">本次结果的数值</text>
+
+    <line x1="272" y1="269" x2="320" y2="269" stroke="#63c8ff" stroke-width="4" marker-end="url(#arrowBlue)"/>
+    <line x1="518" y1="269" x2="566" y2="269" stroke="#63c8ff" stroke-width="4" marker-end="url(#arrowBlue)"/>
+    <line x1="764" y1="269" x2="812" y2="269" stroke="#63c8ff" stroke-width="4" marker-end="url(#arrowBlue)"/>
+    <line x1="1010" y1="269" x2="1058" y2="269" stroke="#63c8ff" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+    <path d="M1184 343H423" fill="none" stroke="#ff7d84" stroke-width="4" stroke-dasharray="10 10"/>
+    <text x="803" y="382" text-anchor="middle" fill="#ffb4b8" font-size="20">普通反向传播试图从 R 回到 θ</text>
+    <g stroke="#ff7d84" stroke-width="7" stroke-linecap="round">
+      <line x1="650" y1="329" x2="688" y2="367"/>
+      <line x1="688" y1="329" x2="650" y2="367"/>
+      <line x1="896" y1="329" x2="934" y2="367"/>
+      <line x1="934" y1="329" x2="896" y2="367"/>
+    </g>
+    <text x="669" y="414" text-anchor="middle" fill="#ffb4b8" font-size="17">离散采样没有局部导数</text>
+    <text x="915" y="414" text-anchor="middle" fill="#ffb4b8" font-size="17">环境通常不提供计算图</text>
+
+    <rect x="54" y="462" width="1332" height="310" rx="22" fill="#0d2037" stroke="#2f8068" stroke-width="2"/>
+    <text x="82" y="503" fill="#79e6b7" font-size="23" font-weight="700">B　REINFORCE：保留结果，改走 log 概率这条可微路径</text>
+
+    <g filter="url(#shadow)">
+      <rect x="96" y="570" width="206" height="92" rx="16" fill="url(#card)" stroke="#4d7ba1"/>
+      <rect x="404" y="570" width="278" height="92" rx="16" fill="url(#card)" stroke="#2f9d79"/>
+      <rect x="806" y="570" width="272" height="92" rx="16" fill="url(#card)" stroke="#2f9d79"/>
+      <rect x="1172" y="570" width="156" height="92" rx="16" fill="url(#card)" stroke="#2f9d79"/>
+    </g>
+
+    <text x="199" y="607" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">策略参数 θ</text>
+    <text x="199" y="638" text-anchor="middle" fill="#a7bed5" font-size="18">需要被更新</text>
+    <text x="543" y="607" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">log πθ(a | s)</text>
+    <text x="543" y="638" text-anchor="middle" fill="#b7f5d9" font-size="18">对 θ 可微</text>
+    <text x="942" y="607" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">L = −R log πθ(a | s)</text>
+    <text x="942" y="638" text-anchor="middle" fill="#b7f5d9" font-size="18">奖励只作权重</text>
+    <text x="1250" y="607" text-anchor="middle" fill="#f4f8ff" font-size="24" font-weight="700">优化器</text>
+    <text x="1250" y="638" text-anchor="middle" fill="#b7f5d9" font-size="18">更新 θ</text>
+
+    <line x1="302" y1="616" x2="396" y2="616" stroke="#8ca8c3" stroke-width="4" marker-end="url(#arrowGray)"/>
+    <line x1="682" y1="616" x2="798" y2="616" stroke="#8ca8c3" stroke-width="4" marker-end="url(#arrowGray)"/>
+    <line x1="1078" y1="616" x2="1164" y2="616" stroke="#8ca8c3" stroke-width="4" marker-end="url(#arrowGray)"/>
+
+    <path d="M1250 677C1110 746 410 746 199 677" fill="none" stroke="#69e1b0" stroke-width="5" marker-end="url(#arrowGreen)"/>
+    <text x="726" y="700" text-anchor="middle" fill="#79e6b7" font-size="20" font-weight="700">∇θ 沿 loss → log πθ → θ 返回</text>
+
+    <path d="M669 313V532H543V562" fill="none" stroke="#8ca8c3" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrowGray)"/>
+    <text x="621" y="539" text-anchor="end" fill="#a7bed5" font-size="17">已发生的动作作为索引</text>
+    <path d="M1184 313V520H942V562" fill="none" stroke="#ffcf70" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrowGray)"/>
+    <text x="1115" y="539" text-anchor="end" fill="#ffcf70" font-size="17">R 停止梯度，只决定权重</text>
+
+    <rect x="180" y="795" width="1080" height="43" rx="14" fill="#091a2e" stroke="#3b6b8f"/>
+    <text x="720" y="824" text-anchor="middle" fill="#d8e8f7" font-size="20" font-weight="700">不是对奖励求导，而是对“这个动作发生的概率”求导</text>
+  </g>
+</svg>

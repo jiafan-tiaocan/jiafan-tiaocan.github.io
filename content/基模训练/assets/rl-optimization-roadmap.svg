@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">
   <title id="title">强化学习的五次关键优化及其在大模型中的应用</title>
-  <desc id="desc">从不可微奖励、梯度高方差、策略更新失稳、反馈成本，到价值模型成本，依次对应 REINFORCE、Actor-Critic 与 GAE、TRPO 与 PPO、奖励模型与 DPO、RLOO 与 GRPO。右侧说明每次优化为何进入大模型训练。</desc>
+  <desc id="desc">从无法沿离散采样与外部环境直接反传、梯度高方差、策略更新失稳、反馈成本，到价值模型成本，依次对应 REINFORCE、Actor-Critic 与 GAE、TRPO 与 PPO、奖励模型与 DPO、RLOO 与 GRPO。右侧说明每次优化为何进入大模型训练。</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#071426"/>
@@ -29,7 +29,7 @@
       <circle cx="118" cy="190" r="28" fill="#10243e" stroke="#59c3ff" stroke-width="4"/>
       <text x="118" y="199" text-anchor="middle" fill="#dff5ff" font-size="25" font-weight="700">1</text>
       <rect x="176" y="140" width="958" height="110" rx="18" fill="url(#card)" stroke="#2e5c83" filter="url(#shadow)"/>
-      <text x="206" y="177" fill="#ffcf70" font-size="19" font-weight="700">瓶颈：奖励不可微，采样动作阻断普通反向传播</text>
+      <text x="206" y="177" fill="#ffcf70" font-size="19" font-weight="700">瓶颈：离散采样与外部环境阻断端到端反向传播</text>
       <text x="206" y="211" fill="#f4f8ff" font-size="25" font-weight="700">REINFORCE：用回报给 log π(a|s) 加权</text>
       <text x="1100" y="211" text-anchor="end" fill="#8ee0bd" font-size="20">LLM：Token 即动作</text>
     </g>
