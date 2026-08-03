@@ -22,7 +22,7 @@
     <g text-anchor="middle">
       <text x="202" y="215" fill="#93C5FD" font-size="16" font-weight="700">STATE  s₀</text>
       <text x="517" y="215" fill="#93C5FD" font-size="16" font-weight="700">STATE  s₁</text>
-      <text x="832" y="215" fill="#93C5FD" font-size="16" font-weight="700">STATE  sₜ</text>
+      <text x="832" y="215" fill="#93C5FD" font-size="16" font-weight="700">STATE  s_t</text>
       <text x="1172" y="215" fill="#FDE68A" font-size="16" font-weight="700">TERMINAL</text>
 
       <text x="202" y="259" fill="#F8FAFC" font-size="22" font-weight="700">提示 x</text>

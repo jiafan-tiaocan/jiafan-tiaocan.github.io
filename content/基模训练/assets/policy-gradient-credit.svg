@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">从整条轨迹回报到优势函数的信用分配</title>
+  <desc id="desc">上半部分展示语言模型生成四个 Token 后只在结尾得到奖励。下半部分比较直接用回报更新与减去同题平均基线后的优势更新，说明 baseline 如何去除题目难度并降低方差。</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#081525"/>
+      <stop offset="1" stop-color="#122c4b"/>
+    </linearGradient>
+    <marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#67c7ff"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="700" rx="28" fill="url(#bg2)"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <text x="58" y="64" fill="#f4f8ff" font-size="34" font-weight="700">奖励在终点，梯度却要落到每个动作</text>
+    <text x="58" y="99" fill="#9eb7d2" font-size="20">Policy Gradient 不穿过奖励函数求导；它改变产生高回报轨迹的动作概率</text>
+
+    <g transform="translate(65 142)">
+      <rect x="0" y="0" width="160" height="70" rx="15" fill="#183958" stroke="#5593bd"/>
+      <text x="80" y="29" text-anchor="middle" fill="#cfe8fa" font-size="18">状态 s₀</text>
+      <text x="80" y="52" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">题目</text>
+      <line x1="160" y1="35" x2="224" y2="35" stroke="#67c7ff" stroke-width="3" marker-end="url(#a2)"/>
+      <text x="192" y="25" text-anchor="middle" fill="#ffcf70" font-size="17">a₀</text>
+      <rect x="230" y="0" width="160" height="70" rx="15" fill="#183958" stroke="#5593bd"/>
+      <text x="310" y="29" text-anchor="middle" fill="#cfe8fa" font-size="18">状态 s₁</text>
+      <text x="310" y="52" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">题目 + Token</text>
+      <line x1="390" y1="35" x2="454" y2="35" stroke="#67c7ff" stroke-width="3" marker-end="url(#a2)"/>
+      <text x="422" y="25" text-anchor="middle" fill="#ffcf70" font-size="17">a₁</text>
+      <rect x="460" y="0" width="160" height="70" rx="15" fill="#183958" stroke="#5593bd"/>
+      <text x="540" y="29" text-anchor="middle" fill="#cfe8fa" font-size="18">…</text>
+      <text x="540" y="52" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">继续生成</text>
+      <line x1="620" y1="35" x2="684" y2="35" stroke="#67c7ff" stroke-width="3" marker-end="url(#a2)"/>
+      <text x="652" y="25" text-anchor="middle" fill="#ffcf70" font-size="17">a_t</text>
+      <rect x="690" y="0" width="160" height="70" rx="15" fill="#183958" stroke="#5593bd"/>
+      <text x="770" y="29" text-anchor="middle" fill="#cfe8fa" font-size="18">终止状态</text>
+      <text x="770" y="52" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">完整回答</text>
+      <line x1="850" y1="35" x2="914" y2="35" stroke="#67c7ff" stroke-width="3" marker-end="url(#a2)"/>
+      <rect x="920" y="-4" width="150" height="78" rx="18" fill="#173d35" stroke="#68d4aa" stroke-width="2"/>
+      <text x="995" y="28" text-anchor="middle" fill="#9cf0cf" font-size="18">验证器</text>
+      <text x="995" y="56" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700">R = 1</text>
+    </g>
+
+    <rect x="58" y="274" width="520" height="352" rx="22" fill="#102139" stroke="#315d82"/>
+    <text x="88" y="318" fill="#ffcf70" font-size="23" font-weight="700">直接用回报：REINFORCE</text>
+    <text x="88" y="355" fill="#dbeaf7" font-size="19">同题三条轨迹的奖励分别为 1、0、0：</text>
+    <g font-size="21">
+      <text x="105" y="407" fill="#8ee0bd">轨迹 A　R = 1　→ 全部动作增概率</text>
+      <text x="105" y="453" fill="#bdcde0">轨迹 B　R = 0　→ 几乎没有更新</text>
+      <text x="105" y="499" fill="#bdcde0">轨迹 C　R = 0　→ 几乎没有更新</text>
+    </g>
+    <text x="88" y="553" fill="#f1f6fb" font-size="19">问题：R 只表达整条轨迹的结果，梯度既稀疏，</text>
+    <text x="88" y="584" fill="#f1f6fb" font-size="19">也不知道哪一步真正贡献了成功。</text>
+
+    <rect x="622" y="274" width="520" height="352" rx="22" fill="#102139" stroke="#315d82"/>
+    <text x="652" y="318" fill="#8ee0bd" font-size="23" font-weight="700">减去 Baseline：更新 Advantage</text>
+    <text x="652" y="355" fill="#dbeaf7" font-size="19">同题三次采样的平均奖励 b = 1/3：</text>
+    <g font-size="21">
+      <text x="669" y="407" fill="#8ee0bd">轨迹 A　A = 1 − 1/3 = +2/3</text>
+      <text x="669" y="453" fill="#ff9e9e">轨迹 B　A = 0 − 1/3 = −1/3</text>
+      <text x="669" y="499" fill="#ff9e9e">轨迹 C　A = 0 − 1/3 = −1/3</text>
+    </g>
+    <text x="652" y="553" fill="#f1f6fb" font-size="19">Advantage 问的是：这条轨迹是否比“这道题通常表现”更好。</text>
+    <text x="652" y="584" fill="#f1f6fb" font-size="19">critic 用 V(s) 给每个状态做 baseline；GRPO 用同题组均值。</text>
+
+    <text x="600" y="668" text-anchor="middle" fill="#a9bfd6" font-size="18">同一个数学核心：gradient J ≈ E[gradient log π(a|s) · A]；差异主要在 A 怎样估计、更新怎样约束</text>
+  </g>
+</svg>

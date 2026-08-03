@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">
+  <title id="title">强化学习的五次关键优化及其在大模型中的应用</title>
+  <desc id="desc">从不可微奖励、梯度高方差、策略更新失稳、反馈成本，到价值模型成本，依次对应 REINFORCE、Actor-Critic 与 GAE、TRPO 与 PPO、奖励模型与 DPO、RLOO 与 GRPO。右侧说明每次优化为何进入大模型训练。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071426"/>
+      <stop offset="1" stop-color="#102847"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#142a46"/>
+      <stop offset="1" stop-color="#183657"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-20%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020817" flood-opacity="0.45"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0 0L9 4.5L0 9Z" fill="#59c3ff"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="920" rx="28" fill="url(#bg)"/>
+  <text x="64" y="72" fill="#f4f8ff" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="36" font-weight="700">强化学习的五次关键优化</text>
+  <text x="64" y="110" fill="#9db6d1" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="21">不是算法名接力，而是一个瓶颈逼出下一种估计与约束</text>
+
+  <line x1="118" y1="175" x2="118" y2="755" stroke="#59c3ff" stroke-width="5" opacity="0.72" marker-end="url(#arrow)"/>
+
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <g transform="translate(0 0)">
+      <circle cx="118" cy="190" r="28" fill="#10243e" stroke="#59c3ff" stroke-width="4"/>
+      <text x="118" y="199" text-anchor="middle" fill="#dff5ff" font-size="25" font-weight="700">1</text>
+      <rect x="176" y="140" width="958" height="110" rx="18" fill="url(#card)" stroke="#2e5c83" filter="url(#shadow)"/>
+      <text x="206" y="177" fill="#ffcf70" font-size="19" font-weight="700">瓶颈：奖励不可微，采样动作阻断普通反向传播</text>
+      <text x="206" y="211" fill="#f4f8ff" font-size="25" font-weight="700">REINFORCE：用回报给 log π(a|s) 加权</text>
+      <text x="1100" y="211" text-anchor="end" fill="#8ee0bd" font-size="20">LLM：Token 即动作</text>
+    </g>
+
+    <g transform="translate(0 130)">
+      <circle cx="118" cy="190" r="28" fill="#10243e" stroke="#59c3ff" stroke-width="4"/>
+      <text x="118" y="199" text-anchor="middle" fill="#dff5ff" font-size="25" font-weight="700">2</text>
+      <rect x="176" y="140" width="958" height="110" rx="18" fill="url(#card)" stroke="#2e5c83" filter="url(#shadow)"/>
+      <text x="206" y="177" fill="#ffcf70" font-size="19" font-weight="700">瓶颈：同一道题难度不同，终局分数也无法说明哪一步更好</text>
+      <text x="206" y="211" fill="#f4f8ff" font-size="25" font-weight="700">Baseline → Actor-Critic → GAE：估计 Advantage</text>
+      <text x="1100" y="211" text-anchor="end" fill="#8ee0bd" font-size="20">LLM：长回答信用分配</text>
+    </g>
+
+    <g transform="translate(0 260)">
+      <circle cx="118" cy="190" r="28" fill="#10243e" stroke="#59c3ff" stroke-width="4"/>
+      <text x="118" y="199" text-anchor="middle" fill="#dff5ff" font-size="25" font-weight="700">3</text>
+      <rect x="176" y="140" width="958" height="110" rx="18" fill="url(#card)" stroke="#2e5c83" filter="url(#shadow)"/>
+      <text x="206" y="177" fill="#ffcf70" font-size="19" font-weight="700">瓶颈：策略一更新，数据分布就变；一步太大会把原能力推坏</text>
+      <text x="206" y="211" fill="#f4f8ff" font-size="25" font-weight="700">TRPO → PPO：KL 信赖域与概率比裁剪</text>
+      <text x="1100" y="211" text-anchor="end" fill="#8ee0bd" font-size="20">LLM：稳定在线 RLHF</text>
+    </g>
+
+    <g transform="translate(0 390)">
+      <circle cx="118" cy="190" r="28" fill="#10243e" stroke="#59c3ff" stroke-width="4"/>
+      <text x="118" y="199" text-anchor="middle" fill="#dff5ff" font-size="25" font-weight="700">4</text>
+      <rect x="176" y="140" width="958" height="110" rx="18" fill="url(#card)" stroke="#2e5c83" filter="url(#shadow)"/>
+      <text x="206" y="177" fill="#ffcf70" font-size="19" font-weight="700">瓶颈：人类只能比较回答；RM + rollout + critic 的系统又太昂贵</text>
+      <text x="206" y="211" fill="#f4f8ff" font-size="25" font-weight="700">奖励模型 + PPO；或 DPO 把问题压成离线偏好分类</text>
+      <text x="1100" y="211" text-anchor="end" fill="#8ee0bd" font-size="20">LLM：对齐偏好</text>
+    </g>
+
+    <g transform="translate(0 520)">
+      <circle cx="118" cy="190" r="28" fill="#10243e" stroke="#59c3ff" stroke-width="4"/>
+      <text x="118" y="199" text-anchor="middle" fill="#dff5ff" font-size="25" font-weight="700">5</text>
+      <rect x="176" y="140" width="958" height="110" rx="18" fill="url(#card)" stroke="#2e5c83" filter="url(#shadow)"/>
+      <text x="206" y="177" fill="#ffcf70" font-size="19" font-weight="700">瓶颈：长序列价值模型（critic）昂贵，但数学、代码已有便宜验证器</text>
+      <text x="206" y="211" fill="#f4f8ff" font-size="25" font-weight="700">RLOO / GRPO：同题多采样，用组内结果构造 Baseline</text>
+      <text x="1100" y="211" text-anchor="end" fill="#8ee0bd" font-size="20">LLM：推理与工具任务</text>
+    </g>
+  </g>
+
+  <rect x="62" y="820" width="1072" height="62" rx="16" fill="#0b1b30" stroke="#3f6f96"/>
+  <text x="598" y="858" text-anchor="middle" fill="#bcd2e8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">
+    始终不变的底座：可探索的初始策略（常由 SFT 提供） · 可信奖励 · 独立评测 · 防止奖励投机
+  </text>
+</svg>
