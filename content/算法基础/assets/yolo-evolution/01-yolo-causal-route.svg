@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">YOLO 从统一回归到实时检测工程体系的因果演进</title>
+  <desc id="desc">六个阶段依次解决多阶段检测延迟、框先验不稳定、小目标与尺度变化、训练技巧碎片化、Anchor 与耦合头负担，以及工业部署约束；底部总结逐渐稳定的检测系统模块。</desc>
+  <style>
+    :root { color-scheme: light dark; }
+    .bg { fill: #f7f8fb; }
+    .ink { fill: #152033; }
+    .muted { fill: #5f6b7a; }
+    .card { fill: #ffffff; stroke: #cbd3df; stroke-width: 1.5; }
+    .blue { fill: #e8f1ff; stroke: #4d7cfe; }
+    .green { fill: #e8f7ef; stroke: #2f9e68; }
+    .amber { fill: #fff4da; stroke: #d39a27; }
+    .violet { fill: #f0eafe; stroke: #8064d8; }
+    .rose { fill: #feecef; stroke: #d65a73; }
+    .teal { fill: #e5f7f5; stroke: #168d84; }
+    .arrow { stroke: #8190a5; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    .dash { stroke-dasharray: 6 6; }
+    .year { font: 700 14px Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: .04em; }
+    .h1 { font: 750 28px Inter, ui-sans-serif, system-ui, sans-serif; }
+    .h2 { font: 700 19px Inter, ui-sans-serif, system-ui, sans-serif; }
+    .body { font: 500 14px Inter, ui-sans-serif, system-ui, sans-serif; }
+    .small { font: 500 12px Inter, ui-sans-serif, system-ui, sans-serif; }
+    .axis { font: 650 13px Inter, ui-sans-serif, system-ui, sans-serif; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#8190a5"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="720" rx="20"/>
+  <text class="h1 ink" x="52" y="54">YOLO 的演进不是版本号接力，而是检测责任不断重写</text>
+  <text class="body muted" x="52" y="82">每一代都在上一代暴露的瓶颈上动手：表示、特征尺度、训练信号与部署边界依次成为主战场。</text>
+
+  <g transform="translate(14 118)">
+    <rect class="card blue" x="0" y="0" width="172" height="192" rx="14"/>
+    <text class="year ink" x="16" y="28">2015 · YOLOv1</text>
+    <text class="h2 ink" x="16" y="58">统一回归</text>
+    <text class="body ink" x="16" y="88">整图一次前向</text>
+    <text class="body ink" x="16" y="110">直接输出框与类别</text>
+    <line x1="16" y1="128" x2="156" y2="128" stroke="#4d7cfe" opacity=".45"/>
+    <text class="small muted" x="16" y="151">解决：多阶段管线慢</text>
+    <text class="small muted" x="16" y="173">暴露：定位与小目标弱</text>
+
+    <path class="arrow" d="M176 96 H196"/>
+    <text class="small muted" x="181" y="82">框难学</text>
+
+    <rect class="card green" x="200" y="0" width="172" height="192" rx="14"/>
+    <text class="year ink" x="216" y="28">2016 · YOLOv2</text>
+    <text class="h2 ink" x="216" y="58">Anchor 工程化</text>
+    <text class="body ink" x="216" y="88">聚类先验 + 约束解码</text>
+    <text class="body ink" x="216" y="110">全卷积 + 多尺度训练</text>
+    <line x1="216" y1="128" x2="356" y2="128" stroke="#2f9e68" opacity=".45"/>
+    <text class="small muted" x="216" y="151">解决：召回与尺度适配</text>
+    <text class="small muted" x="216" y="173">暴露：小目标仍吃亏</text>
+
+    <path class="arrow" d="M376 96 H396"/>
+    <text class="small muted" x="381" y="82">语义太粗</text>
+
+    <rect class="card amber" x="400" y="0" width="172" height="192" rx="14"/>
+    <text class="year ink" x="416" y="28">2018 · YOLOv3</text>
+    <text class="h2 ink" x="416" y="58">多尺度预测</text>
+    <text class="body ink" x="416" y="88">Darknet-53</text>
+    <text class="body ink" x="416" y="110">三层特征金字塔输出</text>
+    <line x1="416" y1="128" x2="556" y2="128" stroke="#d39a27" opacity=".45"/>
+    <text class="small muted" x="416" y="151">解决：不同大小目标</text>
+    <text class="small muted" x="416" y="173">暴露：组件选择复杂</text>
+
+    <path class="arrow" d="M576 96 H596"/>
+    <text class="small muted" x="578" y="82">技巧碎片化</text>
+
+    <rect class="card violet" x="600" y="0" width="172" height="192" rx="14"/>
+    <text class="year ink" x="616" y="28">2020 · YOLOv4</text>
+    <text class="h2 ink" x="616" y="58">训练系统化</text>
+    <text class="body ink" x="616" y="88">BoF / BoS 组合审计</text>
+    <text class="body ink" x="616" y="110">CSP + PAN + Mosaic</text>
+    <line x1="616" y1="128" x2="756" y2="128" stroke="#8064d8" opacity=".45"/>
+    <text class="small muted" x="616" y="151">解决：单 GPU 可训练</text>
+    <text class="small muted" x="616" y="173">暴露：Anchor 与头负担</text>
+
+    <path class="arrow" d="M776 96 H796"/>
+    <text class="small muted" x="779" y="82">正样本难配</text>
+
+    <rect class="card rose" x="800" y="0" width="172" height="192" rx="14"/>
+    <text class="year ink" x="816" y="28">2021 · YOLOX</text>
+    <text class="h2 ink" x="816" y="58">Anchor-Free</text>
+    <text class="body ink" x="816" y="88">解耦分类 / 回归头</text>
+    <text class="body ink" x="816" y="110">SimOTA 动态匹配</text>
+    <line x1="816" y1="128" x2="956" y2="128" stroke="#d65a73" opacity=".45"/>
+    <text class="small muted" x="816" y="151">解决：先验与收敛负担</text>
+    <text class="small muted" x="816" y="173">暴露：部署成新主场</text>
+
+    <path class="arrow" d="M976 96 H996"/>
+    <text class="small muted" x="979" y="82">硬件约束</text>
+
+    <rect class="card teal" x="1000" y="0" width="172" height="192" rx="14"/>
+    <text class="year ink" x="1016" y="28">2022–05/2023</text>
+    <text class="h2 ink" x="1016" y="58">工业体系</text>
+    <text class="body ink" x="1016" y="88">v6：重参数化 / 量化</text>
+    <text class="body ink" x="1016" y="110">v7：可训练 BoF</text>
+    <text class="body ink" x="1016" y="132">v8：统一工具链</text>
+    <line x1="1016" y1="148" x2="1156" y2="148" stroke="#168d84" opacity=".45"/>
+    <text class="small muted" x="1016" y="171">竞争：吞吐、量化、交付</text>
+  </g>
+
+  <g transform="translate(52 350)">
+    <rect class="card" x="0" y="0" width="1096" height="102" rx="14"/>
+    <text class="axis ink" x="20" y="28">命名边界</text>
+    <text class="body ink" x="20" y="56">v1–v3 是 Redmon / Farhadi 的论文主线；v4、v5、v6、v7、v8 来自不同作者与代码组织。</text>
+    <text class="body muted" x="20" y="80">因此，“数字更大”不证明直接继承或严格可比；必须回到论文版本、仓库提交、数据口径、硬件和许可证。</text>
+  </g>
+
+  <g transform="translate(52 480)">
+    <text class="h2 ink" x="0" y="0">到 2023 年 5 月逐渐稳定的责任分层</text>
+    <path class="arrow dash" d="M0 24 H1096"/>
+    <g transform="translate(0 48)">
+      <rect class="card blue" x="0" y="0" width="156" height="82" rx="12"/>
+      <text class="axis ink" x="78" y="31" text-anchor="middle">Backbone</text>
+      <text class="small muted" x="78" y="55" text-anchor="middle">提取多尺度表征</text>
+      <rect class="card green" x="188" y="0" width="156" height="82" rx="12"/>
+      <text class="axis ink" x="266" y="31" text-anchor="middle">Neck</text>
+      <text class="small muted" x="266" y="55" text-anchor="middle">融合高低层特征</text>
+      <rect class="card amber" x="376" y="0" width="156" height="82" rx="12"/>
+      <text class="axis ink" x="454" y="31" text-anchor="middle">Head</text>
+      <text class="small muted" x="454" y="55" text-anchor="middle">分类、回归、质量</text>
+      <rect class="card violet" x="564" y="0" width="156" height="82" rx="12"/>
+      <text class="axis ink" x="642" y="31" text-anchor="middle">Assigner + Loss</text>
+      <text class="small muted" x="642" y="55" text-anchor="middle">决定谁学哪个目标</text>
+      <rect class="card rose" x="752" y="0" width="156" height="82" rx="12"/>
+      <text class="axis ink" x="830" y="31" text-anchor="middle">Post-process</text>
+      <text class="small muted" x="830" y="55" text-anchor="middle">置信度与 NMS</text>
+      <rect class="card teal" x="940" y="0" width="156" height="82" rx="12"/>
+      <text class="axis ink" x="1018" y="31" text-anchor="middle">Runtime</text>
+      <text class="small muted" x="1018" y="55" text-anchor="middle">导出、量化、监控</text>
+    </g>
+  </g>
+  <text class="small muted" x="52" y="694">本文归纳｜证据：YOLOv1/v2/v3/v4、YOLOX、YOLOv6、YOLOv7 论文与 Ultralytics YOLOv5/v8 固定版本源码</text>
+</svg>

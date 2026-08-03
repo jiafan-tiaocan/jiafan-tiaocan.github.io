@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+  <title id="title">YOLO 从训练到生产的质量闭环</title>
+  <desc id="desc">从任务契约、数据与标签、训练、离线评测、目标硬件导出到灰度上线和线上监控形成闭环；任一门禁失败都回到数据、阈值或模型选择，而不是只追逐更大版本号。</desc>
+  <style>
+    :root { color-scheme: light dark; }
+    .bg { fill: #f7f8fb; }
+    .ink { fill: #152033; }
+    .muted { fill: #5f6b7a; }
+    .card { fill: #fff; stroke: #ccd5e1; stroke-width: 1.5; }
+    .gate { fill: #fff4da; stroke: #d39a27; stroke-width: 1.7; }
+    .system { fill: #e8f1ff; stroke: #4d7cfe; stroke-width: 1.7; }
+    .loop { fill: #e8f7ef; stroke: #2f9e68; stroke-width: 1.7; }
+    .risk { fill: #feecef; stroke: #d65a73; stroke-width: 1.7; }
+    .line { stroke: #7b899e; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    .back { stroke: #2f9e68; stroke-width: 2.2; fill: none; marker-end: url(#greenArrow); stroke-dasharray: 7 5; }
+    .h1 { font: 750 28px Inter, ui-sans-serif, system-ui, sans-serif; }
+    .h2 { font: 700 18px Inter, ui-sans-serif, system-ui, sans-serif; }
+    .body { font: 500 14px Inter, ui-sans-serif, system-ui, sans-serif; }
+    .small { font: 500 12px Inter, ui-sans-serif, system-ui, sans-serif; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#7b899e"/></marker>
+    <marker id="greenArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#2f9e68"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="660" rx="20"/>
+  <text class="h1 ink" x="52" y="54">选 YOLO 的终点不是“跑出一张框”，而是形成可回归的生产闭环</text>
+  <text class="body muted" x="52" y="82">模型只占中间一段；真实可用性由标签口径、目标硬件、阈值、长尾样本和回滚能力共同决定。</text>
+
+  <g transform="translate(20 126)">
+    <rect class="card" x="0" y="0" width="166" height="116" rx="14"/>
+    <text class="h2 ink" x="83" y="30" text-anchor="middle">1 任务契约</text>
+    <text class="small muted" x="83" y="56" text-anchor="middle">类别、BBox 定义</text>
+    <text class="small muted" x="83" y="77" text-anchor="middle">漏检 / 误检成本</text>
+    <text class="small muted" x="83" y="98" text-anchor="middle">端到端延迟预算</text>
+    <path class="line" d="M170 58 H194"/>
+
+    <rect class="card" x="198" y="0" width="166" height="116" rx="14"/>
+    <text class="h2 ink" x="281" y="30" text-anchor="middle">2 数据与标签</text>
+    <text class="small muted" x="281" y="56" text-anchor="middle">尺度、遮挡、负样本</text>
+    <text class="small muted" x="281" y="77" text-anchor="middle">训练 / 验证防泄漏</text>
+    <text class="small muted" x="281" y="98" text-anchor="middle">版本化标注规范</text>
+    <path class="line" d="M368 58 H392"/>
+
+    <rect class="system" x="396" y="0" width="166" height="116" rx="14"/>
+    <text class="h2 ink" x="479" y="30" text-anchor="middle">3 训练</text>
+    <text class="small muted" x="479" y="56" text-anchor="middle">固定代码与权重版本</text>
+    <text class="small muted" x="479" y="77" text-anchor="middle">增强、Assigner、Loss</text>
+    <text class="small muted" x="479" y="98" text-anchor="middle">资源与随机种子留档</text>
+    <path class="line" d="M566 58 H590"/>
+
+    <rect class="gate" x="594" y="0" width="166" height="116" rx="14"/>
+    <text class="h2 ink" x="677" y="30" text-anchor="middle">4 离线门禁</text>
+    <text class="small muted" x="677" y="56" text-anchor="middle">mAP50–95 / 每类 PR</text>
+    <text class="small muted" x="677" y="77" text-anchor="middle">小中大目标与 Badcase</text>
+    <text class="small muted" x="677" y="98" text-anchor="middle">阈值与 NMS 联合调参</text>
+    <path class="line" d="M764 58 H788"/>
+
+    <rect class="system" x="792" y="0" width="166" height="116" rx="14"/>
+    <text class="h2 ink" x="875" y="30" text-anchor="middle">5 目标硬件</text>
+    <text class="small muted" x="875" y="56" text-anchor="middle">ONNX / TensorRT / NPU</text>
+    <text class="small muted" x="875" y="77" text-anchor="middle">batch=1 端到端延迟</text>
+    <text class="small muted" x="875" y="98" text-anchor="middle">量化精度与算子兼容</text>
+    <path class="line" d="M962 58 H986"/>
+
+    <rect class="gate" x="990" y="0" width="166" height="116" rx="14"/>
+    <text class="h2 ink" x="1073" y="30" text-anchor="middle">6 上线门禁</text>
+    <text class="small muted" x="1073" y="56" text-anchor="middle">影子流量 / 小比例灰度</text>
+    <text class="small muted" x="1073" y="77" text-anchor="middle">超时、空结果、越界框</text>
+    <text class="small muted" x="1073" y="98" text-anchor="middle">可回滚的模型注册表</text>
+  </g>
+
+  <g transform="translate(54 300)">
+    <rect class="loop" x="0" y="0" width="726" height="174" rx="16"/>
+    <text class="h2 ink" x="22" y="34">7 线上监控：检测质量是分布问题，不是一次性指标</text>
+    <g transform="translate(22 58)">
+      <rect class="card" x="0" y="0" width="154" height="82" rx="11"/>
+      <text class="body ink" x="77" y="29" text-anchor="middle">输入分布</text>
+      <text class="small muted" x="77" y="54" text-anchor="middle">亮度、尺寸、设备</text>
+      <rect class="card" x="176" y="0" width="154" height="82" rx="11"/>
+      <text class="body ink" x="253" y="29" text-anchor="middle">输出健康</text>
+      <text class="small muted" x="253" y="54" text-anchor="middle">框数、置信度、耗时</text>
+      <rect class="card" x="352" y="0" width="154" height="82" rx="11"/>
+      <text class="body ink" x="429" y="29" text-anchor="middle">业务结果</text>
+      <text class="small muted" x="429" y="54" text-anchor="middle">漏检代价与人工复核</text>
+      <rect class="card" x="528" y="0" width="154" height="82" rx="11"/>
+      <text class="body ink" x="605" y="29" text-anchor="middle">困难样本池</text>
+      <text class="small muted" x="605" y="54" text-anchor="middle">复标、回归、再训练</text>
+    </g>
+
+    <rect class="risk" x="758" y="0" width="344" height="174" rx="16"/>
+    <text class="h2 ink" x="780" y="34">任何一项失败，都不等于“换更大的 vN”</text>
+    <text class="body ink" x="780" y="67">先定位责任：</text>
+    <text class="small muted" x="780" y="92">• 标签口径还是数据覆盖？</text>
+    <text class="small muted" x="780" y="115">• 分类、回归还是后处理阈值？</text>
+    <text class="small muted" x="780" y="138">• 模型算力还是预处理 / 传输 / NMS？</text>
+    <text class="small muted" x="780" y="161">• 精度收益能否覆盖许可证与迁移成本？</text>
+  </g>
+
+  <path class="back" d="M416 506 C416 585, 137 585, 137 247"/>
+  <text class="body ink" x="208" y="573">困难样本与线上代价回流到任务契约、数据和回归集</text>
+  <text class="small muted" x="54" y="630">本文归纳｜部署前至少固定：模型权重、代码提交、导出格式、精度、输入尺寸、batch、目标硬件、阈值与许可证。</text>
+</svg>
