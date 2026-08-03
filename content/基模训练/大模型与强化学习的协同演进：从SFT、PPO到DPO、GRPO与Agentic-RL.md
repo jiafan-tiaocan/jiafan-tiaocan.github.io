@@ -39,28 +39,28 @@ PPO、DPO、GRPO 分别回答了其中不同的问题。它们不是版本号，
 监督学习的数据通常长这样：
 
 $$
-(x,y^*)quad	ext{题目与标准答案}
+(x,y^*)\quad\text{题目与标准答案}
 $$
 
 每个目标 Token 都提供直接监督。强化学习的数据更像：
 
 $$
-	au=(s_0,a_0,s_1,a_1,ldots,s_T),qquad R(	au)inmathbb{R}
+\tau=(s_0,a_0,s_1,a_1,\ldots,s_T),\qquad R(\tau)\in\mathbb{R}
 $$
 
 智能体自己选择动作 $a_t$，环境产生下一状态 $s_{t+1}$，最后只告诉它整条轨迹得了多少分。优化目标是最大化期望回报：
 
 $$
-J(	heta)=mathbb{E}_{	ausimpi_	heta}[R(	au)]
+J(\theta)=\mathbb{E}_{\tau\sim\pi_\theta}[R(\tau)]
 $$
 
-这里的 $pi_	heta(amid s)$ 是策略：在状态 $s$ 下选择动作 $a$ 的概率。
+这里的 $\pi_\theta(a\mid s)$ 是策略：在状态 $s$ 下选择动作 $a$ 的概率。
 
 把语言模型放进这个定义并不神秘：
 
 - 状态 $s_t$：提示词与已经生成的前缀 $(x,y_{<t})$；
 - 动作 $a_t$：下一个 Token $y_t$；
-- 策略 $pi_	heta$：模型的 next-token 概率；
+- 策略 $\pi_\theta$：模型的 next-token 概率；
 - 环境转移：把新 Token 拼进上下文；
 - 奖励：人类偏好分、数学正确率、代码测试结果或工具任务是否完成。
 
@@ -155,7 +155,7 @@ $$
 
 ## 2.2 Actor-Critic：让一个模型学习“通常水平”
 
-Actor 是策略 $pi_\theta$，负责选择动作；critic 学习价值函数 $V_\psi(s)$，负责估计从当前状态继续下去通常能得多少分。最简单的时序差分误差是：
+Actor 是策略 $\pi_\theta$，负责选择动作；critic 学习价值函数 $V_\psi(s)$，负责估计从当前状态继续下去通常能得多少分。最简单的时序差分误差是：
 
 $$
 \delta_t=r_t+\gamma V_\psi(s_{t+1})-V_\psi(s_t)
