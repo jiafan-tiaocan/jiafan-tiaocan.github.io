@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">LoRA 训练与部署合并机制</title>
+  <desc id="desc">训练阶段冻结预训练矩阵 W0，只更新低秩矩阵 A 和 B；部署阶段把 alpha 除以 rank 倍的 BA 合并回 W0，恢复单个线性层。</desc>
+  <defs>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#46D9E8"/>
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9FB0C6"/>
+    </marker>
+    <style>
+      text { font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; fill: #E6EDF7; }
+      .title { font-size: 30px; font-weight: 700; }
+      .section { font-size: 23px; font-weight: 700; }
+      .label { font-size: 19px; font-weight: 600; }
+      .body { font-size: 17px; fill: #9FB0C6; }
+      .math { font-size: 18px; font-family: "SFMono-Regular", Menlo, Consolas, monospace; }
+      .card { fill: #111C2E; stroke: #31445F; stroke-width: 2; }
+      .frozen { fill: #162B45; stroke: #6FA8DC; stroke-width: 2; }
+      .trainable { fill: #241E45; stroke: #A78BFA; stroke-width: 2; }
+      .merge { fill: #16352F; stroke: #5DD39E; stroke-width: 2; }
+      .input { fill: #142332; stroke: #9FB0C6; stroke-width: 2; }
+      .flow { stroke: #9FB0C6; stroke-width: 3; fill: none; marker-end: url(#arrow-muted); }
+      .active { stroke: #46D9E8; stroke-width: 4; fill: none; marker-end: url(#arrow-cyan); }
+      .gradient { stroke: #F6C85F; stroke-width: 3; stroke-dasharray: 9 7; fill: none; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="720" fill="#0B1220"/>
+  <text x="60" y="58" class="title">LoRA 改的是任务更新，不是预训练底座</text>
+  <text x="60" y="88" class="body">左：训练时保留双分支，只让低秩矩阵接收梯度　右：部署时先做代数合并，恢复单个线性层</text>
+
+  <rect x="48" y="120" width="690" height="480" rx="24" class="card"/>
+  <text x="78" y="162" class="section">训练：W₀ 冻结，A/B 可训练</text>
+
+  <rect x="78" y="490" width="100" height="58" rx="12" class="input"/>
+  <text x="128" y="526" text-anchor="middle" class="label">输入 x</text>
+
+  <rect x="242" y="208" width="192" height="112" rx="16" class="frozen"/>
+  <text x="338" y="250" text-anchor="middle" class="label">预训练矩阵 W₀</text>
+  <text x="338" y="282" text-anchor="middle" class="body">完整保留 · 无梯度</text>
+
+  <rect x="242" y="395" width="140" height="92" rx="16" class="trainable"/>
+  <text x="312" y="432" text-anchor="middle" class="label">A</text>
+  <text x="312" y="460" text-anchor="middle" class="body">r × d_in</text>
+
+  <rect x="446" y="395" width="140" height="92" rx="16" class="trainable"/>
+  <text x="516" y="432" text-anchor="middle" class="label">B</text>
+  <text x="516" y="460" text-anchor="middle" class="body">d_out × r</text>
+
+  <rect x="620" y="405" width="82" height="72" rx="14" fill="#3B321B" stroke="#F6C85F" stroke-width="2"/>
+  <text x="661" y="435" text-anchor="middle" class="label">缩放</text>
+  <text x="661" y="460" text-anchor="middle" class="body">α / r</text>
+
+  <circle cx="648" cy="264" r="26" fill="#14333B" stroke="#46D9E8" stroke-width="3"/>
+  <text x="648" y="272" text-anchor="middle" class="title" style="font-size:28px">+</text>
+
+  <rect x="572" y="168" width="152" height="60" rx="12" class="input"/>
+  <text x="648" y="205" text-anchor="middle" class="label">输出 h</text>
+
+  <path d="M178 519 H205 V264 H242" class="flow"/>
+  <path d="M434 264 H622" class="flow"/>
+  <path d="M178 519 H210 V441 H242" class="active"/>
+  <path d="M382 441 H446" class="active"/>
+  <path d="M586 441 H620" class="active"/>
+  <path d="M661 405 V310" class="active"/>
+  <path d="M648 238 V228" class="active"/>
+
+  <rect x="224" y="374" width="494" height="132" rx="20" class="gradient"/>
+  <text x="471" y="533" text-anchor="middle" class="body" style="fill:#F6C85F">虚线区域进入优化器；W₀ 只参与前向</text>
+  <text x="91" y="580" class="math">h = W₀x + (α/r)B(Ax)</text>
+
+  <rect x="762" y="120" width="390" height="480" rx="24" class="card"/>
+  <text x="792" y="162" class="section">部署：先合并，再推理</text>
+
+  <rect x="862" y="228" width="190" height="116" rx="18" class="merge"/>
+  <text x="957" y="270" text-anchor="middle" class="label">任务权重 W_task</text>
+  <text x="957" y="302" text-anchor="middle" class="body">W₀ + (α/r)BA</text>
+
+  <rect x="804" y="420" width="108" height="58" rx="12" class="input"/>
+  <text x="858" y="456" text-anchor="middle" class="label">输入 x</text>
+
+  <rect x="1002" y="420" width="108" height="58" rx="12" class="input"/>
+  <text x="1056" y="456" text-anchor="middle" class="label">输出 h</text>
+
+  <path d="M858 420 V366 H930 V344" class="active"/>
+  <path d="M984 344 V366 H1056 V420" class="active"/>
+
+  <text x="957" y="520" text-anchor="middle" class="label" style="fill:#5DD39E">仍是一次普通矩阵乘法</text>
+  <text x="957" y="551" text-anchor="middle" class="body">“零额外延迟”只在完成合并时成立</text>
+
+  <rect x="48" y="625" width="1104" height="58" rx="16" fill="#101C2B" stroke="#31445F" stroke-width="2"/>
+  <text x="600" y="661" text-anchor="middle" class="label">任务新增参数：r(d_in + d_out)，而不是 d_in × d_out；完整底座 W₀ 仍然必须存在</text>
+</svg>
