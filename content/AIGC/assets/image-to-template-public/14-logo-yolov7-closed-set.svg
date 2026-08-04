@@ -100,25 +100,20 @@
 
   <!-- d: metrics -->
   <line x1="52" y1="606" x2="1828" y2="606" stroke="#aeb8c6" stroke-width="2"/>
-  <text class="f label" x="52" y="646">(d) Evaluation: model quality and editable-product quality are separate gates</text>
+  <text class="f label" x="52" y="646">(d) Technical metric → geometry gate → editable-product good rate</text>
   <rect x="52" y="672" width="1776" height="218" rx="18" fill="#fbfcfe" stroke="#9aa7b8" stroke-width="2"/>
-  <rect x="78" y="700" width="360" height="156" rx="14" fill="#edf3ff" stroke="#6d8fbd"/>
-  <text class="f metric" x="258" y="755" text-anchor="middle">≈ 100%</text>
-  <text class="f metricSub" x="258" y="790" text-anchor="middle">Known-logo Recall @ IoU ≥ 0.5</text>
-  <text class="f small" x="258" y="822" text-anchor="middle">Technical gate: did the detector find the slot?</text>
-  <rect x="464" y="700" width="360" height="156" rx="14" fill="#edf7f2" stroke="#52a984"/>
-  <text class="f metric" x="644" y="755" text-anchor="middle">≈ 100%</text>
-  <text class="f metricSub" x="644" y="790" text-anchor="middle">Full-logo coverage / no-cut gate</text>
-  <text class="f small" x="644" y="822" text-anchor="middle">Geometry gate: no glyph, stroke or shadow is clipped</text>
-  <rect x="850" y="700" width="360" height="156" rx="14" fill="#fff3eb" stroke="#d98a61"/>
-  <text class="f metric" x="1030" y="755" text-anchor="middle">≈ 100%</text>
-  <text class="f metricSub" x="1030" y="790" text-anchor="middle">Replace / hide / resize good rate</text>
-  <text class="f small" x="1030" y="822" text-anchor="middle">Product gate: editor replay succeeds without visible defects</text>
-  <rect x="1236" y="700" width="566" height="156" rx="14" fill="#f4f6f9" stroke="#9aa7b8"/>
-  <text class="f node" x="1262" y="735">Evidence boundary</text>
-  <text class="f body" x="1262" y="768">Project review retained the “nearly 100% on known logos” conclusion,</text>
-  <text class="f body" x="1262" y="798">but not the raw denominator or decimal logs. The public version therefore</text>
-  <text class="f body" x="1262" y="828">reports ≈100%, not fabricated 99.x precision.</text>
+  <rect x="78" y="700" width="540" height="156" rx="14" fill="#edf3ff" stroke="#6d8fbd"/>
+  <text class="f metric" x="348" y="755" text-anchor="middle">≈ 100%</text>
+  <text class="f metricSub" x="348" y="790" text-anchor="middle">Known-logo Recall @ IoU ≥ 0.5</text>
+  <text class="f small" x="348" y="822" text-anchor="middle">Detector gate · find every enumerated Logo Slot</text>
+  <rect x="650" y="700" width="540" height="156" rx="14" fill="#edf7f2" stroke="#52a984"/>
+  <text class="f metric" x="920" y="755" text-anchor="middle">≈ 100%</text>
+  <text class="f metricSub" x="920" y="790" text-anchor="middle">Full-logo coverage / no-cut gate</text>
+  <text class="f small" x="920" y="822" text-anchor="middle">BBox geometry · preserve glyph, stroke and shadow</text>
+  <rect x="1222" y="700" width="580" height="156" rx="14" fill="#fff3eb" stroke="#d98a61"/>
+  <text class="f metric" x="1512" y="755" text-anchor="middle">≈ 100%</text>
+  <text class="f metricSub" x="1512" y="790" text-anchor="middle">Replace / hide / resize good rate</text>
+  <text class="f small" x="1512" y="822" text-anchor="middle">Editor replay · product output has no visible defect</text>
 
   <!-- e: maintenance -->
   <text class="f label" x="52" y="936">(e) The hidden cost: every new logo creates a training release</text>
