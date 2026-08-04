@@ -7,14 +7,14 @@
     </style>
   </defs>
   <rect width="1880" height="1320" fill="#fff"/>
-  <text class="f title" x="52" y="58">Closed-set Logo Slot Detection with YOLOv7</text>
+  <text class="f title" x="52" y="58">Logo Slot 专项检测：封闭集 YOLOv7</text>
   <text class="f sub" x="52" y="91">可枚举 Logo 资产族 + Sketch 自动产标 + 单类专项检测：用域内近乎满召回换取持续增量训练</text>
   <line x1="52" y1="112" x2="1828" y2="112" stroke="#aeb8c6" stroke-width="2"/>
 
   <!-- a: data factory -->
-  <text class="f label" x="52" y="150">(a) Closed-set data factory</text>
+  <text class="f label" x="52" y="150">(a) 封闭集数据工厂</text>
   <rect x="52" y="172" width="500" height="398" rx="18" fill="#f8fafc" stroke="#9aa7b8" stroke-width="2"/>
-  <text class="f node" x="78" y="208">Enumerable logo asset families</text>
+  <text class="f node" x="78" y="208">可枚举的 Logo 资产族</text>
   <rect x="78" y="228" width="116" height="64" rx="10" fill="#eaf2fd" stroke="#315f9a"/>
   <circle cx="105" cy="260" r="15" fill="#315f9a"/>
   <text class="f chip" x="129" y="265">ORBIT</text>
@@ -24,40 +24,40 @@
   <rect x="338" y="228" width="116" height="64" rx="10" fill="#edf7f2" stroke="#2b8a64"/>
   <rect x="355" y="244" width="28" height="28" rx="7" fill="#2b8a64"/>
   <text class="f chip" x="389" y="265">NOVA</text>
-  <text class="f small" x="78" y="316">L = {appearance family_1, ..., family_k}; online detector keeps one class: logo_region</text>
+  <text class="f small" x="78" y="316">L = {外观族_1, ..., 外观族_k}；在线检测仍保持单类：logo_region</text>
 
   <line x1="300" y1="330" x2="300" y2="364" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="78" y="378" width="196" height="132" rx="14" fill="#fff" stroke="#6d8fbd" stroke-width="2"/>
-  <text class="f node" x="176" y="410" text-anchor="middle">Sketch template</text>
+  <text class="f node" x="176" y="410" text-anchor="middle">Sketch 人工模版</text>
   <rect x="98" y="428" width="156" height="60" rx="8" fill="#dce9f8"/>
   <rect x="112" y="440" width="57" height="19" rx="3" fill="#fff" stroke="#d85c35" stroke-width="2"/>
   <rect x="112" y="466" width="82" height="6" rx="3" fill="#7894ba"/>
   <circle cx="226" cy="458" r="22" fill="#5f84b5" opacity=".75"/>
-  <text class="f small" x="176" y="532" text-anchor="middle">Slot frame is ground truth</text>
+  <text class="f small" x="176" y="532" text-anchor="middle">设计师 Slot frame 即真值</text>
   <line x1="274" y1="444" x2="316" y2="444" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="330" y="378" width="196" height="132" rx="14" fill="#fff" stroke="#6d8fbd" stroke-width="2"/>
-  <text class="f node" x="428" y="410" text-anchor="middle">Auto-render pairs</text>
+  <text class="f node" x="428" y="410" text-anchor="middle">自动渲染训练对</text>
   <text class="f mono" x="352" y="442">RGB [3,960,960]</text>
   <text class="f mono" x="352" y="470">y=[0,cx,cy,w,h]</text>
-  <text class="f small" x="428" y="500" text-anchor="middle">asset × slot × layout × color</text>
-  <text class="f small" x="78" y="552">Split by template family and logo family before augmentation to prevent leakage.</text>
+  <text class="f small" x="428" y="500" text-anchor="middle">资产 × Slot × 版式 × 颜色</text>
+  <text class="f small" x="78" y="552">先按模版族和 Logo 资产族切分，再做数据增强，防止同源样本泄漏。</text>
 
   <!-- b: network -->
-  <text class="f label" x="590" y="150">(b) Trainable YOLOv7 path</text>
+  <text class="f label" x="590" y="150">(b) YOLOv7 可训练路径</text>
   <rect x="590" y="172" width="716" height="398" rx="18" fill="#fbfcff" stroke="#315f9a" stroke-width="2"/>
   <rect x="616" y="216" width="124" height="74" rx="12" fill="#edf3ff" stroke="#6d8fbd"/>
-  <text class="f node" x="678" y="246" text-anchor="middle">Input</text>
+  <text class="f node" x="678" y="246" text-anchor="middle">输入</text>
   <text class="f small" x="678" y="272" text-anchor="middle">960 × 960</text>
   <line x1="740" y1="253" x2="782" y2="253" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="796" y="204" width="154" height="98" rx="12" fill="#edf3ff" stroke="#315f9a" stroke-width="2"/>
   <text class="f node" x="873" y="236" text-anchor="middle">E-ELAN</text>
-  <text class="f small" x="873" y="262" text-anchor="middle">Stem + Backbone</text>
+  <text class="f small" x="873" y="262" text-anchor="middle">Stem + 主干网络</text>
   <text class="f small" x="873" y="284" text-anchor="middle">/8 · /16 · /32</text>
   <line x1="950" y1="253" x2="992" y2="253" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="1006" y="204" width="170" height="98" rx="12" fill="#edf3ff" stroke="#315f9a" stroke-width="2"/>
   <text class="f node" x="1091" y="236" text-anchor="middle">SPPCSPC</text>
-  <text class="f small" x="1091" y="262" text-anchor="middle">PAN / FPN neck</text>
-  <text class="f small" x="1091" y="284" text-anchor="middle">multi-scale fusion</text>
+  <text class="f small" x="1091" y="262" text-anchor="middle">PAN / FPN 颈部网络</text>
+  <text class="f small" x="1091" y="284" text-anchor="middle">多尺度特征融合</text>
   <line x1="1176" y1="253" x2="1218" y2="253" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="1232" y="204" width="48" height="98" rx="10" fill="#fff0e8" stroke="#d85c35" stroke-width="2"/>
   <text class="f chip" x="1256" y="242" text-anchor="middle">P3</text>
@@ -65,19 +65,19 @@
   <text class="f small" x="1256" y="288" text-anchor="middle">P5</text>
 
   <rect x="616" y="334" width="664" height="102" rx="14" fill="#fff" stroke="#c7d0dc"/>
-  <text class="f node" x="638" y="365">RepConv + IDetect (C = 1)</text>
+  <text class="f node" x="638" y="365">RepConv + IDetect（C = 1）</text>
   <text class="f mono" x="638" y="394">P3 [B,18,120,120]   P4 [B,18,60,60]   P5 [B,18,30,30]</text>
-  <text class="f small" x="638" y="420">3 anchors × (x, y, w, h, objectness, logo_region); P3 retains small-logo detail</text>
+  <text class="f small" x="638" y="420">3 Anchors ×（x, y, w, h, objectness, logo_region）；P3 保留小 Logo 细节</text>
   <path d="M1210 462 H680" fill="none" stroke="#d85c35" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#orangeArrow)"/>
   <text class="f eq" x="945" y="490" text-anchor="middle">L = λbox LCIoU + λobj LBCE-obj + λcls LBCE-cls</text>
-  <text class="f small" x="945" y="516" text-anchor="middle">Full network update; mild scale / color / JPEG augmentation; strong Mosaic intentionally reduced</text>
-  <rect x="616" y="530" width="122" height="26" rx="10" fill="#edf7f2"/><text class="f small" x="677" y="548" text-anchor="middle">hard negatives</text>
-  <rect x="748" y="530" width="122" height="26" rx="10" fill="#edf7f2"/><text class="f small" x="809" y="548" text-anchor="middle">small anchors</text>
-  <rect x="880" y="530" width="128" height="26" rx="10" fill="#edf7f2"/><text class="f small" x="944" y="548" text-anchor="middle">family split</text>
-  <rect x="1018" y="530" width="134" height="26" rx="10" fill="#fff1e9"/><text class="f small" x="1085" y="548" text-anchor="middle">purposeful fit</text>
+  <text class="f small" x="945" y="516" text-anchor="middle">全量更新网络；保留轻度缩放 / 色彩 / JPEG 增强；主动降低强 Mosaic 比例</text>
+  <rect x="616" y="530" width="122" height="26" rx="10" fill="#edf7f2"/><text class="f small" x="677" y="548" text-anchor="middle">困难负样本</text>
+  <rect x="748" y="530" width="122" height="26" rx="10" fill="#edf7f2"/><text class="f small" x="809" y="548" text-anchor="middle">小目标 Anchor</text>
+  <rect x="880" y="530" width="128" height="26" rx="10" fill="#edf7f2"/><text class="f small" x="944" y="548" text-anchor="middle">按资产族切分</text>
+  <rect x="1018" y="530" width="134" height="26" rx="10" fill="#fff1e9"/><text class="f small" x="1085" y="548" text-anchor="middle">有意域内过拟合</text>
 
   <!-- c: output -->
-  <text class="f label" x="1342" y="150">(c) Detection → editable Logo Slot</text>
+  <text class="f label" x="1342" y="150">(c) 检测结果 → 可编辑 Logo Slot</text>
   <rect x="1342" y="172" width="486" height="398" rx="18" fill="#f8fafc" stroke="#9aa7b8" stroke-width="2"/>
   <rect x="1368" y="206" width="204" height="126" rx="12" fill="#dce9f8"/>
   <rect x="1390" y="226" width="79" height="28" rx="4" fill="#fff" stroke="#d85c35" stroke-width="3"/>
@@ -85,70 +85,70 @@
   <text class="f small" x="1424" y="245">ORBIT</text>
   <rect x="1390" y="276" width="104" height="8" rx="4" fill="#7894ba"/>
   <circle cx="1528" cy="275" r="28" fill="#5f84b5" opacity=".72"/>
-  <text class="f small" x="1470" y="352" text-anchor="middle">bbox + safety padding</text>
+  <text class="f small" x="1470" y="352" text-anchor="middle">BBox + 安全边距</text>
   <line x1="1572" y1="269" x2="1612" y2="269" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="1626" y="206" width="176" height="126" rx="12" fill="#fff" stroke="#315f9a" stroke-width="2"/>
-  <text class="f node" x="1714" y="236" text-anchor="middle">Logo Slot</text>
+  <text class="f node" x="1714" y="236" text-anchor="middle">可替换 Logo Slot</text>
   <text class="f mono" x="1644" y="264">xyxy + score</text>
   <text class="f mono" x="1644" y="288">mode = contain</text>
   <text class="f mono" x="1644" y="312">anchor = center</text>
   <rect x="1368" y="382" width="434" height="146" rx="14" fill="#102a54"/>
-  <text class="f white" x="1392" y="416">Why keep the full rectangle?</text>
-  <text class="f whiteBody" x="1392" y="450">1. Preserve small text, stroke and shadow</text>
-  <text class="f whiteBody" x="1392" y="480">2. Default crop reproduces the original card</text>
-  <text class="f whiteBody" x="1392" y="510">3. Hide / replace triggers background restoration</text>
+  <text class="f white" x="1392" y="416">为什么整块保留？</text>
+  <text class="f whiteBody" x="1392" y="450">1. 保护小字、描边和阴影不被切坏</text>
+  <text class="f whiteBody" x="1392" y="480">2. 默认图块可以完整复现原卡片</text>
+  <text class="f whiteBody" x="1392" y="510">3. 隐藏 / 替换时触发原区域背景恢复</text>
 
   <!-- d: metrics -->
   <line x1="52" y1="606" x2="1828" y2="606" stroke="#aeb8c6" stroke-width="2"/>
-  <text class="f label" x="52" y="646">(d) Technical metric → geometry gate → editable-product good rate</text>
+  <text class="f label" x="52" y="646">(d) 技术指标 → 几何门禁 → 编辑器良品率</text>
   <rect x="52" y="672" width="1776" height="218" rx="18" fill="#fbfcfe" stroke="#9aa7b8" stroke-width="2"/>
   <rect x="78" y="700" width="540" height="156" rx="14" fill="#edf3ff" stroke="#6d8fbd"/>
   <text class="f metric" x="348" y="755" text-anchor="middle">≈ 100%</text>
-  <text class="f metricSub" x="348" y="790" text-anchor="middle">Known-logo Recall @ IoU ≥ 0.5</text>
-  <text class="f small" x="348" y="822" text-anchor="middle">Detector gate · find every enumerated Logo Slot</text>
+  <text class="f metricSub" x="348" y="790" text-anchor="middle">已知 Logo Recall @ IoU ≥ 0.5</text>
+  <text class="f small" x="348" y="822" text-anchor="middle">检测门禁 · 找全资产库覆盖的 Logo Slot</text>
   <rect x="650" y="700" width="540" height="156" rx="14" fill="#edf7f2" stroke="#52a984"/>
   <text class="f metric" x="920" y="755" text-anchor="middle">≈ 100%</text>
-  <text class="f metricSub" x="920" y="790" text-anchor="middle">Full-logo coverage / no-cut gate</text>
-  <text class="f small" x="920" y="822" text-anchor="middle">BBox geometry · preserve glyph, stroke and shadow</text>
+  <text class="f metricSub" x="920" y="790" text-anchor="middle">完整覆盖 / 不切字率</text>
+  <text class="f small" x="920" y="822" text-anchor="middle">几何门禁 · BBox 完整容纳字形、描边与阴影</text>
   <rect x="1222" y="700" width="580" height="156" rx="14" fill="#fff3eb" stroke="#d98a61"/>
   <text class="f metric" x="1512" y="755" text-anchor="middle">≈ 100%</text>
-  <text class="f metricSub" x="1512" y="790" text-anchor="middle">Replace / hide / resize good rate</text>
-  <text class="f small" x="1512" y="822" text-anchor="middle">Editor replay · product output has no visible defect</text>
+  <text class="f metricSub" x="1512" y="790" text-anchor="middle">替换 / 隐藏 / 缩放良品率</text>
+  <text class="f small" x="1512" y="822" text-anchor="middle">编辑器回放 · 最终模版没有可见缺陷</text>
 
   <!-- e: maintenance -->
-  <text class="f label" x="52" y="936">(e) The hidden cost: every new logo creates a training release</text>
+  <text class="f label" x="52" y="936">(e) 隐性成本：每新增一个 Logo，都要新增一次训练发布</text>
   <rect x="52" y="960" width="1776" height="292" rx="18" fill="#fff9f5" stroke="#d9a184" stroke-width="2"/>
   <rect x="82" y="1008" width="210" height="118" rx="14" fill="#fff" stroke="#d85c35" stroke-width="2"/>
-  <text class="f node" x="187" y="1040" text-anchor="middle">New logo asset</text>
+  <text class="f node" x="187" y="1040" text-anchor="middle">新增 Logo 资产</text>
   <path d="M126 1096 L153 1054 L180 1096Z" fill="#d85c35"/>
-  <text class="f chip" x="196" y="1082">NEW MARK</text>
+  <text class="f chip" x="196" y="1082">新字标</text>
   <line x1="292" y1="1067" x2="352" y2="1067" stroke="#d85c35" stroke-width="4" marker-end="url(#orangeArrow)"/>
   <rect x="368" y="1008" width="250" height="118" rx="14" fill="#fff" stroke="#d85c35" stroke-width="2"/>
-  <text class="f node" x="493" y="1040" text-anchor="middle">Coverage gate: OOD</text>
-  <text class="f body" x="392" y="1072">No accuracy commitment before</text>
-  <text class="f body" x="392" y="1098">the asset family enters training.</text>
+  <text class="f node" x="493" y="1040" text-anchor="middle">覆盖门禁：未见资产族</text>
+  <text class="f body" x="392" y="1072">进入训练集之前</text>
+  <text class="f body" x="392" y="1098">不承诺检测准确率</text>
   <line x1="618" y1="1067" x2="678" y2="1067" stroke="#d85c35" stroke-width="4" marker-end="url(#orangeArrow)"/>
   <rect x="694" y="1008" width="250" height="118" rx="14" fill="#fff" stroke="#d85c35" stroke-width="2"/>
-  <text class="f node" x="819" y="1040" text-anchor="middle">Generate supervised variants</text>
-  <text class="f body" x="718" y="1072">Slot / layout / color / scale</text>
-  <text class="f body" x="718" y="1098">+ hard-negative regression</text>
+  <text class="f node" x="819" y="1040" text-anchor="middle">生成监督变体</text>
+  <text class="f body" x="718" y="1072">Slot / 版式 / 颜色 / 尺寸</text>
+  <text class="f body" x="718" y="1098">+ 困难负样本回归集</text>
   <line x1="944" y1="1067" x2="1004" y2="1067" stroke="#d85c35" stroke-width="4" marker-end="url(#orangeArrow)"/>
   <rect x="1020" y="1008" width="250" height="118" rx="14" fill="#fff" stroke="#d85c35" stroke-width="2"/>
-  <text class="f node" x="1145" y="1040" text-anchor="middle">Incremental fine-tune</text>
-  <text class="f body" x="1044" y="1072">Start from checkpoint v_k</text>
-  <text class="f body" x="1044" y="1098">update full YOLOv7</text>
+  <text class="f node" x="1145" y="1040" text-anchor="middle">增量微调</text>
+  <text class="f body" x="1044" y="1072">从 Checkpoint v_k 启动</text>
+  <text class="f body" x="1044" y="1098">更新完整 YOLOv7</text>
   <line x1="1270" y1="1067" x2="1330" y2="1067" stroke="#d85c35" stroke-width="4" marker-end="url(#orangeArrow)"/>
   <rect x="1346" y="1008" width="250" height="118" rx="14" fill="#fff" stroke="#d85c35" stroke-width="2"/>
-  <text class="f node" x="1471" y="1040" text-anchor="middle">Full old + new regression</text>
-  <text class="f body" x="1370" y="1072">Detection gate + editor replay</text>
-  <text class="f body" x="1370" y="1098">reject forgetting and clipping</text>
+  <text class="f node" x="1471" y="1040" text-anchor="middle">新旧 Logo 全量回归</text>
+  <text class="f body" x="1370" y="1072">检测门禁 + 编辑器回放</text>
+  <text class="f body" x="1370" y="1098">拒绝遗忘、切字和框漂移</text>
   <line x1="1596" y1="1067" x2="1640" y2="1067" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
   <rect x="1656" y="1008" width="146" height="118" rx="14" fill="#102a54"/>
-  <text class="f white" x="1729" y="1046" text-anchor="middle">Publish</text>
-  <text class="f whiteBody" x="1729" y="1078" text-anchor="middle">checkpoint</text>
+  <text class="f white" x="1729" y="1046" text-anchor="middle">发布</text>
+  <text class="f whiteBody" x="1729" y="1078" text-anchor="middle">Checkpoint</text>
   <text class="f whiteBody" x="1729" y="1104" text-anchor="middle">v_k+1</text>
   <path d="M1729 1126 V1188 H187 V1142" fill="none" stroke="#315f9a" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#arrow)"/>
   <rect x="82" y="1172" width="1720" height="54" rx="12" fill="#fff" stroke="#e4c0ac"/>
-  <text class="f node" x="942" y="1205" text-anchor="middle">Trade-off: near-deterministic quality on the enumerated domain ↔ recurring data, GPU, regression and release cost</text>
-  <text class="f small" x="52" y="1288">Paper-style reconstruction based on project facts and the official YOLOv7 architecture; all sample logos and cards are synthetic.</text>
+  <text class="f node" x="942" y="1205" text-anchor="middle">取舍：可枚举域内接近确定性的质量 ↔ 持续的数据、GPU、回归与发布成本</text>
+  <text class="f small" x="52" y="1288">本文依据项目事实与 YOLOv7 官方结构确定性重绘；图中 Logo 和卡片均为合成示例。</text>
 </svg>
