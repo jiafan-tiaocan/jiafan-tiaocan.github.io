@@ -1176,12 +1176,46 @@ DPO 的训练过程像监督学习：固定数据、没有环境交互、没有�
 
 数学、代码和结构化输出有一个重要变化：奖励可以由 exact match、编译器、单元测试或几何规则自动给出。对同一道题采样多条回答后，不再一定需要 value model 预测每个 Token 的未来价值。
 
+### 图里的 Frozen Reward Models 是什么
+
+先把 reward model 与 critic 分开。reward model 像**判卷器**，回答“这条完整回答得几分”；critic 像**考生做题途中的估分器**，回答“写到当前 Token 时，预计最后能得几分”。GRPO 去掉的是第二个角色，不是第一个角色。
+
+`Frozen Reward Models` 表示奖励系统在当前一轮强化学习中只打分、不更新。若它是带参数的神经网络，可写成：
+
+$$
+R_i=r_\phi(x,y_i),\qquad \phi\ \text{固定},\quad \theta\ \text{更新}
+$$
+
+$x$ 是题目，$y_i$ 是当前策略 $\pi_\theta$ 生成的第 $i$ 条回答，$r_\phi$ 把完整回答压成标量奖励 $R_i$。反向传播更新 policy 参数 $\theta$，不会把梯度传进奖励模型参数 $\phi$。这样训练始终使用同一把尺子；否则 policy 与判卷器在同一个内循环中一起变化，分数上涨可能只是判卷器变得更宽松。
+
+这里的 “model” 是功能称呼，不一定真是神经网络：
+
+| 现实任务 | 固定奖励系统 | 它怎样打分 |
+|---|---|---|
+| 数学题 | 答案解析器与 exact-match verifier | 最终答案正确记 $1$，错误记 $0$ |
+| 代码题 | 编译器、沙箱和单元测试 | 按编译结果与测试通过率给分 |
+| 开放式问答 | 预先用人类偏好对训练的神经 reward model | 对 helpfulness、safety 等维度打分 |
+| 多约束任务 | 多个固定判卷器的组合 | 汇总正确性、格式、安全与长度等分项 |
+
+“冻结”也不表示这个判卷器永远不再训练。工程上可以在一轮训练结束后，收集 reward hacking 与新失败样本，离线更新 reward model，再冻结一个新版本进入下一轮。冻结的是**policy 更新的内循环**。
+
+把 GRPO 训练时的几个模型放在一起看：
+
+| 组件 | 职责 | GRPO 内循环中的状态 |
+|---|---|---|
+| policy $\pi_\theta$ | 生成回答 | 更新 |
+| reward model / verifier $r_\phi$ | 给完整回答判分 | 冻结 |
+| critic / value model $V_\psi$ | 预测中间状态的未来得分 | 不需要 |
+| reference policy $\pi_{\mathrm{ref}}$ | 约束 policy 不要偏移过远 | 通常冻结 |
+
+这也说明 DPO 与 GRPO 省掉的不是同一个东西：DPO 用固定 winner/loser 数据直接训练，因此训练环节可以没有显式 reward model；GRPO 要给当前 policy 新采样的回答判分，因此仍需要 reward model、规则或 verifier，但用组内统计代替了 critic baseline。
+
 设同一道题一共采样 $G$ 条回答，奖励为 $R_1,\ldots,R_G$。它们共享题目难度，因此可以互相估计“这道题上的通常水平”。
 
 RLOO（REINFORCE Leave-One-Out）给第 $i$ 条回答计算 baseline 时，只平均其余 $G-1$ 条：
 
 $$
-b_i=\frac{1}{G-1}\sum_{j\ne i}R_j,qquad
+b_i=\frac{1}{G-1}\sum_{j\ne i}R_j,\qquad
 \hat A_i=R_i-b_i
 $$
 
@@ -1195,7 +1229,7 @@ $$
 {\operatorname{std}(R_1,\ldots,R_G)+\varepsilon}
 $$
 
-看一个四条回答的例子：
+看一个现实中的四回答例子。题目是“解方程 $3x+5=20$”，policy 分别生成最终答案 $5,5,15,3$。固定的答案检查器对前两条判为正确、后两条判为错误，于是：
 
 $$
 (R_1,R_2,R_3,R_4)=(1,1,0,0)
@@ -1216,7 +1250,7 @@ $$
 
 ![DeepSeekMath原论文比较PPO与GRPO：PPO训练价值模型并通过GAE得到优势，GRPO对同一问题采样多条回答并从组内奖励计算优势](assets/paper-deepseekmath-fig4-ppo-vs-grpo.png)
 
-*图 7　最值得看的是黄色 value model：PPO 需要训练它，再经 GAE 得到 $A$；GRPO 把同题多个输出的奖励送入 Group Computation，直接得到组相对优势。原论文 Figure 4，[DeepSeekMath](https://arxiv.org/abs/2402.03300)，裁剪自原 PDF，版权归原作者。*
+*图 7　先看上方 Frozen Reward Models：它们是固定的判卷器，可以是神经 reward model，也可以是答案检查器、编译器或单元测试。再看黄色 value model：PPO 需要训练它并经 GAE 得到 $A$，GRPO 则把同题多个输出的奖励送入 Group Computation，直接得到组相对优势，因此省掉的是 value model，而不是奖励来源。原论文 Figure 4，[DeepSeekMath](https://arxiv.org/abs/2402.03300)，裁剪自原 PDF，版权归原作者。*
 
 ```python
 def grpo_loss(
@@ -1274,7 +1308,7 @@ GRPO 之后的缩写很多，不必逐个背。它们主要对应三种具体偏
 单轮数学题常只有一个 prompt、若干回答和终局验证。Agent 则会搜索网页、调用工具、执行代码并读取 observation：
 
 $$
-\tau=(s_0,a_0,o_1,a_1,o_2,\ldots,a_T),qquad R=R(\tau)
+\tau=(s_0,a_0,o_1,a_1,o_2,\ldots,a_T),\qquad R=R(\tau)
 $$
 
 此时早期一次错误搜索可能几十步后才暴露；轨迹长度不同；工具状态会真正改变；失败也可能来自环境超时而非策略。只用同题完整轨迹的组相对终局分数，信用分配往往太粗。
