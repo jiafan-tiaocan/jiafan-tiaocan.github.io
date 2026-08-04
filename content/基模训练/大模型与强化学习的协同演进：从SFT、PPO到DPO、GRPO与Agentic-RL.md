@@ -8,7 +8,7 @@ tags:
   - RLHF
   - Reasoning-Model
 date: 2026-04-16
-last_verified: 2026-08-03
+last_verified: 2026-08-04
 noteType: technical
 publish: true
 ---
@@ -632,37 +632,183 @@ $$
 
 若 $\delta_t>0$，刚才发生的转移比 critic 原先预期更好；若 $\delta_t<0$，结果更差。它因此可以充当一步 advantage 的近似。
 
+这里先停一下。这个公式里只有 $\gamma$，还没有 $\lambda$：
+
+- $\gamma$ 来自回报 $G_t=r_t+\gamma r_{t+1}+\gamma^2r_{t+2}+\cdots$ 的定义，表示未来奖励回到当前时刻时怎样折扣；
+- $\lambda$ 要到“把不同步数的 advantage 估计混合起来”时才会出现。
+
+### 从一步 TD 到多步 advantage：先看清 $\gamma$ 从哪里来
+
+只向前看一步时，advantage 估计就是：
+
+$$
+\hat A_t^{(1)}
+=r_t+\gamma V_\psi(s_{t+1})-V_\psi(s_t)
+=\delta_t
+$$
+
+上标 $(1)$ 表示只使用一步真实奖励，之后的未来交给 critic 估计。若向前看两步，先使用 $r_t$ 和 $r_{t+1}$，再从 $s_{t+2}$ 开始使用 critic：
+
+$$
+\hat A_t^{(2)}
+=r_t+\gamma r_{t+1}+\gamma^2V_\psi(s_{t+2})-V_\psi(s_t)
+$$
+
+它也可以写成两个 TD 误差。把右边完整展开：
+
+$$
+\begin{aligned}
+\delta_t+\gamma\delta_{t+1}
+={}&r_t+\gamma V_\psi(s_{t+1})-V_\psi(s_t)\\
+&+\gamma\left[r_{t+1}+\gamma V_\psi(s_{t+2})-V_\psi(s_{t+1})\right]\\
+={}&r_t+\gamma V_\psi(s_{t+1})-V_\psi(s_t)\\
+&+\gamma r_{t+1}+\gamma^2V_\psi(s_{t+2})-\gamma V_\psi(s_{t+1})\\
+={}&r_t+\gamma r_{t+1}+\gamma^2V_\psi(s_{t+2})-V_\psi(s_t)\\
+={}&\hat A_t^{(2)}.
+\end{aligned}
+$$
+
+第三行中，$+\gamma V_\psi(s_{t+1})$ 与 $-\gamma V_\psi(s_{t+1})$ 抵消了。$\delta_{t+1}$ 之所以乘 $\gamma$，不是 GAE 额外规定的，而是因为它位于未来一步；不乘 $\gamma$，这两个中间价值项就无法抵消，也不再等于两步回报。
+
+向前看三步时，三个 TD 误差继续首尾抵消：
+
+$$
+\begin{aligned}
+\hat A_t^{(3)}
+={}&\delta_t+\gamma\delta_{t+1}+\gamma^2\delta_{t+2}\\
+={}&r_t+\gamma r_{t+1}+\gamma^2r_{t+2}
++\gamma^3V_\psi(s_{t+3})-V_\psi(s_t).
+\end{aligned}
+$$
+
+因此，一步、两步和三步估计分别是：
+
+$$
+\begin{aligned}
+\hat A_t^{(1)}&=\delta_t,\\
+\hat A_t^{(2)}&=\delta_t+\gamma\delta_{t+1},\\
+\hat A_t^{(3)}&=\delta_t+\gamma\delta_{t+1}+\gamma^2\delta_{t+2}.
+\end{aligned}
+$$
+
+刚才只证明了一件事：**未来第 $l$ 步的 TD 误差搬回时刻 $t$，必须乘 $\gamma^l$。** 现在还剩下另一个问题：究竟应该相信一步、两步，还是三步估计？
+
+### GAE 为什么再引入 $\lambda$
+
 这里出现一个取舍：
 
 - 只看一步的 $\delta_t$，等待时间短、方差较小，却会继承 critic 的估计偏差；
 - 直接使用一条真实轨迹直到结束的完整回报 $G_t$，也叫 Monte Carlo return；它不依赖下一状态预测，却会吸收整条随机轨迹的噪声；
 - 需要一种连续旋钮，在二者之间选择。
 
-GAE（Generalized Advantage Estimation）把连续多步的 TD 误差加权求和：
+GAE（Generalized Advantage Estimation，广义优势估计）不强迫我们只选一个步数，而是用 $\lambda\in[0,1]$ 混合不同步数的 advantage。先假设从 $t$ 开始只剩三步，GAE 使用下面三个权重：
+
+$$
+\hat A_t^{\mathrm{GAE}}
+=(1-\lambda)\hat A_t^{(1)}
++(1-\lambda)\lambda\hat A_t^{(2)}
++\lambda^2\hat A_t^{(3)}
+$$
+
+这三个权重的和是：
+
+$$
+(1-\lambda)+(1-\lambda)\lambda+\lambda^2=1
+$$
+
+也就是说，这不是把三个估计无节制地相加，而是在它们之间分配总共为 $1$ 的权重。每多向前看一步，估计权重就多乘一个 $\lambda$；最后的三步估计拿走尚未分配的 $\lambda^2$，保证有限轨迹上的权重仍然加起来等于 $1$。
+
+把刚才得到的三个多步 advantage 代入：
+
+$$
+\begin{aligned}
+\hat A_t^{\mathrm{GAE}}
+={}&(1-\lambda)\delta_t\\
+&+(1-\lambda)\lambda
+  (\delta_t+\gamma\delta_{t+1})\\
+&+\lambda^2
+  (\delta_t+\gamma\delta_{t+1}+\gamma^2\delta_{t+2}).
+\end{aligned}
+$$
+
+现在逐项收集系数。$\delta_t$ 的系数是：
+
+$$
+(1-\lambda)+(1-\lambda)\lambda+\lambda^2=1
+$$
+
+$\delta_{t+1}$ 的系数是：
+
+$$
+\gamma\left[(1-\lambda)\lambda+\lambda^2\right]
+=\gamma\lambda
+$$
+
+$\delta_{t+2}$ 的系数是：
+
+$$
+\gamma^2\lambda^2
+$$
+
+于是得到：
+
+$$
+\hat A_t^{\mathrm{GAE}}
+=\delta_t
++\gamma\lambda\delta_{t+1}
++(\gamma\lambda)^2\delta_{t+2}
+$$
+
+一般化到一条长度为 $T$ 的轨迹：
 
 $$
 \hat A_t^{\mathrm{GAE}}
 =\sum_{l=0}^{T-t-1}(\gamma\lambda)^l\delta_{t+l}
 $$
 
-把前几项展开更容易看懂：
+现在 $\gamma\lambda$ 的来源就清楚了。未来第 $l$ 步的 TD 误差要同时经过两种衰减：
+
+| TD 误差 | 距离当前 | 回报的时间折扣 | 多步估计的混合权重 | 最终权重 |
+|---|---:|---:|---:|---:|
+| $\delta_t$ | $0$ 步 | $1$ | $1$ | $1$ |
+| $\delta_{t+1}$ | $1$ 步 | $\gamma$ | $\lambda$ | $\gamma\lambda$ |
+| $\delta_{t+2}$ | $2$ 步 | $\gamma^2$ | $\lambda^2$ | $(\gamma\lambda)^2$ |
+| $\delta_{t+3}$ | $3$ 步 | $\gamma^3$ | $\lambda^3$ | $(\gamma\lambda)^3$ |
+
+两者不能混为同一个“折扣因子”：
+
+- $\gamma$ 属于任务的回报定义，回答“未来奖励折算到现在还值多少”；
+- $\lambda$ 属于 advantage 估计器，回答“为了降低 critic 偏差，我们愿意纳入多长的真实轨迹”。
+
+例如取 $\gamma=0.9$、$\lambda=0.8$，连续 TD 误差的权重依次为：
 
 $$
-\hat A_t^{\mathrm{GAE}}
-=
-\delta_t
-+\gamma\lambda\delta_{t+1}
-+(\gamma\lambda)^2\delta_{t+2}
-+\cdots
+1,\quad 0.72,\quad 0.72^2=0.5184,\quad 0.72^3=0.373248,\ldots
 $$
 
-- $\lambda=0$ 时，只保留眼前一步 $\delta_t$；
-- $\lambda$ 接近 $1$ 时，会纳入更长的未来，逐渐接近 Monte Carlo 回报；
-- 工程中常见 $\lambda=0.95$，但它是偏差—方差旋钮，不是普适常数。
+未来误差逐渐变轻，同时包含两个原因：它离现在更远，而且估计器对更长轨迹分配的权重更小。
+
+三个边界情况也能帮助检查理解：
+
+- $\lambda=0$：只剩 $\delta_t$，就是一步 TD；
+- $\lambda=1$：保留直到终点的全部 TD 误差，价值项首尾抵消后得到 $G_t-V_\psi(s_t)$，即 Monte Carlo advantage；
+- $\gamma=0$：任务只关心眼前奖励，未来 TD 误差不会传回当前时刻。
+
+因此，$\lambda$ 是偏差—方差旋钮，不是普适常数。工程中常见 $\lambda=0.95$；当语言模型训练把一整段回答视为短回合并取 $\gamma=1$ 时，权重会简化成 $\lambda^l$，但一般公式仍然保留 $\gamma$。
 
 这里的“偏差”指估计器的长期平均值系统性偏离真实 advantage；“方差”指换一批随机轨迹后估计值大幅波动。GAE 用 $\lambda$ 在两种误差之间交换。
 
+最后，求和形式可以改写成从后向前的递推：
+
+$$
+\hat A_t^{\mathrm{GAE}}
+=\delta_t+\gamma\lambda\hat A_{t+1}^{\mathrm{GAE}}
+$$
+
+这就是下面代码中 `delta + gamma * lam * last_advantage` 的来源。代码从序列末尾向前扫描，`last_advantage` 保存的正是下一时刻已经算好的 $\hat A_{t+1}^{\mathrm{GAE}}$：
+
 ```python
+@torch.no_grad()
 def generalized_advantage_estimation(
     rewards: torch.Tensor,
     values: torch.Tensor,
@@ -670,7 +816,7 @@ def generalized_advantage_estimation(
     gamma: float = 1.0,
     lam: float = 0.95,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """All tensors are [batch, time]; values includes V(s_t)."""
+    """All tensors are [batch, time]; terminal V(s_{T+1}) is zero."""
     advantages = torch.zeros_like(rewards)
     last_advantage = torch.zeros(rewards.size(0), device=rewards.device)
     next_value = torch.zeros_like(last_advantage)
@@ -678,6 +824,7 @@ def generalized_advantage_estimation(
     for t in reversed(range(rewards.size(1))):
         valid = mask[:, t]
         delta = rewards[:, t] + gamma * next_value - values[:, t]
+        # A_t = delta_t + gamma * lambda * A_{t+1}
         last_advantage = (delta + gamma * lam * last_advantage) * valid
         advantages[:, t] = last_advantage
         next_value = values[:, t] * valid
