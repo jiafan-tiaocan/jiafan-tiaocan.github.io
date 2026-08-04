@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1880" height="1450" viewBox="0 0 1880 1450">
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102a54"/>
+      <stop offset="1" stop-color="#185b76"/>
+    </linearGradient>
+    <linearGradient id="dataBand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#eef4ff"/>
+      <stop offset="1" stop-color="#f3fbff"/>
+    </linearGradient>
+    <linearGradient id="runBand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfcff"/>
+      <stop offset="1" stop-color="#f5f8fc"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#13233f" flood-opacity=".12"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#2f6df6"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#ee7441"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#19a974"/>
+    </marker>
+    <style>
+      .font { font-family: Arial, "PingFang SC", "Noto Sans CJK SC", sans-serif; }
+      .title { font-size: 38px; font-weight: 800; fill: #ffffff; }
+      .subtitle { font-size: 21px; font-weight: 400; fill: #dbeaff; }
+      .bandTitle { font-size: 27px; font-weight: 800; fill: #172033; }
+      .bandSub { font-size: 18px; font-weight: 400; fill: #667286; }
+      .nodeTitle { font-size: 21px; font-weight: 800; fill: #172033; }
+      .nodeBody { font-size: 17px; font-weight: 400; fill: #536174; }
+      .chip { font-size: 16px; font-weight: 700; fill: #24314a; }
+      .small { font-size: 15px; font-weight: 400; fill: #657186; }
+      .lane { font-size: 18px; font-weight: 800; fill: #ffffff; }
+      .darkTitle { font-size: 21px; font-weight: 800; fill: #ffffff; }
+      .darkBody { font-size: 17px; font-weight: 400; fill: #dbe7fb; }
+      .darkSmall { font-size: 15px; font-weight: 400; fill: #aebfd9; }
+      .darkChip { font-size: 16px; font-weight: 700; fill: #ffffff; }
+    </style>
+  </defs>
+
+  <rect width="1880" height="1450" fill="#ffffff"/>
+  <rect x="0" y="0" width="1880" height="116" fill="url(#header)"/>
+  <text class="font title" x="64" y="58">路线 A：从设计师 Sketch 数据到可编辑模版的完整工作流</text>
+  <text class="font subtitle" x="64" y="92">训练数据工厂与在线推理共用同一套图层语义、坐标和资产契约；每个节点可独立评测、替换与回退</text>
+
+  <!-- Data factory -->
+  <rect x="54" y="146" width="1772" height="320" rx="28" fill="url(#dataBand)" stroke="#c8d8ef" stroke-width="2"/>
+  <rect x="54" y="146" width="174" height="48" rx="20" fill="#2f6df6"/>
+  <text class="font lane" x="141" y="178" text-anchor="middle">训练数据工厂</text>
+  <text class="font bandTitle" x="260" y="180">人工模版不是只能交付的存量文件，也是天然的结构化监督源</text>
+
+  <rect x="88" y="230" width="286" height="170" rx="22" fill="#ffffff" stroke="#2f6df6" stroke-width="3" filter="url(#shadow)"/>
+  <text class="font nodeTitle" x="231" y="273" text-anchor="middle">设计师 Sketch 模版库</text>
+  <text class="font nodeBody" x="112" y="308">图层树 · frame · z-order</text>
+  <text class="font nodeBody" x="112" y="338">文字属性 · 位图引用 · mask</text>
+  <text class="font nodeBody" x="112" y="368">人工确认的元素角色</text>
+
+  <line x1="374" y1="315" x2="438" y2="315" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+  <rect x="454" y="220" width="340" height="190" rx="22" fill="#ffffff" stroke="#13a9c7" stroke-width="3" filter="url(#shadow)"/>
+  <text class="font nodeTitle" x="624" y="262" text-anchor="middle">确定性数据编译器</text>
+  <text class="font nodeBody" x="482" y="300">1. 渲染扁平卡片作为模型输入</text>
+  <text class="font nodeBody" x="482" y="332">2. 从图层反算 BBox / mask / 文字</text>
+  <text class="font nodeBody" x="482" y="364">3. 替换文案、色板、尺寸与裁切</text>
+  <text class="font small" x="482" y="391">增强改变外观，标签仍由图层真值生成</text>
+
+  <line x1="794" y1="315" x2="850" y2="315" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+  <rect x="866" y="214" width="606" height="202" rx="22" fill="#ffffff" stroke="#d1dbea" stroke-width="2"/>
+  <text class="font nodeTitle" x="1169" y="253" text-anchor="middle">自动导出的监督数据</text>
+  <rect x="894" y="278" width="172" height="45" rx="18" fill="#e9f0ff"/><text class="font chip" x="980" y="307" text-anchor="middle">Logo BBox / Slot</text>
+  <rect x="1080" y="278" width="172" height="45" rx="18" fill="#eaf9fb"/><text class="font chip" x="1166" y="307" text-anchor="middle">文字框 / 内容 / 样式</text>
+  <rect x="1266" y="278" width="178" height="45" rx="18" fill="#f1edff"/><text class="font chip" x="1355" y="307" text-anchor="middle">主视觉 BBox / Mask</text>
+  <rect x="894" y="340" width="172" height="45" rx="18" fill="#fff0e9"/><text class="font chip" x="980" y="369" text-anchor="middle">按钮 BBox / Mask</text>
+  <rect x="1080" y="340" width="172" height="45" rx="18" fill="#edf8ef"/><text class="font chip" x="1166" y="369" text-anchor="middle">干净背景 / 移除对</text>
+  <rect x="1266" y="340" width="178" height="45" rx="18" fill="#f4f6f9"/><text class="font chip" x="1355" y="369" text-anchor="middle">层级 / 约束 / 关系</text>
+
+  <line x1="1472" y1="315" x2="1528" y2="315" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+  <rect x="1544" y="220" width="244" height="190" rx="22" fill="#102a54" filter="url(#shadow)"/>
+  <text class="font darkTitle" x="1666" y="262" text-anchor="middle">专项模型与规则版本</text>
+  <text class="font darkBody" x="1572" y="302">YOLOv7 / OCR</text>
+  <text class="font darkBody" x="1572" y="334">主视觉检测器</text>
+  <text class="font darkBody" x="1572" y="366">SAM2 / Fill LoRA</text>
+  <text class="font darkSmall" x="1572" y="393">训练、微调、阈值回归</text>
+  <line x1="1666" y1="410" x2="1666" y2="482" stroke="#2f6df6" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#arrowBlue)"/>
+
+  <!-- Online workflow -->
+  <rect x="54" y="494" width="1772" height="670" rx="28" fill="url(#runBand)" stroke="#d1dae8" stroke-width="2"/>
+  <rect x="54" y="494" width="174" height="48" rx="20" fill="#ee7441"/>
+  <text class="font lane" x="141" y="526" text-anchor="middle">在线解构链路</text>
+  <text class="font bandTitle" x="260" y="528">四条确定性支路先恢复元素，再由 ComfyUI 像素图恢复干净背景</text>
+
+  <rect x="84" y="664" width="210" height="132" rx="22" fill="#ffffff" stroke="#102a54" stroke-width="3" filter="url(#shadow)"/>
+  <text class="font nodeTitle" x="189" y="710" text-anchor="middle">输入广告图</text>
+  <text class="font nodeBody" x="189" y="744" text-anchor="middle">冻结原图与内容哈希</text>
+  <text class="font nodeBody" x="189" y="774" text-anchor="middle">统一坐标 / 色彩空间</text>
+
+  <line x1="294" y1="730" x2="350" y2="730" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <line x1="350" y1="626" x2="350" y2="940" stroke="#b8c8de" stroke-width="3"/>
+
+  <!-- Four branches -->
+  <rect x="382" y="586" width="430" height="86" rx="19" fill="#ffffff" stroke="#2f6df6" stroke-width="3"/>
+  <text class="font nodeTitle" x="405" y="619">Logo 区域：YOLOv7</text>
+  <text class="font nodeBody" x="405" y="650">检测可替换区域，不识别具体品牌；输出 BBox</text>
+  <line x1="350" y1="629" x2="382" y2="629" stroke="#b8c8de" stroke-width="3"/>
+
+  <rect x="382" y="696" width="430" height="86" rx="19" fill="#ffffff" stroke="#13a9c7" stroke-width="3"/>
+  <text class="font nodeTitle" x="405" y="729">文字：PaddleOCR + 规则</text>
+  <text class="font nodeBody" x="405" y="760">行框、字符、颜色候选、字号与文本角色</text>
+  <line x1="350" y1="739" x2="382" y2="739" stroke="#b8c8de" stroke-width="3"/>
+
+  <rect x="382" y="806" width="430" height="86" rx="19" fill="#ffffff" stroke="#7857d8" stroke-width="3"/>
+  <text class="font nodeTitle" x="405" y="839">主视觉：专项小检测模型</text>
+  <text class="font nodeBody" x="405" y="870">BBox → 局部抠图 / Alpha；不承担开放语义理解</text>
+  <line x1="350" y1="849" x2="382" y2="849" stroke="#b8c8de" stroke-width="3"/>
+
+  <rect x="382" y="916" width="430" height="86" rx="19" fill="#ffffff" stroke="#ee7441" stroke-width="3"/>
+  <text class="font nodeTitle" x="405" y="949">按钮：GroundingDINO → SAM2</text>
+  <text class="font nodeBody" x="405" y="980">strip + 长宽比定位，box prompt 细化像素 mask</text>
+  <line x1="350" y1="959" x2="382" y2="959" stroke="#b8c8de" stroke-width="3"/>
+
+  <!-- Branch outputs -->
+  <line x1="812" y1="629" x2="858" y2="629" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="874" y="586" width="292" height="86" rx="19" fill="#edf3ff" stroke="#b9ccef" stroke-width="2"/>
+  <text class="font nodeTitle" x="1020" y="619" text-anchor="middle">Logo Slot</text>
+  <text class="font nodeBody" x="1020" y="650" text-anchor="middle">contain / 比例 / 安全边距</text>
+
+  <line x1="812" y1="739" x2="858" y2="739" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="874" y="696" width="292" height="86" rx="19" fill="#eaf9fb" stroke="#b8dfe5" stroke-width="2"/>
+  <text class="font nodeTitle" x="1020" y="729" text-anchor="middle">可编辑文本层</text>
+  <text class="font nodeBody" x="1020" y="760" text-anchor="middle">字符串 / frame / 字体近似</text>
+
+  <line x1="812" y1="849" x2="858" y2="849" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="874" y="806" width="292" height="86" rx="19" fill="#f1edff" stroke="#d3c8ef" stroke-width="2"/>
+  <text class="font nodeTitle" x="1020" y="839" text-anchor="middle">位图资产 + Mask</text>
+  <text class="font nodeBody" x="1020" y="870" text-anchor="middle">原图坐标 / crop 坐标</text>
+
+  <line x1="812" y1="959" x2="858" y2="959" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="874" y="916" width="292" height="86" rx="19" fill="#fff0e9" stroke="#f0c7b4" stroke-width="2"/>
+  <text class="font nodeTitle" x="1020" y="949" text-anchor="middle">控件资产 + Mask</text>
+  <text class="font nodeBody" x="1020" y="980" text-anchor="middle">BBox 与像素边界同时保留</text>
+
+  <!-- Merge and pixel graph -->
+  <line x1="1166" y1="629" x2="1210" y2="629" stroke="#2f6df6" stroke-width="3"/>
+  <line x1="1166" y1="739" x2="1210" y2="739" stroke="#2f6df6" stroke-width="3"/>
+  <line x1="1166" y1="849" x2="1210" y2="849" stroke="#2f6df6" stroke-width="3"/>
+  <line x1="1166" y1="959" x2="1210" y2="959" stroke="#2f6df6" stroke-width="3"/>
+  <line x1="1210" y1="629" x2="1210" y2="959" stroke="#2f6df6" stroke-width="3"/>
+  <line x1="1210" y1="720" x2="1252" y2="720" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="1268" y="632" width="240" height="178" rx="22" fill="#ffffff" stroke="#19a974" stroke-width="3" filter="url(#shadow)"/>
+  <text class="font nodeTitle" x="1388" y="675" text-anchor="middle">Schema 片段</text>
+  <text class="font nodeBody" x="1294" y="711">角色 · frame · assetRef</text>
+  <text class="font nodeBody" x="1294" y="743">maskRef · zIndex</text>
+  <text class="font nodeBody" x="1294" y="775">替换策略与编辑约束</text>
+
+  <line x1="1210" y1="904" x2="1252" y2="904" stroke="#ee7441" stroke-width="4" marker-end="url(#arrowOrange)"/>
+  <rect x="1268" y="840" width="240" height="128" rx="22" fill="#fff7f2" stroke="#ee7441" stroke-width="3"/>
+  <text class="font nodeTitle" x="1388" y="883" text-anchor="middle">移除 Mask 合并</text>
+  <text class="font nodeBody" x="1388" y="918" text-anchor="middle">外扩 · 羽化 · 冲突裁决</text>
+  <text class="font small" x="1388" y="946" text-anchor="middle">保留原始 / 外扩 / 羽化三版</text>
+
+  <line x1="1508" y1="904" x2="1544" y2="904" stroke="#ee7441" stroke-width="4" marker-end="url(#arrowOrange)"/>
+  <rect x="1560" y="626" width="230" height="388" rx="24" fill="#172033" filter="url(#shadow)"/>
+  <text class="font darkTitle" x="1675" y="670" text-anchor="middle">ComfyUI 像素执行图</text>
+  <rect x="1586" y="706" width="178" height="48" rx="15" fill="#24466f"/><text class="font darkChip" x="1675" y="737" text-anchor="middle">Load Image + Mask</text>
+  <line x1="1675" y1="754" x2="1675" y2="780" stroke="#79a8ff" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <rect x="1586" y="788" width="178" height="48" rx="15" fill="#3e4d77"/><text class="font darkChip" x="1675" y="819" text-anchor="middle">Dilate + Feather</text>
+  <line x1="1675" y1="836" x2="1675" y2="862" stroke="#79a8ff" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <rect x="1586" y="870" width="178" height="48" rx="15" fill="#754f78"/><text class="font darkChip" x="1675" y="901" text-anchor="middle">FLUX Fill + LoRA</text>
+  <line x1="1675" y1="918" x2="1675" y2="944" stroke="#79a8ff" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <rect x="1586" y="952" width="178" height="48" rx="15" fill="#416d68"/><text class="font darkChip" x="1675" y="983" text-anchor="middle">LaMa + 边界融合</text>
+
+  <path d="M1508 720 H1526 V1176 H593 V1224" fill="none" stroke="#19a974" stroke-width="4" stroke-dasharray="10 7" marker-end="url(#arrowGreen)"/>
+  <text class="font chip" x="1115" y="1165" text-anchor="middle">Schema 片段进入确定性装配</text>
+  <path d="M1675 1014 V1142 H222 V1224" fill="none" stroke="#ee7441" stroke-width="4" marker-end="url(#arrowOrange)"/>
+  <text class="font chip" x="1150" y="1131" text-anchor="middle">修复背景进入模版底层</text>
+
+  <!-- Assembly and QA -->
+  <rect x="54" y="1194" width="1772" height="208" rx="28" fill="#f1f7f4" stroke="#c3ddcf" stroke-width="2"/>
+  <rect x="82" y="1238" width="280" height="116" rx="22" fill="#ffffff" stroke="#ee7441" stroke-width="3"/>
+  <text class="font nodeTitle" x="222" y="1280" text-anchor="middle">干净背景</text>
+  <text class="font nodeBody" x="222" y="1313" text-anchor="middle">ComfyUI 输出 + 回放证据</text>
+  <line x1="362" y1="1296" x2="425" y2="1296" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="441" y="1238" width="304" height="116" rx="22" fill="#ffffff" stroke="#19a974" stroke-width="3"/>
+  <text class="font nodeTitle" x="593" y="1280" text-anchor="middle">领域 Schema 装配</text>
+  <text class="font nodeBody" x="593" y="1313" text-anchor="middle">背景 + 图层资产 + 关系</text>
+  <line x1="745" y1="1296" x2="808" y2="1296" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="824" y="1238" width="304" height="116" rx="22" fill="#ffffff" stroke="#13a9c7" stroke-width="3"/>
+  <text class="font nodeTitle" x="976" y="1280" text-anchor="middle">确定性 Sketch Adapter</text>
+  <text class="font nodeBody" x="976" y="1313" text-anchor="middle">pages / images / 图层树</text>
+  <line x1="1128" y1="1296" x2="1191" y2="1296" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="1207" y="1238" width="268" height="116" rx="22" fill="#ffffff" stroke="#2f6df6" stroke-width="3"/>
+  <text class="font nodeTitle" x="1341" y="1280" text-anchor="middle">可编辑 Sketch 模版</text>
+  <text class="font nodeBody" x="1341" y="1313" text-anchor="middle">对象可选择、移动和替换</text>
+  <line x1="1475" y1="1296" x2="1538" y2="1296" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <rect x="1554" y="1224" width="238" height="144" rx="22" fill="#102a54"/>
+  <text class="font darkTitle" x="1673" y="1264" text-anchor="middle">编辑动作验收</text>
+  <text class="font darkBody" x="1580" y="1299">换 Logo · 改字</text>
+  <text class="font darkBody" x="1580" y="1331">移动主视觉 · 隐藏按钮</text>
+  <text class="font darkSmall" x="1580" y="1357">失败回到明确节点</text>
+
+  <text class="font bandSub" x="58" y="1432">关键边界：Logo 是可替换区域语义；主视觉由专项小模型处理；开放语义的统一理解属于下一条技术路线。</text>
+</svg>
