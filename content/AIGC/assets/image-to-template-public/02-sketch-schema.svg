@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="900" viewBox="0 0 1900 900">
+  <defs>
+    <linearGradient id="cardBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08264f"/>
+      <stop offset="1" stop-color="#0d7a96"/>
+    </linearGradient>
+    <linearGradient id="schemaBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f1f6ff"/>
+      <stop offset="1" stop-color="#f8fbff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#18233a" flood-opacity=".13"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#2f6df6"/>
+    </marker>
+    <style>
+      .title{font:750 38px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#172033}
+      .sub{font:400 21px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#5f6b7a}
+      .h{font:750 27px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#172033}
+      .b{font:600 18px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#27334a}
+      .s{font:500 16px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#5f6b7a}
+      .mono{font:500 16px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#253552}
+    </style>
+  </defs>
+  <rect width="1900" height="900" fill="#ffffff"/>
+  <text x="70" y="70" class="title">模版不是一张重绘图，而是一份编辑器可执行的配置</text>
+  <text x="70" y="108" class="sub">稳定的领域 Schema 隔离模型输出与 Sketch 原生文件版本，确定性 Adapter 负责最后写入</text>
+
+  <rect x="70" y="160" width="350" height="590" rx="24" fill="#f5f8fc" stroke="#d7deea" stroke-width="2"/>
+  <text x="245" y="210" class="h" text-anchor="middle">输入：扁平像素</text>
+  <rect x="105" y="250" width="280" height="178" rx="18" fill="url(#cardBg)" filter="url(#shadow)"/>
+  <circle cx="326" cy="309" r="48" fill="#76e0df" opacity=".92"/>
+  <path d="M275 360 C302 330 345 335 362 384 C330 405 296 400 275 360Z" fill="#ffb55a"/>
+  <rect x="132" y="282" width="115" height="14" rx="7" fill="#eaf7ff"/>
+  <rect x="132" y="310" width="88" height="10" rx="5" fill="#b8d9ed"/>
+  <rect x="132" y="362" width="98" height="28" rx="14" fill="#ffffff" opacity=".94"/>
+  <text x="245" y="470" class="b" text-anchor="middle">只有颜色，没有对象</text>
+  <text x="112" y="515" class="s">• 标题和背景已压成同一平面</text>
+  <text x="112" y="551" class="s">• 资源、文字属性与图层树丢失</text>
+  <text x="112" y="587" class="s">• 无法单独改字、移动或隐藏</text>
+  <rect x="108" y="632" width="274" height="76" rx="14" fill="#fff4ec" stroke="#ffc7a8"/>
+  <text x="245" y="663" class="b" text-anchor="middle" fill="#bd4c18">VLM / 工作流负责恢复</text>
+  <text x="245" y="689" class="s" text-anchor="middle">角色 · 文字 · BBox · mask · 关系</text>
+
+  <line x1="420" y1="455" x2="500" y2="455" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="500" y="145" width="560" height="620" rx="24" fill="url(#schemaBg)" stroke="#a9c4f4" stroke-width="2"/>
+  <rect x="535" y="178" width="190" height="40" rx="20" fill="#2f6df6"/>
+  <text x="630" y="205" font-family="Arial, PingFang SC, sans-serif" font-size="17" font-weight="700" fill="#fff" text-anchor="middle">领域 Schema · v1</text>
+  <text x="535" y="260" class="h">工程稳定契约</text>
+  <rect x="535" y="292" width="490" height="400" rx="18" fill="#ffffff" stroke="#d5dfef"/>
+  <text x="565" y="330" class="mono">{</text>
+  <text x="585" y="365" class="mono">"canvas": { "width": 1200, "height": 628 },</text>
+  <text x="585" y="400" class="mono">"layers": [</text>
+  <text x="610" y="435" class="mono">{ "id": "title_0", "kind": "text",</text>
+  <text x="632" y="468" class="mono">"role": "Title", "frame": { ... },</text>
+  <text x="632" y="501" class="mono">"text": { ... }, "zIndex": 3 },</text>
+  <text x="610" y="536" class="mono">{ "id": "visual_0", "kind": "bitmap",</text>
+  <text x="632" y="569" class="mono">"assetRef": "assets/deep-sea.png",</text>
+  <text x="632" y="602" class="mono">"maskRef": "masks/visual_0.png" }</text>
+  <text x="585" y="637" class="mono">],</text>
+  <text x="585" y="670" class="mono">"relations": [ ... ]</text>
+  <text x="565" y="702" class="mono">}</text>
+  <text x="780" y="735" class="s" text-anchor="middle">版本化 · 可校验 · 可回放 · 与编辑目标对齐</text>
+
+  <line x1="1060" y1="455" x2="1150" y2="455" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="1065" y="383" width="80" height="42" rx="21" fill="#eef4ff" stroke="#9ab8ef"/>
+  <text x="1105" y="410" font-family="Arial, PingFang SC, sans-serif" font-size="15" font-weight="700" fill="#2f6df6" text-anchor="middle">Adapter</text>
+  <text x="1105" y="494" class="s" text-anchor="middle">确定性写入</text>
+
+  <rect x="1150" y="145" width="680" height="620" rx="24" fill="#f4fbf7" stroke="#a6dbc3" stroke-width="2"/>
+  <text x="1190" y="205" class="h">Sketch 原生配置包</text>
+  <rect x="1190" y="240" width="280" height="350" rx="18" fill="#ffffff" stroke="#c9ddd2"/>
+  <text x="1222" y="282" class="mono">template.sketch/</text>
+  <text x="1238" y="322" class="mono">├─ meta.json</text>
+  <text x="1238" y="360" class="mono">├─ document.json</text>
+  <text x="1238" y="398" class="mono">├─ user.json</text>
+  <text x="1238" y="436" class="mono">├─ pages/</text>
+  <text x="1256" y="472" class="mono">└─ &lt;page-id&gt;.json</text>
+  <text x="1238" y="510" class="mono">├─ images/</text>
+  <text x="1238" y="548" class="mono">└─ previews/</text>
+
+  <rect x="1510" y="240" width="280" height="350" rx="18" fill="#ffffff" stroke="#c9ddd2"/>
+  <text x="1650" y="282" class="b" text-anchor="middle">编辑器读取后</text>
+  <rect x="1545" y="315" width="210" height="132" rx="12" fill="#e8f1ff"/>
+  <rect x="1562" y="338" width="90" height="12" rx="6" fill="#315d9b"/>
+  <rect x="1562" y="365" width="70" height="9" rx="5" fill="#7798c6"/>
+  <circle cx="1710" cy="375" r="38" fill="#50b8b4"/>
+  <rect x="1562" y="405" width="75" height="24" rx="12" fill="#ffffff"/>
+  <rect x="1547" y="317" width="112" height="42" rx="5" fill="none" stroke="#2f6df6" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1650" y="486" class="s" text-anchor="middle">Title 可单独选中</text>
+  <text x="1535" y="528" class="s">✓ 改字</text>
+  <text x="1635" y="528" class="s">✓ 移动</text>
+  <text x="1722" y="528" class="s">✓ 隐藏</text>
+  <text x="1535" y="560" class="s">✓ 换图</text>
+  <text x="1635" y="560" class="s">✓ 重排</text>
+  <text x="1722" y="560" class="s">✓ 回放</text>
+
+  <rect x="1190" y="628" width="600" height="92" rx="16" fill="#eaf8f1" stroke="#9fd8bd"/>
+  <text x="1490" y="663" class="b" text-anchor="middle" fill="#147a54">真正的验收对象</text>
+  <text x="1490" y="694" class="s" text-anchor="middle">不是“看起来像”，而是文件能打开、图层能操作、修改后仍合法</text>
+
+  <text x="70" y="840" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="700" fill="#102a54">模型负责恢复设计语义；领域 Schema 固化契约；Sketch Adapter 承担版本兼容与文件完整性。</text>
+</svg>

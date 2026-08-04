@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1000" viewBox="0 0 1900 1000">
+  <defs>
+    <linearGradient id="control" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef5ff"/>
+      <stop offset="1" stop-color="#f8fbff"/>
+    </linearGradient>
+    <linearGradient id="gpu" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2efff"/>
+      <stop offset="1" stop-color="#fbfaff"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#376fe8"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#1a2942" flood-opacity=".12"/>
+    </filter>
+    <style>
+      .title{font:750 38px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#172033}
+      .sub{font:400 21px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#5f6b7a}
+      .h{font:750 25px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#172033}
+      .b{font:650 18px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#26334a}
+      .s{font:500 16px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#5f6b7a}
+      .chip{font:700 16px Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;fill:#fff}
+    </style>
+  </defs>
+  <rect width="1900" height="1000" fill="#fff"/>
+  <text x="70" y="70" class="title">企业图生模版运行时：控制面管状态，GPU Worker 管执行</text>
+  <text x="70" y="108" class="sub">在线解析、生成式修复与离线训练分池；任务、工作流、模型和资产全部可追溯</text>
+
+  <rect x="70" y="155" width="1760" height="205" rx="24" fill="url(#control)" stroke="#b6c9ec" stroke-width="2"/>
+  <text x="110" y="205" class="h">控制面 / Control Plane</text>
+  <rect x="110" y="235" width="270" height="82" rx="16" fill="#fff" stroke="#c9d7ed"/>
+  <text x="245" y="267" class="b" text-anchor="middle">业务 API</text>
+  <text x="245" y="295" class="s" text-anchor="middle">幂等键 · 权限 · 参数白名单</text>
+  <rect x="410" y="235" width="270" height="82" rx="16" fill="#fff" stroke="#c9d7ed"/>
+  <text x="545" y="267" class="b" text-anchor="middle">任务状态机</text>
+  <text x="545" y="295" class="s" text-anchor="middle">job · retry · stage · timeout</text>
+  <rect x="710" y="235" width="270" height="82" rx="16" fill="#fff" stroke="#c9d7ed"/>
+  <text x="845" y="267" class="b" text-anchor="middle">Workflow Registry</text>
+  <text x="845" y="295" class="s" text-anchor="middle">节点 Commit · 参数 · 回归</text>
+  <rect x="1010" y="235" width="270" height="82" rx="16" fill="#fff" stroke="#c9d7ed"/>
+  <text x="1145" y="267" class="b" text-anchor="middle">模型注册表</text>
+  <text x="1145" y="295" class="s" text-anchor="middle">Checkpoint · LoRA · Hash</text>
+  <rect x="1310" y="235" width="230" height="82" rx="16" fill="#fff" stroke="#c9d7ed"/>
+  <text x="1425" y="267" class="b" text-anchor="middle">GPU 调度器</text>
+  <text x="1425" y="295" class="s" text-anchor="middle">队列 · 租约 · 降级</text>
+  <rect x="1570" y="235" width="220" height="82" rx="16" fill="#fff" stroke="#c9d7ed"/>
+  <text x="1680" y="267" class="b" text-anchor="middle">对象存储</text>
+  <text x="1680" y="295" class="s" text-anchor="middle">原图 · mask · 模版</text>
+
+  <line x1="545" y1="360" x2="545" y2="420" stroke="#376fe8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1425" y1="360" x2="1425" y2="420" stroke="#376fe8" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="420" width="510" height="390" rx="24" fill="#f2f8ff" stroke="#a9c6ee" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="105" y="452" width="150" height="38" rx="19" fill="#2f6df6"/>
+  <text x="180" y="478" class="chip" text-anchor="middle">在线解析池</text>
+  <text x="105" y="535" class="h">Qwen2.5-VL 7B</text>
+  <text x="105" y="571" class="s">2 × A100 80GB · 每卡 1 Worker</text>
+  <rect x="105" y="610" width="440" height="132" rx="16" fill="#fff" stroke="#cad8ed"/>
+  <text x="130" y="646" class="b">输入</text>
+  <text x="215" y="646" class="s">原图 + Prompt + Schema 版本</text>
+  <text x="130" y="681" class="b">输出</text>
+  <text x="215" y="681" class="s">角色 · 文字 · BBox · 关系</text>
+  <text x="130" y="716" class="b">门禁</text>
+  <text x="215" y="716" class="s">JSON · ID · 越界 · 重试一致性</text>
+  <text x="325" y="780" class="b" text-anchor="middle" fill="#2f6df6">开放语义集中在一个入口</text>
+
+  <rect x="620" y="420" width="660" height="390" rx="24" fill="#f5f2ff" stroke="#b9a9e8" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="655" y="452" width="170" height="38" rx="19" fill="#7658d8"/>
+  <text x="740" y="478" class="chip" text-anchor="middle">ComfyUI 执行池</text>
+  <text x="655" y="535" class="h">受控 Workflow JSON</text>
+  <text x="655" y="571" class="s">4 × A100 80GB · 每卡 1 Worker · 单任务租约</text>
+  <rect x="655" y="610" width="590" height="132" rx="16" fill="#fff" stroke="#d4caee"/>
+  <text x="680" y="646" class="b">执行图</text>
+  <text x="780" y="646" class="s">Mask → FLUX Fill + LoRA → LaMa → Blend</text>
+  <text x="680" y="681" class="b">状态</text>
+  <text x="780" y="681" class="s">prompt_id · WebSocket · history · artifact</text>
+  <text x="680" y="716" class="b">保护</text>
+  <text x="780" y="716" class="s">节点固定 · 文件隔离 · OOM 重启 · 降级</text>
+  <text x="950" y="780" class="b" text-anchor="middle" fill="#7658d8">生成式执行与业务状态解耦</text>
+
+  <rect x="1320" y="420" width="510" height="390" rx="24" fill="url(#gpu)" stroke="#c4b6e8" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="1355" y="452" width="170" height="38" rx="19" fill="#9a5ac7"/>
+  <text x="1440" y="478" class="chip" text-anchor="middle">离线训练池</text>
+  <text x="1355" y="535" class="h">SFT / GRPO</text>
+  <text x="1355" y="571" class="s">4 × Trainer + 2 × Rollout A100 80GB</text>
+  <rect x="1355" y="610" width="440" height="132" rx="16" fill="#fff" stroke="#d7cdec"/>
+  <text x="1380" y="646" class="b">Trainer</text>
+  <text x="1470" y="646" class="s">LoRA r=8 · bf16 · ZeRO-3</text>
+  <text x="1380" y="681" class="b">Rollout</text>
+  <text x="1470" y="681" class="s">独立 vLLM · 多候选 · 奖励</text>
+  <text x="1380" y="716" class="b">隔离</text>
+  <text x="1470" y="716" class="s">不与在线池抢显存和 NCCL</text>
+  <text x="1575" y="780" class="b" text-anchor="middle" fill="#8a48b7">训练故障不影响线上服务</text>
+
+  <line x1="580" y1="615" x2="620" y2="615" stroke="#376fe8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1280" y1="615" x2="1320" y2="615" stroke="#8f5fca" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="850" width="1760" height="92" rx="18" fill="#eef9f3" stroke="#a3d8bd"/>
+  <text x="950" y="887" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#157553" text-anchor="middle">线上目标：P50 ≈ 90 秒 · P95 ≈ 180 秒 · 规划吞吐 60–80 张/小时</text>
+  <text x="950" y="918" class="s" text-anchor="middle">全部数字是容量预算；真正上线前仍需用固定 workflow、分辨率和节点版本压测校准</text>
+</svg>
