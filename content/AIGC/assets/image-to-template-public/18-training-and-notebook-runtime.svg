@@ -8,10 +8,10 @@
   </defs>
   <rect width="1880" height="1160" fill="#fff"/>
   <text class="f title" x="60" y="64">生产工程只剩两道硬题：多模态并行训练与 Notebook 化 ComfyUI 服务</text>
-  <text class="f sub" x="60" y="98">左侧把 Qwen2.5-VL 的参数边界、ZeRO-3 与 GRPO 资源隔离画清；右侧把交互式节点图转换成企业作业服务</text>
+  <text class="f sub" x="60" y="98">左侧把 16 卡 Qwen2.5-VL 的参数边界、ZeRO-3、Token 均衡与 GRPO 资源隔离画清；右侧把交互式节点图转换成企业作业服务</text>
   <line x1="60" y1="122" x2="1820" y2="122" stroke="#aeb8c6" stroke-width="2"/>
 
-  <text class="f section" x="60" y="174">A　Qwen2.5-VL：参数分层决定并行策略</text>
+  <text class="f section" x="60" y="174">A　Qwen2.5-VL：16 卡如何真正形成一个训练作业</text>
   <rect x="60" y="198" width="850" height="858" rx="22" fill="#f8fafc" stroke="#315f9a" stroke-width="3"/>
   <text class="f node" x="88" y="242">前向计算与梯度边界</text>
   <rect x="88" y="266" width="180" height="126" rx="14" fill="#edf3ff" stroke="#315f9a" stroke-width="2"/>
@@ -41,9 +41,9 @@
   <rect x="88" y="446" width="794" height="214" rx="18" fill="#fff" stroke="#9aa7b8" stroke-width="2"/>
   <text class="f node" x="116" y="486">ZeRO-3 怎样切，而不是“多卡自动变快”</text>
   <rect x="116" y="514" width="218" height="114" rx="14" fill="#edf3ff" stroke="#315f9a"/>
-  <text class="f node" x="225" y="548" text-anchor="middle">4 × Trainer GPU</text>
-  <text class="f body" x="225" y="578" text-anchor="middle">基座参数按 Rank 分片</text>
-  <text class="f small" x="225" y="606" text-anchor="middle">只为 LoRA 保留梯度/优化器状态</text>
+  <text class="f node" x="225" y="548" text-anchor="middle">SFT：16 × Trainer GPU</text>
+  <text class="f body" x="225" y="578" text-anchor="middle">2 节点 × 8 卡 · ZeRO-3</text>
+  <text class="f small" x="225" y="606" text-anchor="middle">基座分片；只为 LoRA 保留优化状态</text>
   <line x1="334" y1="571" x2="380" y2="571" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
   <rect x="394" y="514" width="210" height="114" rx="14" fill="#fff7f0" stroke="#d85c35"/>
   <text class="f node" x="499" y="548" text-anchor="middle">动态 Token 分桶</text>
@@ -51,28 +51,28 @@
   <text class="f small" x="499" y="606" text-anchor="middle">避免最慢 Rank 拖住 All-Reduce</text>
   <line x1="604" y1="571" x2="650" y2="571" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
   <rect x="664" y="514" width="190" height="114" rx="14" fill="#f2f7f4" stroke="#2b8a64"/>
-  <text class="f node" x="759" y="548" text-anchor="middle">坐标同步</text>
-  <text class="f body" x="759" y="578" text-anchor="middle">同一 resize map</text>
-  <text class="f small" x="759" y="606" text-anchor="middle">图片 / GT / Hint 同步变换</text>
+  <text class="f node" x="759" y="548" text-anchor="middle">数据与恢复契约</text>
+  <text class="f body" x="759" y="578" text-anchor="middle">RGB / GT / Hint / resize_map</text>
+  <text class="f small" x="759" y="606" text-anchor="middle">16 Rank 写完才原子更新 latest</text>
 
   <rect x="88" y="690" width="794" height="184" rx="18" fill="#fbf9ff" stroke="#6952bd" stroke-width="2"/>
   <text class="f node" x="116" y="732">GRPO 额外难点：Rollout 不能挤占反向传播显存</text>
   <rect x="116" y="758" width="284" height="84" rx="14" fill="#fff" stroke="#d85c35"/>
-  <text class="f node" x="258" y="792" text-anchor="middle">Trainer：SFT LoRA → GRPO Policy</text>
-  <text class="f small" x="258" y="820" text-anchor="middle">4 GPU · ZeRO-3 · bf16</text>
+  <text class="f node" x="258" y="792" text-anchor="middle">GRPO Trainer：Policy 更新</text>
+  <text class="f small" x="258" y="820" text-anchor="middle">8 GPU · ZeRO-3 · bf16</text>
   <line x1="400" y1="800" x2="464" y2="800" stroke="#d85c35" stroke-width="4" marker-end="url(#orange)"/>
   <rect x="478" y="758" width="212" height="84" rx="14" fill="#fff" stroke="#315f9a"/>
   <text class="f node" x="584" y="792" text-anchor="middle">独立 Rollout Server</text>
-  <text class="f small" x="584" y="820" text-anchor="middle">2 GPU · 每图 G=4 候选</text>
+  <text class="f small" x="584" y="820" text-anchor="middle">8 GPU · G=4 · policy_version</text>
   <line x1="690" y1="800" x2="734" y2="800" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
   <rect x="748" y="758" width="106" height="84" rx="14" fill="#102a54"/>
   <text class="f white" x="801" y="790" text-anchor="middle">奖励</text>
   <text class="f whiteBody" x="801" y="818" text-anchor="middle">加权 IoU</text>
 
-  <text class="f node" x="88" y="916">容量设计值（不是遗失监控日志）</text>
+  <text class="f node" x="88" y="916">项目复盘口径与公开版工程复原</text>
   <rect x="88" y="940" width="794" height="86" rx="16" fill="#f4f6f9" stroke="#c8d0db"/>
-  <text class="f body" x="116" y="974">4 × A100 80GB Trainer + 2 × A100 80GB Rollout；micro-batch 1 × 4 卡 × 累积 4 = 有效 Batch 16</text>
-  <text class="f body" x="116" y="1004">LoRA rank 8 · bf16 · cutoff 8192 · 峰值显存门禁 &lt; 72GB/卡 · Checkpoint 每 200 step</text>
+  <text class="f body" x="116" y="974">复盘：16 卡 · 约 10,000 图；SFT 用满 16 卡，GRPO 拆为 8 卡 Trainer + 8 卡 Rollout</text>
+  <text class="f body" x="116" y="1004">复原：A100 80GB 等效 · LoRA r=8 · bf16 · cutoff 8192 · 完整训练约 36 小时</text>
 
   <text class="f section" x="958" y="174">B　Notebook 环境：把 ComfyUI 图转成企业作业</text>
   <rect x="958" y="198" width="862" height="858" rx="22" fill="#f8fafc" stroke="#2b8a64" stroke-width="3"/>
