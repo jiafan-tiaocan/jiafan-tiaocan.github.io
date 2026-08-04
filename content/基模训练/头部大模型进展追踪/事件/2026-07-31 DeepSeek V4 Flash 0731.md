@@ -50,16 +50,16 @@ DeepSeek 于 2026-07-31 将 V4 Flash 正式版本以 public beta 形式上线 AP
 
 ## 相对 Preview 的真实增量
 
-- **Agent post-training：**官方报告 Terminal Bench、DeepSWE、Toolathlon、Automation Bench 等任务大幅改善。
-- **接口和 harness 适配：**原生 Responses API，并针对 Codex 使用方式优化。
-- **因果边界清晰：**既然架构和规模未改，本轮公开增量应优先归因于后训练、任务/环境和推理策略，而不是新注意力架构。
-- **Flash 路线强化：**284B total / 13B active 的小激活 MoE 继续承载高吞吐与低价目标。
+- **Agent post-training：** 官方报告 Terminal Bench、DeepSWE、Toolathlon、Automation Bench 等任务大幅改善。
+- **接口和 harness 适配：** 原生 Responses API，并针对 Codex 使用方式优化。
+- **因果边界清晰：** 既然架构和规模未改，本轮公开增量应优先归因于后训练、任务/环境和推理策略，而不是新注意力架构。
+- **Flash 路线强化：** 284B total / 13B active 的小激活 MoE 继续承载高吞吐与低价目标。
 
 ## 外部反馈
 
 ### 独立评测
 
-[Artificial Analysis](https://artificialanalysis.ai/models/deepseek-v4-flash) 的最大努力档快照给出 Intelligence Index 50、约 122.7 output tok/s、1M context；价格 $0.14/M input、$0.28/M output，缓存命中输入约 $0.003/M。它把 0731 评为同体量开放模型中能力、速度和价格都很强的组合。
+[Artificial Analysis](https://artificialanalysis.ai/models/deepseek-v4-flash) 的最大努力档快照给出 Intelligence Index 50、约 122.7 output tok/s、1M context；每百万 token 输入价格为 0.14 美元、输出为 0.28 美元，缓存命中输入约为 0.003 美元。它把 0731 评为同体量开放模型中能力、速度和价格都很强的组合。
 
 同一评测也记录了约 210M 的总输出 token，显著高于同类中位数 100M。因而“最便宜”必须按**完成任务的总 token 和重试**核算，不能只看单 token 标价。
 
