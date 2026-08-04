@@ -62,8 +62,8 @@
     <text x="1320" y="303" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="19" font-weight="600" fill="#172033" text-anchor="start">路线 A：稳定基线与失败回退</text>
     <text x="1320" y="340" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="19" font-weight="600" fill="#172033" text-anchor="start">路线 B：高上限实验线</text>
     <rect x="1320" y="382" width="470" height="122" rx="18" fill="#fff9ef" stroke="#f5d58a" stroke-width="2"/>
-    <text x="1555" y="424" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#ff7a45" text-anchor="middle">约 16 张卡片</text>
-    <text x="1555" y="461" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="17" font-weight="600" fill="#172033" text-anchor="middle">足以验证训练链路，不足以证明生产泛化</text>
+    <text x="1555" y="424" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="750" fill="#ff7a45" text-anchor="middle">训练收敛 ≠ 生产泛化</text>
+    <text x="1555" y="461" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="17" font-weight="600" fill="#172033" text-anchor="middle">必须用独立未见版式和真实编辑动作验证</text>
     <text x="1320" y="558" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="21" font-weight="750" fill="#102a54" text-anchor="start">切换门槛</text>
     <text x="1320" y="598" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="500" fill="#5f6b7a" text-anchor="start">• 未见版式的独立回归集</text>
     <text x="1320" y="634" font-family="Arial, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="500" fill="#5f6b7a" text-anchor="start">• 可编辑操作成功率</text>
