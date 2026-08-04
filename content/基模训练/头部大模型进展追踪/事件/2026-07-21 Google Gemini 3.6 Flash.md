@@ -52,16 +52,16 @@ Google 于 2026-07-21 发布 Gemini 3.6 Flash。官方将其定位为 coding、k
 
 ## 相对 Gemini 3.5 Flash 的真实增量
 
-- **效率优先的点版本：**同为 Flash 档，重点是更少输出 token 与更好的能力—速度平衡。
-- **原生多模态工作档：**文本、图像、语音和视频输入继续通过一个模型入口处理。
-- **1M 上下文不再只属于 Pro：**长上下文与高吞吐结合，适合批量文档、媒体和 Agent 场景。
-- **不是新架构发布：**公开材料主要给能力、价格和产品可用性，没有足够证据把增量归因到具体训练或架构模块。
+- **效率优先的点版本：** 同为 Flash 档，重点是更少输出 token 与更好的能力—速度平衡。
+- **原生多模态工作档：** 文本、图像、语音和视频输入继续通过一个模型入口处理。
+- **1M 上下文不再只属于 Pro：** 长上下文与高吞吐结合，适合批量文档、媒体和 Agent 场景。
+- **不是新架构发布：** 公开材料主要给能力、价格和产品可用性，没有足够证据把增量归因到具体训练或架构模块。
 
 ## 外部反馈
 
 ### 独立评测
 
-[Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash) 给出的当前 high-effort 快照是 Intelligence Index 50、约 213.5 output tok/s、1M context，价格 $1.50/M input、$7.50/M output。相较同价位模型，它的外部画像是“明显快、较简洁、能力强且价格适中”。
+[Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash) 给出的当前 high-effort 快照是 Intelligence Index 50、约 213.5 output tok/s、1M context；每百万 token 输入价格为 1.50 美元、输出为 7.50 美元。相较同价位模型，它的外部画像是“明显快、较简洁、能力强且价格适中”。
 
 ### 解释边界
 
