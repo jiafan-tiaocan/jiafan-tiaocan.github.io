@@ -67,11 +67,15 @@ publish: true
 
 ### 2.1 三代生产方案，到底变了什么
 
-| 项目代际 | 说话人条件 | “说什么”由谁负责 | “怎样还原声音”由谁负责 | 新音色主路径 | 本质变化 |
-|---|---|---|---|---|---|
-| 第一代·GPT-SoVITS | 参考语义 Token + 频谱风格 | Text2Semantic GPT | SoVITS VAE / Flow / 生成对抗（GAN）Decoder | 项目为稳定主要做 S1/S2 SFT | 少量私有数据就能克隆，但训练仍是音色交付的重要环节 |
-| 第二代·CosyVoice | Speaker Embedding + 声学 Prompt | 监督语义 Token + LLM | Conditional Flow Matching + Vocoder | 短 Prompt，不做反传 | **模型质变**：免微调成为生产默认，内容与声学的分工更清晰 |
-| 第三代·MiniMax Speech | API 中由参考音频注册 `voice_id`；公开 Speech-02 为可学习 Speaker Encoder | 公开 Speech-02 为 AR Transformer | 公开 Speech-02 为 Latent Flow Matching + Flow-VAE | 上传、注册、调用 API | **系统质变**：音色成为托管资产，团队不再拥有或运维底层权重 |
+先统一“参数量”的统计口径：这里列的是该代**公开且实际承担生成的核心模型规模**。GPT-SoVITS 按固定 v1 官方 S1、S2 生成权重逐张量统计；CosyVoice 使用项目对应的官方 `CosyVoice-300M` 型号口径；商业模型没有披露就明确写“未披露”。共享的外部特征提取器、只在训练时使用的判别器，以及 Checkpoint 的磁盘字节数，都不能不加区分地混进来。因此这些数字帮助建立规模感，却不是严格同口径的排行榜。
+
+| 项目代际 | 参数量（公开/固定口径） | 说话人条件 | “说什么”由谁负责 | “怎样还原声音”由谁负责 | 新音色主路径 | 本质变化 |
+|---|---|---|---|---|---|---|
+| 第一代·GPT-SoVITS | **约 130.3M**：S1 77.5M + S2 52.8M；不含 CN-HuBERT、中文 BERT 和训练期判别器[^gpt-sovits-params] | 参考语义 Token + 频谱风格 | Text2Semantic GPT | SoVITS VAE / Flow / 生成对抗（GAN）Decoder | 项目为稳定主要做 S1/S2 SFT | 少量私有数据就能克隆，但训练仍是音色交付的重要环节 |
+| 第二代·CosyVoice | **约 300M**：项目对应 `CosyVoice-300M` 官方型号口径[^cosyvoice-size] | Speaker Embedding + 声学 Prompt | 监督语义 Token + LLM | Conditional Flow Matching + Vocoder | 短 Prompt，不做反传 | **模型质变**：免微调成为生产默认，内容与声学的分工更清晰 |
+| 第三代·MiniMax Speech | **未披露**：Speech-02 技术报告与 Speech 2.8 产品资料均未公布总参数量[^minimax-paper][^minimax-28] | API 中由参考音频注册 `voice_id`；公开 Speech-02 为可学习 Speaker Encoder | 公开 Speech-02 为 AR Transformer | 公开 Speech-02 为 Latent Flow Matching + Flow-VAE | 上传、注册、调用 API | **系统质变**：音色成为托管资产，团队不再拥有或运维底层权重 |
+
+参数量也不是三代差异的因果解释。第一代到第二代的关键收益来自表示、训练数据和“语义规划 + 连续声学渲染”的分工，而不只是 130M 变成 300M；第二代到第三代甚至没有可比较的公开数字。把 MiniMax 写成“因为参数更多所以更强”没有证据，能够确认的是它把模型、数据、推理集群和音色资产接口一起封装成了托管系统。
 
 如果问“核心框架变过几次”，需要先说口径。按整个技术史的抽象层次，可以看作三次主干重分工：**专属权重 → 共享模型与说话人条件；连续 Mel 回归 → 离散 Speech Token 语言建模；单一序列生成 → AR 高层规划 + Flow 连续声学渲染。** 但按项目三代来看，GPT-SoVITS 已经有“语义规划 + 声学解码”的混合结构；CosyVoice 是一次明显的模型分工升级，MiniMax 公开主干仍在 AR + Flow 家族内，更大的变化是 Speaker Encoder、Latent 与托管交付。
 
@@ -696,15 +700,31 @@ MiniMax 官方接口接受 10 秒至 5 分钟源音频，但模型的输入下�
 
 ### 9.1 三个最基本的量化指标
 
-ASR 回转后的字错率或词错率衡量内容正确性：
+#### WER / CER：有没有把文字说对
+
+先用同一个自动语音识别（ASR）模型把生成音频转回文字，再把识别结果与目标文案做最小编辑距离对齐。词错率（Word Error Rate，WER）按“词”计数：
 
 $$
 \operatorname{WER}=\frac{S+D+I}{N}
 $$
 
-$S,D,I$ 分别是替换、删除和插入数。中文业务更适合同时报告 CER，并把产品名、数字、日期和金额单独统计；一个关键产品名读错，不能被整段低 CER 掩盖。
+$N$ 是目标文本的词数，$S,D,I$ 分别是替换、删除和插入数，**越低越好，0 表示逐词完全一致**。例如目标是“今天 支付 一百 元”，ASR 识别成“今天 支付 八百 元”，4 个目标词中有 1 个替换，WER 就是 $1/4=25\%$。由于插入数不受 $N$ 限制，极差结果的 WER 也可能超过 100%。
 
-Speaker SIM 使用独立的说话人验证模型计算参考与生成音频的余弦相似度。这里必须用**未参与供应商生成的独立模型**，否则会形成自证循环。
+中文字边界没有英文空格那样稳定，所以通常再报告字错率（Character Error Rate，CER）：公式相同，只把统计单位从词换成字。例如“住院给付金”被识别成“住院给附金”，5 个字中替换 1 个，CER 为 20%。WER/CER 测的是**生成音频经过 ASR 后的内容一致性**，其中混合了 TTS 错误和 ASR 自身错误；它不是人耳真值。生产评测应固定同一 ASR 版本，用真人原音或高质量录音测一条识别误差基线，并把产品名、数字、日期和金额单独设硬门槛。一个关键产品名读错，不能被整段低 CER 掩盖。
+
+#### Speaker SIM：独立声纹模型认为“像不像同一个人”
+
+说话人相似度（Speaker Similarity，SIM）先用说话人验证模型，把参考音频和生成音频分别压成向量 $e_r,e_g$，再算余弦相似度：
+
+$$
+\operatorname{SIM}(e_r,e_g)=\frac{e_r^\top e_g}{\|e_r\|_2\|e_g\|_2}
+$$
+
+**越高通常越像**。有的论文报告 $0.748$，有的把它乘 100 写成 $74.8$；二者数值含义相同。但 SIM 不是“同一个人的概率”，$0.8$ 不能读成“有 80% 概率是本人”。不同声纹模型、语言、音频长度、噪声和测试集会改变分数，所以跨论文、跨评测器直接比较往往没有意义。
+
+更重要的是，SIM 只回答声纹模型捕获到的身份特征是否接近：一段音频可能 SIM 很高，却有漏字、机械感或错误情绪；同一个人跨语言、耳语或强情绪时，SIM 也可能降低。这里必须使用**未参与供应商生成的独立说话人验证模型**，否则容易形成自证循环。阈值应在本项目的同人/异人样本和人工“像/不像”标注上校准，而不是照抄论文。
+
+#### MOS 与业务可用率：听起来自然吗，能不能直接交付
 
 自然度仍需要人听。建议把 MOS 拆成至少四个单项：音色相似、自然度、内容正确、可直接用于成片。最终“可用率”定义为全部硬门槛同时通过：
 
@@ -810,9 +830,15 @@ GPT-SoVITS 到 CosyVoice 的项目升级，解决的是内容错误和音频伪�
 
 [^gpt-sovits]: RVC-Boss, [GPT-SoVITS 官方仓库](https://github.com/RVC-Boss/GPT-SoVITS)；其 v1 时期 README 已明确区分 [5 秒 zero-shot 与 1 分钟 few-shot](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/README.md).
 
-[^gpt-sovits-v1]: GPT-SoVITS v1 固定修订 [`f20bc37`](https://github.com/RVC-Boss/GPT-SoVITS/tree/f20bc37dfedbf739557c6b6574d435cddc607997)：[推理](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/inference_webui.py)、[S1](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/AR/models/t2s_model.py)、[S2](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/module/models.py)、[Loss](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/s2_train.py).
+[^gpt-sovits-v1]: GPT-SoVITS v1 固定修订 [`f20bc37`](https://github.com/RVC-Boss/GPT-SoVITS/tree/f20bc37dfedbf739557c6b6574d435cddc607997)：[推理](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/inference_webui.py)、[S1](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/AR/models/t2s_model.py)。
+    S2 与训练损失分别见 [`module/models.py`](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/module/models.py) 和 [`s2_train.py`](https://github.com/RVC-Boss/GPT-SoVITS/blob/f20bc37dfedbf739557c6b6574d435cddc607997/GPT_SoVITS/s2_train.py)。
+
+[^gpt-sovits-params]: 参数量来自官方 v1 基线权重 [`s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt`](https://huggingface.co/lj1995/GPT-SoVITS/blob/main/s1bert25hz-2kh-longer-epoch%3D68e-step%3D50232.ckpt) 与 [`s2G488k.pth`](https://huggingface.co/lj1995/GPT-SoVITS/blob/main/s2G488k.pth)。
+    本文对两个 State Dict 中的参数张量逐项求元素数量，得到 S1 77,493,762、S2 52,846,337，合计 130,340,099；该统计不含推理时另行加载的 CN-HuBERT、中文 BERT，也不含 S2 训练判别器。
 
 [^cosyvoice]: Zhihao Du et al., [CosyVoice: A Scalable Multilingual Zero-shot Text-to-speech Synthesizer based on Supervised Semantic Tokens](https://arxiv.org/abs/2407.05407), 2024.
+
+[^cosyvoice-size]: CosyVoice 1 论文 Table 10 将公开基线标为 `CosyVoice-base-300M` / `CosyVoice-instruct-300M`；对应官方模型仓库为 [`FunAudioLLM/CosyVoice-300M`](https://huggingface.co/FunAudioLLM/CosyVoice-300M/tree/24c40509c3c5ea6fe06b5f8790ff99e3714a6bee)。这里沿用官方型号规模，不把外部 3D-Speaker、语音 Tokenizer 等组件另行相加。
 
 [^cosyvoice2]: Zhihao Du et al., [CosyVoice 2: Scalable Streaming Speech Synthesis with Large Language Models](https://arxiv.org/abs/2412.10117), 2024.
 

@@ -134,7 +134,7 @@
   <text class="model" x="1066" y="434">MiniMax Speech</text>
   <text class="date" x="1066" y="462">当前使用 Speech 2.8 API</text>
   <text class="label" x="1066" y="504">新音色接入</text>
-  <text class="value" x="1066" y="532">上传参考语音 → voice_id</text>
+  <text class="value" x="1066" y="532">≥10 秒参考语音 → voice_id</text>
   <text class="label" x="1066" y="574">关键变化</text>
   <text class="value" x="1066" y="602">训练、推理、升级与扩缩容交给平台</text>
   <text class="label" x="1066" y="644">公开 Speech-02 主干＊</text>
