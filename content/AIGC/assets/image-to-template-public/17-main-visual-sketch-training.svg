@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1880" height="1160" viewBox="0 0 1880 1160">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#315f9a"/></marker>
+    <marker id="orange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#d85c35"/></marker>
+    <style>
+      .f{font-family:Arial,"PingFang SC","Noto Sans CJK SC",sans-serif}.title{font-size:38px;font-weight:800;fill:#172033}.sub{font-size:18px;fill:#59677a}.section{font-size:21px;font-weight:800;fill:#172033}.node{font-size:18px;font-weight:800;fill:#172033}.body{font-size:15px;fill:#4f5c70}.small{font-size:13px;fill:#69758a}.mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:13px;fill:#324158}.white{font-size:17px;font-weight:800;fill:#fff}.whiteBody{font-size:14px;fill:#edf3ff}.metric{font-size:27px;font-weight:800;fill:#172033}.metricSub{font-size:14px;fill:#5c6778}.tag{font-size:14px;font-weight:800;fill:#fff}
+    </style>
+  </defs>
+  <rect width="1880" height="1160" fill="#fff"/>
+  <text class="f title" x="60" y="64">主视觉专项检测器：从 Sketch 图层真值到可部署 Checkpoint</text>
+  <text class="f sub" x="60" y="98">稳定监督不是“潜水器、人物或建筑”这些外观类别，而是设计师已经标出的 main_visual 图层角色与组合边界</text>
+  <line x1="60" y1="122" x2="1820" y2="122" stroke="#aeb8c6" stroke-width="2"/>
+
+  <text class="f section" x="60" y="174">① Sketch 数据工厂</text>
+  <rect x="60" y="198" width="350" height="590" rx="20" fill="#f8fafc" stroke="#9aa7b8" stroke-width="2"/>
+  <rect x="86" y="230" width="298" height="168" rx="14" fill="#edf3ff" stroke="#315f9a" stroke-width="2"/>
+  <rect x="108" y="254" width="254" height="104" rx="10" fill="#173154"/>
+  <circle cx="292" cy="304" r="34" fill="#62b6d9"/>
+  <path d="M265 335Q294 270 329 333" fill="#9bd4e8" opacity=".75"/>
+  <text class="f white" x="126" y="292">探索深海</text>
+  <text class="f whiteBody" x="126" y="322">设计师原始模版</text>
+  <text class="f node" x="108" y="438">.sketch 图层树</text>
+  <text class="f body" x="108" y="470">group / frame / z-order / assetRef</text>
+  <text class="f body" x="108" y="500">main_visual 角色由设计师确定</text>
+  <line x1="108" y1="526" x2="362" y2="526" stroke="#d0d6df"/>
+  <text class="f node" x="108" y="562">自动导出四份监督</text>
+  <text class="f body" x="108" y="594">• 合成成图 RGB</text>
+  <text class="f body" x="108" y="624">• 组合图层联合 BBox</text>
+  <text class="f body" x="108" y="654">• 原始 Alpha / Mask</text>
+  <text class="f body" x="108" y="684">• 模版族与资产哈希</text>
+  <rect x="86" y="716" width="298" height="46" rx="12" fill="#f2f7f4" stroke="#2b8a64"/>
+  <text class="f small" x="235" y="744" text-anchor="middle">无需从截图重新手画每个 BBox</text>
+
+  <line x1="410" y1="494" x2="464" y2="494" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <text class="f section" x="476" y="174">② 标签编译与线上脏输入模拟</text>
+  <rect x="476" y="198" width="392" height="590" rx="20" fill="#fbf9ff" stroke="#6952bd" stroke-width="3"/>
+  <text class="f node" x="504" y="240">组合角色合并</text>
+  <text class="f body" x="504" y="272">同组人物、道具、装饰先求联合边界</text>
+  <text class="f mono" x="504" y="302">bbox = union(frame_1 ... frame_n)</text>
+  <line x1="504" y1="326" x2="840" y2="326" stroke="#d0d6df"/>
+  <text class="f node" x="504" y="362">数据去重与切分</text>
+  <text class="f body" x="504" y="394">模版族 + 资产哈希分组，阻断近重复泄漏</text>
+  <text class="f body" x="504" y="424">历史实现：PSNR &gt; 40 的近重复只保留一张</text>
+  <line x1="504" y1="448" x2="840" y2="448" stroke="#d0d6df"/>
+  <text class="f node" x="504" y="484">模拟前序阶段污染</text>
+  <text class="f body" x="504" y="516">OCR 擦除残留 / Inpainting 色块 / 压缩噪声</text>
+  <text class="f body" x="504" y="546">局部遮挡 / 边缘裁切 / 尺度与轻量仿射</text>
+  <line x1="504" y1="570" x2="840" y2="570" stroke="#d0d6df"/>
+  <text class="f node" x="504" y="606">训练样本</text>
+  <rect x="504" y="626" width="336" height="104" rx="12" fill="#f5f7fa" stroke="#c7ced8"/>
+  <text class="f mono" x="526" y="658">image: [3,960,960]</text>
+  <text class="f mono" x="526" y="686">class: main_visual</text>
+  <text class="f mono" x="526" y="714">bbox: normalized xywh</text>
+  <text class="f small" x="504" y="760">Anchor、增强和阈值与 Logo 模型完全独立</text>
+
+  <line x1="868" y1="494" x2="922" y2="494" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <text class="f section" x="934" y="174">③ 独立 YOLOv7-tiny 复原结构</text>
+  <rect x="934" y="198" width="520" height="590" rx="20" fill="#fff7f0" stroke="#d85c35" stroke-width="3"/>
+  <rect x="962" y="232" width="464" height="68" rx="14" fill="#fff" stroke="#e6a28a"/>
+  <text class="f node" x="1194" y="262" text-anchor="middle">Input 960×960</text>
+  <text class="f small" x="1194" y="284" text-anchor="middle">通用预训练权重初始化 · 全量参数可训练</text>
+  <line x1="1194" y1="300" x2="1194" y2="332" stroke="#d85c35" stroke-width="4" marker-end="url(#orange)"/>
+  <rect x="962" y="346" width="464" height="76" rx="14" fill="#fff" stroke="#e6a28a"/>
+  <text class="f node" x="1194" y="376" text-anchor="middle">Tiny E-ELAN Backbone + SPP</text>
+  <text class="f small" x="1194" y="402" text-anchor="middle">提取多尺度主体纹理与轮廓</text>
+  <line x1="1194" y1="422" x2="1194" y2="454" stroke="#d85c35" stroke-width="4" marker-end="url(#orange)"/>
+  <rect x="962" y="468" width="464" height="76" rx="14" fill="#fff" stroke="#e6a28a"/>
+  <text class="f node" x="1194" y="498" text-anchor="middle">PAN / FPN Neck</text>
+  <text class="f small" x="1194" y="524" text-anchor="middle">P3=128 · P4=256 · P5=512</text>
+  <line x1="1194" y1="544" x2="1194" y2="576" stroke="#d85c35" stroke-width="4" marker-end="url(#orange)"/>
+  <rect x="962" y="590" width="464" height="92" rx="14" fill="#fff" stroke="#e6a28a"/>
+  <text class="f node" x="1194" y="620" text-anchor="middle">三尺度 IDetect · 单类 main_visual</text>
+  <text class="f mono" x="1194" y="650" text-anchor="middle">120² / 60² / 30² × 3 anchors × 6</text>
+  <text class="f small" x="1194" y="674" text-anchor="middle">每 Anchor：xywh + objectness + class</text>
+  <rect x="962" y="704" width="464" height="58" rx="14" fill="#fff0e8" stroke="#d85c35"/>
+  <text class="f body" x="1194" y="730" text-anchor="middle">Loss = CIoU Box + BCE Objectness + BCE Class</text>
+  <text class="f small" x="1194" y="752" text-anchor="middle">梯度更新 Backbone / Neck / Head 全部参数</text>
+
+  <line x1="1454" y1="494" x2="1508" y2="494" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <text class="f section" x="1520" y="174">④ 输出门禁与可编辑资产</text>
+  <rect x="1520" y="198" width="300" height="590" rx="20" fill="#f8fafc" stroke="#315f9a" stroke-width="3"/>
+  <rect x="1546" y="232" width="248" height="96" rx="14" fill="#102a54"/>
+  <text class="f white" x="1670" y="266" text-anchor="middle">检测输出</text>
+  <text class="f mono" x="1670" y="298" text-anchor="middle" style="fill:#fff">bbox + score</text>
+  <line x1="1670" y1="328" x2="1670" y2="368" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <text class="f node" x="1548" y="402">确定性门禁</text>
+  <text class="f body" x="1548" y="432">• 低置信与越界拒绝</text>
+  <text class="f body" x="1548" y="462">• 标题重叠过大拒绝</text>
+  <text class="f body" x="1548" y="492">• 组合对象完整覆盖</text>
+  <text class="f body" x="1548" y="522">• 多主视觉单独召回</text>
+  <line x1="1548" y1="548" x2="1792" y2="548" stroke="#d0d6df"/>
+  <text class="f node" x="1548" y="586">像素边界细化</text>
+  <text class="f body" x="1548" y="616">优先原始 Alpha</text>
+  <text class="f body" x="1548" y="646">否则抠图模型 / SAM2 Box</text>
+  <line x1="1548" y1="672" x2="1792" y2="672" stroke="#d0d6df"/>
+  <text class="f node" x="1548" y="708">发布物</text>
+  <text class="f mono" x="1548" y="738">checkpoint.pt</text>
+  <text class="f mono" x="1548" y="764">anchors + thresholds</text>
+
+  <rect x="60" y="838" width="1760" height="244" rx="20" fill="#f4f6f9" stroke="#c8d0db" stroke-width="2"/>
+  <text class="f section" x="88" y="878">历史结果与路线断点</text>
+  <rect x="88" y="908" width="330" height="128" rx="16" fill="#fff" stroke="#9aa7b8"/>
+  <text class="f metric" x="253" y="952" text-anchor="middle">40.03%</text>
+  <text class="f metricSub" x="253" y="982" text-anchor="middle">专项小检测器初始良品率</text>
+  <text class="f small" x="253" y="1010" text-anchor="middle">开放类别与语义边界仍不稳定</text>
+  <path d="M430 970L498 970" stroke="#d85c35" stroke-width="5" marker-end="url(#orange)"/>
+  <rect x="512" y="908" width="330" height="128" rx="16" fill="#fff7f0" stroke="#d85c35" stroke-width="2"/>
+  <text class="f metric" x="677" y="952" text-anchor="middle">17/39 = 43.59%</text>
+  <text class="f metricSub" x="677" y="982" text-anchor="middle">去重、脏输入模拟与校标后</text>
+  <text class="f small" x="677" y="1010" text-anchor="middle">专项训练有提升，但上限仍低</text>
+  <path d="M854 970L922 970" stroke="#315f9a" stroke-width="5" marker-end="url(#arrow)"/>
+  <rect x="936" y="908" width="330" height="128" rx="16" fill="#edf3ff" stroke="#315f9a" stroke-width="2"/>
+  <text class="f metric" x="1101" y="952" text-anchor="middle">30/39 = 76.92%</text>
+  <text class="f metricSub" x="1101" y="982" text-anchor="middle">Qwen2.5-VL Zero-shot 主视觉</text>
+  <text class="f small" x="1101" y="1010" text-anchor="middle">全图语义显著优于局部外观分类</text>
+  <rect x="1300" y="908" width="492" height="128" rx="16" fill="#102a54"/>
+  <text class="f white" x="1546" y="946" text-anchor="middle">为什么必须转向路线 B</text>
+  <text class="f whiteBody" x="1328" y="978">抽象色块、组合插画和遮挡对象没有稳定局部类别；</text>
+  <text class="f whiteBody" x="1328" y="1008">主视觉由全局版式角色定义，继续扩充小类无法消除语义断点。</text>
+  <text class="f small" x="88" y="1066">历史材料只保留“小检测模型”及指标，没有保留网络名；YOLOv7-tiny 是依据当时已存在的 YOLOv7 训练/部署栈给出的可复现复原，不冒充遗失实现。</text>
+
+  <text class="f small" x="60" y="1124">数据流为蓝色实线，橙色边框与箭头表示产生梯度的训练路径；Sketch 图层负责监督语义与几何，检测器只输出 BBox，Alpha 资产由后续像素工具生成。</text>
+</svg>

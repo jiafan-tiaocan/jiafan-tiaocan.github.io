@@ -7,33 +7,33 @@
     </style>
   </defs>
   <rect width="2000" height="1740" fill="#fff"/>
-  <text class="f title" x="60" y="64">Hybrid QwenVL for Editable-Template Parsing</text>
+  <text class="f title" x="60" y="64">可编辑模版解析的混合 QwenVL</text>
   <text class="f subtitle" x="60" y="98">小模型不再独立决定答案，而是把 OCR、Logo 与控件候选作为可被 Qwen2.5-VL 校正的侧信息；训练仅更新 LoRA</text>
   <line x1="60" y1="120" x2="1940" y2="120" stroke="#aeb8c6" stroke-width="2"/>
 
   <!-- (a) Inputs -->
-  <text class="f label" x="60" y="166">(a) Multi-source evidence</text>
+  <text class="f label" x="60" y="166">(a) 多源证据</text>
   <rect x="60" y="188" width="360" height="430" rx="18" fill="#f8fafc" stroke="#9aa7b8" stroke-width="2"/>
   <rect x="84" y="218" width="312" height="102" rx="14" fill="#eaf2fd" stroke="#315f9a" stroke-width="2"/>
-  <text class="f node" x="108" y="250">Primary image</text>
-  <text class="f body" x="108" y="280">RGB card · native size 1200×628</text>
+  <text class="f node" x="108" y="250">原始图片</text>
+  <text class="f body" x="108" y="280">RGB 卡片 · 原始尺寸 1200×628</text>
   <text class="f small" x="108" y="306">它是最终事实源，所有 Hint 都可被否决</text>
   <rect x="84" y="338" width="312" height="118" rx="14" fill="#f2f7f4" stroke="#2b8a64" stroke-width="2"/>
-  <text class="f node" x="108" y="370">OCR evidence</text>
+  <text class="f node" x="108" y="370">OCR 证据</text>
   <text class="f mono" x="108" y="400">text="探索深海" score=.997</text>
   <text class="f mono" x="108" y="426">bbox=[58,91,578,203]</text>
   <text class="f small" x="108" y="448">文字、行框、置信度；不是最终角色标签</text>
   <rect x="84" y="474" width="312" height="118" rx="14" fill="#fff7f0" stroke="#d85c35" stroke-width="2"/>
-  <text class="f node" x="108" y="506">Region priors</text>
+  <text class="f node" x="108" y="506">区域先验</text>
   <text class="f mono" x="108" y="536">YOLO: Logo [38,28,218,84]</text>
   <text class="f mono" x="108" y="562">DINO: Control [802,506,...]</text>
   <text class="f small" x="108" y="584">来源、框和 score 全部保留</text>
 
   <!-- (b) evidence adapter -->
   <line x1="420" y1="404" x2="478" y2="404" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
-  <text class="f label" x="490" y="166">(b) Evidence adapter</text>
+  <text class="f label" x="490" y="166">(b) 证据适配器</text>
   <rect x="490" y="188" width="360" height="430" rx="18" fill="#fff" stroke="#315f9a" stroke-width="3"/>
-  <text class="f node" x="516" y="228">Coordinate-aware serializer</text>
+  <text class="f node" x="516" y="228">坐标感知序列化器</text>
   <rect x="516" y="248" width="308" height="184" rx="12" fill="#f5f7fa" stroke="#c9d0da"/>
   <text class="f mono" x="538" y="278">&lt;image&gt;</text>
   <text class="f mono" x="538" y="306">&lt;ocr_hints&gt;</text>
@@ -49,36 +49,36 @@
 
   <!-- (c) core -->
   <line x1="850" y1="404" x2="908" y2="404" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
-  <text class="f label" x="920" y="166">(c) Modified Qwen2.5-VL 7B</text>
+  <text class="f label" x="920" y="166">(c) Qwen2.5-VL 7B 项目改造</text>
   <rect x="920" y="188" width="590" height="430" rx="18" fill="#fbf9ff" stroke="#6952bd" stroke-width="3"/>
   <rect x="946" y="220" width="250" height="142" rx="14" fill="#edf3ff" stroke="#315f9a" stroke-width="2"/>
-  <text class="f node" x="1071" y="252" text-anchor="middle">Vision ViT · frozen</text>
-  <text class="f body" x="970" y="282">32 blocks · hidden 1280</text>
-  <text class="f body" x="970" y="310">28 window + 4 full attention</text>
-  <text class="f body" x="970" y="338">Patch merger: 1280→3584</text>
+  <text class="f node" x="1071" y="252" text-anchor="middle">视觉 ViT · 冻结</text>
+  <text class="f body" x="970" y="282">32 层 · hidden 1280</text>
+  <text class="f body" x="970" y="310">28 层窗口 + 4 层全局 Attention</text>
+  <text class="f body" x="970" y="338">Patch Merger：1280→3584</text>
   <rect x="1230" y="220" width="250" height="142" rx="14" fill="#f3f5f8" stroke="#9aa7b8" stroke-width="2"/>
-  <text class="f node" x="1355" y="252" text-anchor="middle">Hint text tokens</text>
+  <text class="f node" x="1355" y="252" text-anchor="middle">Hint 文本 Token</text>
   <text class="f body" x="1254" y="282">OCR / Region / Schema</text>
-  <text class="f body" x="1254" y="310">source + score + xyxy</text>
+  <text class="f body" x="1254" y="310">来源 + 分数 + xyxy</text>
   <text class="f body" x="1254" y="338">与 Prompt 共用 tokenizer</text>
   <line x1="1071" y1="362" x2="1148" y2="410" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <line x1="1355" y1="362" x2="1280" y2="410" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="1000" y="420" width="430" height="154" rx="16" fill="#fff" stroke="#d85c35" stroke-width="3"/>
-  <text class="f node" x="1215" y="452" text-anchor="middle">28-layer Decoder-only LLM</text>
-  <text class="f body" x="1026" y="482">hidden 3584 · 28 Q heads / 4 KV heads</text>
+  <text class="f node" x="1215" y="452" text-anchor="middle">28 层 Decoder-only LLM</text>
+  <text class="f body" x="1026" y="482">hidden 3584 · 28 个 Q Head / 4 个 KV Head</text>
   <text class="f body" x="1026" y="510">视觉 Token 与 Hint Token 联合因果 Attention</text>
   <rect x="1026" y="528" width="378" height="30" rx="12" fill="#fff0e8"/>
-  <text class="f eq" x="1215" y="549" text-anchor="middle">trainable: rank-8 LoRA on LLM all-linear</text>
+  <text class="f eq" x="1215" y="549" text-anchor="middle">可训练：语言模型 all-linear 上的 rank-8 LoRA</text>
   <text class="f small" x="946" y="596">“魔改”发生在输入适配、LoRA 与奖励计算；Qwen Vision Backbone 本身不重写</text>
 
   <!-- (d) output -->
   <line x1="1510" y1="404" x2="1568" y2="404" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
-  <text class="f label" x="1580" y="166">(d) Structured output</text>
+  <text class="f label" x="1580" y="166">(d) 结构化输出</text>
   <rect x="1580" y="188" width="360" height="430" rx="18" fill="#102a54" stroke="#102a54" stroke-width="2"/>
-  <text class="f white" x="1608" y="228">Schema prediction</text>
-  <text class="f whiteBody" x="1608" y="264">• role + stable element_id</text>
-  <text class="f whiteBody" x="1608" y="294">• text + original-pixel xyxy</text>
-  <text class="f whiteBody" x="1608" y="324">• relation / z-order draft</text>
+  <text class="f white" x="1608" y="228">Schema 预测</text>
+  <text class="f whiteBody" x="1608" y="264">• 角色 + 稳定 element_id</text>
+  <text class="f whiteBody" x="1608" y="294">• 文字 + 原图像素 xyxy</text>
+  <text class="f whiteBody" x="1608" y="324">• 关系 / z-order 草案</text>
   <rect x="1608" y="350" width="304" height="150" rx="12" fill="#183966" stroke="#6e94c4"/>
   <text class="f mono" x="1628" y="380" style="fill:#ffffff">{"id":"logo_0",</text>
   <text class="f mono" x="1628" y="408" style="fill:#ffffff"> "type":"Logo",</text>
@@ -90,19 +90,19 @@
 
   <!-- training -->
   <line x1="60" y1="662" x2="1940" y2="662" stroke="#aeb8c6" stroke-width="2"/>
-  <text class="f label" x="60" y="706">(e) LLaMAFactory-based SFT → custom GRPO</text>
+  <text class="f label" x="60" y="706">(e) 基于 LLaMAFactory 的 SFT → 自定义 GRPO</text>
   <rect x="60" y="732" width="1880" height="590" rx="20" fill="#fcfcfd" stroke="#9aa7b8" stroke-width="2"/>
   <rect x="88" y="766" width="286" height="510" rx="16" fill="#f4f6f9" stroke="#9aa7b8" stroke-width="2"/>
-  <text class="f node" x="231" y="804" text-anchor="middle">LLaMAFactory control plane</text>
-  <text class="f body" x="112" y="842">Multimodal dataset plugin</text>
-  <text class="f body" x="112" y="874">Qwen chat template</text>
+  <text class="f node" x="231" y="804" text-anchor="middle">LLaMAFactory 训练控制面</text>
+  <text class="f body" x="112" y="842">多模态数据插件</text>
+  <text class="f body" x="112" y="874">Qwen 对话模版</text>
   <text class="f body" x="112" y="906">LoRA rank 8 · bf16</text>
   <text class="f body" x="112" y="938">max_length 8192</text>
   <text class="f body" x="112" y="970">DeepSpeed ZeRO-3</text>
   <line x1="112" y1="994" x2="350" y2="994" stroke="#c7ced8"/>
-  <text class="f body" x="112" y="1028">stage 1: SFT launcher</text>
-  <text class="f body" x="112" y="1060">stage 2: GRPO policy init</text>
-  <text class="f body" x="112" y="1092">custom CoordIoUORM</text>
+  <text class="f body" x="112" y="1028">阶段 1：SFT 启动与恢复</text>
+  <text class="f body" x="112" y="1060">阶段 2：GRPO Policy 初始化</text>
+  <text class="f body" x="112" y="1092">自定义 CoordIoUORM</text>
   <text class="f small" x="112" y="1134">统一处理 checkpoint、</text>
   <text class="f small" x="112" y="1160">dataset、template 与 resume</text>
   <text class="f small" x="112" y="1216">RL 奖励为项目自定义插件，</text>
@@ -110,23 +110,23 @@
 
   <line x1="374" y1="1008" x2="432" y2="1008" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
   <rect x="448" y="786" width="370" height="444" rx="16" fill="#edf3ff" stroke="#315f9a" stroke-width="3"/>
-  <rect x="474" y="812" width="96" height="34" rx="17" fill="#315f9a"/><text class="f step" x="522" y="835" text-anchor="middle">Stage 1</text>
-  <text class="f node" x="474" y="878">SFT: learn task protocol</text>
-  <text class="f body" x="474" y="916">Input: image + hints + prompt</text>
-  <text class="f body" x="474" y="948">Target: canonical JSON / answer</text>
-  <text class="f body" x="474" y="980">Teacher forcing; answer-only labels</text>
+  <rect x="474" y="812" width="96" height="34" rx="17" fill="#315f9a"/><text class="f step" x="522" y="835" text-anchor="middle">阶段 1</text>
+  <text class="f node" x="474" y="878">SFT：学习任务协议</text>
+  <text class="f body" x="474" y="916">输入：图片 + Hint + Prompt</text>
+  <text class="f body" x="474" y="948">目标：规范 JSON / Answer</text>
+  <text class="f body" x="474" y="980">Teacher Forcing；只监督答案 Token</text>
   <rect x="474" y="1012" width="318" height="64" rx="12" fill="#fff" stroke="#9db7d6"/>
   <text class="f eq" x="633" y="1052" text-anchor="middle">L_SFT = -Σ log pθ(y_t | I,h,q,y_&lt;t)</text>
   <text class="f body" x="474" y="1110">主要提升：</text>
   <text class="f body" x="494" y="1140">• Schema 解析率与角色稳定性</text>
   <text class="f body" x="494" y="1170">• OCR 文本与图像区域对齐</text>
-  <text class="f small" x="474" y="1204">输出 SFT LoRA，作为 RL policy 初始值</text>
+  <text class="f small" x="474" y="1204">输出 SFT LoRA，作为 RL Policy 初始值</text>
 
   <line x1="818" y1="1008" x2="876" y2="1008" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
   <rect x="892" y="786" width="570" height="444" rx="16" fill="#fff7f0" stroke="#d85c35" stroke-width="3"/>
-  <rect x="918" y="812" width="96" height="34" rx="17" fill="#d85c35"/><text class="f step" x="966" y="835" text-anchor="middle">Stage 2</text>
-  <text class="f node" x="918" y="878">GRPO: make small elements visible</text>
-  <text class="f body" x="918" y="912">每张图采样 G 个答案 → parse / role / bounds gate</text>
+  <rect x="918" y="812" width="96" height="34" rx="17" fill="#d85c35"/><text class="f step" x="966" y="835" text-anchor="middle">阶段 2</text>
+  <text class="f node" x="918" y="878">GRPO：让小元素进入奖励视野</text>
+  <text class="f body" x="918" y="912">每张图采样 G 个答案 → 解析 / 角色 / 越界门禁</text>
   <text class="f body" x="918" y="944">面积自适应 + 类别先验：</text>
   <rect x="918" y="966" width="518" height="74" rx="12" fill="#fff" stroke="#e5a187"/>
   <text class="f eq" x="1177" y="996" text-anchor="middle">w_i = c_type · clip((medianArea/(area_i+ε))^0.5, 0.5, 4)</text>
@@ -140,41 +140,41 @@
 
   <line x1="1462" y1="1008" x2="1520" y2="1008" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
   <rect x="1536" y="786" width="376" height="444" rx="16" fill="#f8f6ff" stroke="#6952bd" stroke-width="3"/>
-  <text class="f node" x="1724" y="830" text-anchor="middle">Policy update &amp; gates</text>
-  <text class="f body" x="1562" y="870">Group-normalized advantage</text>
-  <text class="f body" x="1562" y="902">KL constraint to reference policy</text>
-  <text class="f body" x="1562" y="934">Backprop only to LoRA A/B</text>
-  <text class="f body" x="1562" y="966">Rollout GPU / Trainer GPU isolated</text>
+  <text class="f node" x="1724" y="830" text-anchor="middle">策略更新与门禁</text>
+  <text class="f body" x="1562" y="870">组内归一化 Advantage</text>
+  <text class="f body" x="1562" y="902">与参考 Policy 的 KL 约束</text>
+  <text class="f body" x="1562" y="934">只反向更新 LoRA A/B</text>
+  <text class="f body" x="1562" y="966">Rollout GPU / Trainer GPU 隔离</text>
   <line x1="1562" y1="994" x2="1886" y2="994" stroke="#c7ced8"/>
-  <text class="f body" x="1562" y="1030">Offline gates</text>
-  <text class="f body" x="1584" y="1060">• Schema pass</text>
-  <text class="f body" x="1584" y="1090">• small-element recall</text>
-  <text class="f body" x="1584" y="1120">• role-macro IoU</text>
-  <text class="f body" x="1584" y="1150">• edit-action success</text>
+  <text class="f body" x="1562" y="1030">离线门禁</text>
+  <text class="f body" x="1584" y="1060">• Schema 通过率</text>
+  <text class="f body" x="1584" y="1090">• 小元素召回率</text>
+  <text class="f body" x="1584" y="1120">• 角色宏平均 IoU</text>
+  <text class="f body" x="1584" y="1150">• 编辑动作成功率</text>
   <text class="f small" x="1562" y="1190">奖励提高不自动发布：</text>
   <text class="f small" x="1562" y="1216">必须通过未见版式与编辑器回放</text>
 
   <!-- ablation -->
-  <text class="f label" x="60" y="1372">(f) Reconstructed ablation path</text>
+  <text class="f label" x="60" y="1372">(f) 复原的消融路径</text>
   <text class="f small" x="420" y="1372">按最终 82% / 89% 复盘口径校准的工程复原，非遗失实验日志</text>
   <line x1="118" y1="1484" x2="1870" y2="1484" stroke="#b9c2ce" stroke-width="5"/>
   <circle cx="150" cy="1484" r="28" fill="#6f7c8d"/><text class="f step" x="150" y="1490" text-anchor="middle">82</text>
   <text class="f metric" x="150" y="1540" text-anchor="middle">路线 A</text><text class="f small" x="150" y="1566" text-anchor="middle">工作流基线</text>
   <circle cx="470" cy="1484" r="28" fill="#8692a1"/><text class="f step" x="470" y="1490" text-anchor="middle">72</text>
-  <text class="f metric" x="470" y="1540" text-anchor="middle">Image-only</text><text class="f small" x="470" y="1566" text-anchor="middle">Zero-shot</text>
+  <text class="f metric" x="470" y="1540" text-anchor="middle">仅图片</text><text class="f small" x="470" y="1566" text-anchor="middle">Zero-shot</text>
   <circle cx="790" cy="1484" r="28" fill="#315f9a"/><text class="f step" x="790" y="1490" text-anchor="middle">82</text>
   <text class="f metric" x="790" y="1540" text-anchor="middle">+ SFT</text><text class="f small" x="790" y="1566" text-anchor="middle">稳定 Schema</text>
   <circle cx="1110" cy="1484" r="28" fill="#2b8a64"/><text class="f step" x="1110" y="1490" text-anchor="middle">85</text>
-  <text class="f metric" x="1110" y="1540" text-anchor="middle">+ OCR hints</text><text class="f small" x="1110" y="1566" text-anchor="middle">小字与数字</text>
+  <text class="f metric" x="1110" y="1540" text-anchor="middle">+ OCR Hint</text><text class="f small" x="1110" y="1566" text-anchor="middle">小字与数字</text>
   <circle cx="1390" cy="1484" r="28" fill="#c37c35"/><text class="f step" x="1390" y="1490" text-anchor="middle">86</text>
-  <text class="f metric" x="1390" y="1540" text-anchor="middle">+ Region priors</text><text class="f small" x="1390" y="1566" text-anchor="middle">Logo / Control</text>
+  <text class="f metric" x="1390" y="1540" text-anchor="middle">+ 区域先验</text><text class="f small" x="1390" y="1566" text-anchor="middle">Logo / Control</text>
   <circle cx="1630" cy="1484" r="28" fill="#d85c35"/><text class="f step" x="1630" y="1490" text-anchor="middle">88</text>
-  <text class="f metric" x="1630" y="1540" text-anchor="middle">+ weighted GRPO</text><text class="f small" x="1630" y="1566" text-anchor="middle">小元素可见</text>
+  <text class="f metric" x="1630" y="1540" text-anchor="middle">+ 加权 GRPO</text><text class="f small" x="1630" y="1566" text-anchor="middle">小元素可见</text>
   <circle cx="1870" cy="1484" r="32" fill="#6952bd"/><text class="f step" x="1870" y="1490" text-anchor="middle">89</text>
-  <text class="f metric" x="1870" y="1540" text-anchor="middle">+ tool gates</text><text class="f small" x="1870" y="1566" text-anchor="middle">最终方案</text>
+  <text class="f metric" x="1870" y="1540" text-anchor="middle">+ 工具门禁</text><text class="f small" x="1870" y="1566" text-anchor="middle">最终方案</text>
   <path d="M178 1460L442 1460" stroke="#8692a1" stroke-width="3" marker-end="url(#arrow)"/><path d="M498 1460L762 1460" stroke="#315f9a" stroke-width="3" marker-end="url(#arrow)"/><path d="M818 1460L1082 1460" stroke="#2b8a64" stroke-width="3" marker-end="url(#arrow)"/><path d="M1138 1460L1362 1460" stroke="#c37c35" stroke-width="3" marker-end="url(#arrow)"/><path d="M1418 1460L1602 1460" stroke="#d85c35" stroke-width="3" marker-end="url(#orange)"/><path d="M1658 1460L1838 1460" stroke="#6952bd" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="60" y="1610" width="1880" height="82" rx="14" fill="#f5f7fa" stroke="#c8d0db"/>
   <text class="f body" x="86" y="1642">关键结论：OCR / 小模型输出仍然保留，但责任从“最终裁决者”变成“带来源和置信度的证据”；QwenVL 负责跨证据校正，工具链负责像素执行。</text>
   <text class="f small" x="86" y="1672">网络配置依据 Qwen2.5-VL 官方 config；LLaMAFactory、SFT/GRPO 参数与混合输入来自项目复盘；消融数字为透明标注的复原口径。</text>
-  <text class="f small" x="60" y="1720">Figure style: flat paper diagram; solid arrows are forward data flow, orange-bordered modules contain trainable parameters or project-specific optimization.</text>
+  <text class="f small" x="60" y="1720">图示说明：实线箭头表示前向数据流；橙色边框表示含可训练参数或项目定制优化的模块。</text>
 </svg>

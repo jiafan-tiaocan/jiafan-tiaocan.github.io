@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1880" height="1160" viewBox="0 0 1880 1160">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#315f9a"/></marker>
+    <marker id="orange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#d85c35"/></marker>
+    <style>
+      .f{font-family:Arial,"PingFang SC","Noto Sans CJK SC",sans-serif}.title{font-size:38px;font-weight:800;fill:#172033}.sub{font-size:18px;fill:#59677a}.section{font-size:23px;font-weight:800;fill:#172033}.node{font-size:18px;font-weight:800;fill:#172033}.body{font-size:15px;fill:#4f5c70}.small{font-size:13px;fill:#69758a}.mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:13px;fill:#324158}.white{font-size:17px;font-weight:800;fill:#fff}.whiteBody{font-size:14px;fill:#edf3ff}.metric{font-size:25px;font-weight:800;fill:#172033}.tag{font-size:13px;font-weight:800;fill:#fff}
+    </style>
+  </defs>
+  <rect width="1880" height="1160" fill="#fff"/>
+  <text class="f title" x="60" y="64">生产工程只剩两道硬题：多模态并行训练与 Notebook 化 ComfyUI 服务</text>
+  <text class="f sub" x="60" y="98">左侧把 Qwen2.5-VL 的参数边界、ZeRO-3 与 GRPO 资源隔离画清；右侧把交互式节点图转换成企业作业服务</text>
+  <line x1="60" y1="122" x2="1820" y2="122" stroke="#aeb8c6" stroke-width="2"/>
+
+  <text class="f section" x="60" y="174">A　Qwen2.5-VL：参数分层决定并行策略</text>
+  <rect x="60" y="198" width="850" height="858" rx="22" fill="#f8fafc" stroke="#315f9a" stroke-width="3"/>
+  <text class="f node" x="88" y="242">前向计算与梯度边界</text>
+  <rect x="88" y="266" width="180" height="126" rx="14" fill="#edf3ff" stroke="#315f9a" stroke-width="2"/>
+  <text class="f node" x="178" y="302" text-anchor="middle">Vision ViT</text>
+  <text class="f body" x="178" y="332" text-anchor="middle">32 层 · hidden 1280</text>
+  <rect x="120" y="350" width="116" height="24" rx="12" fill="#6f7c8d"/>
+  <text class="f tag" x="178" y="367" text-anchor="middle">冻结 / 分片</text>
+  <line x1="268" y1="329" x2="308" y2="329" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="322" y="266" width="168" height="126" rx="14" fill="#f3f5f8" stroke="#9aa7b8" stroke-width="2"/>
+  <text class="f node" x="406" y="302" text-anchor="middle">Patch Merger</text>
+  <text class="f body" x="406" y="332" text-anchor="middle">1280 → 3584</text>
+  <rect x="348" y="350" width="116" height="24" rx="12" fill="#6f7c8d"/>
+  <text class="f tag" x="406" y="367" text-anchor="middle">冻结 / 分片</text>
+  <line x1="490" y1="329" x2="530" y2="329" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="544" y="246" width="210" height="166" rx="14" fill="#fff7f0" stroke="#d85c35" stroke-width="3"/>
+  <text class="f node" x="649" y="282" text-anchor="middle">28 层语言模型</text>
+  <text class="f body" x="649" y="312" text-anchor="middle">Q/K/V/O + MLP</text>
+  <text class="f body" x="649" y="340" text-anchor="middle">基座 W 冻结</text>
+  <rect x="584" y="362" width="130" height="28" rx="14" fill="#d85c35"/>
+  <text class="f tag" x="649" y="381" text-anchor="middle">LoRA A/B 可训练</text>
+  <line x1="754" y1="329" x2="794" y2="329" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="808" y="266" width="74" height="126" rx="14" fill="#102a54"/>
+  <text class="f white" x="845" y="304" text-anchor="middle">LM</text>
+  <text class="f white" x="845" y="330" text-anchor="middle">Head</text>
+  <text class="f whiteBody" x="845" y="366" text-anchor="middle">冻结</text>
+
+  <rect x="88" y="446" width="794" height="214" rx="18" fill="#fff" stroke="#9aa7b8" stroke-width="2"/>
+  <text class="f node" x="116" y="486">ZeRO-3 怎样切，而不是“多卡自动变快”</text>
+  <rect x="116" y="514" width="218" height="114" rx="14" fill="#edf3ff" stroke="#315f9a"/>
+  <text class="f node" x="225" y="548" text-anchor="middle">4 × Trainer GPU</text>
+  <text class="f body" x="225" y="578" text-anchor="middle">基座参数按 Rank 分片</text>
+  <text class="f small" x="225" y="606" text-anchor="middle">只为 LoRA 保留梯度/优化器状态</text>
+  <line x1="334" y1="571" x2="380" y2="571" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="394" y="514" width="210" height="114" rx="14" fill="#fff7f0" stroke="#d85c35"/>
+  <text class="f node" x="499" y="548" text-anchor="middle">动态 Token 分桶</text>
+  <text class="f body" x="499" y="578" text-anchor="middle">按图片像素 + 序列长度</text>
+  <text class="f small" x="499" y="606" text-anchor="middle">避免最慢 Rank 拖住 All-Reduce</text>
+  <line x1="604" y1="571" x2="650" y2="571" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="664" y="514" width="190" height="114" rx="14" fill="#f2f7f4" stroke="#2b8a64"/>
+  <text class="f node" x="759" y="548" text-anchor="middle">坐标同步</text>
+  <text class="f body" x="759" y="578" text-anchor="middle">同一 resize map</text>
+  <text class="f small" x="759" y="606" text-anchor="middle">图片 / GT / Hint 同步变换</text>
+
+  <rect x="88" y="690" width="794" height="184" rx="18" fill="#fbf9ff" stroke="#6952bd" stroke-width="2"/>
+  <text class="f node" x="116" y="732">GRPO 额外难点：Rollout 不能挤占反向传播显存</text>
+  <rect x="116" y="758" width="284" height="84" rx="14" fill="#fff" stroke="#d85c35"/>
+  <text class="f node" x="258" y="792" text-anchor="middle">Trainer：SFT LoRA → GRPO Policy</text>
+  <text class="f small" x="258" y="820" text-anchor="middle">4 GPU · ZeRO-3 · bf16</text>
+  <line x1="400" y1="800" x2="464" y2="800" stroke="#d85c35" stroke-width="4" marker-end="url(#orange)"/>
+  <rect x="478" y="758" width="212" height="84" rx="14" fill="#fff" stroke="#315f9a"/>
+  <text class="f node" x="584" y="792" text-anchor="middle">独立 Rollout Server</text>
+  <text class="f small" x="584" y="820" text-anchor="middle">2 GPU · 每图 G=4 候选</text>
+  <line x1="690" y1="800" x2="734" y2="800" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="748" y="758" width="106" height="84" rx="14" fill="#102a54"/>
+  <text class="f white" x="801" y="790" text-anchor="middle">奖励</text>
+  <text class="f whiteBody" x="801" y="818" text-anchor="middle">加权 IoU</text>
+
+  <text class="f node" x="88" y="916">容量设计值（不是遗失监控日志）</text>
+  <rect x="88" y="940" width="794" height="86" rx="16" fill="#f4f6f9" stroke="#c8d0db"/>
+  <text class="f body" x="116" y="974">4 × A100 80GB Trainer + 2 × A100 80GB Rollout；micro-batch 1 × 4 卡 × 累积 4 = 有效 Batch 16</text>
+  <text class="f body" x="116" y="1004">LoRA rank 8 · bf16 · cutoff 8192 · 峰值显存门禁 &lt; 72GB/卡 · Checkpoint 每 200 step</text>
+
+  <text class="f section" x="958" y="174">B　Notebook 环境：把 ComfyUI 图转成企业作业</text>
+  <rect x="958" y="198" width="862" height="858" rx="22" fill="#f8fafc" stroke="#2b8a64" stroke-width="3"/>
+  <text class="f node" x="986" y="242">环境约束</text>
+  <rect x="986" y="266" width="806" height="94" rx="16" fill="#fff7f0" stroke="#d85c35"/>
+  <text class="f body" x="1014" y="300">Notebook Pod：没有 systemd，Kernel/Pod 会重启，本地盘临时，端口经过平台代理，模型不应临时下载</text>
+  <text class="f small" x="1014" y="330">因此不能照搬“本机打开 UI 手工点击”；必须把启动、健康检查、Workflow 注入和资产持久化改成确定流程</text>
+
+  <text class="f node" x="986" y="408">启动转换</text>
+  <rect x="986" y="432" width="180" height="126" rx="14" fill="#edf3ff" stroke="#315f9a"/>
+  <text class="f node" x="1076" y="468" text-anchor="middle">容器 / Pod 镜像</text>
+  <text class="f body" x="1076" y="498" text-anchor="middle">固定 ComfyUI Commit</text>
+  <text class="f small" x="1076" y="528" text-anchor="middle">预装自定义节点依赖</text>
+  <line x1="1166" y1="495" x2="1208" y2="495" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="1222" y="432" width="184" height="126" rx="14" fill="#fff" stroke="#2b8a64"/>
+  <text class="f node" x="1314" y="468" text-anchor="middle">Notebook Entrypoint</text>
+  <text class="f body" x="1314" y="498" text-anchor="middle">挂载模型与对象存储</text>
+  <text class="f small" x="1314" y="528" text-anchor="middle">启动 ComfyUI 子进程</text>
+  <line x1="1406" y1="495" x2="1448" y2="495" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="1462" y="432" width="302" height="126" rx="14" fill="#f2f7f4" stroke="#2b8a64"/>
+  <text class="f node" x="1613" y="468" text-anchor="middle">能力探测与就绪门禁</text>
+  <text class="f mono" x="1488" y="500">/system_stats · /object_info</text>
+  <text class="f small" x="1488" y="528">缺节点、缺权重或显存不足则不接流量</text>
+
+  <text class="f node" x="986" y="608">业务请求转换</text>
+  <rect x="986" y="632" width="806" height="190" rx="18" fill="#fff" stroke="#9aa7b8" stroke-width="2"/>
+  <rect x="1014" y="662" width="140" height="126" rx="14" fill="#102a54"/>
+  <text class="f white" x="1084" y="696" text-anchor="middle">企业控制面</text>
+  <text class="f whiteBody" x="1084" y="726" text-anchor="middle">鉴权 / job_id</text>
+  <text class="f whiteBody" x="1084" y="752" text-anchor="middle">队列 / GPU 租约</text>
+  <line x1="1154" y1="725" x2="1196" y2="725" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="1210" y="662" width="210" height="126" rx="14" fill="#edf3ff" stroke="#315f9a"/>
+  <text class="f node" x="1315" y="696" text-anchor="middle">Workflow Registry</text>
+  <text class="f body" x="1315" y="726" text-anchor="middle">注入图片 / Mask / Seed</text>
+  <text class="f small" x="1315" y="752" text-anchor="middle">锁定节点、参数与模型哈希</text>
+  <line x1="1420" y1="725" x2="1462" y2="725" stroke="#315f9a" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="1476" y="662" width="288" height="126" rx="14" fill="#f2f7f4" stroke="#2b8a64"/>
+  <text class="f node" x="1620" y="696" text-anchor="middle">保留 ComfyUI 原生执行能力</text>
+  <text class="f mono" x="1502" y="726">POST /prompt → /ws</text>
+  <text class="f mono" x="1502" y="752">/history/{id} → /view</text>
+
+  <text class="f node" x="986" y="870">服务边界</text>
+  <rect x="986" y="894" width="806" height="132" rx="16" fill="#f4f6f9" stroke="#c8d0db"/>
+  <text class="f body" x="1014" y="928">保留：节点 DAG、API Format Workflow、队列、节点缓存、模型缓存、WebSocket 进度与中间产物。</text>
+  <text class="f body" x="1014" y="958">外置：鉴权、幂等、对象存储、超时、重试、版本注册、GPU 调度；单 Worker 并发固定为 1。</text>
+  <text class="f body" x="1014" y="990">容量设计：4 × A100 80GB Worker；背景修复 P50 55s / P95 95s；稳态规划 60–80 张/小时。</text>
+
+  <rect x="60" y="1082" width="1760" height="46" rx="14" fill="#102a54"/>
+  <text class="f whiteBody" x="940" y="1111" text-anchor="middle">训练侧以参数与梯度为边界，部署侧以作业与 GPU 租约为边界；两边都不能把 Notebook 进程或单次 HTTP 请求当成可靠系统边界。</text>
+</svg>
