@@ -15,42 +15,45 @@
 
   <!-- Logo YOLOv7 -->
   <rect x="52" y="144" width="1776" height="408" rx="28" fill="#f6f9ff" stroke="#cbd8ee" stroke-width="2"/>
-  <text class="f panelTitle" x="82" y="188">A. Logo Slot：域内训练的单类 YOLOv7</text>
-  <text class="f panelSub" x="82" y="218">历史材料明确记录 YOLOv7；以下层级与张量尺寸对齐官方训练配置，类别数 C=1，输入示例为 960×960</text>
-  <rect x="82" y="254" width="205" height="160" rx="20" fill="#fff" stroke="#2f6df6" stroke-width="3" filter="url(#shadow)"/>
-  <text class="f nodeTitle" x="184" y="292" text-anchor="middle">训练样本</text>
-  <text class="f body" x="104" y="326">RGB [B,3,960,960]</text>
-  <text class="f body" x="104" y="356">GT: class,cx,cy,w,h</text>
-  <text class="f small" x="104" y="386">Sketch Logo Slot 自动产标</text>
-  <line x1="287" y1="334" x2="337" y2="334" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
-  <rect x="353" y="248" width="330" height="174" rx="20" fill="#fff" stroke="#2f6df6" stroke-width="3"/>
-  <text class="f nodeTitle" x="518" y="284" text-anchor="middle">Backbone：Stem + E-ELAN</text>
-  <text class="f body" x="378" y="316">Conv 下采样：/2、/4、/8、/16、/32</text>
-  <text class="f body" x="378" y="346">多分支 Conv → Concat → 1×1 聚合</text>
-  <text class="f body" x="378" y="376">输出 P3 / P4 / P5 多尺度特征</text>
-  <text class="f small" x="378" y="402">小 Logo 主要依赖 P3/8 高分辨率特征</text>
-  <line x1="683" y1="334" x2="733" y2="334" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
-  <rect x="749" y="248" width="322" height="174" rx="20" fill="#fff" stroke="#2f6df6" stroke-width="3"/>
-  <text class="f nodeTitle" x="910" y="284" text-anchor="middle">Neck：SPPCSPC + PAN/FPN</text>
-  <text class="f body" x="774" y="316">SPP 扩大感受野</text>
-  <text class="f body" x="774" y="346">Top-down 上采样融合语义</text>
-  <text class="f body" x="774" y="376">Bottom-up 回传定位信息</text>
-  <text class="f small" x="774" y="402">输出通道：P3=256, P4=512, P5=1024</text>
-  <line x1="1071" y1="334" x2="1121" y2="334" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
-  <rect x="1137" y="238" width="350" height="194" rx="20" fill="#fff" stroke="#2f6df6" stroke-width="3"/>
-  <text class="f nodeTitle" x="1312" y="276" text-anchor="middle">RepConv + IDetect 三尺度头</text>
-  <text class="f body" x="1162" y="310">P3: [B,18,120,120] → [B,3,120,120,6]</text>
-  <text class="f body" x="1162" y="340">P4: [B,18,60,60] → [B,3,60,60,6]</text>
-  <text class="f body" x="1162" y="370">P5: [B,18,30,30] → [B,3,30,30,6]</text>
-  <text class="f small" x="1162" y="402">每格 3 Anchor × (xywh + obj + 1 class)</text>
-  <line x1="1487" y1="334" x2="1537" y2="334" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
-  <rect x="1553" y="254" width="236" height="160" rx="20" fill="#102a54" filter="url(#shadow)"/>
-  <text class="f whiteTitle" x="1671" y="292" text-anchor="middle">解码 + NMS</text>
-  <text class="f whiteBody" x="1578" y="326">像素 XYXY + score</text>
-  <text class="f whiteBody" x="1578" y="356">安全边距与坐标逆变换</text>
-  <text class="f whiteBody" x="1578" y="386">输出 Logo Slot</text>
-  <path d="M1440 448 H480" fill="none" stroke="#ee7441" stroke-width="4" stroke-dasharray="10 7" marker-end="url(#gradArrow)"/>
-  <text class="f chip" x="960" y="475" text-anchor="middle">L = λbox·CIoU + λobj·BCEobj + λcls·BCEcls；梯度更新 Backbone、Neck 与 Head</text>
+  <text class="f panelTitle" x="82" y="188">A. Logo Slot：YOLOv7 专项闭集检测</text>
+  <text class="f panelSub" x="82" y="218">把可枚举 Logo 当作封闭域做有意过拟合；已知 Logo 接近满召回，但新 Logo 必须进入下一轮训练发布</text>
+
+  <rect x="82" y="252" width="300" height="176" rx="20" fill="#fff" stroke="#2f6df6" stroke-width="3"/>
+  <text class="f nodeTitle" x="232" y="286" text-anchor="middle">Sketch 数据工厂</text>
+  <rect x="108" y="310" width="74" height="48" rx="8" fill="#eaf2fd" stroke="#6c91c8"/>
+  <rect x="119" y="320" width="31" height="12" rx="3" fill="#2f6df6"/>
+  <rect x="193" y="310" width="74" height="48" rx="8" fill="#fff4ec" stroke="#d98a61"/>
+  <circle cx="211" cy="334" r="10" fill="#ee7441"/>
+  <rect x="278" y="310" width="74" height="48" rx="8" fill="#eef8f4" stroke="#52a984"/>
+  <path d="M293 344 L315 320 L337 344 Z" fill="#2b8a64"/>
+  <text class="f body" x="108" y="390">渲染变体 → 单类 BBox</text>
+  <text class="f small" x="108" y="414">Logo 资产 × Slot × 版式</text>
+
+  <line x1="382" y1="340" x2="438" y2="340" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="454" y="252" width="750" height="176" rx="20" fill="#fff" stroke="#2f6df6" stroke-width="3"/>
+  <text class="f nodeTitle" x="829" y="286" text-anchor="middle">YOLOv7 · C=1 · 960×960</text>
+  <rect x="482" y="314" width="178" height="72" rx="12" fill="#edf3ff" stroke="#6c91c8"/>
+  <text class="f chip" x="571" y="343" text-anchor="middle">E-ELAN</text>
+  <text class="f small" x="571" y="370" text-anchor="middle">Backbone</text>
+  <line x1="660" y1="350" x2="708" y2="350" stroke="#2f6df6" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="724" y="314" width="230" height="72" rx="12" fill="#edf3ff" stroke="#6c91c8"/>
+  <text class="f chip" x="839" y="343" text-anchor="middle">SPPCSPC + PAN/FPN</text>
+  <text class="f small" x="839" y="370" text-anchor="middle">multi-scale neck</text>
+  <line x1="954" y1="350" x2="1002" y2="350" stroke="#2f6df6" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="1018" y="314" width="158" height="72" rx="12" fill="#fff0e9" stroke="#ee7441"/>
+  <text class="f chip" x="1097" y="343" text-anchor="middle">P3 / P4 / P5</text>
+  <text class="f small" x="1097" y="370" text-anchor="middle">IDetect head</text>
+  <path d="M1100 398 H550" fill="none" stroke="#ee7441" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#gradArrow)"/>
+  <text class="f small" x="825" y="421" text-anchor="middle">CIoU + Obj + Class；全量参数更新</text>
+
+  <line x1="1204" y1="340" x2="1260" y2="340" stroke="#2f6df6" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="1276" y="252" width="512" height="176" rx="20" fill="#102a54"/>
+  <text class="f whiteTitle" x="1304" y="286">Logo Slot + 生命周期代价</text>
+  <text class="f whiteBody" x="1304" y="320">已知 Logo：Recall / 完整覆盖 / 替换良品率 ≈ 100%</text>
+  <text class="f whiteBody" x="1304" y="352">输出：bbox_xyxy + score → 整块保留与自由替换</text>
+  <line x1="1304" y1="372" x2="1760" y2="372" stroke="#55749e"/>
+  <text class="f whiteBody" x="1304" y="402">新增 Logo：补样本 → 增量训练 → 全量回归 → checkpoint v+1</text>
+  <text class="f small" x="82" y="478">Logo 不是开放语义检测：它用极高的域内确定性换取持续训练维护。网络与指标定义详见下一节的专图。</text>
 
   <!-- Main visual -->
   <rect x="52" y="580" width="1776" height="354" rx="28" fill="#faf7ff" stroke="#d5cbed" stroke-width="2"/>
