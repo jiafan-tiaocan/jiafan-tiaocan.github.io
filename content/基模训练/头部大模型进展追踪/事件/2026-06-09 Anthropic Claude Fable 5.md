@@ -52,16 +52,16 @@ Anthropic 于 2026-06-09 发布同一底层模型的两种配置：面向一般�
 
 ## 相对 Opus 4.8 的真实增量
 
-- **更长自主时程：**发布主线从一次高难推理转向跨阶段规划、分派子 Agent、自检与异步工作。
-- **能力与访问控制共同发布：**Fable 和 Mythos 共享底模，但安全层改变了可用能力；敏感查询可 fallback 到 Opus 4.8。
-- **知识工作与视觉闭环：**文档、表格、复杂代码库和视觉核验被放进同一长程工作流。
-- **治理机制成为模型接口：**这次发布无法只用 benchmark 描述，分类器、fallback 和 trusted access 都是实际系统行为。
+- **更长自主时程：** 发布主线从一次高难推理转向跨阶段规划、分派子 Agent、自检与异步工作。
+- **能力与访问控制共同发布：** Fable 和 Mythos 共享底模，但安全层改变了可用能力；敏感查询可 fallback 到 Opus 4.8。
+- **知识工作与视觉闭环：** 文档、表格、复杂代码库和视觉核验被放进同一长程工作流。
+- **治理机制成为模型接口：** 这次发布无法只用 benchmark 描述，分类器、fallback 和 trusted access 都是实际系统行为。
 
 ## 外部反馈
 
 ### 独立评测
 
-[Artificial Analysis](https://artificialanalysis.ai/models/claude-fable-5) 对“最大努力 + Opus 4.8 fallback”配置给出 Intelligence Index 60、约 76.4 output tok/s 和 1M context；标价 $10/M input、$50/M output。它确认 Fable 位于能力前沿，也明确指出其价格极高。
+[Artificial Analysis](https://artificialanalysis.ai/models/claude-fable-5) 对“最大努力 + Opus 4.8 fallback”配置给出 Intelligence Index 60、约 76.4 output tok/s 和 1M context；每百万 token 输入价格为 10 美元、输出为 50 美元。它确认 Fable 位于能力前沿，也明确指出其价格极高。
 
 这个分数不能解释为纯 Fable 5：评测配置本身包含 fallback。官方称保守安全机制平均在少于 5% 的会话触发，但具体任务分布会显著改变比例。
 
