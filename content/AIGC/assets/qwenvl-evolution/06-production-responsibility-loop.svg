@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="850" viewBox="0 0 1440 850" role="img" aria-labelledby="title desc">
+  <title id="title">Qwen 视觉语言模型在生产系统中的责任闭环</title>
+  <desc id="desc">业务素材经过输入预算编译进入 Qwen 视觉语言模型，结构化输出再经过语法、几何与证据门禁，确定性工具完成执行，可编辑结果接受人工验收并形成回归数据。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#eef6ff"/>
+    </linearGradient>
+    <linearGradient id="model" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4f46e5"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#627089"/>
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity=".12"/>
+    </filter>
+    <style>
+      :root { color-scheme: light dark; }
+      .canvas { fill: url(#bg); }
+      .ink { fill: #172033; }
+      .muted { fill: #5b687f; }
+      .box { fill: #fff; stroke: #d5deeb; stroke-width: 1.5; }
+      .subbox { fill: #f8fafc; stroke: #d5deeb; stroke-width: 1.2; }
+      .arrow { fill: none; stroke: #627089; stroke-width: 3; marker-end: url(#arrow); }
+      .return { fill: none; stroke: #d97706; stroke-width: 2.7; stroke-dasharray: 9 8; marker-end: url(#arrow); }
+      .title { font-size: 33px; font-weight: 780; letter-spacing: -.5px; }
+      .subtitle { font-size: 18px; font-weight: 520; }
+      .head { font-size: 23px; font-weight: 760; }
+      .body { font-size: 17px; font-weight: 540; }
+      .small { font-size: 15px; font-weight: 520; }
+      .pill { font-size: 14px; font-weight: 720; letter-spacing: .3px; }
+      text { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      @media (prefers-color-scheme: dark) {
+        .canvas { fill: #0b1322; }
+        .ink { fill: #edf4ff; }
+        .muted { fill: #aab7cb; }
+        .box { fill: #111d2e; stroke: #31425d; }
+        .subbox { fill: #172437; stroke: #3a4b65; }
+        .arrow { stroke: #8da0ba; }
+      }
+    </style>
+  </defs>
+
+  <rect class="canvas" width="1440" height="850" rx="30"/>
+  <text class="ink title" x="70" y="65">生产终点不是“模型回答了”，而是“结果通过可执行门禁”</text>
+  <text class="muted subtitle" x="70" y="98">把开放理解交给 VLM，把可验证执行交给 Schema、工具与编辑器</text>
+
+  <!-- Inputs -->
+  <g filter="url(#shadow)">
+    <rect class="box" x="70" y="165" width="250" height="245" rx="22"/>
+  </g>
+  <circle cx="112" cy="207" r="18" fill="#dbeafe"/>
+  <path d="M102 215l8-10 7 7 5-6 10 9z" fill="#2563eb"/>
+  <circle cx="105" cy="200" r="3" fill="#2563eb"/>
+  <text class="ink head" x="145" y="214">业务输入</text>
+  <text class="muted body" x="100" y="260">• 广告图 / 截图 / 文档</text>
+  <text class="muted body" x="100" y="295">• 多图与长视频片段</text>
+  <text class="muted body" x="100" y="330">• 任务指令与业务本体</text>
+  <rect x="100" y="357" width="190" height="32" rx="16" fill="#e0e7ff"/>
+  <text x="195" y="378" text-anchor="middle" fill="#4338ca" class="pill">输入不是“原样全塞”</text>
+
+  <!-- Budget compiler -->
+  <g filter="url(#shadow)">
+    <rect class="box" x="375" y="165" width="260" height="245" rx="22"/>
+  </g>
+  <text class="ink head" x="405" y="214">输入预算编译器</text>
+  <rect class="subbox" x="405" y="242" width="200" height="42" rx="12"/>
+  <text class="muted body" x="505" y="268" text-anchor="middle">min / max pixels</text>
+  <rect class="subbox" x="405" y="296" width="200" height="42" rx="12"/>
+  <text class="muted body" x="505" y="322" text-anchor="middle">FPS / frame cap</text>
+  <rect class="subbox" x="405" y="350" width="200" height="42" rx="12"/>
+  <text class="muted body" x="505" y="376" text-anchor="middle">切页 / 切镜 / 去重</text>
+
+  <!-- Model -->
+  <g filter="url(#shadow)">
+    <rect x="690" y="145" width="305" height="285" rx="26" fill="url(#model)"/>
+  </g>
+  <text x="842" y="202" text-anchor="middle" fill="#fff" class="head">Qwen 视觉语言中枢</text>
+  <text x="842" y="235" text-anchor="middle" fill="#dfe4ff" class="body">开放语义理解 + 自回归生成</text>
+  <rect x="725" y="263" width="235" height="42" rx="12" fill="#ffffff" opacity=".15"/>
+  <text x="842" y="289" text-anchor="middle" fill="#fff" class="body">元素 / 关系 / BBox / 时间</text>
+  <rect x="725" y="317" width="235" height="42" rx="12" fill="#ffffff" opacity=".15"/>
+  <text x="842" y="343" text-anchor="middle" fill="#fff" class="body">JSON / 工具意图 / 解释</text>
+  <text x="842" y="394" text-anchor="middle" fill="#dfe4ff" class="small">允许不确定；不直接拥有执行权</text>
+
+  <!-- Trust gate -->
+  <g filter="url(#shadow)">
+    <rect class="box" x="1050" y="145" width="320" height="285" rx="24"/>
+  </g>
+  <text class="ink head" x="1080" y="194">Trust Gate</text>
+  <rect x="1080" y="222" width="120" height="38" rx="19" fill="#dcfce7"/>
+  <text x="1140" y="246" text-anchor="middle" fill="#087c56" class="pill">语法</text>
+  <text class="muted small" x="1212" y="246">JSON Schema / 字段类型</text>
+  <rect x="1080" y="272" width="120" height="38" rx="19" fill="#dbeafe"/>
+  <text x="1140" y="296" text-anchor="middle" fill="#1d4ed8" class="pill">几何</text>
+  <text class="muted small" x="1212" y="296">越界 / 重叠 / IoU / 时码</text>
+  <rect x="1080" y="322" width="120" height="38" rx="19" fill="#fef3c7"/>
+  <text x="1140" y="346" text-anchor="middle" fill="#a16207" class="pill">证据</text>
+  <text class="muted small" x="1212" y="346">OCR 对读 / 局部复核 / 置信</text>
+  <text class="muted small" x="1080" y="397">失败：降分辨率重试、专用工具回退或人工复核</text>
+
+  <path class="arrow" d="M320 287 L365 287"/>
+  <path class="arrow" d="M635 287 L680 287"/>
+  <path class="arrow" d="M995 287 L1040 287"/>
+
+  <!-- Deterministic tools -->
+  <g filter="url(#shadow)">
+    <rect class="box" x="165" y="525" width="410" height="190" rx="24"/>
+  </g>
+  <text class="ink head" x="200" y="574">确定性工具执行层</text>
+  <rect class="subbox" x="200" y="600" width="105" height="40" rx="12"/>
+  <text class="muted pill" x="252" y="625" text-anchor="middle">OCR</text>
+  <rect class="subbox" x="318" y="600" width="105" height="40" rx="12"/>
+  <text class="muted pill" x="370" y="625" text-anchor="middle">分割</text>
+  <rect class="subbox" x="436" y="600" width="105" height="40" rx="12"/>
+  <text class="muted pill" x="488" y="625" text-anchor="middle">Inpaint</text>
+  <text class="muted body" x="200" y="679">工具只消费已通过门禁的参数，并记录输入、输出与版本。</text>
+
+  <!-- Editable output -->
+  <g filter="url(#shadow)">
+    <rect class="box" x="650" y="525" width="300" height="190" rx="24"/>
+  </g>
+  <text class="ink head" x="685" y="574">可编辑 / 可行动结果</text>
+  <text class="muted body" x="685" y="615">• 图层、文档结构、操作计划</text>
+  <text class="muted body" x="685" y="650">• 保留坐标、来源与模型版本</text>
+  <text class="muted body" x="685" y="685">• 失败可定位到具体责任层</text>
+
+  <!-- Human and regression -->
+  <g filter="url(#shadow)">
+    <rect class="box" x="1025" y="525" width="345" height="190" rx="24"/>
+  </g>
+  <text class="ink head" x="1060" y="574">验收与回流</text>
+  <text class="muted body" x="1060" y="615">• 用户是否真的能继续编辑 / 完成任务</text>
+  <text class="muted body" x="1060" y="650">• 失败样本进入版本化回归集</text>
+  <text class="muted body" x="1060" y="685">• 再决定 Prompt、SFT、RL 或工具修复</text>
+
+  <path class="arrow" d="M1210 430 C1210 475 450 475 450 515"/>
+  <path class="arrow" d="M575 620 L640 620"/>
+  <path class="arrow" d="M950 620 L1015 620"/>
+  <path class="return" d="M1195 715 C1195 790 505 795 505 420"/>
+  <text x="764" y="802" fill="#b45309" class="body" text-anchor="middle">反馈先进入回归集；只有可复现的失败才改变模型或系统</text>
+  <text class="muted small" x="70" y="832">本文结合 Qwen2.5-VL 广告卡片解构旧文与 Qwen3-VL 生产接口归纳；不把历史项目数字外推为通用 Benchmark。</text>
+</svg>
