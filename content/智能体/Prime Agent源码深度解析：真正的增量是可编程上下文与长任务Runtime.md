@@ -170,7 +170,7 @@ flowchart TB
 
 ## 5. 增量一：RLM 把“工具调用”升级为“可编程控制面”
 
-### 5.1 先校准：Prime 没有取消 Function Calling
+### 5.1 外层协议仍然是 Function Calling
 
 普通 Tool Calling 的最小链路是：
 
@@ -204,13 +204,7 @@ ipython({ code: string })
 
 `ipython` 的固定源码 schema 确实只有一个 `code` 字符串；它被标记为顺序工具，执行结果再把 `stdout`、`stderr`、最后一个表达式结果和图片组织成模型可见的 Tool Result。[源码：`ipython` schema 与工具定义](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L143-L148) [源码：执行与结果组装](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L622-L703)
 
-所以最准确的变化不是：
-
-```text
-Function Calling → 没有 Function Calling
-```
-
-而是：
+所以最准确的变化是：Prime 保留 Function Calling 作为模型与 Host 的外层协议，同时改变了一次调用内部承载的工作粒度。
 
 ```text
 传统 Agent：一次 Function Call 约等于一个工具动作
@@ -250,9 +244,96 @@ candidates.sort(key=lambda path: path.stat().st_size, reverse=True)
 Prime：模型是程序生成者，Runtime 执行细粒度确定性控制流
 ```
 
-因此 RLM 的核心价值不是“Python 比 Tool Call 高级”，而是减少模型参与无意义微观调度的次数，把可由程序稳定完成的工作移到解释器里。
+因此 RLM 的核心价值来自控制粒度：它减少模型参与无意义微观调度的次数，把可由程序稳定完成的工作移到解释器里。
 
-### 5.3 `Prompt-as-a-variable` 的精确定义：用户 Prompt 没有自动绑定
+### 5.3 选择 IPython 的原因：把 Python 从一次性脚本变成 Session 控制面
+
+这里必须先拆开两个不同的问题：
+
+1. **代码由谁生成？** 两条路线都是模型生成 Python。
+2. **代码在哪里、以什么生命周期执行？** 这才是 Prime 真正做出的架构选择。
+
+如果模型把 Python 包进 Bash 调用，真实路径是：
+
+```text
+模型
+  → Function Call: bash(command="python ...")
+  → Host 启动一次 Shell 子进程
+  → Shell 再启动一次 Python 子进程
+  → stdout / stderr / exit code 回到模型
+  → 子进程退出，进程内对象随之消失
+```
+
+Prime 保留的 [`bash` 实现](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/bash.ts#L66-L115) 确实会为每次调用重新 `spawn` 一个 Shell。假设模型连续生成两段代码：
+
+```python
+# 第一次 bash("python ...")
+from pathlib import Path
+files = list(Path("src").rglob("*.ts"))
+parsed = {str(path): path.read_text(errors="ignore") for path in files}
+```
+
+```python
+# 第二次 bash("python ...")
+hits = {path: text for path, text in parsed.items() if "authorize" in text}
+```
+
+第二个 Python 进程无法读取第一个进程里的 `files` 和 `parsed`。第一段脚本若没有打印或写文件，Host 最终只得到空输出和退出状态；若打印全部内容，原本可以留在计算平面的中间数据又会涌入模型上下文。要跨调用继续工作，模型只能选择重新计算、把对象显式序列化到文件或数据库、把数据再次嵌进下一段命令，或者自行维护一个长寿命 Python 进程及其 IPC 协议。
+
+IPython 路线仍然由模型生成 Python，但代码进入当前 Session 拥有的同一个 Kernel：
+
+```text
+模型
+  → Function Call: ipython(code)
+  → KernelManager 向同一个 Kernel 发送 execute_request
+  → 代码读写共享 user namespace
+  → 只有 stdout / result / error / display data 回到模型
+  → Kernel 与未打印的工作状态继续留在 Session 中
+```
+
+于是同一项工作可以被拆成多个模型轮次：
+
+```python
+# Cell 1：加载大量数据，不打印正文
+from pathlib import Path
+files = list(Path("src").rglob("*.ts"))
+parsed = {str(path): path.read_text(errors="ignore") for path in files}
+```
+
+```python
+# Cell 2：继续使用上一轮对象，只把候选带回模型
+hits = {
+    path: text
+    for path, text in parsed.items()
+    if "authorize" in text.lower() or "permission" in text.lower()
+}
+print(list(hits)[:20])
+```
+
+```python
+# Cell 3：把需要语义判断的候选交给受管 Child Agent
+reviewer = await rlm("读取 auth_candidates.md，审查鉴权边界", name="auth-reviewer")
+```
+
+[`IpythonKernelProvisioner`](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L322-L370) 为 Session 懒启动并复用 Kernel；[`KernelManager.execute()`](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L854) 把多个 Cell 串行送进这一个共享命名空间。因此 IPython 的主要收益并不是少付一次 Python 启动开销，而是同时建立五种 Runtime 语义：
+
+| Runtime 语义 | Bash 启动一次性 Python | Prime 的持久 IPython |
+|---|---|---|
+| 跨模型轮次的工作状态 | 需要文件、数据库、命令文本或重新计算 | 变量、导入、函数和解析对象留在 `user_ns` |
+| 模型看到多少中间数据 | 主要依赖 stdout；为继续推理往往需要主动打印 | 大对象可以留在 Kernel，只打印下一次语义判断需要的切片 |
+| 调用 Runtime 能力 | 需要另建 CLI、Socket、HTTP 或其他 IPC | 预注入的 `rlm` 与 Python Skill 通过 Jupyter Comm 进入 Session 的 typed Host handler |
+| 结果协议 | Bash Tool 汇集进程输出与退出状态 | Jupyter 区分 `stdout`、`stderr`、表达式结果、异常、`display_data`、图片、Diff 与 Agent Message |
+| Session 恢复 | 由脚本自行设计显式状态 | 成功 Cell 后对 namespace 做最佳努力快照，恢复后重新注入活动句柄 |
+
+这里的关键不是 IPython 的语法糖，而是 Jupyter 已经提供了一套长寿命解释器协议。Prime 直接复用了 `shell`、`iopub`、`control` 三条通道：普通代码通过 `execute_request` 进入 Kernel，流式输出和富结果通过 IOPub 返回，interrupt、shutdown 与执行中的 Host reply 走 control；`host.request` 又允许 Python 在 Cell 尚未结束时调用 TypeScript Runtime。[源码：Jupyter 消息与结果分派](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L948-L1027) [源码：Python 侧 Host Comm](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/__init__.py#L84-L132)
+
+理论上也可以启动一个永久的 `python -i`，然后自行实现代码分帧、请求与结果关联、异步事件、interrupt、富媒体结果、Host RPC、快照和恢复。但做到这一步，本质上已经重新实现了一个简化的 Kernel protocol。Prime 选择 IPython，是为了让“持久 Python 状态”和“Session 的类型化控制面”落在同一个现成协议上。
+
+这项选择也带来明确代价：同一 Kernel 的普通 Cell 串行执行；隐藏可变状态会降低复现性；长寿命进程会保留内存、连接和过期对象；Kernel 使用 Prime 管理的 Python 环境，项目测试和 CLI 仍应进入项目自己的环境；`dill` 只能恢复可序列化对象，打开的文件、Socket、子进程、异步任务和正在执行的 Cell 都不在可靠恢复范围内；IPython 与 Bash 一样以 Worker 的用户权限执行，不提供安全隔离。
+
+所以适用边界非常清楚：一次性、无状态、容易重放的 Python 任务，用 Bash 启动短进程往往更简单，也有更干净的故障隔离；需要跨轮次筛选大量数据、复用中间对象、调用 Python Skill 和受管 Agent 能力的任务，持久 Kernel 才体现价值。固定源码甚至在 `ipython.ts` 第一行留下了[重新评估持久 Kernel 必要性的 TODO](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L1)，说明这是一项面向当前 RLM 工作方式的工程选择，不是所有 Agent 的永久答案。
+
+### 5.4 `Prompt-as-a-variable` 的精确定义：变量化的是工作上下文
 
 README 用 `prompt-as-a-variable` 描述 RLM：[项目定位](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/README.md#L31-L40)。这个说法很有启发性，也极易被误解。Prime 当前实现里至少有三种常被混称为 Prompt 的对象：
 
@@ -297,7 +378,7 @@ for path, text in auth_candidates.items():
 
 > **Working-context-as-kernel-state：把模型显式加载、生成和选择的工作上下文放进可寻址的持久 Kernel 状态。**
 
-### 5.4 三个上下文平面：消息、Kernel 与 Child 不能混为一谈
+### 5.5 三个上下文平面：消息、Kernel 与 Child 各自保存什么
 
 Prime 同时维护三类上下文，它们的可见性、寿命和责任不同：
 
@@ -317,9 +398,61 @@ Child Context：哪些认知工作应隔离到独立上下文
 
 因此“上下文外部化”不是把一切都搬离 Prompt，而是决定每种信息应该进入哪个平面，以及何时才把经过筛选的证据重新带回模型。
 
-### 5.5 多工具如何编排：能力没有消失，而是分成五条调用路径
+### 5.6 默认只有一个模型 Tool，更多 Capability 从哪里来
 
-Prime 所谓“Everything is programmatic”不是所有能力都变成同一种函数。固定实现至少有五条不同路径。
+是的，Prime 默认把模型在 Function Calling 层直接看到的 **内置工具** 收敛成一个 `ipython(code)`。固定源码生成 System Prompt 时，`selectedTools` 缺省值就是 `['ipython']`；官方 Usage 也把内置工具列为 `ipython`。[源码：默认 Tool 选择](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/system-prompt.ts#L65-L66) [官方 Usage](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/usage.md#L232-L235)
+
+但这里必须区分两个清单：
+
+```text
+Model-facing Tool inventory
+= 模型输出 Function Call 时直接选择的 JSON schema
+
+Runtime Capability inventory
+= Python 标准库与第三方包
+ + 项目文件和命令
+ + Python-backed Skill
+ + Child Agent
+ + Goal / Message / Schedule / Refine 等 Host 能力
+ + MCP 或其他外部集成
+```
+
+默认 Tool inventory 可以只有一个，而 Capability inventory 仍然很大。区别在于后者由模型生成的程序调用，不要求模型为每个微动作重新生成一次 Function Call。Prime 所谓“Everything is programmatic”也不意味着所有能力都变成同一种函数；`ipython` 控制面内至少分成五条调用路径。
+
+#### 5.6.1 是否需要提前写好很多函数和脚本
+
+不需要在使用 Prime 之前先建设一座完整的 Python Tool 仓库。更合理的方式是让能力按照 **复用次数、状态所有权和风险等级** 逐步升级：
+
+| 能力形态 | 适用对象 | 是否需要预先封装 | 推荐入口 |
+|---|---|---:|---|
+| 当次任务的一次性逻辑 | 过滤、排序、解析、临时数据变换 | 否 | 模型现场生成普通 Python |
+| 项目已经存在的能力 | 测试脚本、构建命令、CLI、已有 Python 模块 | 否 | `%%bash`、`subprocess` 或直接 import |
+| 多次出现且接口趋于稳定的过程 | 发布审计、数据查询、特定格式处理 | 是，达到复用阈值后再做 | Python-backed Skill |
+| 外部系统已经提供标准协议 | Linear、Notion、数据库或业务服务 | 只需薄适配 | MCP integration / Client |
+| 权威状态属于 Prime Runtime | Child、Goal、Message、Schedule、Compaction、凭据刷新 | 需要 Host 端 handler | Python API → `host.request` |
+| 需要独立授权、隔离或 UI 的高风险动作 | 生产发布、付款、删除、远程执行 | 应显式建边界 | Extension 注册独立模型 Tool，或外部审批网关 |
+
+所以“原先的 Tool 怎样迁移”没有单一答案：
+
+- 原 Tool 本质是一个纯函数或本地库时，可以直接成为普通 Python 调用；
+- 原 Tool 已有可靠 CLI 时，继续调用 CLI，不必为了 IPython 重写业务实现；
+- 原 Tool 需要稳定说明书、依赖和复用接口时，再包装成 Python-backed Skill；
+- 原 Tool 的权限、会话、审计或生命周期必须由 Host 掌握时，Python 只保留薄客户端，真正状态变更继续留在 typed Host handler；
+- 原 Tool 需要模型在调用前明确选择独立 schema、触发审批或进入单独执行域时，就应该继续作为独立 Function Tool，而不是强行藏进 `ipython`。
+
+这是一条“从现场代码到稳定能力”的晋升路径：
+
+```text
+一次性 Cell
+  → 重复出现的辅助函数
+  → 项目脚本 / Python 模块
+  → 带 SKILL.md、依赖和类型化入口的 Python-backed Skill
+  → 需要 Runtime 权威状态时增加 host.request handler
+```
+
+Prime 的 Python-backed Skill 仍然要求 `SKILL.md`，并通过 `pyproject.toml` 与 `src/<import_name>/__init__.py` 声明可执行包；Kernel 启动时把包安装到受管环境并按需注入模块。模型只在启动 Prompt 中看到 Skill 的名称、描述和位置，任务匹配后再读取完整说明，因此无需把所有函数签名永久塞进语言上下文。[官方 Python-backed Skill 规范](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/skills.md#L128-L174)
+
+#### 5.6.2 `ipython` 控制面内的五条能力路径
 
 第一类是普通 Python 运算。循环、分支、正则、JSON 解析、排序和表格变换不再需要工具：
 
@@ -356,7 +489,70 @@ report = await release_audit(
 
 第五类是由 TypeScript Host 掌握权威状态的能力，例如 `rlm.run`、Goal、Compaction、Refine、Heartbeat、Agent Message 与 MCP 配置。这些不能只靠 Kernel 内的普通 Python 对象完成，需要通过 `host.request` 跨回 Host。MCP 的具体远端调用可以由 Python integration 使用 MCP Client 完成，但认证刷新和 Host 已解析的连接配置仍由 `mcp.*` Host request 提供。[源码：MCP Host handlers](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/mcp/mcp-manager.ts#L156-L191) 工具 schema 并没有凭空消失，而是从“模型直接看到几十个 JSON Tool schema”，迁移到 Python API、Skill 文档和 Host 的 typed request handler 中。
 
-### 5.6 Host Bridge：外层是 Function Call，内层是程序发起的类型化 RPC
+#### 5.6.3 MCP 如何与单一 `ipython` Tool 兼容
+
+MCP Server 不需要改写成 Prime 专用 Tool。Prime 保留 MCP 的工具发现、JSON Schema 和 `call_tool` 协议，只把 **MCP Client 放到了 Kernel 里的 Python-backed Skill** 中，而不是把每个 MCP Tool 展开成模型直接可见的 Function Tool。[官方 MCP integration 设计](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/mcp-integrations.md#L1-L19)
+
+以 Linear 为例，模型在外层仍然只产生一次 `ipython(code)`：
+
+```python
+import linear
+
+# Tool 名和参数仍由 MCP Server 提供，先发现再调用
+for tool in await linear.list_tools():
+    print(tool["name"], tool["inputSchema"])
+
+issues = await linear.list_issues(team="Engineering")
+```
+
+完整链路是：
+
+```text
+LLM
+  → Function Call: ipython(code)
+  → Kernel 中的 linear Python Skill
+  → McpIntegration.list_tools() / call_tool()
+  → 官方 MCP Python SDK
+  → 远端 MCP Server
+  → structuredContent / text / content blocks
+  → Python dict / str / list
+  → 模型只查看程序选择打印的结果
+```
+
+[`McpIntegration`](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/mcp_base.py#L112-L318) 第一次使用时向 Server 执行 `list_tools()`，缓存工具名、描述和 `inputSchema`，并把合法 Python 标识符动态绑定成 async method；不适合做 Python 方法名的 MCP Tool 仍可通过 `call_tool(name, arguments)` 调用。结果优先返回 `structuredContent`，其次返回文本或普通 content block；Server 标记 `isError` 时会抛出 `McpToolError`，避免失败结果被程序当成成功数据继续处理。
+
+Host 与 Kernel 的职责也被拆开了：
+
+| MCP 职责 | 所在位置 |
+|---|---|
+| `/login`、OAuth Provider 注册、凭据存储与刷新 | TypeScript Host |
+| 当前 Server URL、静态 Header、认证状态 | Host 的 `McpManager` |
+| `mcp.config`、`mcp.refresh` 请求 | Kernel 经 `host.request` 调回 Host |
+| `list_tools`、`call_tool` 与结果解析 | Kernel 内 Python `McpIntegration` |
+| 具体工具集合与 JSON Schema | 远端 MCP Server |
+
+固定实现的 Python integration 会从共享认证存储读取当前凭据，过期时通过 `mcp.refresh` 请求 Host 刷新；Host 端的 [`McpManager`](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/mcp/mcp-manager.ts#L1-L191) 负责登录、连接配置和启用状态。这是 **生命周期所有权分离**，不是安全隔离：Kernel 与 Host 仍以同一用户权限运行，外层 Sandbox 依旧必要。
+
+这种兼容方式的收益是 MCP Server 的大量 Tool schema 不必全部常驻模型的 Function Calling 列表，模型可以在 Python 中发现、循环调用、聚合和过滤结果。代价是 schema 选择从 Provider 的原生 Tool Calling 阶段移动到了程序运行阶段：Agent 必须先执行 `list_tools()` 或读取 Skill 文档，错误通常在 Python/MCP 调用时才暴露；每次远端调用还会新建 MCP Session，以换取对空闲连接、Token 轮换和 Kernel 恢复更稳健的行为。
+
+固定修订还有两个明确兼容边界：
+
+- `McpIntegration` 的一等配置路径只支持远端 HTTP Server；`stdio` Server 不会通过 `mcpServers` 自动接入 Kernel。若确实需要本地 subprocess transport，必须由自定义 integration 覆盖连接实现并自行管理生命周期。[官方 MCP transport 边界](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/mcp-integrations.md#L73-L110)
+- 通用基类当前只实现 MCP 的 `list_tools` 与 `call_tool` 路径，没有把 MCP Resources 和 Prompts 映射进 Python API。因此这里准确的兼容范围是 **MCP Tool client integration**，而不是对 MCP 全部协议能力的完整投影。[源码：MCP Tool 发现与调用](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/mcp_base.py#L245-L318)
+
+此外还有一条刻意保留的逃生口：**Extension 可以注册额外的模型 Tool，覆盖内置实现，或者在关闭内置工具后只暴露自定义工具**。[官方 Extension 文档](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/extensions.md#L1827-L1849) 这适合必须单独展示 schema、单独授权、独立渲染、路由到远程执行器，或者不适合进入共享 Kernel 的能力。
+
+因此 Prime 的选择不是“系统永远只能有一个 Tool”，而是：
+
+```text
+默认窄腰：模型只直接调用 ipython(code)
+程序能力：由 Python / Skill / Host bridge / MCP 扩展
+显式例外：需要独立协议边界的能力继续注册为模型 Tool
+```
+
+这个窄腰减少了模型每轮要理解和选择的 Tool schema，也让循环、条件、重试和数据变换回到程序控制流；代价是权限系统不能再只检查最外层的 `ipython` 名称。真正的敏感动作发生在 Cell 内部，治理必须继续下沉到 Python Skill、Host handler、MCP Client、Shell 和外部 Sandbox，不能把“只有一个模型 Tool”误当成“只有一个权限边界”。
+
+### 5.7 Host Bridge：外层是 Function Call，内层是程序发起的类型化 RPC
 
 以 `await rlm("审查鉴权流程", name="auth-reviewer")` 为例，完整链路是：
 
@@ -403,7 +599,7 @@ Host Request RPC
 
 Host 回复还必须走 Jupyter control channel。若把回复放回 shell channel，当前 `execute_request` 会等待 `rlm.run` 返回，而 Kernel 又要等当前请求结束后才能处理 shell 回复，形成自我等待。Prime 给 control channel 注册 Comm handler，使 admission 回复能在 Cell 仍运行时唤醒 Python Future；子代理最终答案不走这条返回路径，而是稍后通过消息或文件交付。[官方 Runtime 说明](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm-runtime.md#why-host-request-responses-use-the-control-channel)
 
-### 5.7 一个完整例子：从 100 个文件到三路审查
+### 5.8 一个完整例子：从 100 个文件到三路审查
 
 假设任务是审查仓库的鉴权实现、测试覆盖和依赖风险。第一步不需要让模型逐个调用 `read`，而是让它提交一个程序构造工作集：
 
@@ -490,7 +686,7 @@ Host Request：调用由 Runtime 掌握的受管能力
 Child Agent：隔离需要独立语义判断和上下文预算的工作
 ```
 
-### 5.8 并发和结果回收：Kernel 串行，Child 独立，fan-in 事件驱动
+### 5.9 并发和结果回收：Kernel 串行，Child 独立，fan-in 事件驱动
 
 同一个 Kernel 的普通 Cell 通过 execution queue 串行执行；Prime 不会让两个 `ipython` Tool Call 同时修改同一个命名空间。[源码：Kernel execution queue](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L843)
 
@@ -511,7 +707,7 @@ Child Agent：隔离需要独立语义判断和上下文预算的工作
 
 到这里，Prime 的第一项核心增量才可以被完整表述：它不是把 Tool Call 换了一个 Python 语法，而是保留外层模型—工具协议，同时在内部增加可持续的程序状态和 Host RPC，使确定性微动作、受管能力与独立认知任务分别落到 Python、Runtime 和 Child Agent 三个合适的执行层。尚未解决的是这套程序状态怎样可靠恢复、异步结果怎样证明收齐、以及生成代码本身怎样被安全隔离。
 
-### 5.9 持久不等于完整 Checkpoint
+### 5.10 Namespace 快照的边界：它能恢复哪些状态
 
 Prime 会在成功 cell 后延迟约 1.5 秒，把用户命名空间逐变量用 `dill` 序列化；默认上限 256 MiB。单个不可序列化对象不会拖垮全部快照，恢复时也逐变量容错。[源码：快照与恢复代码](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/state-snapshot.ts#L1-L193)
 
@@ -527,7 +723,7 @@ Prime 会在成功 cell 后延迟约 1.5 秒，把用户命名空间逐变量用
 
 还有一个语义层问题：变量可能仍然存在，但 Compaction 后的模型忘记了变量名、结构、来源或时效。此时系统实现了“存储连续性”，却没有自动实现“语义可发现性”。稳定命名、状态 manifest、来源版本和必要的摘要仍然是 Harness 责任。
 
-### 5.10 RLM 的收益不是无条件成立
+### 5.11 RLM 收益的成立条件
 
 Prime Intellect 的独立 RLM 博客实验本身给出了反例：RLM 在部分长上下文任务上有收益，但在 math-python 上退化；DeepDive 若不提供明确的分解策略也可能落后；所有测试场景的完成时间都显著上升，子模型还会增加总 token 消耗。博客中的“主模型 token 效率”不统计子模型 token，不能直接等价成总成本下降。[官方 RLM 实验](https://www.primeintellect.ai/blog/rlm)
 
@@ -915,6 +1111,10 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 | RLM 编程模型 | [rlm.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm.md) |
 | RLM Runtime | [rlm-runtime.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm-runtime.md) |
 | `ipython(code)` schema、bootstrap 与 Tool Result | [ipython.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L24-L148) [execute](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L622-L703) |
+| Bash 一次性进程执行路径 | [bash.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/bash.ts#L66-L115) |
+| 默认 Tool 选择与扩展 Tool | [system-prompt.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/system-prompt.ts#L65-L66) [extensions.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/extensions.md#L1827-L1849) |
+| Python-backed Skill | [skills.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/skills.md#L128-L174) |
+| MCP Python Client 与 Host 管理 | [mcp_base.py](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/mcp_base.py#L112-L318) [mcp-manager.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/mcp/mcp-manager.ts#L1-L191) |
 | RLM System Prompt 与编程约束 | [prompts/rlm.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/prompts/rlm.ts#L15-L166) |
 | 根/子会话生命周期 | [agent-session-runtime.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session-runtime.ts#L86-L322) |
 | 子代理接纳与终态 | [agent-session.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session.ts#L9604-L9952) |
