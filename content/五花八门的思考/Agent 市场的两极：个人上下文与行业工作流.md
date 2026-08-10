@@ -7,6 +7,7 @@ tags:
   - 行业智能体
   - AI应用
   - 单位经济
+  - Codex
 date: 2026-08-10
 noteType: thought
 publish: true
@@ -29,6 +30,8 @@ $$
 To C 的价值可以是节省时间、改善决策与体验；To B 则是增量收入、节省人力和避免损失。两者都必须按“被接受且安全的结果”计价，不能按生成次数自我庆祝。客户 ROI 为正，只说明有人愿意买；供给方还要满足“结果收入减去全链路交付成本”为正，生意才能扩张。这延续了 [[关于商业模式]] 的判断：每个参与者都获得可持续回报，并且放大规模后仍然成立。
 
 通用 Agent 的终局并不是一本被动增长的“个人百科全书”。它还要判断此刻该想起什么、可以采取什么行动，以及何时必须征得同意。OpenAI 已把对话、文件、记忆和连接应用纳入可纠正的 Memory；Google 的 Personal Intelligence 也在连接 Gmail、Photos、YouTube 与 Search。[OpenAI Memory](https://help.openai.com/en/articles/8590148-memory-in-chatgpt-faq)、[ChatGPT Apps](https://help.openai.com/en/articles/11487775-connectors-in)与[Gemini Personal Intelligence](https://blog.google/innovation-and-ai/products/gemini-app/personal-intelligence/)由此支持一个产品层推断：模型公司争夺的是“理解你并替你行动”的入口。真正的资产是**用户模型、行动图谱与信任界面**。这也对应 [[Agent系统构建中的 Mem-OS：让知识与经验形成复利|Mem-OS]] 的边界：记得多不产生壁垒，在正确时刻以正确权限改变行动才产生壁垒。
+
+Codex 是一个有解释力的边界案例。OpenAI 仍将其定位为 Coding Agent，但[官方用例](https://learn.chatgpt.com/use-cases)已经覆盖数据、研究、演示文稿与跨应用工作；客户端则区分 Chat、Work 与 Codex 三个工作面。[OpenAI 官方文档](https://developers.openai.com/)支持一个判断：Codex 的模型、工具、沙箱、文件与长任务 Runtime 已达到泛用 Agent 执行底座的较高水位，但泛用助理和 Coding Agent 不应共享同一套默认产品契约。真正可能被牺牲的不是模型写代码的能力，而是 Coding 产品目标的纯度：它需要以仓库事实、最小 Diff、测试与编译器、Git / Worktree、CI、Review 和回滚为中心；泛用助理则需要个人记忆、跨应用权限、开放式终态和对话式交接。更好的拆法是**共享 Agent Core 与 Runtime，拆分 Agent OS 和产品 Profile**：分别设计入口、默认上下文、工具优先级、权限、完成条件与评测，不必复制两套模型和基础设施。OpenAI 当前的产品形态，已经接近这种“共底座、分工作面”的结构。
 
 垂直 Agent 的行业 know-how 也不是专业文档，而是可执行的工作系统：输入、步骤、分支、可信来源、审批权和完成条件。Harvey 的 Agent Builder 让法律团队把客户材料、先例、分支逻辑和输出标准组织为可测试、可授权、可迭代的 Workflow Agent；产品本身也与律所律师和知识团队共同打磨。[Harvey 官方说明](https://www.harvey.ai/blog/introducing-workflow-builder)还原出来的是法律工作的状态机，而不是“法律 Prompt”。
 
