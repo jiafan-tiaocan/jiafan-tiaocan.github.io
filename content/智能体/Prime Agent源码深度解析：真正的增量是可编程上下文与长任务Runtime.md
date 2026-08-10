@@ -15,13 +15,11 @@ noteType: technical
 # Prime Agent 源码深度解析：真正的增量是可编程上下文与长任务 Runtime
 
 > [!abstract] 核心判断
-> Prime Agent **没有重新发明 Agent Core**。它承接了 Pi 的模型协议、Agent Loop、Session 与 TUI，真正向前推进的是 Core 之外的运行时：保留 Function Calling——模型用结构化名称和参数请求外部能力——作为入口，却把默认调用粒度收敛为 `ipython(code)`，让模型生成程序，把工作上下文显式外部化为持久 Python 状态，再通过 Host bridge（Kernel 与 TypeScript Runtime 之间的类型化桥）调用子代理和受管能力；同时，它把会话交给常驻 Daemon/Worker（常驻服务与会话工作进程），并把目标、定时任务、Harness 状态和一部分 IPython 命名空间持久化。
+> Prime Agent 是一套建立在 Pi Agent Core 之上的**长任务 Agent Runtime**。它以持久 IPython 作为模型的默认编程控制面：模型通过 `ipython(code)` 提交程序，Python 保存工作状态、执行确定性控制流并调用 Skill；`host.request` 再把 Child Agent、Goal、消息、调度与其他受管能力接回 TypeScript Runtime。Function Calling 仍是模型进入外部世界的协议入口，但一次调用承载的对象从某个具体工具动作提升成了一段可以继续组织工具和状态的程序。
 >
-> 因此，最准确的定位不是“更聪明的 coding agent”，而是：**建立在 Pi 之上的、偏 Recursive Language Model（RLM）编程范式的开放 Agent Runtime / 早期 Agent OS**。
+> 这套 Runtime 把一次模型—工具循环扩展成一棵可持续运行的会话树。根 Agent、Child Agent、各自的 Kernel、消息与 Artifact 由 Worker 持有，Supervisor 负责发现、路由、重连与恢复；Goal、Schedule、Heartbeat、Kernel namespace 与 Continual Harness 则把任务状态延伸到后续轮次、其他终端和后台执行。
 >
-> 其中最扎实的增量是 **RLM 控制面与 Daemon 恢复语义**。
->
-> 最需要降温的是 **self-improving**。`/refine` 做到的是版本化、可回滚的补充 Harness 自修改，不是模型权重学习，也没有独立验证器证明每次修改真的提升能力。
+> Prime 的核心增量由三个互相咬合的机制构成：**可编程的工作上下文、可保留的子代理、可恢复的长任务生命周期**。三者共同把 Pi 的 Agent Core 扩展为一个偏 Recursive Language Model（RLM）范式的开放 Agent Runtime，并呈现出早期 Agent OS 的形态。生产部署需要在这套 Runtime 外层补充 Sandbox、资源配额、独立 verifier 与副作用治理。
 
 这篇笔记延续 [[pi-mono源码深度解析：pi-agent的极简Agent Core]] 的 Core 基线，并用 [[Agent OS：把 Agent Core 变成可持续工作的生产系统]]、[[AI Coding研发中的Harness与Loop构建]]、[[论文解读：Towards Long-Horizon Agents: A Survey]] 中的长期任务与可信验证框架判断 Prime Agent 的增量。
 
@@ -41,24 +39,24 @@ Harness：上下文、工具、技能、子代理、压缩、验证策略
 Runtime / Agent OS：进程、恢复、调度、租约、持久状态、观测与治理
 ```
 
-Prime Agent 的主要工作发生在后两层，而不是 Core。
+Prime Agent 的设计重心位于 Harness 与 Runtime / Agent OS 两层；Agent Core 主要承接 Pi 的实现。
 
 | 维度 | Pi 基线 | Prime Agent 的新增 | 判断 |
 |---|---|---|---|
-| Agent Loop | 显式模型—工具循环、awaited event barrier | 基本沿用 | **低增量**，不是项目创新中心 |
+| Agent Loop | 显式模型—工具循环、awaited event barrier | 基本沿用 | **低增量**，属于 Pi 基线承接项 |
 | 上下文控制 | 文件、消息、Compaction | 持久 IPython；模型显式加载的工作上下文可变成变量、函数和程序，用户 Prompt 本身仍是消息 | **高增量**，改变模型参与微观调度的粒度 |
-| 子代理 | Core 之上的 Tool/进程组合模式 | 一等子会话、保留生命周期、A2A 消息、用量归因 | **高增量**，但语义更像 Actor，而非递归返回值 |
+| 子代理 | Core 之上的 Tool/进程组合模式 | 一等子会话、保留生命周期、A2A 消息、用量归因 | **高增量**，运行语义落在可保留的 Actor 式子会话 |
 | 长任务生命周期 | Session 持久化，应用层自行扩展 | Daemon、每棵根会话树一个 Worker、重连、快照、恢复日志 | **很高增量**，是工程上最有价值的一层 |
-| 状态延续 | 消息树、文件、Compaction | Kernel `dill` 快照、Goal、Heartbeat、Schedule、Harness | **高增量**，但不是完整进程 Checkpoint |
+| 状态延续 | 消息树、文件、Compaction | Kernel `dill` 快照、Goal、Heartbeat、Schedule、Harness | **高增量**，快照边界止于可序列化的 Kernel namespace |
 | 自适应 Harness | 主要靠人维护 Skill、Prompt、配置 | `/refine` 对 prompt note、memory、skill spec、subagent spec 做 CRUD | **中等增量**，机制成立，收益需外部验证 |
 | 完成证明 | 由应用或使用者定义 | Goal 显式完成；Autonomous 可运行 shell gate | **中低增量**，gate 可选且只证明自身覆盖范围 |
-| 安全边界 | 官方要求外部 Sandbox | Worker/Kernel 只做生命周期隔离，仍以用户权限执行 | **没有安全增量**，甚至扩大了常驻执行面 |
+| 安全边界 | 官方要求外部 Sandbox | Worker/Kernel 负责生命周期隔离，并以用户权限执行 | **生产安全依赖外部治理**，常驻执行面扩大了风险半径 |
 
-一句话压缩：
+这组增量共同改变了什么：
 
 > **Pi 解决“一个 Agent turn 怎样正确运行”；Prime Agent 开始解决“一个 Agent 任务怎样跨上下文、跨终端、跨子代理持续运行”。**
 
-这已经跨过了普通 Harness 的边界，但还没有完成 Agent OS 的全部闭环：它有恢复、调度和持久状态，却仍缺少强资源治理、独立完成验证、真正的安全隔离与稳定的 Harness 事务协议。
+它的成熟度已经进入 Agent Runtime / 早期 Agent OS：恢复、调度和持久状态已经进入系统主路径；强资源治理、独立完成验证、系统级安全隔离与稳定的 Harness 事务协议，则是生产外层必须继续补齐的闭环。
 
 ---
 
