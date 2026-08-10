@@ -1,6 +1,6 @@
 ---
 title: "Matt Pocock 的核心成果：他做成了什么，为什么持续获得关注"
-description: "客观拆解 XState typegen、Total TypeScript、ts-reset、Evalite、Agent Skills 与 Sandcastle 的具体机制、实际提升、采用信号与成熟度，并归纳 Matt Pocock 持续产出有价值成果的工作方法。"
+description: "客观拆解 XState typegen、Total TypeScript、ts-reset、Evalite、Agent Skills 与 Sandcastle 的具体机制、实际提升、商业模式、采用信号与成熟度，并归纳 Matt Pocock 持续产出有价值成果的工作方法。"
 aliases:
   - "智能体/Matt Pocock的思维链"
 tags:
@@ -83,6 +83,42 @@ Matt 改造的首先是教学单元。一个典型练习不是先播放十几分
 第一，编译器承担了高频反馈。抽象概念不必等到课程结尾才验证，错误在每次编辑时就出现。第二，练习暴露的是学习者自己的错误路径，答案因此不只是“正确知识”，还可以解释刚才为什么失败。第三，课程可以把一个巨大的类型主题拆成几十个最小挑战，逐步提高组合难度，而不是要求读者先吞下完整理论。
 
 这套方法已经不只是一个课程。按 [workshops 页面](https://www.totaltypescript.com/workshops)当前公开目录，TypeScript Pro Essentials、Type Transformations、Generics、Advanced Patterns 与 Advanced React with TypeScript 五套工作坊分别列出 221、55、49、45 和 57 个练习，合计 427 个。官网另有免费教程与 83 篇文章；2026 年 4 月，No Starch Press 出版 432 页的 *Total TypeScript*，由 Matt 与 Taylor Bell 合著。出版社称相关课程已经训练数千名开发者，这属于官方自述，不等同于经过控制实验的学习效果证明。
+
+### 哪些免费，哪些收费
+
+截至 2026-08-11，Total TypeScript 采用的不是“所有内容免费”或“试看几节、其余全锁”的简单模式，而是把**完整的入门与专题教程放在免费层，把更系统、更高密度的专业训练和团队能力放在付费层**。
+
+| 产品层 | 当前内容 | 访问方式 | 在商业系统中的职责 |
+|---|---|---|---|
+| 免费互动教程 | [Solving TypeScript Errors](https://www.totaltypescript.com/tutorials)、React with TypeScript、Beginner's TypeScript、Zod，共 59 个练习 | 无需购买即可进入问题、练习与解法页面 | 让学习者真实体验“先解题、再看答案”的教学方法，而不只是观看宣传片 |
+| 免费知识内容 | [How To Learn TypeScript](https://www.totaltypescript.com/learn-typescript)、Tips、文章、Concepts | 公开网页 | 覆盖搜索流量和高频问题，持续建立专业信誉与 newsletter 入口 |
+| 免费在线书稿 | [Total TypeScript: Essentials](https://www.totaltypescript.com/books/total-typescript-essentials) 的 16 章网页版，包括最后一章 Utility Folder Development | 网页可直接阅读 | 把系统知识开放给更大受众，并为课程和出版物建立长期入口 |
+| 付费单项产品 | [TypeScript Pro Essentials](https://www.totaltypescript.com/products)，221 个练习 | 当前作为独立自学产品销售 | 承接希望从基础走到专业实践、需要完整视频与进度系统的个人或团队 |
+| 付费完整产品 | TypeScript Pro Complete：Essentials、Type Transformations、Generics、Advanced Patterns、Advanced React，共五套工作坊、427 个练习，另含 11 段专家访谈 | 当前作为完整套装销售 | 用高密度专业训练提高客单价，并覆盖从 advanced-beginner 到 expert 的连续需求 |
+| 付费交付能力 | 高清视频、字幕与文字稿、进度追踪、完成证书、Discord Community | 随付费产品提供 | 把公开内容升级成可持续学习、可记录进度的完整产品体验 |
+| 团队与企业购买 | 多席位购买、发票、邀请团队成员和后续增购 | [购买页](https://www.totaltypescript.com/buy)可在个人与团队之间切换 | 将个人学习预算扩展到雇主培训预算，降低高客单价对个人支付意愿的限制 |
+| 付费出版物 | No Starch Press 出版的 432 页纸质书与电子书 | 通过出版社及零售渠道购买 | 进入官网和社交媒体之外的图书市场；与免费网站版并存，而不是用书完全封锁内容 |
+
+官网当前只列出两个可以直接购买的自学 SKU：Pro Essentials 和 Pro Complete。其价格会根据个人或团队身份、地区和当期购买条件动态加载，因此本文不把某个访问时价格写成长期定价。Type Transformations、Generics、Advanced Patterns 与 Advanced React 仍有独立详情页，但当前产品页把它们统一装入 Pro Complete，不应把每个详情页误写成仍可单独购买的 SKU。
+
+### 商业模式：免费内容负责获客，专业训练负责现金流
+
+这首先是一门直接收费的开发者教育生意，影响力是它的获客与复购系统，不是收入的替代品。完整闭环可以写成：
+
+```text
+免费教程、文章、书稿与开源工具
+  → 用户在购买前验证 Matt 的专业能力和教学方法
+  → newsletter、搜索与社区沉淀可直接触达的受众
+  → 个人购买专业工作坊，或由雇主购买团队席位
+  → Complete 套装、扩展主题与出版物提高客单价和覆盖面
+  → 收入继续资助免费内容、平台维护和下一轮课程
+```
+
+早期定价与销售结果进一步说明，它从一开始就不是单纯的个人影响力项目。badass.dev 的[发布复盘](https://badass.dev/launch-of-a-developer-education-product)披露：2022 年第一场 5 小时直播工作坊原价 1,200 美元、早鸟价 900 美元，30 个席位售罄；随后三个直播工作坊组成的套装定价 2,400 美元，同样售罄。2022 年自学课程预售约 1,281 个席位，产生 41.5 万美元总销售额；2023 年正式发布的十天内又售出约 850 个席位、产生 31.4 万美元总销售额；Advanced React 扩展包的两次发布又产生约 19.4 万美元总销售额。Matt 后来公开表示，Total TypeScript 累计销售额已超过 250 万美元。
+
+这些都是 gross sales，不是 Matt 的个人净收入。支付手续费、退款、税费、平台和运营成本，以及与 badass.dev 的合作分配都要从中扣除，具体分成没有公开。双方的职责划分则比较清楚：Matt 负责专业内容、教学和个人 DevRel；badass.dev 参与平台、支付、邮件营销、客户支持与退款处理。它不是一个人靠流量卖录像，而是内容专家与商业基础设施合作的交付系统。
+
+从产品设计看，它更接近**创作者主导的高客单价现金流业务**，不是依赖融资抬高估值的创业公司。英国 Companies House 的当前记录显示，MATT POCOCK LIMITED 仍按 micro company 提交账户，Matt 是唯一登记的重大控制人，拥有至少 75% 的股份和投票权；公开资料中没有融资轮次或公司估值。Total TypeScript 当然已经积累了品牌、版权、邮件名单、付费用户和企业客户等可估值资产，但现有证据支持的主路线是收入、财务自主与长期品牌复利，而不是 VC 融资和退出。
 
 固定源码也能验证“练习优先”不是一句营销文案：入门教程版本包含 18 个 `.problem` 文件；图书仓库包含 143 个问题文件和 199 个答案文件。仓库数量不能证明每个练习都优秀，却能证明内容生产确实围绕可执行问题组织。
 
@@ -421,6 +457,9 @@ Matt 能持续得到结果，更可验证的解释是，他反复完成了下面
 - [Matt Pocock / Total TypeScript](https://www.totaltypescript.com/)
 - [Total TypeScript Tutorials](https://www.totaltypescript.com/tutorials)
 - [Total TypeScript Workshops](https://www.totaltypescript.com/workshops)
+- [Total TypeScript Products](https://www.totaltypescript.com/products)
+- [Buy Total TypeScript](https://www.totaltypescript.com/buy)
+- [Total TypeScript: Essentials 在线书稿](https://www.totaltypescript.com/books/total-typescript-essentials)
 - [Total TypeScript — No Starch Press](https://nostarch.com/total-typescript)
 - [Stately：Introducing TypeScript typegen for XState](https://stately.ai/blog/2022-01-27-introducing-typegen)
 - [Stately 当前开发工具文档：XState v5 不支持 typegen](https://stately.ai/docs/developer-tools)
@@ -429,6 +468,14 @@ Matt 能持续得到结果，更可验证的解释是，他反复完成了下面
 - [Evalite](https://www.evalite.dev/)
 - [AI Hero Skills](https://www.aihero.dev/skills)
 - [Sandcastle](https://github.com/mattpocock/sandcastle)
+
+### 商业模式与公司记录
+
+- [badass.dev：Total TypeScript 预售复盘](https://badass.dev/launch-of-a-developer-education-product)
+- [badass.dev：Launching Total TypeScript](https://badass.dev/partners/total-typescript)
+- [Matt Pocock：Total TypeScript 累计销售额超过 250 万美元](https://www.linkedin.com/posts/mapocock_total-typescript-has-officially-crossed-25m-activity-7218580896524701696-vKmi)
+- [Companies House：MATT POCOCK LIMITED](https://find-and-update.company-information.service.gov.uk/company/13422539)
+- [Companies House：Persons with significant control](https://find-and-update.company-information.service.gov.uk/company/13422539/persons-with-significant-control)
 
 ### 固定源码版本
 
