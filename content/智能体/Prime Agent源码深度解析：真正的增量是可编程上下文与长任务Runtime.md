@@ -1,6 +1,6 @@
 ---
 title: Prime Agent 源码深度解析：真正的增量是可编程上下文与长任务 Runtime
-description: 固定源码修订，拆解 Prime Agent 相对 Pi 在 RLM、持久 IPython、子代理、Continual Harness、Daemon、恢复与验收上的真实增量，并区分工程事实、论文证据和营销主张。
+description: 先从一次任务的完整执行流建立 Prime Agent 的整体设计，再以 Pi Agent Core 为基线，拆解持久 IPython、子代理、Continual Harness、Daemon 与恢复机制带来的真实增量。
 tags:
   - Agent
   - Agent-Runtime
@@ -23,9 +23,90 @@ noteType: technical
 
 这篇笔记延续 [[pi-mono源码深度解析：pi-agent的极简Agent Core]] 的 Core 基线，并用 [[Agent OS：把 Agent Core 变成可持续工作的生产系统]]、[[AI Coding研发中的Harness与Loop构建]]、[[论文解读：Towards Long-Horizon Agents: A Survey]] 中的长期任务与可信验证框架判断 Prime Agent 的增量。
 
+本文所有源码判断固定在 Prime Agent 提交 [`a18809e00ea30638584d87b3afea7285a9d7296c`](https://github.com/PrimeIntellect-ai/prime-agent/commit/a18809e00ea30638584d87b3afea7285a9d7296c)；版本身份、分叉关系与证据边界在第 4 节展开。
+
 ---
 
-## 1. 先回答“带来了什么增量”
+## 1. Prime Agent 的整体设计：它是怎样一套系统
+
+Prime Agent 的整体设计可以先用一句话说清楚：
+
+> **它在 Pi Agent Core 外面增加了一套长任务 Runtime：由 Supervisor 和 Worker 持有任务生命周期，由 AgentSession 驱动模型，由持久 IPython Kernel 承载程序与工作状态，再通过 Skill、MCP、Host Bridge 和 Child Session 把外部能力组织进同一条执行链。**
+
+这里的关键词不是某一个孤立模块，而是“谁拥有生命周期、代码在哪里运行、状态分别放在哪里”。只看 `ipython` 会把它误解成一个 Python Tool；只看 Child Agent 会把它误解成多代理框架；只看 Daemon 又会把它误解成后台 CLI。把这些部件连起来，才是 Prime 的完整对象。
+
+### 1.1 一次任务从请求到持续运行
+
+假设用户要求 Prime 审查一个仓库，并把鉴权、测试和依赖风险分给三个子任务。系统主路径是：
+
+```mermaid
+flowchart TB
+    U["用户 / Headless API / Heartbeat / Schedule / Peer message"]
+    C["AgentConnection：统一命令与事件接口"]
+    S["Daemon Supervisor：发现、路由、重连、Worker 健康"]
+    W["每棵根 Session Tree 一个 Worker"]
+    R["AgentSessionRuntime：根会话与子会话生命周期"]
+    A["AgentSession + Pi Agent Core"]
+    K["持久 IPython Kernel"]
+    P["Python / Skill / MCP client"]
+    H["TypeScript Host Bridge"]
+    CH["Child AgentSession / Child Kernel"]
+    D["消息、Artifact、Harness、Kernel 快照、Goal / Schedule"]
+
+    U --> C --> S --> W --> R --> A
+    A -->|"Function Call: ipython(code)"| K
+    K --> P
+    K -->|"host.request"| H
+    H --> CH
+    A --> D
+    K --> D
+    S --> D
+```
+
+这张图里的每一层都回答一个具体问题：
+
+1. 请求先进入 `AgentConnection`。它把终端、Headless API、Heartbeat、Schedule 和其他 Agent 的消息收敛成统一命令与事件接口。
+2. `Supervisor` 根据根 Session Tree 找到现有 Worker，或为它启动 Worker。Supervisor 管发现、路由、attachment、健康检查和恢复，不直接运行模型与工具。
+3. `Worker` 持有一整棵会话树。根 Agent、Child Agent，以及它们各自的 Kernel 都属于这棵生命周期树，而不是属于某个临时终端窗口。
+4. `AgentSession` 继续使用 Pi Agent Core 完成模型调用、Tool Call 和 Tool Result 回填。Prime 没有另造一套最小 Agent Loop。
+5. 模型默认生成 `ipython({code})` Function Call。代码进入当前 Session 的持久 IPython Kernel；循环、过滤、中间对象和已导入函数可以留在 Kernel 中，而不必全部写回语言消息。
+6. Python 程序可以直接做本地计算，调用 Python-backed Skill 或 MCP Client；需要 Child Agent、Goal、Compaction、消息和调度等权威 Runtime 能力时，则通过 `host.request` 回到 TypeScript Host。
+7. Child Agent 被创建为独立 `AgentSession` 后继续异步运行。父 Agent 收到的先是任务接纳信息，最终结果通过后续消息或共享 Artifact 汇入，而不是伪装成一次同步 Python 函数返回。
+8. 终端断开不再等于任务结束。Worker 可以继续持有任务；重新 attachment 时，界面、消息和可恢复状态从持久记录中重新构造。
+
+固定源码的总览入口是 [architecture.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/architecture.md)，根运行时在 [`AgentSessionRuntime`](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session-runtime.ts#L86-L322)。
+
+### 1.2 五个执行体分别拥有什么
+
+| 执行体 | 它拥有的职责 | 它不拥有的职责 |
+|---|---|---|
+| `Supervisor` | Worker 发现、路由、重连、健康与跨会话投递 | 不直接调用模型，不执行 Tool |
+| `Worker` | 一棵根 Session Tree 的进程生命周期 | 不代替各 Session 做语义推理 |
+| `AgentSession` | 消息、模型调用、Pi Agent Loop、Tool 与 Runtime handler | 不直接承担整棵会话树的进程恢复 |
+| `IPython Kernel` | 当前 Session 的 Python 执行与命名空间 | 不拥有 Goal、认证、会话和 Child 生命周期的权威状态 |
+| `Child AgentSession` | 独立上下文、模型循环、Kernel 与任务结果 | 不是父 Cell 调用栈中的同步函数 |
+
+这个职责拆分解释了为什么 Prime 同时需要 TypeScript 与 Python。Python 擅长程序控制流、数据变换和库生态；TypeScript Host 则持有 Session、Provider、认证、进程、事件和持久化等系统级状态。Host Bridge 不是多余的绕路，而是两种职责之间的类型化边界。
+
+### 1.3 三个状态平面决定它能否跨轮次工作
+
+Prime 的“上下文”不是一个不断变长的 Prompt，而是三个用途不同的状态平面：
+
+| 状态平面 | 保存什么 | 下一轮如何使用 | 主要边界 |
+|---|---|---|---|
+| 语言消息 | 用户 Prompt、模型回答、Tool Call、Tool Result、Compaction 结果 | 直接成为模型上下文 | 容量有限，会压缩，也会丢失细节 |
+| Kernel 工作状态 | Python 变量、函数、导入、筛选后的中间对象 | 后续 Cell 直接引用 | 只有可序列化 namespace 能最佳努力快照；活动连接和副作用不能恢复 |
+| Runtime 状态 | Session Tree、Worker、Child、Goal、Schedule、消息与 Artifact | 支持继续执行、重连、路由和恢复 | 不是数据库式全事务 Checkpoint，运行中状态仍有恢复边界 |
+
+因此所谓 `Prompt-as-a-variable` 并不是把用户原始 Prompt 从消息数组里删除，也不是把所有语义都变成 Python 对象。准确说法是：**模型主动加载和构造的工作上下文，可以从只能被继续阅读的 token，变成能够被程序引用、筛选、组合和延续的变量。** 第 6 节会从 Function Calling、IPython、Skill、MCP 和 Host Bridge 的源码链路继续展开。
+
+到这里，读者已经可以得到一张完整的心智模型：Prime 是一个由 Pi Agent Core 驱动、由持久 Kernel 提供可编程工作空间、由 Supervisor/Worker 持有长任务生命周期的 Agent Runtime。下面才能准确回答两个比较问题：Pi 已经做了什么，Prime 又真正增加了什么。
+
+---
+
+## 2. Pi 已经提供了什么基线
+
+“增量”是一个差值。如果不先固定 Pi 的基线，就会把模型调用、Function Calling、消息循环和 Session 等已有能力也算成 Prime 的新设计。
 
 如果把一个 coding agent 分成四层：
 
@@ -39,30 +120,58 @@ Harness：上下文、工具、技能、子代理、压缩、验证策略
 Runtime / Agent OS：进程、恢复、调度、租约、持久状态、观测与治理
 ```
 
-Prime Agent 的设计重心位于 Harness 与 Runtime / Agent OS 两层；Agent Core 主要承接 Pi 的实现。
+Pi 的主要贡献位于 Agent Core，并向上提供 Coding Agent Harness 所需的基础组件：
+
+- 统一不同模型 Provider 的消息与 Tool Calling 协议；
+- 用显式 Agent Loop 完成“模型输出 Tool Call—Host 执行—Tool Result 回填—模型继续”的闭环；
+- 管理消息状态、事件和基础 Session；
+- 提供 Coding Agent、TUI、模型接入和扩展接口所需的公共实现。
+
+这些能力已经足以运行一个最小 coding agent。应用层也可以继续注册多个 Tool、启动子进程、保存 Session 或实现自定义 Harness。Prime 的新增并不是“Pi 不能调用工具，而 Prime 可以”，也不是“Pi 没有 Session，而 Prime 第一次有了 Session”。
+
+两者真正的分界是：
+
+> **Pi 主要解决一个 Agent turn 怎样完成可靠的模型—工具循环；Prime 在这个 Core 外面继续解决一个任务怎样拥有可编程工作状态、子会话和跨终端的长生命周期。**
+
+Prime 的设计重心因此位于 Harness 与 Runtime / Agent OS 两层。它仍然使用 Pi 的 Core 语义，但把 Session 外围的执行空间、能力组织、任务树和恢复机制变成产品主路径。
+
+---
+
+## 3. 从整体运行图回看：Prime 带来了什么增量
+
+现在再比较 Pi 与 Prime，表里的每个名词都能落回前面的执行流、生命周期所有者和状态平面，而不是先出现一组尚未解释的功能标签。
 
 | 维度 | Pi 基线 | Prime Agent 的新增 | 判断 |
 |---|---|---|---|
 | Agent Loop | 显式模型—工具循环、awaited event barrier | 基本沿用 | **低增量**，属于 Pi 基线承接项 |
 | 上下文控制 | 文件、消息、Compaction | 持久 IPython；模型显式加载的工作上下文可变成变量、函数和程序，用户 Prompt 本身仍是消息 | **高增量**，改变模型参与微观调度的粒度 |
+| 能力编排 | 模型直接选择 Tool，应用层可自行组合 | 默认收敛到 `ipython(code)` 窄腰，再由 Python、Skill、MCP 与 Host Bridge 组织能力 | **高增量**，控制流从逐 Tool 决策扩展到程序化编排 |
 | 子代理 | Core 之上的 Tool/进程组合模式 | 一等子会话、保留生命周期、A2A 消息、用量归因 | **高增量**，运行语义落在可保留的 Actor 式子会话 |
 | 长任务生命周期 | Session 持久化，应用层自行扩展 | Daemon、每棵根会话树一个 Worker、重连、快照、恢复日志 | **很高增量**，是工程上最有价值的一层 |
-| 状态延续 | 消息树、文件、Compaction | Kernel `dill` 快照、Goal、Heartbeat、Schedule、Harness | **高增量**，快照边界止于可序列化的 Kernel namespace |
+| 状态延续 | 消息树、文件、Compaction | Kernel `dill` 快照、Goal、Heartbeat、Schedule、Harness | **高增量**，但快照只覆盖可序列化的 Kernel namespace |
 | 自适应 Harness | 主要靠人维护 Skill、Prompt、配置 | `/refine` 对 prompt note、memory、skill spec、subagent spec 做 CRUD | **中等增量**，机制成立，收益需外部验证 |
 | 完成证明 | 由应用或使用者定义 | Goal 显式完成；Autonomous 可运行 shell gate | **中低增量**，gate 可选且只证明自身覆盖范围 |
 | 安全边界 | 官方要求外部 Sandbox | Worker/Kernel 负责生命周期隔离，并以用户权限执行 | **生产安全依赖外部治理**，常驻执行面扩大了风险半径 |
 
-这组增量共同改变了什么：
+这些增量不是彼此独立的功能开关，而是一条因果链：
 
-> **Pi 解决“一个 Agent turn 怎样正确运行”；Prime Agent 开始解决“一个 Agent 任务怎样跨上下文、跨终端、跨子代理持续运行”。**
+1. 持久 IPython 先把一次 Tool Call 扩展成可保留状态的程序执行。
+2. Python、Skill、MCP 与 Host Bridge 再把不同能力接入这段程序，使循环、分支、并发和数据变换不必逐步返回模型。
+3. Child Session 把需要独立语义判断的工作从程序微动作中分离出来，并拥有自己的消息和 Kernel。
+4. Worker 与 Supervisor 接管整棵 Session Tree 的生命周期，使终端不再是任务所有者。
+5. Goal、Schedule、Heartbeat、Artifact 和快照继续把任务延伸到后续轮次和后台运行。
 
-它的成熟度已经进入 Agent Runtime / 早期 Agent OS：恢复、调度和持久状态已经进入系统主路径；强资源治理、独立完成验证、系统级安全隔离与稳定的 Harness 事务协议，则是生产外层必须继续补齐的闭环。
+所以 Prime 最重要的增量不是“多了一个 IPython Tool”，而是三个互相咬合的系统能力：
+
+> **可编程的工作上下文、可保留的子代理、可恢复的长任务生命周期。**
+
+三者共同把 Pi 的 Agent Core 扩展成偏 RLM 范式的开放 Agent Runtime，并呈现出早期 Agent OS 的形态。恢复、调度和持久状态已经进入主路径；强资源治理、独立完成验证、系统级安全隔离与稳定的 Harness 事务协议，则是生产外层必须继续补齐的闭环。
 
 ---
 
-## 2. 版本锚点、项目身份与证据等级
+## 4. 版本锚点、项目身份与证据等级
 
-### 2.1 固定源码修订
+### 4.1 固定源码修订
 
 本文源码判断固定在：
 
@@ -78,7 +187,7 @@ Prime Agent 的设计重心位于 Harness 与 Runtime / Agent OS 两层；Agent 
 
 仓库在 2026-05-08 创建，迭代速度极快。2026-08-10 的 GitHub 快照为 11,632 stars、1,189 forks、457 个 open issues 与 PR；这些只能说明关注度与变动强度，不能替代质量证据。
 
-### 2.2 它与 Pi 的关系
+### 4.2 它与 Pi 的代码关系
 
 README 明确写明项目建立在 Pi 上，[源码仍使用 `@earendil-works/pi-*` 包](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/README.md#L102-L104)。把 Pi 官方仓库 `main` 拉入同一 Git 图后，二者最近共同祖先是：
 
@@ -95,13 +204,13 @@ README 明确写明项目建立在 Pi 上，[源码仍使用 `@earendil-works/pi
 
 这组数据证明 Prime 不是轻量改名，但它只是**从共同祖先出发的演化差异**，不能把此后 Pi 上游独立发展的内容也算成 Prime 的原创贡献。
 
-### 2.3 引用原则
+### 4.3 引用原则
 
 本文优先引用绑定完整 SHA 的源码。官方文档用于说明设计意图，CI 用于说明固定修订的自动验证状态；论文证据只支持其原始实验范围，上游 issue 则作为尚未由本文独立复现的故障报告。既有笔记只用于建立比较框架，当前项目事实仍以固定源码为准。
 
 ---
 
-## 3. 仓库地图：真正的产品核心在 `coding-agent`
+## 5. 仓库地图：真正的产品核心在 `coding-agent`
 
 固定快照包含 1,134 个跟踪文件，约 390,082 行可计数文本。当前源码与测试体量如下：
 
@@ -115,7 +224,7 @@ README 明确写明项目建立在 Pi 上，[源码仍使用 `@earendil-works/pi
 
 需要特别警惕一个阅读误区：`packages/agent` 名字最像“Agent”，但 Prime 的新增价值大多在 `packages/coding-agent`。这也意味着它不是用一个更复杂的 Core 取代 Pi，而是在 Pi Core 外面长出了一整层 Runtime。
 
-### 3.1 当前关键模块集中度
+### 5.1 当前关键模块集中度
 
 | 文件 | 行数 | 主要职责 |
 |---|---:|---|
@@ -130,47 +239,9 @@ README 明确写明项目建立在 Pi 上，[源码仍使用 `@earendil-works/pi
 
 ---
 
-## 4. 总体架构与执行流：一次任务到底怎样跑
+## 6. 增量一：RLM 把“工具调用”升级为“可编程控制面”
 
-官方架构不是“一个 CLI 进程里跑一个 agentLoop”，而是多层生命周期：
-
-```mermaid
-flowchart TB
-    U["用户 / Headless API / Heartbeat / Schedule / Peer message"]
-    C["AgentConnection：统一命令与事件接口"]
-    S["Daemon Supervisor：发现、路由、重连、Worker 健康"]
-    W["每棵根 Session Tree 一个 Worker"]
-    R["AgentSessionRuntime：根会话与子会话生命周期"]
-    A["AgentSession + Pi Agent Core"]
-    K["持久 IPython Kernel"]
-    P["Python rlm / skill / harness API"]
-    H["TypeScript Host Bridge"]
-    CH["RLM Child Runtime / Child Kernel"]
-    D["JSONL Session、Harness JSON、Kernel dill、Goal / Schedule 状态"]
-
-    U --> C --> S --> W --> R --> A
-    A --> K --> P --> H
-    H --> CH
-    A --> D
-    K --> D
-    S --> D
-```
-
-可以把各层职责压缩成：
-
-1. **Supervisor 不跑模型和工具。** 它拥有会话发现、路由、客户端 attachment、Worker 健康与 A2A 投递。
-2. **Worker 拥有一棵根会话树。** 根 Agent、RLM 子 Agent 与各自 Kernel 都在这棵生命周期树内。
-3. **AgentSession 仍然使用 Pi Core。** Prime 的新增逻辑围绕 Session 接入，而不是侵入最小 loop。
-4. **IPython 是模型的默认编程控制面。** Python shim 只负责调用体验，Provider、Session、子代理生命周期和策略仍由 TypeScript Host 掌握。
-5. **终端不是任务的所有者。** 客户端断开后，Worker 可以继续；重新 attachment 时从快照恢复界面状态。
-
-固定源码的总览入口是 [architecture.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/architecture.md)，根运行时在 [`AgentSessionRuntime`](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session-runtime.ts#L86-L322)。
-
----
-
-## 5. 增量一：RLM 把“工具调用”升级为“可编程控制面”
-
-### 5.1 外层协议仍然是 Function Calling
+### 6.1 外层协议仍然是 Function Calling
 
 普通 Tool Calling 的最小链路是：
 
@@ -211,7 +282,7 @@ ipython({ code: string })
 Prime Agent：一次 Function Call 可以提交一段程序
 ```
 
-### 5.2 两层循环：模型写程序，解释器接管微观编排
+### 6.2 两层循环：模型写程序，解释器接管微观编排
 
 Prime 在原有 Agent Loop 里面又嵌入了一个 Program Loop。后者运行在长寿命的 IPython Kernel，也就是为当前 Agent Session 保留变量和执行状态的 Python 进程中。
 
@@ -246,7 +317,7 @@ Prime：模型是程序生成者，Runtime 执行细粒度确定性控制流
 
 因此 RLM 的核心价值来自控制粒度：它减少模型参与无意义微观调度的次数，把可由程序稳定完成的工作移到解释器里。
 
-### 5.3 选择 IPython 的原因：把 Python 从一次性脚本变成 Session 控制面
+### 6.3 选择 IPython 的原因：把 Python 从一次性脚本变成 Session 控制面
 
 这里必须先拆开两个不同的问题：
 
@@ -333,7 +404,7 @@ reviewer = await rlm("读取 auth_candidates.md，审查鉴权边界", name="aut
 
 所以适用边界非常清楚：一次性、无状态、容易重放的 Python 任务，用 Bash 启动短进程往往更简单，也有更干净的故障隔离；需要跨轮次筛选大量数据、复用中间对象、调用 Python Skill 和受管 Agent 能力的任务，持久 Kernel 才体现价值。固定源码甚至在 `ipython.ts` 第一行留下了[重新评估持久 Kernel 必要性的 TODO](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L1)，说明这是一项面向当前 RLM 工作方式的工程选择，不是所有 Agent 的永久答案。
 
-### 5.4 `Prompt-as-a-variable` 的精确定义：变量化的是工作上下文
+### 6.4 `Prompt-as-a-variable` 的精确定义：变量化的是工作上下文
 
 README 用 `prompt-as-a-variable` 描述 RLM：[项目定位](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/README.md#L31-L40)。这个说法很有启发性，也极易被误解。Prime 当前实现里至少有三种常被混称为 Prompt 的对象：
 
@@ -378,7 +449,7 @@ for path, text in auth_candidates.items():
 
 > **Working-context-as-kernel-state：把模型显式加载、生成和选择的工作上下文放进可寻址的持久 Kernel 状态。**
 
-### 5.5 三个上下文平面：消息、Kernel 与 Child 各自保存什么
+### 6.5 三个上下文平面：消息、Kernel 与 Child 各自保存什么
 
 Prime 同时维护三类上下文，它们的可见性、寿命和责任不同：
 
@@ -398,7 +469,7 @@ Child Context：哪些认知工作应隔离到独立上下文
 
 因此“上下文外部化”不是把一切都搬离 Prompt，而是决定每种信息应该进入哪个平面，以及何时才把经过筛选的证据重新带回模型。
 
-### 5.6 默认只有一个模型 Tool，更多 Capability 从哪里来
+### 6.6 默认只有一个模型 Tool，更多 Capability 从哪里来
 
 是的，Prime 默认把模型在 Function Calling 层直接看到的 **内置工具** 收敛成一个 `ipython(code)`。固定源码生成 System Prompt 时，`selectedTools` 缺省值就是 `['ipython']`；官方 Usage 也把内置工具列为 `ipython`。[源码：默认 Tool 选择](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/system-prompt.ts#L65-L66) [官方 Usage](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/usage.md#L232-L235)
 
@@ -419,7 +490,7 @@ Runtime Capability inventory
 
 默认 Tool inventory 可以只有一个，而 Capability inventory 仍然很大。区别在于后者由模型生成的程序调用，不要求模型为每个微动作重新生成一次 Function Call。Prime 所谓“Everything is programmatic”也不意味着所有能力都变成同一种函数；`ipython` 控制面内至少分成五条调用路径。
 
-#### 5.6.1 是否需要提前写好很多函数和脚本
+#### 6.6.1 是否需要提前写好很多函数和脚本
 
 不需要在使用 Prime 之前先建设一座完整的 Python Tool 仓库。更合理的方式是让能力按照 **复用次数、状态所有权和风险等级** 逐步升级：
 
@@ -452,7 +523,7 @@ Runtime Capability inventory
 
 Prime 的 Python-backed Skill 仍然要求 `SKILL.md`，并通过 `pyproject.toml` 与 `src/<import_name>/__init__.py` 声明可执行包；Kernel 启动时把包安装到受管环境并按需注入模块。模型只在启动 Prompt 中看到 Skill 的名称、描述和位置，任务匹配后再读取完整说明，因此无需把所有函数签名永久塞进语言上下文。[官方 Python-backed Skill 规范](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/skills.md#L128-L174)
 
-#### 5.6.2 `ipython` 控制面内的五条能力路径
+#### 6.6.2 `ipython` 控制面内的五条能力路径
 
 第一类是普通 Python 运算。循环、分支、正则、JSON 解析、排序和表格变换不再需要工具：
 
@@ -489,7 +560,7 @@ report = await release_audit(
 
 第五类是由 TypeScript Host 掌握权威状态的能力，例如 `rlm.run`、Goal、Compaction、Refine、Heartbeat、Agent Message 与 MCP 配置。这些不能只靠 Kernel 内的普通 Python 对象完成，需要通过 `host.request` 跨回 Host。MCP 的具体远端调用可以由 Python integration 使用 MCP Client 完成，但认证刷新和 Host 已解析的连接配置仍由 `mcp.*` Host request 提供。[源码：MCP Host handlers](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/mcp/mcp-manager.ts#L156-L191) 工具 schema 并没有凭空消失，而是从“模型直接看到几十个 JSON Tool schema”，迁移到 Python API、Skill 文档和 Host 的 typed request handler 中。
 
-#### 5.6.3 MCP 如何与单一 `ipython` Tool 兼容
+#### 6.6.3 MCP 如何与单一 `ipython` Tool 兼容
 
 MCP Server 不需要改写成 Prime 专用 Tool。Prime 保留 MCP 的工具发现、JSON Schema 和 `call_tool` 协议，只把 **MCP Client 放到了 Kernel 里的 Python-backed Skill** 中，而不是把每个 MCP Tool 展开成模型直接可见的 Function Tool。[官方 MCP integration 设计](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/mcp-integrations.md#L1-L19)
 
@@ -552,7 +623,7 @@ Host 与 Kernel 的职责也被拆开了：
 
 这个窄腰减少了模型每轮要理解和选择的 Tool schema，也让循环、条件、重试和数据变换回到程序控制流；代价是权限系统不能再只检查最外层的 `ipython` 名称。真正的敏感动作发生在 Cell 内部，治理必须继续下沉到 Python Skill、Host handler、MCP Client、Shell 和外部 Sandbox，不能把“只有一个模型 Tool”误当成“只有一个权限边界”。
 
-### 5.7 Host Bridge：外层是 Function Call，内层是程序发起的类型化 RPC
+### 6.7 Host Bridge：外层是 Function Call，内层是程序发起的类型化 RPC
 
 以 `await rlm("审查鉴权流程", name="auth-reviewer")` 为例，完整链路是：
 
@@ -599,7 +670,7 @@ Host Request RPC
 
 Host 回复还必须走 Jupyter control channel。若把回复放回 shell channel，当前 `execute_request` 会等待 `rlm.run` 返回，而 Kernel 又要等当前请求结束后才能处理 shell 回复，形成自我等待。Prime 给 control channel 注册 Comm handler，使 admission 回复能在 Cell 仍运行时唤醒 Python Future；子代理最终答案不走这条返回路径，而是稍后通过消息或文件交付。[官方 Runtime 说明](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm-runtime.md#why-host-request-responses-use-the-control-channel)
 
-### 5.8 一个完整例子：从 100 个文件到三路审查
+### 6.8 一个完整例子：从 100 个文件到三路审查
 
 假设任务是审查仓库的鉴权实现、测试覆盖和依赖风险。第一步不需要让模型逐个调用 `read`，而是让它提交一个程序构造工作集：
 
@@ -686,7 +757,7 @@ Host Request：调用由 Runtime 掌握的受管能力
 Child Agent：隔离需要独立语义判断和上下文预算的工作
 ```
 
-### 5.9 并发和结果回收：Kernel 串行，Child 独立，fan-in 事件驱动
+### 6.9 并发和结果回收：Kernel 串行，Child 独立，fan-in 事件驱动
 
 同一个 Kernel 的普通 Cell 通过 execution queue 串行执行；Prime 不会让两个 `ipython` Tool Call 同时修改同一个命名空间。[源码：Kernel execution queue](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L843)
 
@@ -703,11 +774,11 @@ Child Agent：隔离需要独立语义判断和上下文预算的工作
            最终结果通过后续 Agent Message 或文件返回
 ```
 
-这种 Actor 式路径——独立执行单元通过异步消息或 Artifact 协作，而非维持一条同步函数调用栈——适合长任务：父任务不会被一个慢 Child 的同步调用栈卡住，Child 可以继续被 steer，也可以在终端断开后保留。但它把超时、去重、冲突合并、失败策略和“是否已经收齐所有结果”的责任留给了父 Agent与 Runtime 策略。第 6 节会继续展开这条生命周期。
+这种 Actor 式路径——独立执行单元通过异步消息或 Artifact 协作，而非维持一条同步函数调用栈——适合长任务：父任务不会被一个慢 Child 的同步调用栈卡住，Child 可以继续被 steer，也可以在终端断开后保留。但它把超时、去重、冲突合并、失败策略和“是否已经收齐所有结果”的责任留给了父 Agent与 Runtime 策略。第 7 节会继续展开这条生命周期。
 
 到这里，Prime 的第一项核心增量才可以被完整表述：它不是把 Tool Call 换了一个 Python 语法，而是保留外层模型—工具协议，同时在内部增加可持续的程序状态和 Host RPC，使确定性微动作、受管能力与独立认知任务分别落到 Python、Runtime 和 Child Agent 三个合适的执行层。尚未解决的是这套程序状态怎样可靠恢复、异步结果怎样证明收齐、以及生成代码本身怎样被安全隔离。
 
-### 5.10 Namespace 快照的边界：它能恢复哪些状态
+### 6.10 Namespace 快照的边界：它能恢复哪些状态
 
 Prime 会在成功 cell 后延迟约 1.5 秒，把用户命名空间逐变量用 `dill` 序列化；默认上限 256 MiB。单个不可序列化对象不会拖垮全部快照，恢复时也逐变量容错。[源码：快照与恢复代码](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/state-snapshot.ts#L1-L193)
 
@@ -723,7 +794,7 @@ Prime 会在成功 cell 后延迟约 1.5 秒，把用户命名空间逐变量用
 
 还有一个语义层问题：变量可能仍然存在，但 Compaction 后的模型忘记了变量名、结构、来源或时效。此时系统实现了“存储连续性”，却没有自动实现“语义可发现性”。稳定命名、状态 manifest、来源版本和必要的摘要仍然是 Harness 责任。
 
-### 5.11 RLM 收益的成立条件
+### 6.11 RLM 收益的成立条件
 
 Prime Intellect 的独立 RLM 博客实验本身给出了反例：RLM 在部分长上下文任务上有收益，但在 math-python 上退化；DeepDive 若不提供明确的分解策略也可能落后；所有测试场景的完成时间都显著上升，子模型还会增加总 token 消耗。博客中的“主模型 token 效率”不统计子模型 token，不能直接等价成总成本下降。[官方 RLM 实验](https://www.primeintellect.ai/blog/rlm)
 
@@ -731,7 +802,7 @@ Prime Intellect 的独立 RLM 博客实验本身给出了反例：RLM 在部分�
 
 ---
 
-## 6. 增量二：`rlm()` 的真实语义是异步 Actor，不是递归函数
+## 7. 增量二：`rlm()` 的真实语义是异步 Actor，不是递归函数
 
 README 说 `rlm(...)` “returns their results programmatically”，但源码契约更谨慎，也更有意思。
 
@@ -772,7 +843,7 @@ sequenceDiagram
 - 模型选择必须精确匹配 `provider/model` 并通过认证预检，不静默 fallback；
 - 默认最大递归深度为 1，但源码没有同等级的横向 fan-out、总 token 或内存硬上限。
 
-### 6.1 为什么 Actor 语义反而合理
+### 7.1 为什么 Actor 语义反而合理
 
 同步递归函数适合短任务：调用、等待、拿结果。长任务需要：
 
@@ -786,9 +857,9 @@ sequenceDiagram
 
 ---
 
-## 7. 增量三：Continual Harness 是可审计自修改，不是已证实的自我提升
+## 8. 增量三：Continual Harness 是可审计自修改，不是已证实的自我提升
 
-### 7.1 它实际修改什么
+### 8.1 它实际修改什么
 
 Harness 状态分成四类：
 
@@ -817,7 +888,7 @@ Harness 状态分成四类：
 
 [源码：规划阶段](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/refinement/refinement.ts#L856-L933) [源码：冲突检查与版本化 CRUD](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/refinement/refinement.ts#L707-L835) [源码：Turn 边界上的应用](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session.ts#L7740-L7883)
 
-### 7.2 “self-improving”成立到哪一层
+### 8.2 “self-improving”成立到哪一层
 
 成立的部分：
 
@@ -840,7 +911,7 @@ Harness 状态分成四类：
 
 > **Prime Agent 实现了 Continual Harness mutation，但还没有实现可信的 Continual Harness improvement。**
 
-### 7.3 论文证明了机制潜力，但不能直接证明本项目
+### 8.3 论文证明了机制潜力，但不能直接证明本项目
 
 Continual Harness 论文在 Pokémon Red/Emerald 上发现明显的能力依赖：Gemini Pro 的 Continual Harness 在 Emerald 以约 40% 更低中位 API 成本达到近似完成度；Flash 高方差；Flash-Lite 反而退化。论文还用 Dijkstra oracle 测量了导航 Skill 的改善。[Continual Harness 论文](https://arxiv.org/abs/2605.09998)
 
@@ -855,7 +926,7 @@ Continual Harness 论文在 Pokémon Red/Emerald 上发现明显的能力依赖�
 
 论文实现与 Prime Agent 产品实现还有关键差异：论文可重写完整 System Prompt、生成游戏技能，并依赖游戏里程碑与导航 oracle；Prime Agent 保护基础 System Prompt，Skill 主要是已安装代码的引用，普通 coding 任务也没有内建 oracle。不能把 Pokémon 的结果直接外推成 Prime Agent 在软件工程任务上的提升比例。
 
-### 7.4 当前实现的两个数据完整性缺口
+### 8.4 当前实现的两个数据完整性缺口
 
 第一，TypeScript `/refine` 保存采用临时文件 + rename，但 Python `HarnessState.save()` 直接以 `open("w")` 截断后写 JSON；mtime 重读只能减少陈旧覆盖，不能构成跨进程 CAS 或事务。[源码：Python 读写路径](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/harness.py#L186-L299) 上游也已记录 [#929](https://github.com/PrimeIntellect-ai/prime-agent/issues/929)。
 
@@ -863,9 +934,9 @@ Continual Harness 论文在 Pokémon Red/Emerald 上发现明显的能力依赖�
 
 ---
 
-## 8. 增量四：Daemon/Worker 是项目最扎实的生产化贡献
+## 9. 增量四：Daemon/Worker 是项目最扎实的生产化贡献
 
-### 8.1 生命周期从终端中剥离
+### 9.1 生命周期从终端中剥离
 
 在普通 TUI Agent 中，终端进程退出常常等于任务退出。Prime 把结构拆成：
 
@@ -878,7 +949,7 @@ Continual Harness 论文在 Pokémon Red/Emerald 上发现明显的能力依赖�
 
 这使“任务拥有者”从终端转移到 Runtime，是它成为长任务系统的前提。
 
-### 8.2 命令恢复语义比“自动重试”更严谨
+### 9.2 命令恢复语义比“自动重试”更严谨
 
 协议当前为 v7、schema revision 14。[源码：协议常量](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/modes/daemon/daemon-protocol.ts#L52-L60) 值得注意的是 `daemon.md` 仍写旧协议版本，说明文档在快速迭代中可能落后于代码。
 
@@ -893,19 +964,19 @@ Continual Harness 论文在 Pokémon Red/Emerald 上发现明显的能力依赖�
 
 这是正确的 **at-most-once + uncertain outcome**，不是“正好一次”。对于可能写文件、发消息或调用外部服务的命令，承认结果不确定比盲目 replay 更可信。
 
-### 8.3 Session Lease 保护并发写者
+### 9.3 Session Lease 保护并发写者
 
 Session 运行时可以通过规范化路径取得 lease，owner 记录包含 PID 与 process start id，避免 PID 重用造成误判；底层使用 `proper-lockfile` 和 owner 文件协调。[源码：Session Lease](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/session-lease.ts#L232-L285)
 
 这解决的是同一个 Session 被多个 Worker 同时写的问题，不是分布式业务锁，也没有把文件副作用变成事务。
 
-### 8.4 Replay 名称比能力更强
+### 9.4 Replay 名称比能力更强
 
 `createDaemonReplayInfo()` 只有在没有 cursor 或 cursor 已经等于当前末尾时返回 `complete`；一旦真的存在事件缺口，就返回 `event_replay_not_available`，客户端需要依赖新快照 resync。[源码：Replay 判定](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/modes/daemon/daemon-protocol.ts#L1092-L1146)
 
 因此目前的能力是“cursor 检测缺口 + snapshot 重同步”，不是保留事件日志后的区间 replay。它足够支撑 TUI 重连，但不能等同于 Kafka、Temporal 之类的可重放工作流历史。
 
-### 8.5 Worker 恢复仍有正确的保守边界
+### 9.5 Worker 恢复仍有正确的保守边界
 
 Supervisor 最多做三轮恢复尝试；它先核对 PID 与 process start id，能安全重连则复用，不能确认身份时拒绝粗暴替换；不确定的 Worker 操作单独进入恢复处理。[源码：Worker Recovery](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/modes/daemon/daemon-supervisor.ts#L2708-L2810)
 
@@ -915,9 +986,9 @@ Supervisor 最多做三轮恢复尝试；它先核对 PID 与 process start id�
 
 ---
 
-## 9. 增量五：Goal、Schedule、Autonomous 把“继续工作”变成显式状态
+## 10. 增量五：Goal、Schedule、Autonomous 把“继续工作”变成显式状态
 
-### 9.1 Goal 与普通 Prompt 的不同
+### 10.1 Goal 与普通 Prompt 的不同
 
 Goal 不是多写一句“请继续”，而是持久状态机：`idle / active / paused / budget_limited / complete / error`，包含 objective、token/time/continuation usage。结束一个 turn 不会清掉 objective；只有显式 `goal.complete()` 才进入完成状态，耗尽预算不能冒充完成。[源码：Goal 状态与继续语义](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/goals.ts#L10-L26) [源码：完成审计提示](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/goals.ts#L207-L250)
 
@@ -925,7 +996,7 @@ Goal 不是多写一句“请继续”，而是持久状态机：`idle / active 
 
 但 Host 仍然主要依赖模型主动调用完成函数。若完成 Skill 缺失或 Kernel 故障，目标可能继续活跃；上游 [#1111](https://github.com/PrimeIntellect-ai/prime-agent/issues/1111) 就记录了 `--goal --no-skills` 组合使 `goal.complete()` 不可用并继续消耗预算的问题。
 
-### 9.2 Autonomous 不是自主完成验证器
+### 10.2 Autonomous 不是自主完成验证器
 
 默认 autonomous 上限是：
 
@@ -946,7 +1017,7 @@ Goal 不是多写一句“请继续”，而是持久状态机：`idle / active 
 - gate 使用 `shell: true` 且以用户权限运行，只应接受可信命令；
 - tokens 统计排除 cache-read，适合限制新增工作量，但不等于供应商账单总 token。
 
-### 9.3 Schedule 的恢复选择了“不重复副作用”
+### 10.3 Schedule 的恢复选择了“不重复副作用”
 
 Cron job 在 dispatch 前先 claim 并推进 `nextRunAt`；同一 job 已有 claim 时当前 tick 记 skip。若进程在 dispatch 中断，恢复会删除 claim、写入 `Interrupted before scheduled operation completion`，一次性任务直接完成，不自动重放。[源码：claim 与 interrupted recovery](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/cron-jobs.ts#L1574-L1624)
 
@@ -954,7 +1025,7 @@ Cron job 在 dispatch 前先 claim 并推进 `nextRunAt`；同一 job 已有 cla
 
 ---
 
-## 10. 实证校准：哪些“增量”已经被证明，哪些还没有
+## 11. 实证校准：哪些“增量”已经被证明，哪些还没有
 
 | 主张 | 当前证据 | 结论 |
 |---|---|---|
@@ -976,9 +1047,9 @@ Cron job 在 dispatch 前先 claim 并推进 `nextRunAt`；同一 job 已有 cla
 
 ---
 
-## 11. 当前风险与失败模式
+## 12. 当前风险与失败模式
 
-### 11.1 安全：常驻能力越强，Blast Radius 越大
+### 12.1 安全：常驻能力越强，Blast Radius 越大
 
 README 明确警告：模型生成的 Python 与项目命令以用户权限执行，Worker 与 Kernel 不是安全 Sandbox。[官方安全边界](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/README.md#L63-L66)
 
@@ -993,7 +1064,7 @@ README 明确警告：模型生成的 Python 与项目命令以用户权限执�
 
 上游 [#896](https://github.com/PrimeIntellect-ai/prime-agent/issues/896) 仍把“隔离子代理 + 调用方授权能力”列为 feature request，说明 capability boundary 尚未实现。
 
-### 11.2 资源：限制了深度，没有限制宽度
+### 12.2 资源：限制了深度，没有限制宽度
 
 默认 RLM 深度为 1 能阻止无限向下递归，但没有在同层提供固定子代理数、总并发、内存、进程或总 token 硬上限。长任务中的 programmatic fan-out 很容易同时放大：
 
@@ -1003,13 +1074,13 @@ README 明确警告：模型生成的 Python 与项目命令以用户权限执�
 
 [#764](https://github.com/PrimeIntellect-ai/prime-agent/issues/764) 的用户报告包含 15 个并发 relay worker 造成内存压力、Kernel 死亡后继续循环的案例。它不是本文复现结果，但与源码中缺少宽度治理、Kernel 无自动重启和 Goal 持续注入形成一致风险链。
 
-### 11.3 中断：结束 Tool Call 不等于结束副作用
+### 12.3 中断：结束 Tool Call 不等于结束副作用
 
 Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool Call 标成 aborted，但保留 `activeExecution`，因为底层 cell 可能仍在运行。[源码：forceAbort](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L891-L918)
 
 这是诚实的状态表达，却没有保证 `%%bash` 的孙进程收到信号。上游 [#849](https://github.com/PrimeIntellect-ai/prime-agent/issues/849) 报告了 CPU 密集子进程在 Esc 后继续运行。对 Agent Runtime 来说，Cancellation 必须穿透整个进程树，不能只结束上层 Promise。
 
-### 11.4 Daemon 复杂度已经产生跨会话耦合
+### 12.4 Daemon 复杂度已经产生跨会话耦合
 
 [#898](https://github.com/PrimeIntellect-ai/prime-agent/issues/898) 报告：长时间的 `prompt_and_wait` 被归为全局 mutation，导致 idle eviction 等待整个 mutation latch 排空，一个忙会话可以阻止其他 idle Worker 被回收。
 
@@ -1019,9 +1090,9 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 
 ---
 
-## 12. 验证与质量状态
+## 13. 验证与质量状态
 
-### 12.1 本文做过的验证
+### 13.1 本文做过的验证
 
 | 检查 | 结果 | 说明 |
 |---|---|---|
@@ -1036,7 +1107,7 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 
 固定 SHA 的官方 CI 运行见 [GitHub Actions run 31226956547](https://github.com/PrimeIntellect-ai/prime-agent/actions/runs/31226956547)。CI 包含 build、check，以及 agent-core、ai、tui、coding-agent 三分片、process smoke、kernel 共 8 个测试 lane。
 
-### 12.2 测试体量值得肯定，但不是生产成熟度证明
+### 13.2 测试体量值得肯定，但不是生产成熟度证明
 
 `packages/coding-agent` 的测试行数 122,344，已超过源码 116,629；Kernel、Daemon、Session 和协议有大量故障路径测试。这是项目最强的质量信号之一。
 
@@ -1044,9 +1115,9 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 
 ---
 
-## 13. 它适合什么，不适合什么
+## 14. 它适合什么，不适合什么
 
-### 13.1 最匹配的场景
+### 14.1 最匹配的场景
 
 - 需要跨小时或跨终端持续执行的研究与 coding 任务；
 - 大量文本、数据、文件需要先用程序过滤，再交给模型判断；
@@ -1055,7 +1126,7 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 - 希望研究 RLM、Harness adaptation 与 Agent Runtime 的开放实现；
 - 可以在一次性 VM、容器或受控账号中运行。
 
-### 13.2 当前不应直接承担的场景
+### 14.2 当前不应直接承担的场景
 
 - 不可信仓库、指令、Skill 或依赖需要在宿主机直接运行；
 - 要求严格 capability isolation、网络白名单或凭据隔离；
@@ -1064,7 +1135,7 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 - 任务完成必须由独立 verifier 证明，不能依赖模型自报；
 - 简单短任务：RLM、Daemon 与子代理的固定开销可能大于收益。
 
-### 13.3 如果现在采用，最低治理基线
+### 14.3 如果现在采用，最低治理基线
 
 1. 在 disposable clone、容器、VM 或独立低权限账号中运行。
 2. 默认关闭 global refinement，只在人工审查后持久化跨会话经验。
@@ -1077,7 +1148,7 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 
 ---
 
-## 14. 最终结论：它把 Pi 从 Core 推向 Runtime，但尚未成为完整 Agent OS
+## 15. 最终结论：它把 Pi 从 Core 推向 Runtime，但尚未成为完整 Agent OS
 
 知识库里对 Agent OS 的定义，要求 Core 之外至少处理业务状态、信任与控制、执行恢复、状态管理、观测和演化。按这个尺度看 Prime Agent：
 
@@ -1102,7 +1173,7 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 
 ---
 
-## 15. 核心代码索引
+## 16. 核心代码索引
 
 | 主题 | 固定源码 |
 |---|---|
@@ -1131,7 +1202,7 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 | Autonomous Gate | [autonomous.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/autonomous.ts#L227-L347) |
 | Schedule claim 与恢复 | [cron-jobs.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/cron-jobs.ts#L1574-L1624) |
 
-## 16. 参考资料与外部原始资料
+## 17. 参考资料与外部原始资料
 
 - [Prime Agent 官方仓库](https://github.com/PrimeIntellect-ai/prime-agent)
 - [Prime Intellect：Recursive Language Models](https://www.primeintellect.ai/blog/rlm)
