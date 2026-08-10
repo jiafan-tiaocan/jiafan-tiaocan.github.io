@@ -1,6 +1,6 @@
 ---
 title: Prime Agent 源码深度解析：真正的增量是可编程上下文与长任务 Runtime
-description: 先从一次任务的完整执行流建立 Prime Agent 的整体设计，再以 Pi Agent Core 为基线，拆解持久 IPython、子代理、Continual Harness、Daemon 与恢复机制带来的真实增量。
+description: 从完整执行流与 Pi Agent Core 基线出发，拆解 Prime Agent 的持久 IPython、主子 Agent、Daemon、持久化与 Trace，并用官方 RLM 实验校准它究竟减少了什么、是否更快、何时才有真实增量。
 tags:
   - Agent
   - Agent-Runtime
@@ -20,6 +20,8 @@ noteType: technical
 > 这套 Runtime 把一次模型—工具循环扩展成一棵可持续运行的会话树。根 Agent、Child Agent、各自的 Kernel、消息与 Artifact 由 Worker 持有，Supervisor 负责发现、路由、重连与恢复；Goal、Schedule、Heartbeat、Kernel namespace 与 Continual Harness 则把任务状态延伸到后续轮次、其他终端和后台执行。
 >
 > Prime 的核心增量由三个互相咬合的机制构成：**可编程的工作上下文、可保留的子代理、可恢复的长任务生命周期**。三者共同把 Pi 的 Agent Core 扩展为一个偏 Recursive Language Model（RLM）范式的开放 Agent Runtime，并呈现出早期 Agent OS 的形态。生产部署需要在这套 Runtime 外层补充 Sandbox、资源配额、独立 verifier 与副作用治理。
+>
+> 但这不等于“用了 IPython，所以工具调用更少、速度更快、状态更稳定”。准确地说，Prime 可以减少一部分**主模型与工具之间的语义往返**，并把大体积中间数据留在主模型上下文之外；底层文件读取、网络请求和子模型调用并不会因此消失。Prime Intellect 自己的 RLM 对照实验中，四个环境的总耗时全部显著上升、总 Token 也都增加，准确率则有升有降。Prime Agent 本身尚无对 Pi 的 coding benchmark。因此它目前最可信的价值是**控制粒度、上下文容量和任务连续性**，不是已经证实的普遍提速或降本。
 
 这篇笔记延续 [[pi-mono源码深度解析：pi-agent的极简Agent Core]] 的 Core 基线，并用 [[Agent OS：把 Agent Core 变成可持续工作的生产系统]]、[[AI Coding研发中的Harness与Loop构建]]、[[论文解读：Towards Long-Horizon Agents: A Survey]] 中的长期任务与可信验证框架判断 Prime Agent 的增量。
 
@@ -236,6 +238,43 @@ README 明确写明项目建立在 Pi 上，[源码仍使用 `@earendil-works/pi
 | `core/refinement/refinement.ts` | 1,017 | Harness 规划、校验、应用、回滚 |
 
 这不是立即的错误，但它暴露了一个长期维护成本：很多跨层不变量集中在少数超大文件里。Prime 增加了 Runtime 能力，也同时增加了状态组合爆炸和局部修改的回归半径。
+
+### 5.2 它还保持 Pi 的极简设计吗
+
+答案必须分两层：
+
+> **Prime 保留了 Pi 的极简 Agent Core，却没有保持整个产品实现的极简。它更像“small core, fat runtime”，而不是一个仍可用几千行解释完的极简 Agent。**
+
+`packages/agent` 仍只有 2,395 行源码，模型—工具—结果回填的核心循环并没有被改造成一个巨型 Planner。Prime 的绝大多数新增代码落在 `packages/coding-agent` 外围：Session、Kernel、Child、Daemon、TUI、恢复、调度与兼容层。这说明它仍然尊重 Pi 最有价值的边界原则——**不要把所有系统能力都塞进模型循环**。
+
+但从整个 Runtime 看，“极简”已经不成立。四个最大的 TypeScript 集成文件合计 32,601 行：
+
+| 文件 | 行数 | 为什么大 | 暴露的问题 |
+|---|---:|---|---|
+| `core/agent-session.ts` | 11,208 | 几乎所有会话级能力最终都要接入这里 | 成为事实上的 God Object，跨功能不变量难局部验证 |
+| `interactive/interactive-mode.ts` | 9,728 | TUI 命令、状态、渲染与交互汇聚 | 产品行为和展示逻辑耦合，修改回归面大 |
+| `daemon/daemon-mode.ts` | 6,793 | Worker 命令、队列、Session 执行与事件桥接 | 协议处理和运行时所有权过度集中 |
+| `daemon/daemon-supervisor.ts` | 4,872 | 发现、路由、恢复、attachment 与 Worker 管理 | 恢复状态组合多，难以靠局部阅读建立完整心智模型 |
+
+这四个文件约占 `packages/coding-agent` 源码的 28%。体量本身不是 bug，但它说明模块边界的抽象速度已经落后于功能增长速度。
+
+#### 哪些体量是合理成本
+
+- `packages/coding-agent` 的 122,344 行测试多于 116,629 行源码。故障恢复、协议兼容和状态机本来就需要大量测试，这部分不是应被删除的“冗余”。
+- `packages/ai` 的 34,013 行主要承担多个模型 Provider 与协议差异，`packages/tui` 的 14,927 行承担终端产品；它们不能全部算成 RLM Runtime 的概念复杂度。
+- Daemon 一旦承诺断线续跑，就必须处理 PID 重用、Lease、命令不确定结果、协议版本、Snapshot、队列和恢复。删掉这些代码可以让仓库更短，却会同时删掉 Prime 最真实的增量。
+- 同一 Child 在 Python API、Host handler、Daemon protocol、Agent connection 和 TUI 都要有表示，这是分布式边界的必要投影，不等于简单复制粘贴。
+
+#### 哪些已经是架构债
+
+- 同一个会话状态要在 `AgentSession`、Daemon snapshot、Agents View 与 Session JSONL 之间保持一致，已经出现 idle message pump、global mutation latch 和 replay/resync 等跨层缺陷；这不是行数问题，而是**多份状态投影的一致性成本**。
+- Inline Child 与 daemon-backed Child、in-process connection 与 daemon connection 等双路径扩大了测试矩阵；它们有场景价值，但需要更强的统一生命周期接口来减少语义漂移。
+- Python Kernel、Jupyter Comm、TypeScript Host、Daemon Worker 和 TUI 共同参与一次 `rlm()`，使最重要的执行链跨越多语言、多协议。边界清楚时这是分层；错误处理、取消和 Trace 没有端到端贯通时，它就变成复杂度泄漏。
+- 巨型集成文件让“新增一个功能”容易继续向中心文件加分支，而不是长出稳定、可独立测试的组件契约。
+
+当前审查没有做全仓 Copy/Paste clone 检测、dead export 分析和覆盖率驱动删除，因此不能诚实地断言“有很多可直接删掉的重复代码”。能够由源码确认的是：**功能体量大多有来源，测试体量总体合理；真正需要警惕的是状态表示重复、双运行路径和超大协调器造成的结构性冗余。**
+
+所以，Prime 继承的是 Pi 的“极简核心边界”，不是 Pi 的“整个仓库都极简”。这个取舍在构建 Agent Runtime 时基本合理，但当前实现已经到达需要主动拆分协调器、统一生命周期模型和补齐端到端 Trace 的阶段；否则继续加功能会让每项新能力的边际维护成本快速上升。
 
 ---
 
@@ -794,11 +833,94 @@ Prime 会在成功 cell 后延迟约 1.5 秒，把用户命名空间逐变量用
 
 还有一个语义层问题：变量可能仍然存在，但 Compaction 后的模型忘记了变量名、结构、来源或时效。此时系统实现了“存储连续性”，却没有自动实现“语义可发现性”。稳定命名、状态 manifest、来源版本和必要的摘要仍然是 Harness 责任。
 
-### 6.11 RLM 收益的成立条件
+### 6.11 先把“少了、快了、稳了”拆成六个不同问题
 
-Prime Intellect 的独立 RLM 博客实验本身给出了反例：RLM 在部分长上下文任务上有收益，但在 math-python 上退化；DeepDive 若不提供明确的分解策略也可能落后；所有测试场景的完成时间都显著上升，子模型还会增加总 token 消耗。博客中的“主模型 token 效率”不统计子模型 token，不能直接等价成总成本下降。[官方 RLM 实验](https://www.primeintellect.ai/blog/rlm)
+只看最外层的 `ipython(code)`，很容易形成一个错误直觉：以前十次 Tool Call，现在一次 IPython，所以动作少了、速度快了、还顺便获得全局持久化。真实情况是：外层调用次数、底层动作数、模型轮次、总时间、总 Token 和恢复能力是六个不同指标。
 
-而且博客中的 RLMEnv 与 Prime Agent 不是同一个执行契约：前者在隔离 Sandbox 中以 `answer` Python 变量结束，Prime Agent 则在用户权限 Kernel 中通过 Host bridge、子会话与消息完成。因此该博客只能证明 RLM 范式具有条件性潜力，不能作为 Prime Agent coding 工作流的性能证明。
+| 问题 | Prime 的真实变化 | 当前结论 |
+|---|---|---|
+| 模型直接看见的 Tool schema 少了吗 | 默认只暴露 `ipython(code)`，具体能力进入 Python Skill、MCP Client 与 Host RPC | **是**，这是控制面的收敛 |
+| 主模型发出的 Tool Call 少了吗 | 一个 Cell 可以包住循环、条件、过滤和多个函数调用 | **有时会少**，尤其是确定性微步骤很多时 |
+| 底层动作少了吗 | Cell 内仍要读取同样的文件、调用同样的 API，Child 还会产生额外模型调用 | **不一定，甚至可能更多** |
+| 模型—工具语义轮次少了吗 | 已知控制流不必每步都回到模型；遇到需要新语义判断的分支仍要回到模型或 Child | **条件性减少**，这才是最可能的效率来源 |
+| 总耗时和总 Token 少了吗 | Python、工具、子模型、消息回收和 Runtime 都有额外开销 | **没有普遍证据；官方 RLM 实验反而全部更慢** |
+| 状态更稳定、全局持久了吗 | Kernel 是 Session-local；namespace 只是延迟、最佳努力快照，Worker、Transcript、Goal 又有各自的持久化语义 | **不是全局、不是事务，也不是同一等级的稳定性** |
+
+总时延更接近：
+
+$$
+T_{\text{total}}
+= T_{\text{parent-model}}
++ T_{\text{python/tools}}
++ T_{\text{children}}
++ T_{\text{runtime-overhead}}
+$$
+
+总成本也必须把子模型算回来：
+
+$$
+C_{\text{total}}
+= C_{\text{parent}}
++ \sum_i C_{\text{child}_i}
+$$
+
+减少外层 Tool Call 只可能降低其中一部分协调开销；如果 Child 增加了更多生成 Token，或者 Python 让简单任务多走了几轮，整体仍会更慢、更贵。
+
+### 6.12 先看最强反例：传统 Agent 一次 `rg` 就能完成时，Prime 几乎没有增量
+
+第 6.8 节的“100 个文件”例子只能说明 Prime **能够**怎样组织工作，不能直接说明它比传统 Agent 更强。假如目标只是找出包含鉴权关键词的文件，一个成熟的传统 coding Agent 完全可以只发出一次 Bash Tool Call：
+
+```bash
+rg -l -i 'authorize|authenticate|permission|token|session' \
+  --glob '*.ts' --glob '*.tsx' --glob '*.js' --glob '*.py'
+```
+
+这时两者的对照是：
+
+```text
+传统 Agent：1 次 bash Tool Call → rg 完成遍历和过滤 → 结果回到模型
+Prime Agent：1 次 ipython Tool Call → Python 完成遍历和过滤 → 结果回到模型
+```
+
+底层都要扫描文件，主模型都只经历一次 Tool 往返，Prime 还多了 Kernel 与 Python Runtime。对于这种**短、无状态、一次命令可表达**的任务，IPython 没有值得宣称的性能增量，Bash 反而更直接、隔离更干净。
+
+Prime 真正可能拉开差异的是后续工作变成一个反复演化的数据流程：先构造候选集，再解析配置并与测试覆盖做 join；下一轮调整筛选条件时复用已经解析的对象；只打印少量异常切片；最后把三份不同的语义审查交给长期保留的 Child。此时收益不再是“少扫描几个文件”，而是：
+
+- 大体积原始数据与中间对象不必反复进入主模型上下文；
+- 已解析数据可以跨轮次复用，不必每次重启 Python、重建工作集；
+- 确定性的 map/filter/join 由程序完成，模型只处理需要语义判断的切片；
+- Child 拥有独立上下文，可以异步工作并在后续 turn 继续沟通。
+
+但一个传统 Agent 也可以一次生成并运行完整 Python 脚本，把中间结果写入 JSON 或 SQLite。Prime 的增量是把这种做法变成默认、交互式、Session-aware 的 Runtime 契约，而不是发明了传统 Agent 无法实现的新算法。是否更好，取决于任务有没有真正跨轮次复用状态、控制上下文和保留子任务的需要。
+
+### 6.13 官方具体案例：准确率有增量，但总 Token 与时间都变差
+
+Prime Intellect 的官方 RLM 博客用 GPT-5-mini 在四个环境上各运行 50 个样本，对比标准 LLM、RLM、RLM 加环境提示。它不是 Prime Agent 对 Pi 的 coding benchmark，但它是目前判断“IPython + 子模型”是否天然更快、更省的最直接反证。[官方实验与口径](https://www.primeintellect.ai/blog/rlm)
+
+![Prime Intellect 官方 RLM 实验的准确率柱状图：DeepDive 中无提示 RLM 低于标准 LLM、加入策略提示后略高；Math Python 退化；Oolong 与 Verbatim Copy 提升](assets/prime-agent-review/rlm-benchmark-reward.png)
+
+*图 1：四个环境的平均 Reward。图中大致可读出：DeepDive 从标准 LLM 的 0.58 降到无提示 RLM 的 0.54，加入分解与并行研究提示后约 0.62；Math Python 从约 0.44 降到 0.35；Oolong 从约 0.42 升到 0.55；Verbatim Copy 从约 0.83 升到 0.90。这里证明的是“任务—策略匹配后可能提高准确率”，不是 RLM 普遍更强。来源：Prime Intellect 官方 RLM 博客，图中数值为视觉近似。*
+
+DeepDive 尤其有代表性。它是多跳网页研究任务：只给 RLM Runtime 并没有自动变好，必须显式告诉模型拆分研究问题、用 `llm_batch` 并行、交叉核验、发现缺口后继续迭代，才从负增量变成小幅正增量。也就是说，**Runtime 提供并行和上下文机制，业务分解策略决定这些机制是否被正确使用**。
+
+![Prime Intellect 官方 RLM 实验的 Token 用量图：四个环境中 RLM 与 RLM 加提示的总 Token 都高于标准 LLM，DeepDive 和 Oolong 的子模型 Token 占比很高](assets/prime-agent-review/rlm-benchmark-token-usage.png)
+
+*图 2：Prompt、Completion 与总 Token 分解。四个环境中，RLM 的总 Token 都没有下降；DeepDive 与 Oolong 的大量消耗转移到了 Sub-LLM。官方另一个“主模型 Token 效率”指标明确排除了子模型调用，因此不能把它解释成总成本降低。来源：Prime Intellect 官方 RLM 博客。*
+
+![Prime Intellect 官方 RLM 实验的耗时柱状图：四个环境中 RLM 和 RLM 加提示均显著慢于标准 LLM](assets/prime-agent-review/rlm-benchmark-timing.png)
+
+*图 3：端到端耗时。DeepDive 大致从 150 秒上升到 545 秒，Math Python 从 140 秒上升到 250–320 秒，Oolong 从约 60 秒上升到 220–355 秒，Verbatim Copy 从约 10 秒上升到 70–85 秒。官方结论也是“所有场景都显著更慢”。来源：Prime Intellect 官方 RLM 博客，数值为视觉近似。*
+
+四个案例分别说明了四种边界：
+
+| 环境 | RLM 做了什么 | 得到了什么 | 代价与真正结论 |
+|---|---|---|---|
+| DeepDive | 子模型分担多跳研究 | 只有加明确分解策略后才略优于标准 LLM | 机制不会自动产生好的业务编排 |
+| Math Python | 在本来就能用 Python 的任务外再套 RLM | Reward 明显下降 | 简单或已有合适工具的任务会被脚手架拖累 |
+| Oolong | 超长数据只通过 Python 变量访问，再切片给子模型 | 复杂真实数据和长上下文上明显提高可解性 | 这是**上下文容量/任务覆盖**增量，但 Token 与耗时上升 |
+| Verbatim Copy | 在变量里反复写、打印、修正答案 | 准确率提高 | 原本一次输出的任务变成多轮工具调用，慢约一个数量级 |
+
+而且博客中的 `RLMEnv` 与 Prime Agent 不是同一个执行契约：前者在隔离 Sandbox 中以 `answer` Python 变量结束，Prime Agent 则在用户权限 Kernel 中通过 Host bridge、子会话与消息完成。因此这些数据只能证明 RLM 范式具有条件性潜力，不能作为 Prime Agent coding 工作流的性能证明。到固定提交为止，项目没有提供 Prime Agent 对 Pi、Claude Code 或其他 coding Agent 的端到端质量、时延、总 Token 对照。
 
 ---
 
@@ -855,6 +977,30 @@ sequenceDiagram
 
 所以 Prime 实际选择的是更适合长任务的 Actor/任务树语义。问题不在这个选择，而在 README 的“函数调用”类比会让人误以为返回值包含答案。真正的 fan-in、超时、去重、失败策略和预算控制仍需要父代理自己编排。
 
+### 7.2 主子 Agent 到底够不够灵活
+
+“能创建子代理”不等于“已经具备完整多代理编排”。把固定源码中的能力逐项展开，边界会清楚很多：
+
+| 编排能力 | Prime 当前实现 | 判断 |
+|---|---|---|
+| 动态创建 | 运行中可按 Prompt 创建任意命名 Child，不必预先写死拓扑 | **灵活** |
+| 模型选择 | Child 默认继承父模型，也可从已认证模型中精确选择；失败不静默 fallback | **灵活且可审计** |
+| 并行 | 多个 Child 是独立 `AgentSession`，接纳后并发运行 | **适合独立并行任务** |
+| 长期保留 | 完成的 daemon-backed Child 可保留、重新寻址、继续发消息或删除 | **强于一次性 sub-LLM** |
+| 通信 | 支持 parent、child、sibling 与 family broadcast，并区分 `auto / steer / follow_up` | **Actor 通信较完整** |
+| 观察 | Child 有状态、活动、Token、Tool 次数、答案预览和独立 Transcript | **足够做人工跟踪** |
+| 递归 | 最大深度可调，默认 1；子代理能否继续创建孙代理由深度策略决定 | **可配，但默认保守** |
+| Fan-in | 依赖消息或共享文件；没有返回最终答案的 `await child.result()` 或声明式 `join` | **需要父 Agent 自己确认是否收齐** |
+| 依赖图 | 没有 DAG、前置依赖、barrier、group cancellation 或补偿工作流 | **不是通用工作流引擎** |
+| 资源治理 | 有递归深度，却没有同等级的同层 Child 数、全树并发、内存和总 Token 硬配额 | **生产编排仍需外层治理** |
+| 权限委派 | Child 基本继承宿主能力，缺少调用方按任务授予的 capability set | **隔离不足** |
+
+因此更准确的裁决是：
+
+> **Prime 的主子 Agent 对“并行调查、独立实现、长期对话式协作”已经足够灵活；对“必须等齐 N 份结果、严格控制依赖、预算、取消和副作用”的生产工作流还不够。它是一套异步 Actor Runtime，不是一套 Temporal 式 Workflow Runtime。**
+
+一个具体边界是三路代码审查：父 Agent 启动 `auth-reviewer`、`test-reviewer`、`dependency-reviewer` 很自然；但如果规定“15 分钟内必须收齐三份结构化结果，任一失败取消整组，全部通过 schema 校验后才能合并，否则执行补偿”，Prime 没有一个声明式原语替你完成。父 Agent 必须自己维护状态表、检查消息或文件、处理超时和失败。这种工作可以写出来，却尚未被 Runtime 提升为可靠契约。
+
 ---
 
 ## 8. 增量三：Continual Harness 是可审计自修改，不是已证实的自我提升
@@ -870,7 +1016,7 @@ Harness 状态分成四类：
 
 ![Continual Harness 论文方法图，左侧展示单个 episode 内 Agent 执行与 Refiner 更新 prompt、sub-agent、skill、memory 的双循环，右侧展示跨迭代的 PRM、教师重标注与 Soft SFT 共学习流程](assets/prime-agent-review/continual-harness-methodology.png)
 
-*图 1：原论文把 Continual Harness 分成 episode 内的 Harness refinement，以及跨迭代更新模型权重的 co-learning。Prime Agent 当前实现了左侧结构化 Harness CRUD 的一部分，并未在产品运行时内实现右侧的 PRM 与权重训练闭环。来源：Karten 等，Figure 2，CC BY-NC-SA 4.0。*
+*图 4：原论文把 Continual Harness 分成 episode 内的 Harness refinement，以及跨迭代更新模型权重的 co-learning。Prime Agent 当前实现了左侧结构化 Harness CRUD 的一部分，并未在产品运行时内实现右侧的 PRM 与权重训练闭环。来源：Karten 等，Figure 2，CC BY-NC-SA 4.0。*
 
 每个条目带 `id`、版本、来源、时间、local/global scope。local 默认只影响当前会话，global 才跨会话。基础 System Prompt 在这条路径中不可变。[源码：类型与注入规则](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/refinement/refinement.ts#L21-L108) [源码：Prompt 注入与不可变边界](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/refinement/refinement.ts#L429-L519)
 
@@ -917,7 +1063,7 @@ Continual Harness 论文在 Pokémon Red/Emerald 上发现明显的能力依赖�
 
 ![Continual Harness 论文的 Emerald 成本与完成度 Pareto 图，不同点形区分 Gemini Pro、Flash、Flash-Lite，不同颜色区分最小 Harness 与三种 Continual Harness 条件](assets/prime-agent-review/continual-harness-capability-pareto.png)
 
-*图 2：Continual Harness 的收益随模型能力显著分化。Pro 条件进入更优的成本—完成度区域，Flash 高方差，Flash-Lite 的 Continual Harness 条件低于最小 Harness；这直接反驳“多一层 Harness 必然更强”。来源：Karten 等，Figure 6，CC BY-NC-SA 4.0。*
+*图 5：Continual Harness 的收益随模型能力显著分化。Pro 条件进入更优的成本—完成度区域，Flash 高方差，Flash-Lite 的 Continual Harness 条件低于最小 Harness；这直接反驳“多一层 Harness 必然更强”。来源：Karten 等，Figure 6，CC BY-NC-SA 4.0。*
 
 这说明两件事：
 
@@ -984,6 +1130,52 @@ Supervisor 最多做三轮恢复尝试；它先核对 PID 与 process start id�
 
 结论是：**Worker 级恢复已经认真设计，Kernel 级自愈和循环熔断仍未闭环。**
 
+### 9.6 持久化不是一个开关：最稳定的层恰恰不是 Kernel Namespace
+
+“Prime 有持久化”这句话太粗，会把完全不同的故障保证混在一起。固定源码里至少有五层状态：
+
+| 状态层 | 保存方式与范围 | 能扛住什么 | 扛不住什么 |
+|---|---|---|---|
+| Session Transcript | 每个 Session 一份 JSONL，消息以 `id / parentId` 形成树；普通追加直接 append，迁移或重写用临时文件后 rename | TUI 退出、Worker 重启后的对话与分支恢复 | 不是跨文件事务；不能让已执行的外部副作用回滚 |
+| Child Registry 与 Artifact | Child 独立 Session 文件嵌套在父 Artifact 目录，父注册表记录 Child 身份与状态 | Kernel 重启、Compaction、父 Session restore 后重新发现已保留 Child | 只属于当前 Session Tree，不是任意会话可见的全局 Agent 池 |
+| Goal、Schedule、Harness 等业务状态 | 各功能拥有独立 JSON、custom entry、claim 或 history | 目标继续、定时任务、部分经验与配置恢复 | 各模块原子性不同，不能合并成一次全局 Checkpoint |
+| Kernel Namespace | 成功 Cell 后延迟约 1.5 秒，逐变量 `dill`，默认最多 256 MiB | 常见 Python 变量、函数和中间对象的最佳努力恢复 | 不可序列化对象、最新 1.5 秒窗口、活跃 Cell、进程、连接和外部状态 |
+| 正在运行的副作用 | 依赖当前进程、Shell 子进程和外部系统 | Worker 活着时可能继续 | 进程树中断、Exactly-once、事务回滚、Kernel 意外死亡后的自动接续 |
+
+Session JSONL 的重写路径使用临时文件 + rename，日常消息则以单行 JSON append；这是一套务实的本地持久记录，但不是带 WAL、跨对象事务和业务幂等性的数据库。[源码：Session 文件追加与原子重写](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/session-manager.ts#L1345-L1474) Child 注册表可以在 Kernel restart、Compaction 和 Parent restore 后恢复，作用域仍严格跟随父 Transcript。[官方 RLM Runtime：Parent-scoped registry](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm-runtime.md#parent-scoped-sub-agent-registry)
+
+所以“全局持久化更稳定”不是 Prime 的准确卖点。更可靠的工程用法应该是：
+
+```text
+可交付事实、结构化结果、检查点  → 文件 / SQLite / 外部数据库
+目标、Schedule、Child 身份       → TypeScript Host 的权威状态
+可重算的 DataFrame、索引、函数    → Kernel Namespace 缓存
+不可重复外部副作用               → 业务幂等键 + outcome journal + 人工/自动补偿
+```
+
+换句话说，Kernel Namespace 应被看成**可恢复的工作缓存**，不是系统记录。真正应该长期依赖的状态要落到显式 Artifact 或 Host 状态中。
+
+### 9.7 Trace 足够还原一次会话，但还不是跨组件 Span Trace
+
+Prime 的 Trace 基础比“打印几行日志”完整。Session JSONL 会记录用户与 Assistant 消息、Thinking block、Tool Call、Tool Result、模型、Token 与费用、Compaction、Child 用量归因、Agent status 和 Git state；`toolCallId` 可以连接一次模型 Tool Call 与它的结果。[官方 Session 格式](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/session-format.md#message-types)
+
+Child 拥有自己的 Session 文件，并通过 `parentSession` 追溯父会话；实时 `rlm_child_update` 还带 `durationMs`、`toolUseCount`、`tokenCount`、`answerPreview` 和当前 activity。Trace 上传时会把子会话解析到根 `traceId`，同时发送直接父 Session、仓库、分支提交与工作目录元数据。[源码：Child 运行状态事件](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session.ts#L9644-L9803) [源码：Trace 父子关联与上传](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-traces.ts#L265-L298)
+
+但“Agent Runtime Trace 是否清晰”至少要分成四种目标：
+
+| 目标 | 当前能力 | 评价 |
+|---|---|---|
+| 事后回答“模型说了什么、调了什么工具、结果是什么” | 完整 Transcript、Tool ID、用量与 Child 独立记录 | **中高** |
+| 实时回答“哪个 Child 正在做什么” | Agents View 与 Child activity/status/preview | **中高** |
+| 定位“慢在模型、Kernel、Host RPC、MCP 还是消息队列” | 局部有时间和状态，但没有统一 Span waterfall | **中低** |
+| 精确重放一次任务并重建外部副作用 | 只能重建模型上下文；Daemon 事件缺口也依赖 snapshot resync | **低** |
+
+固定源码中没有通用的 OpenTelemetry/OTLP 埋点，也没有贯穿 `模型请求 → ipython → host.request → MCP/Child → Artifact` 的 `spanId / parentSpanId` 因果树。根 `traceId` 能把 Session 家族归到一起，却不能自动回答某次 Host RPC 卡了多久、一个 Child 的哪个 Tool Call 导致父任务延迟、同一外部请求是否被重复发送。所谓 `/traces` 的主要实现，是预览或上传**原始 Session NDJSON**，不是把 Runtime 事件转换成分布式 Span；单文件还有 20 MiB 上限。[源码：Trace preview、大小限制与原始 NDJSON 上传](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-traces.ts#L19-L25) [源码：上传请求](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-traces.ts#L721-L842)
+
+这也带来隐私边界：自动 Trace 分享默认需要显式 opt-in，但一旦启用，上传对象是完整 Session 文件，可能包含 Prompt、Thinking、Tool 参数、Tool 输出和路径信息，而不是只有匿名性能指标。`/traces preview` 应先作为人工审查入口；敏感工作负载不应仅凭“privacy-safe analytics”文案推断完整 Trace 也已脱敏。
+
+因此当前最准确的判断是：**Prime 已有可用的会话审计与 Agent 树观察面，但还没有生产级跨组件 tracing、因果诊断与可重放执行历史。**
+
 ---
 
 ## 10. 增量五：Goal、Schedule、Autonomous 把“继续工作”变成显式状态
@@ -1031,19 +1223,26 @@ Cron job 在 dispatch 前先 claim 并推进 `nextRunAt`；同一 job 已有 cla
 |---|---|---|
 | RLM 能降低所有任务成本 | 官方 RLM 实验在部分任务退化，且总时延上升 | **不成立**；收益依赖任务、模型与策略 |
 | RLM 能改善长上下文控制 | Oolong 等长上下文任务显示条件性收益；源码提供持久变量与子代理 | **部分成立**；Prime Agent 本身仍缺独立 benchmark |
+| 默认一个 `ipython` Tool 会让底层动作更少、更快 | 外层 Cell 可承载多个动作；官方 RLM 四个环境总 Token 更高、耗时全部上升 | **不成立**；减少的是部分主模型协调轮次，不是物理工作量 |
+| 主子 Agent 已能承担任意工作流 | 动态并行、保留、消息与观察成立；声明式 fan-in、依赖图、组取消和宽度配额缺失 | **部分成立**；适合 Actor 协作，不是完整 Workflow Engine |
+| Kernel 提供全局稳定持久化 | Namespace 是 Session-local、延迟、逐变量最佳努力快照 | **不成立**；应把 Kernel 当可恢复缓存 |
+| Runtime Trace 已足够做生产根因诊断 | Session JSONL 与 Child 状态可审计；缺统一 Span 因果链与外部副作用 replay | **部分成立**；会话审计强，分布式 tracing 弱 |
 | Continual Harness 会自我提升 | Pokémon 论文有 oracle 与里程碑证据，但 Flash-Lite 退化 | **机制成立、普遍性不成立** |
 | Prime Agent 的 `/refine` 已被论文验证 | 产品实现与论文的可写对象、工具、环境、验证器都不同 | **不成立**；只能说设计受其启发 |
 | Prime 能跨终端持续运行 | Daemon/Worker、attach、journal、snapshot 源码与 CI 存在 | **成立**，但 Kernel 自愈仍有缺口 |
 | Prime 是安全 Sandbox | README 明确否认；Kernel 与 Shell 拥有用户权限 | **不成立** |
 | Prime 比 Pi 的 Agent Loop 更先进 | Core 大量继承，新增集中在 coding-agent Runtime | **不成立**；它解决的是不同层级 |
+| Prime 仍是 Pi 式极简实现 | Agent Core 仍小，但 coding-agent 已有 11k、9.7k、6.8k、4.9k 行的中心文件 | **只在 Core 边界成立**；整个 Runtime 已不极简 |
+| 仓库长说明存在大量可删除冗余 | 测试超过源码，多数体量对应 Provider、TUI、Daemon 与恢复能力；未做 clone/dead-code 专项证明 | **不能由行数推出**；已确认的是结构性复杂度与状态投影重复 |
 
 对“增量”的最公允排序是：
 
 1. **Daemon/Worker/Session continuity：最高可信。** 源码、协议、CI 与故障语义都具体。
-2. **Persistent IPython + programmatic orchestration：高可信。** 能力真实，但收益条件化，安全成本显著。
-3. **Retained child agents + A2A：高可信。** 运行时能力真实；异步结果、宽度预算与失败聚合仍由 Agent 负责。
+2. **Persistent IPython + programmatic orchestration：能力高可信，性能增量未证明。** 它能折叠确定性控制流、保存工作集并控制进入主上下文的数据，但不保证底层动作、总 Token 或耗时下降。
+3. **Retained child agents + A2A：机制高可信，工作流完备性中等。** 独立并行、保留和通信真实；异步 fan-in、宽度预算、依赖与失败聚合仍由 Agent 负责。
 4. **Goal/Schedule/Autonomous：中高可信。** 显式状态和 gate 是进步，尚非完整 Task/Run/Step 工作流模型。
-5. **Continual Harness improvement：中低可信。** mutation 和 rollback 真实，提升效果没有在本项目中闭环证明。
+5. **Session Trace 与 Agents View：中等可信。** 足够审计会话和观察 Child，尚未形成跨组件 Span、因果根因分析与可重放历史。
+6. **Continual Harness improvement：中低可信。** mutation 和 rollback 真实，提升效果没有在本项目中闭环证明。
 
 ---
 
@@ -1161,13 +1360,18 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 | 完成验证 | 中弱：可选 shell gate；缺独立 verifier 与覆盖证明 |
 | 信任与权限 | 弱：同用户权限执行，外部 Sandbox 仍是前提 |
 | 自我演化 | 中弱：有版本化 mutation，缺 eval gate、反事实对照和自动回退 |
-| 可观测性 | 中：事件、日志、用量、快照较全；超大集成模块增加理解成本 |
+| 可观测性 | 中：Transcript、Tool ID、Child 状态与用量较全；缺跨 Model/Kernel/Host/MCP 的统一 Span 和可重放历史 |
+| 实现复杂度 | Core 仍小，Runtime 已重；超大协调器、双运行路径和多份状态投影形成明显架构债 |
 
 因此我的最终结论是：
 
 > **Prime Agent 最值得研究的，不是“会自己改 Prompt”的新奇感，而是它把三个通常分散的方向接到同一棵会话树里：可编程上下文、持久子代理、可恢复长任务 Runtime。**
 >
 > 这让 Pi 从“优秀的 Agent Core”跨到了“可持续工作的 Agent Runtime”。但要成为可信的 Agent OS，还必须补上三道硬门槛：**资源治理、独立验证、安全隔离**。
+
+如果问题只是“它会不会让日常 coding 普遍快很多”，当前答案是：**没有证据，很多短任务大概率不会；官方相邻 RLM 实验甚至系统性更慢。** 如果问题是“它是否给超长上下文、跨轮次工作集、异步子任务和断线续跑提供了统一的开放 Runtime”，答案才是：**是，这正是它最有研究价值的部分。** 两个判断必须同时保留，才不会把架构创新误写成未经证明的性能神话。
+
+如果再问“它是否仍然像 Pi 一样极简”，答案是：**Core 是，系统不是。** 这种 `small core + fat runtime` 对长任务产品有合理性，却不能用“极简”掩盖 11,000 行 `AgentSession`、多份状态投影和跨 Python/TypeScript/Daemon/TUI 的协调成本。Prime 当前更像一个边界仍克制、实现已经复杂、值得继续模块化的早期 Agent OS。
 
 对架构研究者，Prime 是一个非常有信息量的项目；对生产采用者，它更像值得小范围试运行和吸收设计的 beta，而不是无需外层治理就能托管关键业务的完成态平台。
 
@@ -1193,6 +1397,8 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 | Kernel 执行队列与 Host bridge | [执行入口](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L930) [Host request 分派](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L1225-L1280) |
 | Session 侧 Host handler | [agent-session.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session.ts#L8680-L8781) |
 | Namespace 快照 | [state-snapshot.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/state-snapshot.ts#L52-L193) |
+| Session JSONL 格式与持久化 | [session-format.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/session-format.md) [session-manager.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/session-manager.ts#L1345-L1474) |
+| Trace 预览、父子关联与上传 | [agent-traces.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-traces.ts#L265-L298) [upload](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-traces.ts#L721-L842) |
 | Refinement 规划与应用 | [refinement.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/refinement/refinement.ts#L707-L933) |
 | Python Harness Store | [harness.py](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/harness.py#L141-L315) |
 | Daemon 协议与 Replay | [daemon-protocol.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/modes/daemon/daemon-protocol.ts#L1092-L1146) |
