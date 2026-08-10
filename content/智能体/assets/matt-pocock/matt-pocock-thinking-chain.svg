@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Matt Pocock 的思维链：从显性模型到可复用反馈系统</title>
+  <desc id="desc">从公开作品重建的三阶段思维链。第一阶段以 XState typegen 将状态关系外化成类型约束，第二阶段以 Total TypeScript、ts-reset 和错误翻译器把反馈移到学习动作旁边，第三阶段以 Evalite、Skills 和 Sandcastle 把评测、决策与隔离运行变成 Agent 工程反馈。底部总结共同循环：显性模型、最小任务、机器反馈、持久化工件与复用传播。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#131c2d"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#fb7185"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#020617" flood-opacity="0.38"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .sans { font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .mono { font-family: "SFMono-Regular", Consolas, monospace; }
+      .muted { fill: #94a3b8; }
+      .small { font-size: 21px; }
+      .body { font-size: 24px; }
+      .label { font-size: 18px; font-weight: 700; letter-spacing: .11em; }
+      .card-title { font-size: 31px; font-weight: 760; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" rx="28" fill="url(#bg)"/>
+  <circle cx="1450" cy="55" r="210" fill="#0ea5e9" opacity="0.08"/>
+  <circle cx="120" cy="850" r="260" fill="#14b8a6" opacity="0.06"/>
+
+  <g class="sans">
+    <text x="88" y="82" class="label" fill="#5eead4">MATT POCOCK · THINKING CHAIN</text>
+    <text x="88" y="138" font-size="42" font-weight="780" fill="#f8fafc">从含混问题，到可复用的反馈系统</text>
+    <text x="88" y="178" class="body muted">把隐性的专家判断，外化成可练习、可执行、可验证、可传播的工作流</text>
+
+    <path d="M480 404 C540 404 550 404 610 404" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+    <path d="M990 404 C1050 404 1060 404 1120 404" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="80" y="235" width="400" height="350" rx="24" fill="#111c2d" stroke="#334155"/>
+      <rect x="80" y="235" width="400" height="8" rx="4" fill="url(#teal)"/>
+      <text x="116" y="291" class="label" fill="#67e8f9">01 · STATE &amp; TYPE</text>
+      <text x="116" y="339" class="card-title" fill="#f8fafc">先让系统说清自己</text>
+      <text x="116" y="381" class="small muted">XState · codegen / typegen</text>
+      <rect x="116" y="416" width="328" height="104" rx="16" fill="#0b1525" stroke="#25334a"/>
+      <circle cx="158" cy="451" r="12" fill="#2dd4bf"/>
+      <circle cx="242" cy="451" r="12" fill="#38bdf8"/>
+      <circle cx="326" cy="451" r="12" fill="#818cf8"/>
+      <path d="M171 451 H226 M255 451 H310" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+      <text x="139" y="494" class="mono" font-size="17" fill="#cbd5e1">state → event → action</text>
+      <text x="116" y="554" class="small" fill="#dbeafe">模型显性化，类型系统负责纠错</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="610" y="235" width="380" height="350" rx="24" fill="#111c2d" stroke="#334155"/>
+      <rect x="610" y="235" width="380" height="8" rx="4" fill="url(#amber)"/>
+      <text x="646" y="291" class="label" fill="#fbbf24">02 · LEARNING LOOP</text>
+      <text x="646" y="339" class="card-title" fill="#f8fafc">再让反馈成为老师</text>
+      <text x="646" y="381" class="small muted">Total TypeScript · ts-reset</text>
+      <g transform="translate(646 418)">
+        <rect width="308" height="105" rx="16" fill="#0b1525" stroke="#25334a"/>
+        <rect x="20" y="20" width="74" height="64" rx="9" fill="#17233a"/>
+        <text x="36" y="60" class="mono" font-size="22" fill="#fbbf24">TODO</text>
+        <path d="M108 52 H158" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+        <rect x="173" y="20" width="115" height="64" rx="9" fill="#122a2b"/>
+        <text x="194" y="60" class="mono" font-size="22" fill="#5eead4">PASS</text>
+      </g>
+      <text x="646" y="554" class="small" fill="#fef3c7">问题 → 尝试 → 编译器 / 测试 → 修正</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="1120" y="235" width="400" height="350" rx="24" fill="#111c2d" stroke="#334155"/>
+      <rect x="1120" y="235" width="400" height="8" rx="4" fill="url(#teal)"/>
+      <text x="1156" y="291" class="label" fill="#67e8f9">03 · AGENT ENGINEERING</text>
+      <text x="1156" y="339" class="card-title" fill="#f8fafc">最后约束自主执行</text>
+      <text x="1156" y="381" class="small muted">Evalite · Skills · Sandcastle</text>
+      <g transform="translate(1156 414)">
+        <rect width="328" height="110" rx="16" fill="#0b1525" stroke="#25334a"/>
+        <rect x="18" y="22" width="70" height="66" rx="10" fill="#17233a"/>
+        <text x="37" y="62" class="mono" font-size="20" fill="#c4b5fd">LLM</text>
+        <path d="M101 55 H146" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+        <path d="M220 55 H265" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+        <rect x="154" y="22" width="60" height="66" rx="10" fill="#122a2b"/>
+        <text x="172" y="62" class="mono" font-size="20" fill="#5eead4">✓</text>
+        <rect x="273" y="22" width="36" height="66" rx="8" fill="#2a2030"/>
+        <text x="284" y="62" class="mono" font-size="20" fill="#fda4af">↺</text>
+      </g>
+      <text x="1156" y="554" class="small" fill="#dbeafe">评测、Skill、隔离环境共同收窄自由度</text>
+    </g>
+
+    <text x="88" y="663" class="label" fill="#a5b4fc">THE REPEATED PATTERN</text>
+    <path d="M160 739 H1418" stroke="#334155" stroke-width="3"/>
+
+    <g>
+      <circle cx="180" cy="739" r="31" fill="#17233a" stroke="#5eead4" stroke-width="3"/>
+      <text x="180" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#5eead4">1</text>
+      <text x="180" y="803" text-anchor="middle" class="body" fill="#f8fafc">显性模型</text>
+      <text x="180" y="836" text-anchor="middle" class="small muted">state / vocabulary</text>
+    </g>
+    <g>
+      <circle cx="490" cy="739" r="31" fill="#17233a" stroke="#fbbf24" stroke-width="3"/>
+      <text x="490" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#fbbf24">2</text>
+      <text x="490" y="803" text-anchor="middle" class="body" fill="#f8fafc">最小任务</text>
+      <text x="490" y="836" text-anchor="middle" class="small muted">exercise / slice</text>
+    </g>
+    <g>
+      <circle cx="800" cy="739" r="31" fill="#17233a" stroke="#5eead4" stroke-width="3"/>
+      <text x="800" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#5eead4">3</text>
+      <text x="800" y="803" text-anchor="middle" class="body" fill="#f8fafc">机器反馈</text>
+      <text x="800" y="836" text-anchor="middle" class="small muted">type / test / eval</text>
+    </g>
+    <g>
+      <circle cx="1110" cy="739" r="31" fill="#17233a" stroke="#fbbf24" stroke-width="3"/>
+      <text x="1110" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#fbbf24">4</text>
+      <text x="1110" y="803" text-anchor="middle" class="body" fill="#f8fafc">持久化工件</text>
+      <text x="1110" y="836" text-anchor="middle" class="small muted">ADR / commit / trace</text>
+    </g>
+    <g>
+      <circle cx="1420" cy="739" r="31" fill="#17233a" stroke="#5eead4" stroke-width="3"/>
+      <text x="1420" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#5eead4">5</text>
+      <text x="1420" y="803" text-anchor="middle" class="body" fill="#f8fafc">复用传播</text>
+      <text x="1420" y="836" text-anchor="middle" class="small muted">course / package / skill</text>
+    </g>
+  </g>
+</svg>
