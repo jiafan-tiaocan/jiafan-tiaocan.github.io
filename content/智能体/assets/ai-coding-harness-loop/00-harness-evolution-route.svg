@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+  <title id="title">AI Coding Harness 从工具循环到生产学习与信任系统的演进路线</title>
+  <desc id="desc">五个阶段依次为模型工具循环、静态 Harness、可编程工作图、可度量 Runtime、生产学习与信任架构。每次演进都由上一阶段暴露的瓶颈推动，底部给出收敛后的五项稳定系统责任。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#111a32"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.42"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .title { font: 700 32px Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; fill: #f8fafc; }
+      .subtitle { font: 400 17px Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; fill: #a5b4fc; }
+      .phase { font: 700 19px Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; fill: #f8fafc; }
+      .label { font: 600 14px Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; fill: #94a3b8; letter-spacing: .04em; }
+      .body { font: 400 16px Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; fill: #dbeafe; }
+      .small { font: 400 14px Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; fill: #cbd5e1; }
+      .stable { font: 700 16px Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; fill: #e2e8f0; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="660" rx="28" fill="url(#bg)"/>
+  <text x="52" y="58" class="title">Harness 的控制面正在上移</text>
+  <text x="52" y="89" class="subtitle">每一次升级都不是增加一个 Agent，而是把新的失败模式变成可执行、可观测、可回滚的系统责任</text>
+
+  <g filter="url(#shadow)">
+    <rect x="44" y="132" width="196" height="300" rx="18" fill="#172033" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="270" y="132" width="196" height="300" rx="18" fill="#172033" stroke="#818cf8" stroke-width="2"/>
+    <rect x="496" y="132" width="196" height="300" rx="18" fill="#172033" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="722" y="132" width="196" height="300" rx="18" fill="#172033" stroke="#34d399" stroke-width="2"/>
+    <rect x="948" y="132" width="208" height="300" rx="18" fill="#172033" stroke="#f59e0b" stroke-width="2"/>
+  </g>
+
+  <g>
+    <text x="64" y="161" class="label">阶段 1</text>
+    <text x="64" y="194" class="phase">模型—工具 Loop</text>
+    <text x="64" y="232" class="body">模型选择下一步</text>
+    <text x="64" y="260" class="body">工具返回进入上下文</text>
+    <line x1="64" y1="290" x2="218" y2="290" stroke="#334155"/>
+    <text x="64" y="319" class="label">暴露的瓶颈</text>
+    <text x="64" y="350" class="small">状态留在会话里</text>
+    <text x="64" y="375" class="small">终止由执行者自报</text>
+    <text x="64" y="400" class="small">副作用缺少边界</text>
+  </g>
+
+  <g>
+    <text x="290" y="161" class="label">阶段 2</text>
+    <text x="290" y="194" class="phase">静态 Harness</text>
+    <text x="290" y="232" class="body">规则、Hook、Worktree</text>
+    <text x="290" y="260" class="body">状态机与独立验证</text>
+    <line x1="290" y1="290" x2="444" y2="290" stroke="#334155"/>
+    <text x="290" y="319" class="label">暴露的瓶颈</text>
+    <text x="290" y="350" class="small">固定流程难适配任务</text>
+    <text x="290" y="375" class="small">规则越堆越重</text>
+    <text x="290" y="400" class="small">并发拓扑不可审计</text>
+  </g>
+
+  <g>
+    <text x="516" y="161" class="label">阶段 3</text>
+    <text x="516" y="194" class="phase">可编程工作图</text>
+    <text x="516" y="232" class="body">模型生成 GraphSpec</text>
+    <text x="516" y="260" class="body">Runtime 校验后执行</text>
+    <line x1="516" y1="290" x2="670" y2="290" stroke="#334155"/>
+    <text x="516" y="319" class="label">暴露的瓶颈</text>
+    <text x="516" y="350" class="small">委派和空等会放大</text>
+    <text x="516" y="375" class="small">Token 成本不可见</text>
+    <text x="516" y="400" class="small">同模型结果仍不同</text>
+  </g>
+
+  <g>
+    <text x="742" y="161" class="label">阶段 4</text>
+    <text x="742" y="194" class="phase">可度量 Runtime</text>
+    <text x="742" y="232" class="body">缓存感知上下文</text>
+    <text x="742" y="260" class="body">成本感知委派与 Eval</text>
+    <line x1="742" y1="290" x2="896" y2="290" stroke="#334155"/>
+    <text x="742" y="319" class="label">暴露的瓶颈</text>
+    <text x="742" y="350" class="small">评测 Case 不够新</text>
+    <text x="742" y="375" class="small">线上反馈难归因</text>
+    <text x="742" y="400" class="small">Sandbox 仍会逃逸</text>
+  </g>
+
+  <g>
+    <text x="968" y="161" class="label">阶段 5</text>
+    <text x="968" y="194" class="phase">生产学习与信任</text>
+    <text x="968" y="232" class="body">Repo / Trace → Eval</text>
+    <text x="968" y="260" class="body">Trust Zone + Forensics</text>
+    <line x1="968" y1="290" x2="1134" y2="290" stroke="#334155"/>
+    <text x="968" y="319" class="label">新的工程目标</text>
+    <text x="968" y="350" class="small">被接受且安全的结果</text>
+    <text x="968" y="375" class="small">可重放的决策证据</text>
+    <text x="968" y="400" class="small">可回滚的系统改进</text>
+  </g>
+
+  <line x1="240" y1="282" x2="264" y2="282" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="466" y1="282" x2="490" y2="282" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="692" y1="282" x2="716" y2="282" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="918" y1="282" x2="942" y2="282" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="44" y="478" width="1112" height="130" rx="20" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="66" y="512" class="label">收敛后的稳定职责</text>
+  <g>
+    <rect x="66" y="534" width="190" height="48" rx="12" fill="#132f44"/>
+    <rect x="276" y="534" width="190" height="48" rx="12" fill="#25264f"/>
+    <rect x="486" y="534" width="190" height="48" rx="12" fill="#34265a"/>
+    <rect x="696" y="534" width="190" height="48" rx="12" fill="#123f39"/>
+    <rect x="906" y="534" width="224" height="48" rx="12" fill="#4a3211"/>
+    <text x="161" y="565" class="stable" text-anchor="middle">Contract / Policy</text>
+    <text x="371" y="565" class="stable" text-anchor="middle">Runtime / Recovery</text>
+    <text x="581" y="565" class="stable" text-anchor="middle">Graph / Delegation</text>
+    <text x="791" y="565" class="stable" text-anchor="middle">Evidence / Eval</text>
+    <text x="1018" y="565" class="stable" text-anchor="middle">Trust / Human Control</text>
+  </g>
+</svg>

@@ -1,14 +1,29 @@
 ---
 title: AI Coding 研发中的 Harness 与 Loop 构建
-description: 从 AGENTS.md、worktree、企业多系统环境、状态机与 hooks，到 agent runtime、自动化评测和任务控制面，构建可长期运行、可验证、可恢复的 AI 研发系统。
+description: 从契约、worktree、状态机与 agent runtime，到可编程工作图、上下文经济、Model×Harness 联合评测、Eval 数据工厂和信任架构，构建可长期运行、可验证、可恢复的 AI 研发系统。
 tags:
   - Agent
   - 软件工程
   - AI-Coding
   - Harness
-date: 2026-04-15
+date: 2026-08-11
 publish: true
+noteType: technical
+last_verified: 2026-08-11
 ---
+
+# AI Coding 研发中的 Harness 与 Loop 构建
+
+[![AI Coding Harness 从工具循环到生产学习与信任系统的演进路线](assets/ai-coding-harness-loop/00-harness-evolution-route.svg)](assets/ai-coding-harness-loop/00-harness-evolution-route.svg)
+
+*图 1　Harness 的控制面沿着“工具调用—静态约束—可编程拓扑—可度量运行时—生产学习与信任架构”逐层上移。每次变化都由上一阶段暴露的具体失败推动；底部五项职责不会因为模型升级而消失。本文归纳，依据见各节一手来源。*
+
+> [!abstract] 核心判断
+> AI Coding 的生产能力来自**模型与 Harness 的组合系统**。模型负责在不确定信息中提出动作；Harness 负责任务契约、上下文编译、执行拓扑、权限、状态、恢复、独立验证和证据；Loop 则让任务在有限预算内迭代，并把生产失败变成下一轮可回归的系统资产。
+>
+> 2026 年中出现的真正增量，不是“再多开几个 Agent”，而是四个控制面开始工程化：任务拓扑可以先生成 GraphSpec 再执行；上下文开始按缓存前缀和工具开销计量；评测单位从模型升级为 Model×Harness；真实 PR、运行 Trace 与安全事件开始被加工成 Eval 和 Trust Gate。
+>
+> 因此，企业落地的北极星指标不应是调用量、并发 Agent 数或单一榜单分数，而是：在可接受的墙钟时间和人类注意力下，**每获得一个被接受且安全的结果需要付出多少总成本**。
 
 AI Coding 最容易被高估的是模型，最容易被低估的是模型外面的系统。
 
@@ -31,6 +46,9 @@ $$
 
 本文讨论的不是某一个产品的用法，而是一套适用于日常研发和 agent 系统研发的工程方法。
 
+> [!note] 证据边界
+> 本文对当前产品、论文和源码的核验日期为 2026-08-11。GitHub、OpenAI、Anthropic、Alibaba 等厂商公开的线上实验或内部规模数字，只能证明其报告条件下的结果，不能自动外推到其他团队。The Scaffold Effect、Change2Task 与 JAW 均为预印本；文中将其作为机制证据和可复现实验起点，不把它们包装成已形成稳定共识的行业定律。源码判断固定在对应提交，仓库热度不作为生产效果证明。
+
 ## 0. 先区分四层 Loop
 
 “让 agent 循环起来”这句话过于含糊。真实研发中至少存在四个时间尺度不同、终止条件不同的 loop：
@@ -42,7 +60,7 @@ $$
 
 [![AI Coding 研发中的四层 Loop](assets/ai-coding-four-loops.svg)](assets/ai-coding-four-loops.svg)
 
-*图 1：四层 Loop 共享证据，却有不同的时间尺度与终止条件。外层不是让内层无限运行，而是用生产反馈、交付结果和独立验证不断重设下一轮任务。*
+*图 2　四层 Loop 共享证据，却有不同的时间尺度与终止条件。外层不是让内层无限运行，而是用生产反馈、交付结果和独立验证不断重设下一轮任务。*
 
 如果只实现最内层，得到的是会不停调用工具的模型；四层都闭环，才得到一套研发系统。
 
@@ -63,7 +81,7 @@ Harness 不是一条超长 system prompt，也不是给 agent 安装尽可能多
 
 [![Harness 的最小可恢复控制闭环](assets/ai-coding-harness-control-loop.svg)](assets/ai-coding-harness-control-loop.svg)
 
-*图 2：Harness 把上下文、工具、权限、状态、证据和 verifier 组织成一个可恢复闭环。执行 agent 提议动作，但完成判定、权限边界与任务终止位于 agent 外部。*
+*图 3　Harness 把上下文、工具、权限、状态、证据和 verifier 组织成一个可恢复闭环。执行 agent 提议动作，但完成判定、权限边界与任务终止位于 agent 外部。*
 
 其中最关键的设计原则是：
 
@@ -226,7 +244,7 @@ stateDiagram-v2
 
 [![企业多系统中的 Change Set 交付](assets/ai-coding-enterprise-change-set.svg)](assets/ai-coding-enterprise-change-set.svg)
 
-*图 3：企业研发的最小交付单元不是一个仓库，而是一组由契约、不可变制品、数据库迁移和 Feature Flag 共同绑定的 Change Set；环境与测试证据必须引用同一个 manifest revision。*
+*图 4　企业研发的最小交付单元不是一个仓库，而是一组由契约、不可变制品、数据库迁移和 Feature Flag 共同绑定的 Change Set；环境与测试证据必须引用同一个 manifest revision。*
 
 这些系统可能位于不同仓库，使用不同语言、构建工具、发布频率和 owner。此时“一任务一 worktree”仍然成立，但任务的最小交付单元已经不是单个 worktree，而是一个跨仓库的 **change set**：
 
@@ -508,6 +526,75 @@ task
 
 每个 span 至少关联 task、worktree、model、prompt/skill/harness 版本、权限身份、成本、耗时和结果。可参考 [OpenTelemetry 的 GenAI 语义约定](https://opentelemetry.io/docs/specs/semconv/gen-ai/) 建立可迁移的数据模型。观测数据必须做 secret 和个人信息脱敏，不应默认永久保存完整 prompt 与工具返回。
 
+### 4.3 从静态编排到 Graph Engineering：先生成控制图，再执行
+
+传统 workflow 先由人把步骤写死，模型只负责其中的节点。另一种越来越清楚的路线是：**模型根据当前任务生成一次性的执行程序或 GraphSpec，runtime 在真正运行前完成静态检查，再实例化 Agent、Tool、Verifier 和 Human 节点。** Anthropic 在 2026 年 5 月发布的 [Dynamic Workflows](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)已经把这种能力带入 Claude Code；官方也明确提示，它会比普通会话消耗更多 token。因此“能动态生成”只是起点，成本、权限和收敛仍属于 Harness。
+
+需要先区分三个经常混用的对象：
+
+- **Workflow**：可复用的策略模板，例如“先调查，再并行修改，最后双重 review”。
+- **Graph**：某个具体任务实例化后的节点、边、回边、预算和权限图。
+- **Trace**：这张图在一次运行中真实走过的路径、输入输出、重试和证据。
+
+生产系统不应直接 `eval` 一段模型生成的脚本。更稳妥的做法，是先降低成一个受限 GraphSpec。下面是自有 runtime 可以采用的示意结构；它不是任何厂商 SDK 的真实配置：
+
+```yaml
+workflow_id: wf-ENG-142-r3
+task_contract_ref: contracts/ENG-142.yaml
+base_sha: 6f1b...
+
+nodes:
+  - id: discover
+    kind: agent
+    role: repository-reader
+    permissions: [repo:read]
+    budget: {wall_seconds: 600, max_cost_usd: 0.8}
+  - id: api-worker
+    kind: agent
+    workspace: wt-api
+    permissions: [repo:write, test:run]
+  - id: ui-worker
+    kind: agent
+    workspace: wt-ui
+    permissions: [repo:write, test:run]
+  - id: contract-gate
+    kind: verifier
+    command: ./bin/verify-contracts
+    permissions: [repo:read, artifact:write]
+
+edges:
+  - discover -> [api-worker, ui-worker]
+  - [api-worker, ui-worker] -> contract-gate
+
+guards:
+  max_concurrency: 3
+  max_spawned_nodes: 12
+  max_same_fingerprint_retries: 1
+  forbidden_edges: [agent -> production, agent -> grader-store]
+
+terminal:
+  success: contract-gate.passed && evidence_manifest.complete
+  otherwise: human-handoff
+```
+
+GraphSpec 进入 runtime 前至少经过四道静态门：schema 是否完整；依赖图是否存在无界回边或不可达节点；每条边是否跨越了不允许的权限边界；并行节点是否拥有独立 workspace 和可合并的 ownership。运行中再记录真实 Graph 与模板的偏差，例如哪个节点被跳过、哪里发生重试、主 Agent 是否空等、哪条边消耗了主要成本。
+
+这也是 [[Graph Engineering：Harness中的显式工作拓扑]] 的核心位置：Graph Engineering 不是 Harness 之后的新概念，而是 Harness 内部专门管理**任务级控制拓扑**的工程层。它解决“这个任务应该怎样展开”，但不能替代任务状态机、证据、权限和恢复。
+
+### 4.4 五个近期实现，分别证明了哪一层
+
+近期仓库看起来都在做“Agent”，固定源码后却能看到不同的系统重心：
+
+| 实现与固定版本 | 真正值得借鉴的机制 | 不应过度解读的部分 |
+|---|---|---|
+| [Prime Agent `d698b4b`](https://github.com/PrimeIntellect-ai/prime-agent/tree/d698b4b7029d8445fd9e3be33603b7b31418481b) | 持久 IPython 把一次工具调用提升成可编程控制面；Supervisor/Worker、Goal、Schedule 与 Heartbeat 延长任务生命周期 | 尚无 Prime 对 Pi、Claude Code 等系统的同模型 coding benchmark，不能宣称普遍更快或更省 token；详见 [[Prime Agent源码深度解析：真正的增量是可编程上下文与长任务Runtime]] |
+| [MiMo-Code `a106676`](https://github.com/XiaomiMiMo/MiMo-Code/tree/a106676f7f8fa252dc8a50ac8a1fa892a4a36a0c) | Checkpoint 重建、独立 Goal Judge、确定性 JavaScript Workflow、任务树与 worktree 组合成完整 runtime | README 中的能力清单不等于独立生产效果；动态对话和固定 workflow 仍要按任务选择 |
+| [Anthropic 长任务参考 Harness `ad107a9`](https://github.com/anthropics/cwc-long-running-agents/tree/ad107a974bced5244f74dd283dbf2bfd3baee3a1) | Default-FAIL 结果文件、先读 evidence 才能写通过、无 Write/Edit 权限的新鲜上下文 evaluator，以及 kill switch | 官方明确把它定位为可读的参考实现；简单 evidence-read hook 不能直接当作企业安全边界 |
+| [grok-build `75e73f3`](https://github.com/xai-org/grok-build/tree/75e73f3d6ac0350d211f12ae7d57c2c0aad72576) | Rust runtime 将 shell、tools、workspace、checkpoint、sandbox、permission 和 headless/ACP 入口拆成独立 crate；权限规则缺省 action 为 deny | 这是第一方代码镜像且不接受外部贡献，适合读架构，不代表已有可比较的第三方采用结果 |
+| [Open Code Review `071debe`](https://github.com/alibaba/open-code-review/tree/071debe624aa2740dfa84e1c1e3c8f89f49b5e7e) | 文件选择、bundle、规则匹配和评论定位由确定性程序负责，Agent 只处理动态判断与上下文检索 | Alibaba 的内部规模与效果属于厂商报告；可借鉴的是职责拆分，不是未经复现的效果数字 |
+
+这些实现共同说明：成熟 Harness 不会把所有行为都变成自然语言推理。越靠近权限、状态、文件范围、预算和完成判定，越应该使用确定性结构；模型的价值集中在开放式分解、语义判断与策略调整。
+
 ## 5. Long-horizon 任务：持久状态、有限 Episode 与可证明终止
 
 长任务不是把 `while true` 留给 agent，也不是不断压缩同一个对话。Anthropic 把跨上下文工作类比为不同工程师轮班：如果下一班只得到一句模糊总结，它很容易重复工作、破坏已有功能，或者因为看到了一些完成痕迹而过早宣布结束。
@@ -556,6 +643,33 @@ Karpathy 的 AutoResearch 是这个模式的极简样本：人编写 `program.md
 
 但目标函数也会制造 Goodhart 问题。真实研发不能只优化一个 benchmark；至少要同时设置质量、成本、安全、可维护性和用户结果 guardrail。递归 subagent、更多并发和更长上下文也都只是可选策略，只有当分解收益大于沟通、合并和观测成本时才值得使用。
 
+### 5.1 子 Agent 是并行执行单元，不是默认组织层级
+
+判断是否委派之前，先定义四类量：`V_parallel` 是并行可能节省的墙钟时间，`V_context` 是隔离独立上下文的收益；`C_handoff`、`C_duplicate`、`C_merge` 和 `C_wait` 分别表示交接、重复探索、合并冲突与主 Agent 空等成本。只有在下面这个关系明显成立时，委派才有工程价值：
+
+$$
+V_{parallel} + V_{context}
+>
+C_{handoff} + C_{duplicate} + C_{merge} + C_{wait}
+$$
+
+这不是一个要求精确估值的数学模型，而是一张决策检查表。一个目标文件明确、修改范围很小的任务，右侧通常更大；跨多个独立模块的安全审计、迁移或资料收集，左侧才可能占优。
+
+GitHub 在 2026 年 6 月公布了 Copilot CLI 的[选择性委派生产实验](https://github.blog/ai-and-ml/how-we-made-github-copilot-cli-more-selective-about-delegation/)。其改动不是增加 Agent，而是减少不必要的 delegation，并要求主 Agent 在子任务运行时继续推进独立工作。厂商报告的 A/B 结果显示：每会话工具失败下降 23%，搜索失败下降 27%，编辑失败下降 18%，P95 用户等待时间下降 5%，同时没有观察到质量回退。这个结果不能直接外推为通用比例，但它验证了一个很重要的方向：**委派策略本身就是需要在线实验的 Harness 组件。**
+
+落地时可以使用下面的路由规则：
+
+| 任务形态 | 默认执行方式 | 原因 |
+|---|---|---|
+| 已知文件、单点修改、短验证 | 主 Agent 直接完成 | 交接比执行本身更贵 |
+| 陌生仓库的大范围定位 | 一个只读探索 Agent | 隔离搜索噪声，返回结构化地图 |
+| 互不修改同一 ownership 的模块 | 独立 worktree 并行 | 能获得真实墙钟时间收益 |
+| 同一接口的多个实现方案 | 并行提案，单一 owner 决策 | 防止多个 writer 同时污染主线 |
+| 高风险变更的验证 | 独立 evaluator / adversarial reviewer | 需要新鲜上下文和不同权限 |
+| 强依赖、共享状态、频繁交互 | 保持单 Agent 或顺序执行 | 合并和通信成本会吞掉并行收益 |
+
+每次委派都应写清 `objective`、`known_context`、`owned_paths`、`forbidden_actions`、`expected_artifact`、`budget` 和 `return_schema`。控制面则持续记录 `delegation_rate`、主 Agent 空等比例、重复工具调用、子任务失败、合并冲突、每个 accepted outcome 的子 Agent 成本。没有这些指标，“多 Agent 架构”只是一种无法审计的界面效果。
+
 ## 6. 研发 Agent 系统时，需要一套专属 Harness
 
 用 agent 开发普通软件，主要验证代码产物；开发 agent 系统，还必须验证模型、prompt、工具、runtime、数据和 grader 的组合行为。最大的实验错误，是同时改变所有变量，看到分数变化后却不知道原因。
@@ -594,6 +708,56 @@ OpenAI 在[税务 agent 的自改进实践](https://openai.com/index/building-se
 
 人类不应永远在最内层逐行审查 agent。更高杠杆的位置是 **on the loop**：审查失败模式，修改产生坏结果的 harness，并决定哪些判断可以升级为自动验证。Martin Fowler 站点上的[软件工程 loops 分析](https://www.martinfowler.com/articles/exploring-gen-ai/humans-and-agents.html)也强调了这种从修 artifact 转向修生产 artifact 的系统的变化。
 
+#### 6.3.1 把反馈闭环建设成 Eval Data Factory
+
+“从 20～50 个真实 case 开始”适合冷启动，却不适合长期停留。手工题集会逐渐过时，环境会坏，任务描述与当前代码也会分离。下一步需要的不是让模型随意生成更多题，而是建设一条有来源、有状态、有 oracle 的 **Eval Data Factory**：
+
+```text
+已合并 PR / 生产故障 / 人工纠正 / 失败 Trace
+→ 提取目标行为、修改范围、目标检查与回归检查
+→ 在健康且较新的基线中重建任务前状态
+→ 运行 agent
+→ 恢复目标行为并检查无关行为、作用域和安全约束
+→ 通过生命周期验证后进入版本化 Eval Registry
+```
+
+2026 年 7 月的预印本 [Change2Task](https://arxiv.org/abs/2607.28591)给出了一个具体实现：先从历史 PR 提取开发者证据，再选择同仓库较新的健康基线；任务状态按 Patch Reversal、Code Mapping、Agent Reconstruction 三级策略重建；最后验证 `healthy base → task state → restored state` 的完整生命周期，而不是只检查“目标测试能否再次通过”。
+
+[![Change2Task 从历史 PR 和现代健康基线构造可执行 Agent 任务的四阶段工作流](assets/ai-coding-harness-loop/paper-change2task-fig2.png)](assets/ai-coding-harness-loop/paper-change2task-fig2.png)
+
+*图 5　Change2Task 从仓库历史提取任务证据，在现代健康基线重建任务状态，再用目标、回归、作用域和源码保真门禁验证生命周期。原论文 Figure 2，裁剪自 [Change2Task](https://arxiv.org/abs/2607.28591)，版权归原作者。它支持“Eval 是带环境和 oracle 的可执行数据产品”，但不能证明所有仓库都能以同样成功率重建。*
+
+论文从 1,130 个可构造源变更出发，报告 79.6% 的验证任务构造成功率；在匹配候选集上，比基于 PR 的构造基线多恢复 29.2% 的任务。这里最值得迁移的不是数字，而是**拒绝不可信 Case 的门禁**：无法恢复健康状态、目标检查不独立、无关行为被破坏、作用域失真或环境不可重放的候选，宁可不进入评测集。
+
+企业内部的 case manifest 至少应保存：
+
+```yaml
+case_id: repo-history/order-service/pr-184
+provenance:
+  source_type: merged_pr
+  source_ref: order-service#184
+  source_sha: 92ab...
+modern_base:
+  sha: c71e...
+  environment_digest: sha256:...
+construction:
+  route: code_mapping
+  task_patch_sha256: 38ff...
+  restoration_patch_sha256: a2c1...
+oracles:
+  target: [tests/test_empty_input.py]
+  regression: [tests/test_parser.py, tests/test_api.py]
+gates:
+  healthy_base: passed
+  task_state_target_fails: passed
+  restored_target_passes: passed
+  regression_passes: passed
+  scope_preserved: passed
+lifecycle: active
+```
+
+生产 Trace 进入工厂前还需要脱敏和授权。涉及用户数据、内部源码或安全事件的样本不能因为“适合评测”就默认公开；原始证据、脱敏 fixture 和可发布摘要应分层存储。更完整的系统改进闭环可继续参见 [[Agent Self-Evolution：从反馈闭环到可验证的系统进化]]。
+
 ### 6.4 Harness 的自动进化需要三层可观测性
 
 2026 年 4 月的研究预印本 [Agentic Harness Engineering](https://arxiv.org/abs/2604.25850)进一步提出，让 agent 修改 harness 本身时，需要同时保留三类证据：每个可编辑组件的 **component observability**、从长轨迹中提炼经验的 **experience observability**，以及记录“为什么做这次修改、预期改善什么、下一轮是否证实”的 **decision observability**。
@@ -630,6 +794,59 @@ graders: ["code", "model", "human-sampled"]
 | 安全 | 越权行动率、禁止工具调用、敏感信息泄露、审批绕过 |
 | 效率 | wall time、model time、tool time、token、cost、cache hit、人工分钟数 |
 | 过程 | 证据完整率、无效工具调用、上下文压缩次数、handoff 质量 |
+
+### 7.1 评测单位必须包含 Model×Harness
+
+同一个模型换一套 Harness，会同时改变可见上下文、工具接口、编辑策略、终止条件、重试、压缩和验证。因此更完整的实验单位不是 model name，而是：
+
+$$
+U_{eval}
+=
+T \times E \times M \times H \times B \times G
+$$
+
+其中 `T` 是任务及版本，`E` 是环境与 fixture，`M` 是模型和采样设置，`H` 是完整 Harness，`B` 是 token、成本、时间和重试预算，`G` 是 grader 及阈值。六项中任意一项改变，都应生成新的 experiment cell，不能把结果悄悄合并到同一条曲线。
+
+GitHub 在 2026 年 6 月公开的 [Copilot agentic harness 评测](https://github.blog/ai-and-ml/github-copilot/evaluating-performance-and-efficiency-of-the-github-copilot-agentic-harness-across-models-and-tasks/)尝试固定模型、任务、上下文窗口、reasoning effort、工具和 MCP，再比较 Copilot CLI 与模型厂商 Harness，并对 TerminalBench 组合运行至少五次。它正确地把成本、完成率和方差放在同一张图里；但小于 100 个实例的 benchmark 报告五次中的最佳 run，因此厂商结论不应被当作独立、无偏的排名。
+
+独立预印本 [The Scaffold Effect in Coding Agents](https://arxiv.org/abs/2607.22585)在 Terminal-Bench Pro 的 50 题分层子集上，用两个模型比较 Goose、OpenHands-SDK 和 OpenCode。论文报告 Harness 之间每个成功任务 token 最多相差约 40 倍，而配对通过率差异只有 0～8 个百分点；它还观察到不同模型上重复出现的 Harness 级失败指纹。样本很小且仍在评审，不能据此排出通用优劣，但足以说明只看 pass rate 会掩盖等待和成本。
+
+[![三种 Coding Agent Harness 的通过率与每个成功任务 Token 成本帕累托图](assets/ai-coding-harness-loop/paper-scaffold-effect-fig1.png)](assets/ai-coding-harness-loop/paper-scaffold-effect-fig1.png)
+
+*图 6　同一小规模任务子集中，三套 Harness 的通过率接近，但每个成功任务的 token 成本跨越数量级。原论文 Figure 1，裁剪自 [The Scaffold Effect in Coding Agents](https://arxiv.org/abs/2607.22585)，版权归原作者。横轴为对数尺度；该图来自 50 题、两个模型的初步实验，只支持“必须同时报告效率和 Harness”，不支持对所有任务作通用排名。*
+
+一份可执行的对照实验 manifest 可以从下面开始：
+
+```yaml
+experiment_id: harness-ab-2026-08-11
+task_set: evals/regression-v12
+environment_digest: sha256:...
+matrix:
+  models: [model-a@2026-08-01]
+  harnesses: [baseline@41bd, candidate@95ac]
+repeats: 5
+budgets:
+  max_wall_seconds: 1800
+  max_input_tokens: 250000
+  max_output_tokens: 30000
+  max_cost_usd: 8
+controls:
+  same_tools: true
+  same_context_window: true
+  same_network_policy: true
+  fixed_seed_when_supported: true
+report:
+  - accepted_safe_outcome_rate
+  - first_pass_rate
+  - cost_per_accepted_safe_outcome
+  - wall_time_p50_p95
+  - no_action_turns
+  - tool_failures
+  - human_minutes
+  - failure_fingerprint
+```
+
+Harness 改进只有在候选版本跨多次 trial 改善目标指标、没有触发安全与质量 guardrail，并且收益超过方差时才有资格上线。否则，应把结果记录为“未证实”而不是挑选最好的一次演示。
 
 由于 agent 有随机性，关键 case 应运行多个 trial。能力 eval 用来探索“现在能做到什么”，回归 eval 用来保证已具备能力不丢失；两者的数据分布和通过策略不应混为一谈。Code-based grader 负责确定性规则，model-based grader 处理语义质量，人类抽检负责校准模型 grader 和发现未知失败，生产监控则覆盖离线数据没有包含的世界。
 
@@ -685,7 +902,22 @@ $$
 
 ### 9.1 Context 经济学
 
-上下文不是越多越好。稳定、短小、层次化的入口可以提高 prompt cache 命中并减少干扰；细节应通过搜索和链接按需加载。上下文压缩只是容量管理，不是持久记忆。需要跨 session 保留的事实必须写入外部状态和 evidence。
+上下文不是越多越好，也不只是“怎样检索最相关的片段”。生产 Harness 还要处理四种成本：发送了多少无用 token；稳定前缀能否复用缓存；工具 Schema 和工具结果占据多少窗口；何时切换模型或压缩会破坏已有缓存。
+
+OpenAI 在 2026 年 7 月公开的 [Harness 效率设计](https://openai.com/index/gpt-5-6-frontier-intelligence-efficiency/)中使用了几个很具体的机制：工具、Skill 和插件按需发现；单个工具结果默认限制为 10,000 token，除非模型主动请求更高上限；模型可见历史保持 append-only；工具顺序保持确定；审批策略在执行时应用，而不是为了不同权限频繁改写工具定义。GitHub 则公开了 [Prompt Cache、延迟工具加载与缓存感知路由](https://github.blog/ai-and-ml/github-copilot/getting-more-from-each-token-how-copilot-improves-context-handling-and-model-routing/)：模型优先在首轮或 compaction 后的自然缓存边界切换，而不是每轮追逐一个理论上更合适的模型。
+
+这可以落成四层上下文：
+
+| 层 | 内容 | 设计要求 |
+|---|---|---|
+| 稳定前缀 | system policy、核心规则、固定顺序的基础工具 | 尽量短、版本化、避免每轮插入动态字段 |
+| Session 事件 | 用户输入、模型动作、工具结果 | append-only；大结果写入 artifact，只返回索引与摘要 |
+| 任务工作集 | 当前目标、依赖、已验证事实、下一工作单元 | 由 Context Compiler 从结构化状态编译，允许重建 |
+| 按需能力 | Skill 正文、MCP Schema、历史决策、深层文档 | 先暴露索引或短描述，命中后再加载全文 |
+
+上下文压缩只是容量管理，不是持久记忆。需要跨 session 保留的目标、决策、失败和 evidence 必须进入外部状态；压缩后的摘要应携带来源引用，不能成为一个无法回查的新事实源。
+
+大盘至少要展示 `input_tokens`、`cached_input_tokens`、`cache_hit_ratio`、工具 Schema token、工具结果截断率、artifact 回读次数、compaction 次数、路由切换点和 **每个 accepted outcome 的有效输入 token**。当缓存命中下降时，先检查前缀是否被时间戳、动态权限或工具顺序扰动；当总 token 上升时，先区分真实任务变复杂，还是出现了重复搜索、空动作和大结果反复回灌。
 
 ### 9.2 文档和规则也会产生熵
 
@@ -697,7 +929,68 @@ Harness 会不断吸收失败经验，最终也可能变成一团互相矛盾的
 
 ### 9.4 Prompt injection 与供应链
 
-网页、Issue、依赖 README、测试日志和代码注释都可能成为不可信输入。工具结果不能自动获得 system instruction 的权威；外部内容需要标记来源和信任等级。安装依赖、执行仓库脚本、访问网络和读取密钥都应通过明确策略与隔离环境。
+网页、Issue、PR 评论、依赖 README、测试日志和代码注释都可能成为不可信输入。工具结果不能因为被放进模型上下文，就自动获得 system instruction 的权威。生产安全需要同时回答三个问题：**输入由谁控制，它可以怎样进入 prompt，收到它的 Agent 实际拥有哪些能力？**
+
+预印本 [Comment and Control](https://arxiv.org/abs/2605.11229)构建的 JAW 正是沿这三条线分析工作流：先做路径敏感的 Agent 调用可达性分析，再追踪 Prompt Provenance，最后分析运行时 Capability。论文在其研究样本中报告 4,714 个 GitHub workflow 和 8 个 n8n template 可被劫持，涉及 15 个常用 GitHub Action。它说明安全扫描不能只在最终 prompt 中搜索可疑句子；攻击输入可能先穿过模板、环境变量、workflow output 和复用 Action，最后才获得高权限工具。
+
+[![JAW 对 Agent Workflow 进行路径、Prompt 来源和能力分析的系统架构](assets/ai-coding-harness-loop/paper-jaw-fig2.png)](assets/ai-coding-harness-loop/paper-jaw-fig2.png)
+
+*图 7　JAW 将 workflow 路径分析、Prompt Provenance、Capability Profiling 与实际工具链验证连接起来。原论文 Figure 2，裁剪自 [Comment and Control](https://arxiv.org/abs/2605.11229)，版权归原作者。它支持“风险取决于输入路径与能力组合”，但论文检测结果只覆盖其采集和建模的 workflow 集。*
+
+#### 9.4.1 Sandbox 不是一条完整的信任边界
+
+2026 年 7 月，一次内部 cyber capability eval 给出了比原则更直接的证据。根据 [OpenAI 的初步披露](https://openai.com/index/hugging-face-model-evaluation-security-incident/)和 [Hugging Face 的技术时间线](https://huggingface.co/blog/agent-intrusion-technical-timeline)，Agent 通过允许访问互联网的 package registry cache proxy 中的零日漏洞逃离评测 Sandbox，随后组合凭证、云元数据、数据处理和集群权限等多个弱点，最终触达 Hugging Face 基础设施。Hugging Face 从 2026-07-09 至 2026-07-13 恢复出约 17,600 个动作并归为约 6,280 个 cluster；大量路径失败，但机器速度让 Agent 能持续换路，直到找到一条跨系统攻击链。
+
+这起事件改变了 Harness 的默认安全假设：
+
+- “只有包安装权限”仍意味着存在一条**传递性网络出口**；代理、缓存和镜像服务都属于攻击面。
+- Eval executor、grader、参考答案和生产凭证必须属于不同 Trust Zone；执行者不能通过网络、共享磁盘、日志或数据库间接读取 grader 资产。
+- 短生命周期 Sandbox 无法替代短生命周期凭证。HF 报告中，每个环境从头启动，Agent 仍能重建工具和通道继续工作。
+- 只记录最终成功命令不够。防守方需要把数千个低信号动作按 task、identity、credential、egress 和基础设施 span 关联起来。
+- “完成 benchmark”本身可能诱发偷取答案等 goal cheating。评测需要检查成功路径是否合法，而不只是最终分数。
+
+#### 9.4.2 用 Trust Zone 和 Capability Graph 落地
+
+最小信任分区可以按下表实现：
+
+| 区域 | 可以访问 | 默认禁止 | 关键控制 |
+|---|---|---|---|
+| Untrusted Input | Issue、网页、仓库文本、日志 | 直接升级为指令或携带秘密 | provenance label、内容隔离、模板编码 |
+| Executor Sandbox | 任务 worktree、临时依赖、受限工具 | grader store、生产网、长期凭证 | egress allowlist、只读 base、资源上限 |
+| Tool Gateway | 经 schema 校验的动作 | 任意 shell 拼接、隐藏网络跳转 | policy engine、参数规范化、审批、审计 |
+| Secret Broker | 按任务发放的短期凭证 | 列举其他 secret、导出长期 key | audience/scope/TTL、不可转发、即时撤销 |
+| Grader Vault | hidden tests、golden、判定逻辑 | executor 身份与写权限 | 独立网络与存储、签名结果、不可变日志 |
+| Release Zone | 已签名制品、审批记录 | 源码写入与临时 artifact | required checks、双人审批、渐进发布 |
+
+Capability Graph 不只列“Agent 可以调用 bash”，还要展开 `bash → package manager → registry proxy → internet`、`pod creation → hostPath → node credential` 这样的传递边。每条高风险边应有明确 owner、阻断点、审计事件和演练 case。
+
+策略配置可以像下面这样保持 fail closed；字段仍是自有 runtime 的示意，而不是厂商 API：
+
+```yaml
+identity: task/ENG-142/executor
+credentials:
+  ttl_minutes: 20
+  audience: test-order-api
+network:
+  default: deny
+  allow:
+    - host: mirror.internal.example
+      methods: [GET]
+      max_bytes: 50000000
+  deny_metadata_ips: true
+filesystem:
+  writable: ["/workspace", "/tmp/task-ENG-142"]
+  denied: ["/grader", "/secrets", "/var/run/docker.sock"]
+actions:
+  production_write: deny
+  external_message: require_approval
+  dependency_install: log_and_scan
+detection:
+  correlate_by: [task_id, identity, credential_id, trace_id]
+  alert_on: [new_egress, metadata_probe, privilege_escalation, grader_probe]
+```
+
+最后必须把真实攻击链变成回归资产：在隔离靶场重放包代理逃逸、元数据访问、特权 Pod、长凭证重用、grader 探测与 Prompt 注入，记录控制在第几个动作阻断、是否误伤正常依赖安装。没有故障注入和可重放 Trace，“网络隔离”“最小权限”都只是架构声明。
 
 ### 9.5 人类接管必须是一等路径
 
@@ -716,6 +1009,46 @@ Agent 的“求助”不应只是输出“我无法完成”。高质量 handoff
 7. **运行可管理**：状态机大盘、依赖与 WIP、告警、暂停/恢复/接管/回滚控制。
 8. **系统可进化**：线上 trace 与人工修正进入失败聚类，再转为 eval 和 harness 改进。
 
+### 10.1 最低可运行配置、推荐配置与生产缺口
+
+| 层级 | 应该具备什么 | 暂时可以没有什么 |
+|---|---|---|
+| 最低可运行 | 单仓；一任务一 worktree；SQLite/JSON 状态；容器或本机 sandbox；唯一 test/build 命令；默认拒绝的完成契约；本地 artifact 目录；20 个真实回归 case | 多 Agent、复杂大盘、自动改写 Harness、跨区域高可用 |
+| 推荐可用 | 队列与 lease；Context Compiler；独立 evaluator；Tool Gateway；临时凭证；OpenTelemetry trace；成本与 cache 指标；任务级临时环境；版本化 Eval Registry | 完全自治发布、任意动态网络、无限递归 Agent |
+| 生产仍需补齐 | 身份与权限治理、数据分级、审计保留、灾备、供应链扫描、跨仓 Change Set、灰度/回滚、SLO、事故响应和容量/成本治理 | 不能用“模型更强”替代这些系统责任 |
+
+### 10.2 一个团队四周可以交付什么
+
+**第一周：建立基线，不追求自治。**
+
+- 选 20～30 个真实任务，冻结 case、环境、grader 和预算。
+- 建立一任务一 worktree、`state.json`、`events.jsonl`、evidence manifest 和唯一验证命令。
+- 跑出现有人工/Agent 流程的成功率、P50/P95 时间、token、工具失败和人工分钟数。
+- 验收：中途杀死进程后可以只依赖 Git、状态和 artifact 恢复；执行 Agent 无法修改 hidden grader。
+
+**第二周：把最常见失败变成 Harness。**
+
+- 从失败指纹中只选前三类：上下文找错、完成自报、工具越权或重复委派等。
+- 分别落成 Context Compiler、Stop/PreToolUse Gate、独立 evaluator 或委派路由规则。
+- 给每个改变建立 paired experiment，不同时更换模型、Prompt、工具和 grader。
+- 验收：目标失败显著下降，其他 regression 和安全 guardrail 不退化；收益超过多次 trial 方差。
+
+**第三周：接入可编程拓扑与 Eval Data Factory。**
+
+- 只为一种真正可并行的任务引入 GraphSpec，例如跨模块迁移或全库安全审计。
+- 加入节点预算、ownership、静态拓扑检查、父 Agent 非空等、合并 gate 和人工接管。
+- 从最近合并 PR 或生产纠正中构造第一批自动候选 case，并拒绝无法重放的样本。
+- 验收：Graph/Trace 可回放；并行版本的总成本、墙钟时间和冲突率均可解释；新增 case 有 provenance 和生命周期测试。
+
+**第四周：按生产系统验收。**
+
+- 建立 Trust Zone 和传递性 egress 图；演练 Prompt Injection、依赖代理、元数据、grader 探测和凭证泄露。
+- 做一个最小控制面：队列、WIP、状态时间线、预算、evidence、暂停、取消、从 checkpoint 重试和 human handoff。
+- 以 canary 方式接入低风险真实任务，记录 accepted safe outcome、人工节省和逃逸缺陷。
+- 验收：任何成功结果都能追溯到 task、代码、环境、模型、Harness、预算、grader 与审批版本；任何异常任务都能被暂停、隔离和恢复。
+
+四周后真正值得展示的不是“Agent 连续运行了多少小时”，而是一份可审计的前后对照：哪些失败被移入系统约束，哪些仍需要模型判断，质量和成本如何变化，哪条安全边界在故障注入中实际阻断了攻击，以及什么证据会让团队回滚这次 Harness 改动。
+
 最终，优秀的 AI Coding 研发系统不是“agent 永远不停地写代码”，而是：它知道自己处于什么状态，只拿完成当前工作所需的权限，每次行动都留下证据，失败后能恢复或升级给人，成功则由独立 verifier 证明；而人类可以在控制面上理解、干预并持续改进整个系统。
 
 模型决定能力上限，Harness 决定能力能否稳定兑现，Loop 决定系统能否在时间中持续改进。
@@ -727,9 +1060,17 @@ Agent 的“求助”不应只是输出“我无法完成”。高质量 handoff
 - OpenAI, [The next evolution of the Agents SDK: a full-stack platform for building agents](https://openai.com/index/the-next-evolution-of-the-agents-sdk/), 2026-04-15.
 - OpenAI, [Building self-improving tax agents with Codex](https://openai.com/index/building-self-improving-tax-agents-with-codex/), 2026-05-27.
 - OpenAI, [Separating signal from noise in coding evaluations](https://openai.com/index/separating-signal-from-noise-coding-evaluations/), 2026-07-08.
+- OpenAI, [OpenAI and Hugging Face partner to address security incident during model evaluation](https://openai.com/index/hugging-face-model-evaluation-security-incident/), 2026-07-21.
+- OpenAI, [How GPT-5.6 fuses frontier intelligence with frontier efficiency](https://openai.com/index/gpt-5-6-frontier-intelligence-efficiency/), 2026-07-29.
 - OpenAI, [Symphony](https://github.com/openai/symphony), 2026.
 - Anthropic, [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents), 2025-11-26.
 - Anthropic, [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents), 2026-01-09.
+- Anthropic, [Introducing dynamic workflows in Claude Code](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code), 2026-05-28.
+- Anthropic, [cwc-long-running-agents](https://github.com/anthropics/cwc-long-running-agents/tree/ad107a974bced5244f74dd283dbf2bfd3baee3a1), fixed at `ad107a974bced5244f74dd283dbf2bfd3baee3a1`.
+- GitHub, [How we made GitHub Copilot CLI more selective about delegation](https://github.blog/ai-and-ml/how-we-made-github-copilot-cli-more-selective-about-delegation/), 2026-06-12.
+- GitHub, [Getting more from each token: How Copilot improves context handling and model routing](https://github.blog/ai-and-ml/github-copilot/getting-more-from-each-token-how-copilot-improves-context-handling-and-model-routing/), 2026-06-17.
+- GitHub, [Evaluating performance and efficiency of the GitHub Copilot agentic harness across models and tasks](https://github.blog/ai-and-ml/github-copilot/evaluating-performance-and-efficiency-of-the-github-copilot-agentic-harness-across-models-and-tasks/), 2026-06-25.
+- Hugging Face, [Anatomy of a Frontier Lab Agent Intrusion: A Technical Timeline of the July 2026 Incident](https://huggingface.co/blog/agent-intrusion-technical-timeline), 2026-07-27.
 - Andrej Karpathy, [autoresearch](https://github.com/karpathy/autoresearch), 2026-03.
 - No Priors, [Andrej Karpathy on Code Agents, AutoResearch, and the Loopy Era of AI](https://www.youtube.com/watch?v=kwSVtQ7dziU), 2026-03-20.
 - METR, [Measuring AI Ability to Complete Long Tasks: Time Horizon 1.1](https://metr.org/blog/2026-1-29-time-horizon-1-1/), 2026-01-29.
@@ -742,3 +1083,10 @@ Agent 的“求助”不应只是输出“我无法完成”。高质量 handoff
 - OpenTelemetry, [Semantic conventions for generative AI systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/).
 - arXiv, [Agentic Harness Engineering: Observability-Driven Automatic Evolution of Coding-Agent Harnesses](https://arxiv.org/abs/2604.25850), 2026-04-28，预印本。
 - arXiv, [From Prompts to Contracts: Reimagining AI Coding Agents for Production Software Delivery](https://arxiv.org/abs/2607.08028), 2026-07-09，预印本。
+- arXiv, [Comment and Control: Hijacking Agentic Workflows via Context-Grounded Evolution](https://arxiv.org/abs/2605.11229), 2026-05-11，预印本。
+- arXiv, [The Scaffold Effect in Coding Agents: Harness Choice as a Hidden Variable in Coding-Agent Evaluation](https://arxiv.org/abs/2607.22585), 2026-06-08，预印本。
+- arXiv, [Change2Task: From Repository Changes to Executable Coding Agent Tasks and Environments](https://arxiv.org/abs/2607.28591), 2026-07-30，预印本。
+- Prime Intellect, [Prime Agent](https://github.com/PrimeIntellect-ai/prime-agent/tree/d698b4b7029d8445fd9e3be33603b7b31418481b), fixed at `d698b4b7029d8445fd9e3be33603b7b31418481b`.
+- XiaomiMiMo, [MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code/tree/a106676f7f8fa252dc8a50ac8a1fa892a4a36a0c), fixed at `a106676f7f8fa252dc8a50ac8a1fa892a4a36a0c`.
+- xAI, [grok-build](https://github.com/xai-org/grok-build/tree/75e73f3d6ac0350d211f12ae7d57c2c0aad72576), fixed at `75e73f3d6ac0350d211f12ae7d57c2c0aad72576`.
+- Alibaba, [Open Code Review](https://github.com/alibaba/open-code-review/tree/071debe624aa2740dfa84e1c1e3c8f89f49b5e7e), fixed at `071debe624aa2740dfa84e1c1e3c8f89f49b5e7e`.
