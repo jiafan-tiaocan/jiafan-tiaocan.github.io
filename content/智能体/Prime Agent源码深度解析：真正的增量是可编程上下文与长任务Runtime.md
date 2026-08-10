@@ -15,9 +15,9 @@ noteType: technical
 # Prime Agent 源码深度解析：真正的增量是可编程上下文与长任务 Runtime
 
 > [!abstract] 核心判断
-> Prime Agent **没有重新发明 Agent Core**。它承接了 Pi 的模型协议、Agent Loop、Session 与 TUI，真正向前推进的是 Core 之外的运行时：让模型把上下文当成 Python 变量，把子代理当成可编程任务，把会话交给常驻 Daemon/Worker，并把目标、定时任务、Harness 状态和一部分 IPython 命名空间持久化。
+> Prime Agent **没有重新发明 Agent Core**。它承接了 Pi 的模型协议、Agent Loop、Session 与 TUI，真正向前推进的是 Core 之外的运行时：保留 Function Calling——模型用结构化名称和参数请求外部能力——作为入口，却把默认调用粒度收敛为 `ipython(code)`，让模型生成程序，把工作上下文显式外部化为持久 Python 状态，再通过 Host bridge（Kernel 与 TypeScript Runtime 之间的类型化桥）调用子代理和受管能力；同时，它把会话交给常驻 Daemon/Worker（常驻服务与会话工作进程），并把目标、定时任务、Harness 状态和一部分 IPython 命名空间持久化。
 >
-> 因此，最准确的定位不是“更聪明的 coding agent”，而是：**建立在 Pi 之上的、偏 RLM 编程范式的开放 Agent Runtime / 早期 Agent OS**。
+> 因此，最准确的定位不是“更聪明的 coding agent”，而是：**建立在 Pi 之上的、偏 Recursive Language Model（RLM）编程范式的开放 Agent Runtime / 早期 Agent OS**。
 >
 > 其中最扎实的增量是 **RLM 控制面与 Daemon 恢复语义**。
 >
@@ -46,7 +46,7 @@ Prime Agent 的主要工作发生在后两层，而不是 Core。
 | 维度 | Pi 基线 | Prime Agent 的新增 | 判断 |
 |---|---|---|---|
 | Agent Loop | 显式模型—工具循环、awaited event barrier | 基本沿用 | **低增量**，不是项目创新中心 |
-| 上下文控制 | 文件、消息、Compaction | 持久 IPython；上下文可变成变量、函数和程序 | **高增量**，改变模型的控制面 |
+| 上下文控制 | 文件、消息、Compaction | 持久 IPython；模型显式加载的工作上下文可变成变量、函数和程序，用户 Prompt 本身仍是消息 | **高增量**，改变模型参与微观调度的粒度 |
 | 子代理 | Core 之上的 Tool/进程组合模式 | 一等子会话、保留生命周期、A2A 消息、用量归因 | **高增量**，但语义更像 Actor，而非递归返回值 |
 | 长任务生命周期 | Session 持久化，应用层自行扩展 | Daemon、每棵根会话树一个 Worker、重连、快照、恢复日志 | **很高增量**，是工程上最有价值的一层 |
 | 状态延续 | 消息树、文件、Compaction | Kernel `dill` 快照、Goal、Heartbeat、Schedule、Harness | **高增量**，但不是完整进程 Checkpoint |
@@ -172,38 +172,348 @@ flowchart TB
 
 ## 5. 增量一：RLM 把“工具调用”升级为“可编程控制面”
 
-### 5.1 普通 Tool Calling 的限制
+### 5.1 先校准：Prime 没有取消 Function Calling
 
-传统 coding agent 的模型每次选择一个结构化工具：
+普通 Tool Calling 的最小链路是：
 
 ```text
-read(path) → tool result → model
-search(query) → tool result → model
-bash(command) → tool result → model
+模型生成 read(path)
+  → Host 校验并执行 read
+  → Tool Result 回到消息上下文
+  → 模型读取结果，再决定 search(query)
+  → Search Result 再次进入上下文
+  → 模型继续决定 bash(command)
 ```
 
-模型能串联工具，却很难在不经过语言上下文的情况下直接写循环、过滤大对象、保留中间数据、批量派发或把多个结果重新组合。大量工具输出反复进入主上下文，也会加剧 context rot。
+模型既做语义判断，也承担微观调度：每读一个文件、换一个查询、处理一批输出，控制权通常都要回到模型。它当然可以串联工具，却很难让大量中间数据在不经过语言上下文的情况下完成循环、过滤、排序、重组和复用。假设一次审查要读取 100 个文件，即使每个 Tool Result 只有 2,000 token，也可能让主上下文先承受约 200,000 token 的原始材料，之后模型才开始筛选真正相关的部分。
 
-### 5.2 Prime 的改变：Prompt-as-a-variable
+Prime 没有把这条外层 Agent Loop 删除。它仍然向模型注册一个标准工具，只是默认内置工具面收敛为：
 
-Prime 默认只向模型暴露 `ipython`。文件、Shell、数据处理、Skill 与子代理可以在持久 Python 环境里编排：
+```ts
+ipython({ code: string })
+```
+
+模型输出经 Provider 适配后的逻辑形态仍然是一次 Function Call：
+
+```json
+{
+  "name": "ipython",
+  "arguments": {
+    "code": "from pathlib import Path\nfiles = list(Path('.').rglob('*.ts'))"
+  }
+}
+```
+
+`ipython` 的固定源码 schema 确实只有一个 `code` 字符串；它被标记为顺序工具，执行结果再把 `stdout`、`stderr`、最后一个表达式结果和图片组织成模型可见的 Tool Result。[源码：`ipython` schema 与工具定义](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L143-L148) [源码：执行与结果组装](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L622-L703)
+
+所以最准确的变化不是：
+
+```text
+Function Calling → 没有 Function Calling
+```
+
+而是：
+
+```text
+传统 Agent：一次 Function Call 约等于一个工具动作
+Prime Agent：一次 Function Call 可以提交一段程序
+```
+
+### 5.2 两层循环：模型写程序，解释器接管微观编排
+
+Prime 在原有 Agent Loop 里面又嵌入了一个 Program Loop。后者运行在长寿命的 IPython Kernel，也就是为当前 Agent Session 保留变量和执行状态的 Python 进程中。
+
+外层仍由模型驱动：
+
+```text
+LLM 推理
+  → ipython(code) Tool Call
+  → IPython Tool Result
+  → LLM 继续推理
+```
+
+内层由模型刚刚生成的程序驱动：
 
 ```python
-files = ...                  # 中间状态不必全部进入语言上下文
-selected = [x for x in files if ...]
-handle = await rlm("审查这些候选并回报高风险项", name="reviewer")
+for path in files:
+    text = path.read_text(errors="ignore")
+    if "authorize" in text.lower():
+        candidates.append(path)
+
+candidates.sort(key=lambda path: path.stat().st_size, reverse=True)
 ```
 
-这带来四个实际增量：
+这段代码里的循环、条件、异常处理、排序和局部变量都不需要再次询问模型。模型负责把语义目标编译成一小段程序，Python 解释器负责执行其中的确定性步骤；只有出现新的语义分岔、需要理解候选内容或验收最终结论时，控制权才重新回到主模型或子模型。
 
-1. **上下文外部化不再只靠文件。** 变量、函数、导入与对象成为可继续使用的工作记忆。
-2. **工具组合从自然语言计划变成程序。** 循环、分支、并行与数据变换可以直接编码。
-3. **高体积内容可以先过滤，再打印给模型。** 主模型不必吞下所有原始输出。
-4. **Harness 更接近可训练的动作空间。** “怎样管理上下文”本身能被表示成 Python 与子代理调用序列。
+这一步改变了控制权的粒度：
 
-Kernel 通过 Jupyter shell/iopub/control 三条 ZMQ 通道运行，执行被按 Kernel 串行化；`host.request` comm 将 RLM、Goal、A2A 等请求转回 TypeScript Host，避免在 shell channel 上自我等待。[源码：Kernel Host bridge 与执行入口](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L930)
+```text
+传统：模型同时是推理者和每个微动作的调度器
+Prime：模型是程序生成者，Runtime 执行细粒度确定性控制流
+```
 
-### 5.3 持久不等于完整 Checkpoint
+因此 RLM 的核心价值不是“Python 比 Tool Call 高级”，而是减少模型参与无意义微观调度的次数，把可由程序稳定完成的工作移到解释器里。
+
+### 5.3 `Prompt-as-a-variable` 的精确定义：用户 Prompt 没有自动绑定
+
+README 用 `prompt-as-a-variable` 描述 RLM：[项目定位](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/README.md#L31-L40)。这个说法很有启发性，也极易被误解。Prime 当前实现里至少有三种常被混称为 Prompt 的对象：
+
+| 对象 | 实际位置 | 是否自动成为 Python 变量 |
+|---|---|---:|
+| 用户当前输入 | 主 Agent 的消息上下文 | 否 |
+| `rlm("子任务")` 的子任务描述 | Python 函数参数，随后进入 Child Agent 消息 | 是，它本来就是显式字符串参数 |
+| 文件、搜索结果、解析对象和中间结论 | IPython 命名空间 | 可以，但必须由模型代码显式加载或赋值 |
+
+固定源码中的 Kernel bootstrap 会注入 `asyncio`、可调用的 `rlm` 对象和已安装 Python Skill 模块，但没有把每轮用户输入写成全局 `prompt` 变量。[源码：Kernel bootstrap](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L24-L140) 用户原始 Prompt 仍先作为消息进入 `AgentSession`，再进入 Pi 的模型—工具循环；系统提示只额外告诉模型会话日志的位置，模型需要时可以显式读取，而不是自动获得一个完整 Prompt 对象。[源码：RLM System Prompt 构造](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/prompts/rlm.ts#L68-L95)
+
+真正成为变量的是模型主动创建的**工作上下文**：
+
+```python
+from pathlib import Path
+
+source_files = list(Path("src").rglob("*.ts"))
+
+source_texts = {
+    str(path): path.read_text(errors="ignore")
+    for path in source_files
+}
+
+auth_candidates = {
+    path: text
+    for path, text in source_texts.items()
+    if "authorize" in text.lower() or "permission" in text.lower()
+}
+```
+
+执行完以后，`source_files`、`source_texts` 和 `auth_candidates` 留在 Kernel 命名空间。下一轮可以继续切片、过滤或组合，不必重新读文件。
+
+但“变量存在”不等于“模型已经看见变量值”。模型直接看到的是自己此前生成的代码以及 Tool Result；如果 `source_texts` 包含 50,000 字源码而 Cell（一次提交给 IPython 执行的代码单元）没有打印它，源码内容不会自动进入语言上下文。模型要检查内容，必须再显式执行：
+
+```python
+for path, text in auth_candidates.items():
+    print(path)
+    print(text[:2000])
+```
+
+收益就在这里：程序可以先把 50,000 字过滤为 2,000 字，再让模型阅读。因而 Prime 当前更准确的实现描述不是“用户 Prompt 自动变量化”，而是：
+
+> **Working-context-as-kernel-state：把模型显式加载、生成和选择的工作上下文放进可寻址的持久 Kernel 状态。**
+
+### 5.4 三个上下文平面：消息、Kernel 与 Child 不能混为一谈
+
+Prime 同时维护三类上下文，它们的可见性、寿命和责任不同：
+
+| 上下文平面 | 主要内容 | 谁能直接看到 | 主要风险 |
+|---|---|---|---|
+| LLM Context | System Prompt、用户消息、Assistant 消息、Tool Call/Result、子代理回信、Compaction 摘要 | 当前模型 | Context rot（上下文变长后利用质量下降）、压缩损失、原始输出挤占注意力 |
+| Kernel Namespace | Python 变量、导入、函数、解析对象、Skill 返回值、子代理 handle | Python 程序；模型需通过代码检查 | 状态存在但语义索引丢失、对象过期、恢复不完整 |
+| Child Agent Context | Child 自己的 System Prompt、显式子任务、独立消息轨迹与 Kernel | 对应子模型 | 父上下文未自动继承、任务输入不完整、结果口径分叉 |
+
+这三层的职责可以概括为：
+
+```text
+LLM Context：当前语义决策需要看见什么
+Kernel Namespace：哪些工作状态只需被程序寻址
+Child Context：哪些认知工作应隔离到独立上下文
+```
+
+因此“上下文外部化”不是把一切都搬离 Prompt，而是决定每种信息应该进入哪个平面，以及何时才把经过筛选的证据重新带回模型。
+
+### 5.5 多工具如何编排：能力没有消失，而是分成五条调用路径
+
+Prime 所谓“Everything is programmatic”不是所有能力都变成同一种函数。固定实现至少有五条不同路径。
+
+第一类是普通 Python 运算。循环、分支、正则、JSON 解析、排序和表格变换不再需要工具：
+
+```python
+selected = [item for item in records if item["score"] >= 0.8]
+grouped = {}
+for item in selected:
+    grouped.setdefault(item["module"], []).append(item)
+```
+
+第二类是文件与本地数据处理。模型可以用 `pathlib` 一次扫描几百个文件，只打印候选列表；原始内容继续保留在变量中。与传统 `read(file1) → model → read(file2)` 相比，模型不再参与每个文件的调度。
+
+第三类是项目命令。Prime 推荐使用完整的 `%%bash` Cell：
+
+```bash
+%%bash
+npm run check
+npm run test -- auth
+git diff --stat
+```
+
+`%%bash` 必须位于 Cell 第一行，因此一个 Shell Cell 不能在前面先写 Python。每个 `%%bash` 又是临时子 Shell，`cd`、`export` 和 Shell 变量不会自动延续；持久的是 Python 变量、导入、`%cd` 和 Kernel 环境。也就是说，“可编程编排”不等于所有语言和所有副作用永远塞进同一个 Function Call；跨 Python/Shell Cell 仍可能需要多个 `ipython` Tool Call，只是它们共享同一个持久控制环境。[官方 RLM 编程模型](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm.md#L31-L51)
+
+第四类是 Python-backed Skill。Prime 把安装好的 Skill 包导入 Kernel，并把带 `run()` 的模块包装成可 `await` 的对象：
+
+```python
+report = await release_audit(
+    repository=".",
+    target_version="0.4.0",
+)
+```
+
+这里模型没有生成第二个 `release_audit` Function Call。真正的模型 Tool Call仍然只有外层 `ipython(code)`；`release_audit(...)` 是这段 Python 程序内部的函数调用。它可以被放进循环、条件、重试和异常处理里。[源码：Skill module 包装与全局注入](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L70-L140)
+
+第五类是由 TypeScript Host 掌握权威状态的能力，例如 `rlm.run`、Goal、Compaction、Refine、Heartbeat、Agent Message 与 MCP 配置。这些不能只靠 Kernel 内的普通 Python 对象完成，需要通过 `host.request` 跨回 Host。MCP 的具体远端调用可以由 Python integration 使用 MCP Client 完成，但认证刷新和 Host 已解析的连接配置仍由 `mcp.*` Host request 提供。[源码：MCP Host handlers](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/mcp/mcp-manager.ts#L156-L191) 工具 schema 并没有凭空消失，而是从“模型直接看到几十个 JSON Tool schema”，迁移到 Python API、Skill 文档和 Host 的 typed request handler 中。
+
+### 5.6 Host Bridge：外层是 Function Call，内层是程序发起的类型化 RPC
+
+以 `await rlm("审查鉴权流程", name="auth-reviewer")` 为例，完整链路是：
+
+```mermaid
+sequenceDiagram
+    participant M as "主模型"
+    participant A as "Agent Loop / ipython Tool"
+    participant K as "IPython Kernel"
+    participant B as "Jupyter Comm: host.request"
+    participant H as "TypeScript AgentSession"
+    participant C as "Child AgentSession"
+
+    M->>A: "Function Call: ipython(code)"
+    A->>K: "execute_request"
+    K->>K: "运行 Python、保留变量"
+    K->>B: "rlm.run {prompt, kwargs}"
+    B->>H: "按 type 查找 typed handler"
+    H->>H: "校验深度、名称、模型与认证"
+    H-->>K: "RLMSpawnHandle（只确认接纳）"
+    H->>C: "异步创建并投递 [task from parent]"
+    K-->>A: "stdout / result / attachments"
+    A-->>M: "ipython Tool Result"
+    C-->>H: "后续 agent_message 或文件"
+    H-->>M: "后续普通 Agent Message"
+```
+
+Python 侧 `host_request()` 创建 Jupyter Comm，把 `type` 与 payload 发给 Host，并用 Future 等待 `ok/error` 回复；`rlm.run()` 只是把子任务包装为 `host_request("rlm.run", ...)`。[源码：Python Host bridge 与 `rlm.run`](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/__init__.py#L84-L151)
+
+TypeScript `KernelManager` 收到 Comm 后，根据 `data.type` 查找 handler；`AgentSession` 则注册 `rlm.run`、`rlm.find_models`、Goal、Compact、Refine、Heartbeat、Agent Message 与 MCP 等处理器。[源码：Host request 分派](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L1225-L1270) [源码：Session 侧 handler 注册](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session.ts#L8680-L8781)
+
+这里有两个不能混淆的协议：
+
+```text
+LLM Function Call
+  调用主体：模型
+  形态：ipython({code})
+  结果：作为 Tool Result 回到模型上下文
+
+Host Request RPC
+  调用主体：已经运行起来的 Python 程序
+  形态：host_request(type, payload)
+  结果：先成为 Python 返回值，是否打印给模型由程序决定
+```
+
+Host 回复还必须走 Jupyter control channel。若把回复放回 shell channel，当前 `execute_request` 会等待 `rlm.run` 返回，而 Kernel 又要等当前请求结束后才能处理 shell 回复，形成自我等待。Prime 给 control channel 注册 Comm handler，使 admission 回复能在 Cell 仍运行时唤醒 Python Future；子代理最终答案不走这条返回路径，而是稍后通过消息或文件交付。[官方 Runtime 说明](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm-runtime.md#why-host-request-responses-use-the-control-channel)
+
+### 5.7 一个完整例子：从 100 个文件到三路审查
+
+假设任务是审查仓库的鉴权实现、测试覆盖和依赖风险。第一步不需要让模型逐个调用 `read`，而是让它提交一个程序构造工作集：
+
+```python
+from pathlib import Path
+import json
+
+source_files = [
+    path
+    for path in Path(".").rglob("*")
+    if path.is_file() and path.suffix in {".ts", ".tsx", ".js", ".py"}
+]
+
+auth_candidates = []
+for path in source_files:
+    try:
+        text = path.read_text(errors="ignore")
+    except Exception:
+        continue
+
+    terms = [
+        term
+        for term in ("authorize", "authenticate", "permission", "token", "session")
+        if term in text.lower()
+    ]
+    if terms:
+        auth_candidates.append({
+            "path": str(path),
+            "terms": terms,
+            "size": len(text),
+        })
+
+auth_candidates.sort(key=lambda item: (-len(item["terms"]), -item["size"]))
+Path(".prime-work").mkdir(exist_ok=True)
+Path(".prime-work/auth-candidates.json").write_text(
+    json.dumps(auth_candidates, ensure_ascii=False, indent=2)
+)
+
+print({
+    "source_files": len(source_files),
+    "candidates": len(auth_candidates),
+    "top": auth_candidates[:10],
+})
+```
+
+这一个 Cell 已经完成遍历、读取、过滤、排序、持久化共享 artifact 和低体积输出。完整候选没有全部进入主上下文。
+
+第二步可以派发三路独立工作：
+
+```python
+auth_worker = await rlm(
+    """
+读取 .prime-work/auth-candidates.json，审查鉴权与授权边界。
+把证据、风险等级和结论写入 .prime-work/auth-review.md；
+完成后向父 Agent 发送简短消息。
+""",
+    name="auth-reviewer",
+)
+
+test_worker = await rlm(
+    """
+检查鉴权测试的失败路径和权限提升路径；
+把结果写入 .prime-work/test-review.md，并通知父 Agent。
+""",
+    name="test-reviewer",
+)
+
+dependency_worker = await rlm(
+    """
+检查与 Token、Session 和鉴权有关的依赖与配置；
+不要修改仓库，把结果写入 .prime-work/dependency-review.md，并通知父 Agent。
+""",
+    name="dependency-reviewer",
+)
+```
+
+这三个 `await` 等待的只是任务接纳，因此通常很快返回 handle；三个 Child 被接纳后由独立 `AgentSession` 继续执行。父 Agent不应该把返回值误认为三份答案，也不需要在当前 Cell 里同步等待所有 Child 完成。真正的结果稍后通过 `agent_message` 或共享文件汇入，父 Agent再在新 turn 中读取三个 Markdown、检查证据冲突并给出总判断。
+
+由此可以看出，Prime 的“多工具编排”不是一个神秘的万能工具，而是三种控制方式的组合：
+
+```text
+Python 控制流：处理确定性循环、分支和数据变换
+Host Request：调用由 Runtime 掌握的受管能力
+Child Agent：隔离需要独立语义判断和上下文预算的工作
+```
+
+### 5.8 并发和结果回收：Kernel 串行，Child 独立，fan-in 事件驱动
+
+同一个 Kernel 的普通 Cell 通过 execution queue 串行执行；Prime 不会让两个 `ipython` Tool Call 同时修改同一个命名空间。[源码：Kernel execution queue](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L843)
+
+单个 Cell 内可以 `await` 异步 Skill；在 API 契约允许时，也可以用 `asyncio.gather` 重叠独立 I/O。但这不等于 Kernel 同时执行多个普通 Cell。RLM Child 的并发来自独立子会话和各自运行时，而不是共享 Kernel 的多线程。
+
+子代理的结果回收又不是普通函数 fan-in（同步汇聚多个返回值）：
+
+```text
+错误理解：answers = await asyncio.gather(rlm(...), rlm(...))
+           answers 是子代理最终答案
+
+真实语义：handles = [await rlm(...), await rlm(...)]
+           handles 只确认 admission
+           最终结果通过后续 Agent Message 或文件返回
+```
+
+这种 Actor 式路径——独立执行单元通过异步消息或 Artifact 协作，而非维持一条同步函数调用栈——适合长任务：父任务不会被一个慢 Child 的同步调用栈卡住，Child 可以继续被 steer，也可以在终端断开后保留。但它把超时、去重、冲突合并、失败策略和“是否已经收齐所有结果”的责任留给了父 Agent与 Runtime 策略。第 6 节会继续展开这条生命周期。
+
+到这里，Prime 的第一项核心增量才可以被完整表述：它不是把 Tool Call 换了一个 Python 语法，而是保留外层模型—工具协议，同时在内部增加可持续的程序状态和 Host RPC，使确定性微动作、受管能力与独立认知任务分别落到 Python、Runtime 和 Child Agent 三个合适的执行层。尚未解决的是这套程序状态怎样可靠恢复、异步结果怎样证明收齐、以及生成代码本身怎样被安全隔离。
+
+### 5.9 持久不等于完整 Checkpoint
 
 Prime 会在成功 cell 后延迟约 1.5 秒，把用户命名空间逐变量用 `dill` 序列化；默认上限 256 MiB。单个不可序列化对象不会拖垮全部快照，恢复时也逐变量容错。[源码：快照与恢复代码](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/state-snapshot.ts#L1-L193)
 
@@ -217,7 +527,9 @@ Prime 会在成功 cell 后延迟约 1.5 秒，把用户命名空间逐变量用
 
 所以 Prime 的状态连续性是“消息 + Artifact + 最佳努力的 Python 命名空间”，不是像数据库或工作流引擎那样的全事务 Checkpoint。
 
-### 5.4 RLM 的收益不是无条件成立
+还有一个语义层问题：变量可能仍然存在，但 Compaction 后的模型忘记了变量名、结构、来源或时效。此时系统实现了“存储连续性”，却没有自动实现“语义可发现性”。稳定命名、状态 manifest、来源版本和必要的摘要仍然是 Harness 责任。
+
+### 5.10 RLM 的收益不是无条件成立
 
 Prime Intellect 的独立 RLM 博客实验本身给出了反例：RLM 在部分长上下文任务上有收益，但在 math-python 上退化；DeepDive 若不提供明确的分解策略也可能落后；所有测试场景的完成时间都显著上升，子模型还会增加总 token 消耗。博客中的“主模型 token 效率”不统计子模型 token，不能直接等价成总成本下降。[官方 RLM 实验](https://www.primeintellect.ai/blog/rlm)
 
@@ -604,10 +916,13 @@ Kernel abort 先发送 interrupt；1 秒后若还未结束，会把当前 Tool C
 | 总体架构 | [architecture.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/architecture.md) |
 | RLM 编程模型 | [rlm.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm.md) |
 | RLM Runtime | [rlm-runtime.md](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/docs/rlm-runtime.md) |
+| `ipython(code)` schema、bootstrap 与 Tool Result | [ipython.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L24-L148) [execute](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/tools/ipython.ts#L622-L703) |
+| RLM System Prompt 与编程约束 | [prompts/rlm.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/prompts/rlm.ts#L15-L166) |
 | 根/子会话生命周期 | [agent-session-runtime.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session-runtime.ts#L86-L322) |
 | 子代理接纳与终态 | [agent-session.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session.ts#L9604-L9952) |
 | Python `rlm` API | [rlm/__init__.py](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/__init__.py#L143-L304) |
-| Kernel 与 Host bridge | [kernel/index.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L930) |
+| Kernel 执行队列与 Host bridge | [执行入口](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L803-L930) [Host request 分派](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/index.ts#L1225-L1280) |
+| Session 侧 Host handler | [agent-session.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/agent-session.ts#L8680-L8781) |
 | Namespace 快照 | [state-snapshot.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/kernel/state-snapshot.ts#L52-L193) |
 | Refinement 规划与应用 | [refinement.ts](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/packages/coding-agent/src/core/refinement/refinement.ts#L707-L933) |
 | Python Harness Store | [harness.py](https://github.com/PrimeIntellect-ai/prime-agent/blob/a18809e00ea30638584d87b3afea7285a9d7296c/prime-agent-runtime/src/rlm/harness.py#L141-L315) |
