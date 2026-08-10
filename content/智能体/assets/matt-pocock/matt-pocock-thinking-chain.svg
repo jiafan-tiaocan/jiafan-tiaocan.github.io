@@ -1,132 +1,113 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">Matt Pocock 的思维链：从显性模型到可复用反馈系统</title>
-  <desc id="desc">从公开作品重建的三阶段思维链。第一阶段以 XState typegen 将状态关系外化成类型约束，第二阶段以 Total TypeScript、ts-reset 和错误翻译器把反馈移到学习动作旁边，第三阶段以 Evalite、Skills 和 Sandcastle 把评测、决策与隔离运行变成 Agent 工程反馈。底部总结共同循环：显性模型、最小任务、机器反馈、持久化工件与复用传播。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc">
+  <title id="title">Matt Pocock 的六项核心成果</title>
+  <desc id="desc">成果地图从 XState typegen、Total TypeScript、ts-reset 和错误翻译器，延伸到 Evalite、Agent Skills 与 Sandcastle。每张卡片列出解决的问题、交付物和实际改进。底部区分成熟旗舰、精准开源工具、注意力成果和新兴基础设施。</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0b1220"/>
-      <stop offset="1" stop-color="#131c2d"/>
+      <stop offset="0" stop-color="#09111f"/>
+      <stop offset="1" stop-color="#162033"/>
     </linearGradient>
-    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#2dd4bf"/>
-      <stop offset="1" stop-color="#38bdf8"/>
-    </linearGradient>
-    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fbbf24"/>
-      <stop offset="1" stop-color="#fb7185"/>
+      <stop offset="0.5" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#a78bfa"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#020617" flood-opacity="0.38"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.34"/>
     </filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#64748b"/>
-    </marker>
     <style>
       .sans { font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif; }
       .mono { font-family: "SFMono-Regular", Consolas, monospace; }
-      .muted { fill: #94a3b8; }
-      .small { font-size: 21px; }
-      .body { font-size: 24px; }
-      .label { font-size: 18px; font-weight: 700; letter-spacing: .11em; }
-      .card-title { font-size: 31px; font-weight: 760; }
+      .eyebrow { font-size: 17px; font-weight: 760; letter-spacing: .1em; }
+      .card-title { font-size: 27px; font-weight: 760; fill: #f8fafc; }
+      .body { font-size: 20px; fill: #cbd5e1; }
+      .small { font-size: 17px; fill: #94a3b8; }
     </style>
   </defs>
 
-  <rect width="1600" height="900" rx="28" fill="url(#bg)"/>
-  <circle cx="1450" cy="55" r="210" fill="#0ea5e9" opacity="0.08"/>
-  <circle cx="120" cy="850" r="260" fill="#14b8a6" opacity="0.06"/>
+  <rect width="1600" height="960" rx="28" fill="url(#bg)"/>
+  <circle cx="1460" cy="30" r="230" fill="#38bdf8" opacity="0.07"/>
+  <circle cx="80" cy="940" r="250" fill="#2dd4bf" opacity="0.06"/>
 
   <g class="sans">
-    <text x="88" y="82" class="label" fill="#5eead4">MATT POCOCK · THINKING CHAIN</text>
-    <text x="88" y="138" font-size="42" font-weight="780" fill="#f8fafc">从含混问题，到可复用的反馈系统</text>
-    <text x="88" y="178" class="body muted">把隐性的专家判断，外化成可练习、可执行、可验证、可传播的工作流</text>
-
-    <path d="M480 404 C540 404 550 404 610 404" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-    <path d="M990 404 C1050 404 1060 404 1120 404" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+    <text x="80" y="66" class="eyebrow" fill="#5eead4">MATT POCOCK · CORE WORK</text>
+    <text x="80" y="120" font-size="43" font-weight="790" fill="#f8fafc">六项成果，一套从专业能力到产品影响力的路径</text>
+    <text x="80" y="160" font-size="22" fill="#94a3b8">先解决真实摩擦，再把解法交付为类型工具、练习系统、Eval、Skill 与 Runtime</text>
+    <rect x="80" y="190" width="1440" height="5" rx="3" fill="url(#line)"/>
 
     <g filter="url(#shadow)">
-      <rect x="80" y="235" width="400" height="350" rx="24" fill="#111c2d" stroke="#334155"/>
-      <rect x="80" y="235" width="400" height="8" rx="4" fill="url(#teal)"/>
-      <text x="116" y="291" class="label" fill="#67e8f9">01 · STATE &amp; TYPE</text>
-      <text x="116" y="339" class="card-title" fill="#f8fafc">先让系统说清自己</text>
-      <text x="116" y="381" class="small muted">XState · codegen / typegen</text>
-      <rect x="116" y="416" width="328" height="104" rx="16" fill="#0b1525" stroke="#25334a"/>
-      <circle cx="158" cy="451" r="12" fill="#2dd4bf"/>
-      <circle cx="242" cy="451" r="12" fill="#38bdf8"/>
-      <circle cx="326" cy="451" r="12" fill="#818cf8"/>
-      <path d="M171 451 H226 M255 451 H310" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
-      <text x="139" y="494" class="mono" font-size="17" fill="#cbd5e1">state → event → action</text>
-      <text x="116" y="554" class="small" fill="#dbeafe">模型显性化，类型系统负责纠错</text>
+      <rect x="80" y="230" width="450" height="230" rx="22" fill="#111c2d" stroke="#2b3b54"/>
+      <text x="112" y="270" class="eyebrow" fill="#67e8f9">01 · XSTATE TYPEGEN</text>
+      <text x="112" y="310" class="card-title">让状态机关系进入类型系统</text>
+      <text x="112" y="352" class="body">问题：action 收到宽泛事件，缺少实现检查</text>
+      <text x="112" y="387" class="body">交付：静态分析 + 生成类型 + VS Code 集成</text>
+      <text x="112" y="426" class="small">提升：上下文事件收窄、补全、缺失实现报错</text>
     </g>
 
     <g filter="url(#shadow)">
-      <rect x="610" y="235" width="380" height="350" rx="24" fill="#111c2d" stroke="#334155"/>
-      <rect x="610" y="235" width="380" height="8" rx="4" fill="url(#amber)"/>
-      <text x="646" y="291" class="label" fill="#fbbf24">02 · LEARNING LOOP</text>
-      <text x="646" y="339" class="card-title" fill="#f8fafc">再让反馈成为老师</text>
-      <text x="646" y="381" class="small muted">Total TypeScript · ts-reset</text>
-      <g transform="translate(646 418)">
-        <rect width="308" height="105" rx="16" fill="#0b1525" stroke="#25334a"/>
-        <rect x="20" y="20" width="74" height="64" rx="9" fill="#17233a"/>
-        <text x="36" y="60" class="mono" font-size="22" fill="#fbbf24">TODO</text>
-        <path d="M108 52 H158" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
-        <rect x="173" y="20" width="115" height="64" rx="9" fill="#122a2b"/>
-        <text x="194" y="60" class="mono" font-size="22" fill="#5eead4">PASS</text>
-      </g>
-      <text x="646" y="554" class="small" fill="#fef3c7">问题 → 尝试 → 编译器 / 测试 → 修正</text>
+      <rect x="575" y="230" width="450" height="230" rx="22" fill="#111c2d" stroke="#2b3b54"/>
+      <text x="607" y="270" class="eyebrow" fill="#fbbf24">02 · TOTAL TYPESCRIPT</text>
+      <text x="607" y="310" class="card-title">把 TypeScript 教学做成练习系统</text>
+      <text x="607" y="352" class="body">问题：视频能看懂，复杂类型仍不会写</text>
+      <text x="607" y="387" class="body">交付：问题文件 + 编辑器反馈 + 解法讲解</text>
+      <text x="607" y="426" class="small">提升：从被动听课变成可重复的主动训练</text>
     </g>
 
     <g filter="url(#shadow)">
-      <rect x="1120" y="235" width="400" height="350" rx="24" fill="#111c2d" stroke="#334155"/>
-      <rect x="1120" y="235" width="400" height="8" rx="4" fill="url(#teal)"/>
-      <text x="1156" y="291" class="label" fill="#67e8f9">03 · AGENT ENGINEERING</text>
-      <text x="1156" y="339" class="card-title" fill="#f8fafc">最后约束自主执行</text>
-      <text x="1156" y="381" class="small muted">Evalite · Skills · Sandcastle</text>
-      <g transform="translate(1156 414)">
-        <rect width="328" height="110" rx="16" fill="#0b1525" stroke="#25334a"/>
-        <rect x="18" y="22" width="70" height="66" rx="10" fill="#17233a"/>
-        <text x="37" y="62" class="mono" font-size="20" fill="#c4b5fd">LLM</text>
-        <path d="M101 55 H146" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
-        <path d="M220 55 H265" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
-        <rect x="154" y="22" width="60" height="66" rx="10" fill="#122a2b"/>
-        <text x="172" y="62" class="mono" font-size="20" fill="#5eead4">✓</text>
-        <rect x="273" y="22" width="36" height="66" rx="8" fill="#2a2030"/>
-        <text x="284" y="62" class="mono" font-size="20" fill="#fda4af">↺</text>
-      </g>
-      <text x="1156" y="554" class="small" fill="#dbeafe">评测、Skill、隔离环境共同收窄自由度</text>
+      <rect x="1070" y="230" width="450" height="230" rx="22" fill="#111c2d" stroke="#2b3b54"/>
+      <text x="1102" y="270" class="eyebrow" fill="#c4b5fd">03 · TS-RESET / ERRORS</text>
+      <text x="1102" y="310" class="card-title">修正默认类型与错误反馈</text>
+      <text x="1102" y="352" class="body">问题：JSON 返回 any，报错难以行动</text>
+      <text x="1102" y="387" class="body">交付：声明合并包 + IDE 错误翻译器</text>
+      <text x="1102" y="426" class="small">提升：更安全默认值，更短的理解路径</text>
     </g>
 
-    <text x="88" y="663" class="label" fill="#a5b4fc">THE REPEATED PATTERN</text>
-    <path d="M160 739 H1418" stroke="#334155" stroke-width="3"/>
+    <g filter="url(#shadow)">
+      <rect x="80" y="500" width="450" height="230" rx="22" fill="#111c2d" stroke="#2b3b54"/>
+      <text x="112" y="540" class="eyebrow" fill="#67e8f9">04 · EVALITE</text>
+      <text x="112" y="580" class="card-title">把 LLM 评测拉回 TypeScript</text>
+      <text x="112" y="622" class="body">问题：非确定输出只能靠人工看样例</text>
+      <text x="112" y="657" class="body">交付：.eval.ts + scorer + trace + CI 阈值</text>
+      <text x="112" y="696" class="small">提升：本地、可重复、无模型厂商绑定的 Eval</text>
+    </g>
 
-    <g>
-      <circle cx="180" cy="739" r="31" fill="#17233a" stroke="#5eead4" stroke-width="3"/>
-      <text x="180" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#5eead4">1</text>
-      <text x="180" y="803" text-anchor="middle" class="body" fill="#f8fafc">显性模型</text>
-      <text x="180" y="836" text-anchor="middle" class="small muted">state / vocabulary</text>
+    <g filter="url(#shadow)">
+      <rect x="575" y="500" width="450" height="230" rx="22" fill="#111c2d" stroke="#2b3b54"/>
+      <text x="607" y="540" class="eyebrow" fill="#fbbf24">05 · AGENT SKILLS</text>
+      <text x="607" y="580" class="card-title">把工程方法写成可调用协议</text>
+      <text x="607" y="622" class="body">问题：Agent 缺需求、调试和交付纪律</text>
+      <text x="607" y="657" class="body">交付：grill、spec、TDD、review 等 Skills</text>
+      <text x="607" y="696" class="small">提升：工程动作可安装、组合、修改和复用</text>
     </g>
-    <g>
-      <circle cx="490" cy="739" r="31" fill="#17233a" stroke="#fbbf24" stroke-width="3"/>
-      <text x="490" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#fbbf24">2</text>
-      <text x="490" y="803" text-anchor="middle" class="body" fill="#f8fafc">最小任务</text>
-      <text x="490" y="836" text-anchor="middle" class="small muted">exercise / slice</text>
+
+    <g filter="url(#shadow)">
+      <rect x="1070" y="500" width="450" height="230" rx="22" fill="#111c2d" stroke="#2b3b54"/>
+      <text x="1102" y="540" class="eyebrow" fill="#c4b5fd">06 · SANDCASTLE</text>
+      <text x="1102" y="580" class="card-title">把 Agent 副作用收进 Runtime</text>
+      <text x="1102" y="622" class="body">问题：Prompt 无法隔离文件、并发与恢复</text>
+      <text x="1102" y="657" class="body">交付：sandbox + worktree + branch + merge</text>
+      <text x="1102" y="696" class="small">提升：运行隔离、可恢复日志、提交式交付</text>
     </g>
-    <g>
-      <circle cx="800" cy="739" r="31" fill="#17233a" stroke="#5eead4" stroke-width="3"/>
-      <text x="800" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#5eead4">3</text>
-      <text x="800" y="803" text-anchor="middle" class="body" fill="#f8fafc">机器反馈</text>
-      <text x="800" y="836" text-anchor="middle" class="small muted">type / test / eval</text>
+
+    <text x="80" y="800" class="eyebrow" fill="#a5b4fc">客观定位</text>
+    <g transform="translate(80 825)">
+      <rect width="330" height="78" rx="16" fill="#10252a" stroke="#2dd4bf"/>
+      <text x="22" y="32" font-size="19" font-weight="740" fill="#5eead4">最成熟的旗舰成果</text>
+      <text x="22" y="58" class="small">Total TypeScript</text>
     </g>
-    <g>
-      <circle cx="1110" cy="739" r="31" fill="#17233a" stroke="#fbbf24" stroke-width="3"/>
-      <text x="1110" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#fbbf24">4</text>
-      <text x="1110" y="803" text-anchor="middle" class="body" fill="#f8fafc">持久化工件</text>
-      <text x="1110" y="836" text-anchor="middle" class="small muted">ADR / commit / trace</text>
+    <g transform="translate(450 825)">
+      <rect width="330" height="78" rx="16" fill="#2a2413" stroke="#fbbf24"/>
+      <text x="22" y="32" font-size="19" font-weight="740" fill="#fcd34d">最精准的开源工具</text>
+      <text x="22" y="58" class="small">ts-reset</text>
     </g>
-    <g>
-      <circle cx="1420" cy="739" r="31" fill="#17233a" stroke="#5eead4" stroke-width="3"/>
-      <text x="1420" y="748" text-anchor="middle" font-size="26" font-weight="750" fill="#5eead4">5</text>
-      <text x="1420" y="803" text-anchor="middle" class="body" fill="#f8fafc">复用传播</text>
-      <text x="1420" y="836" text-anchor="middle" class="small muted">course / package / skill</text>
+    <g transform="translate(820 825)">
+      <rect width="330" height="78" rx="16" fill="#1d2038" stroke="#818cf8"/>
+      <text x="22" y="32" font-size="19" font-weight="740" fill="#c4b5fd">最大的注意力成果</text>
+      <text x="22" y="58" class="small">Agent Skills</text>
+    </g>
+    <g transform="translate(1190 825)">
+      <rect width="330" height="78" rx="16" fill="#132334" stroke="#38bdf8"/>
+      <text x="22" y="32" font-size="19" font-weight="740" fill="#7dd3fc">最值得观察的新基础设施</text>
+      <text x="22" y="58" class="small">Evalite + Sandcastle</text>
     </g>
   </g>
 </svg>
