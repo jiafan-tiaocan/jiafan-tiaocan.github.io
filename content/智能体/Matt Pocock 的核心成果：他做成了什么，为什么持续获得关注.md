@@ -1,6 +1,6 @@
 ---
 title: "Matt Pocock 的核心成果：他做成了什么，为什么持续获得关注"
-description: "客观拆解 XState typegen、Total TypeScript、ts-reset、Evalite、Agent Skills 与 Sandcastle 的具体机制、实际提升、商业模式、采用信号与成熟度，并归纳 Matt Pocock 持续产出有价值成果的工作方法。"
+description: "客观拆解 XState typegen、Total TypeScript、ts-reset、Evalite、25 个正式 Agent Skills 与 Sandcastle 的具体机制、实际提升、商业模式、采用信号与成熟度，并归纳 Matt Pocock 持续产出有价值成果的工作方法。"
 aliases:
   - "智能体/Matt Pocock的思维链"
 tags:
@@ -10,7 +10,8 @@ tags:
   - AI-Coding
   - Developer-Education
   - Open-Source
-date: 2026-08-10
+date: 2026-08-11
+last_verified: 2026-08-11
 noteType: technical
 publish: true
 ---
@@ -35,10 +36,10 @@ Matt Pocock 做成了六件值得单独讨论的事：他参与把 XState 状态
 | Total TypeScript | 视频课程容易制造“听懂了”的错觉，类型系统又高度依赖动手反馈 | 免费教程、五套工作坊、文章、书和练习仓库 | 把学习单元改成“问题文件 → 尝试 → 编译器/测试 → 答案” | 官网列出的五套工作坊合计 427 个练习；出版 432 页图书 | 最成熟、最持久的旗舰成果 |
 | ts-reset / TS Error Translator | 标准库类型和错误信息常让反馈过宽、过窄或难以理解 | 全局声明修补包与 VS Code 错误翻译扩展 | 外部数据先成为 `unknown`；常见数组 API 更符合直觉；报错更接近下一步行动 | `ts-reset` 约 8,600 Star，近 30 天约 485 万次 npm 下载 | 最精准的小型开源成果；适用边界明确 |
 | Evalite | LLM 输出不稳定，单元测试难以表达“足够好” | `.eval.ts` API、本地 UI、trace、scorer、CI 与静态结果页 | 复用 Vitest 心智模型，把样例、任务、评分和轨迹放进同一反馈环 | 约 1,650 Star，近 30 天约 98 万次 npm 下载 | 已有真实采用；v1 仍为 beta |
-| Agent Skills | Coding Agent 知道语法，却经常跳过澄清、调研、TDD、调试和评审 | 35 个可组合的 `SKILL.md`，覆盖从需求到实现与维护 | 把专家动作改写成触发条件、步骤、工件和完成标准 | 约 21.2 万 Star、1.83 万 Fork，创建约半年 | 公开关注最大的成果；缺少跨模型行为回归 |
+| Agent Skills | Coding Agent 知道语法，却经常跳过澄清、调研、TDD、调试和评审 | 25 个正式发布的 Skill，加 10 个实验中或杂项 Skill | 把专家动作改写成触发条件、步骤、工件和完成标准 | 212,311 Star、18,345 Fork，创建约半年 | 公开关注最大的成果；缺少跨模型行为回归 |
 | Sandcastle | Prompt 可以建议 Agent 小心，却不能隔离副作用或管理并发改动 | TypeScript `run()` API、provider 抽象、容器/worktree、日志、超时、commit 与 merge-back | 把行为建议升级为运行时边界和可恢复交付 | 约 7,300 Star，近 30 天约 41 万次 npm 下载 | 很有潜力的 Agent Runtime；仍为 pre-1.0 |
 
-表中的 Star 与 npm 下载量是 2026-08-10 的公开快照。它们能说明触达和尝试，不能单独证明学习效果、行为成功率或生产可靠性。下面逐项看真正发生了什么。
+除 Skills 单独更新至 2026-08-11 外，表中的 Star 与 npm 下载量是 2026-08-10 的公开快照。它们能说明触达和尝试，不能单独证明学习效果、行为成功率或生产可靠性。下面逐项看真正发生了什么。
 
 ## 一、XState typegen：把状态机关系送进编辑器
 
@@ -201,47 +202,174 @@ evalite("Capitals", {
 
 这不等于 Evalite 自动保证评测正确。数据是否代表真实分布、scorer 是否可信、LLM-as-a-judge 是否偏置，仍由使用者负责。固定提交 `e18a7937…` 中，本文直接运行了 80 个 package 单元测试，均通过；完整集成测试依赖构建与交互环境，本次没有完成，因此不宣称全套验证通过。截至快照，Evalite 约 1,650 Star，近 30 天约 98 万次 npm 下载；官方 v1 仍标为 beta。它已经是有真实采用的工具，但 API 稳定性和长期治理尚不能按成熟测试框架评价。
 
-## 五、Agent Skills：把工程经验做成 Agent 可调用的工作流
+## 五、Agent Skills 的系统架构与核心代码：把工程经验做成可调用工作流
 
 ![AI Hero Skills 页面展示可单独安装、可编辑、跨不同 Coding Agent 使用的工程工作流。](assets/matt-pocock/ai-hero-skills.png)
 
 *图 4　Skills 的公开页面强调小型、可组合和跨 Agent 安装。截图来自 [AI Hero Skills](https://www.aihero.dev/skills)，获取于 2026-08-10。页面 Star 数只表示当日传播快照，不等同于 Skill 的行为成功率。*
 
-`mattpocock/skills` 是 Matt 获得公开关注最大的一项成果。它在 2026 年 2 月创建，到 8 月约有 21.2 万 Star、1.83 万 Fork。固定提交包含 35 个 `SKILL.md`；按 GitHub 贡献统计，420 次计数贡献中 Matt 占 406 次，说明它确实主要由他推动，而不是只承担传播角色。
+`mattpocock/skills` 是 Matt 获得公开关注最大的一项成果。仓库在 2026 年 2 月创建，截至 2026-08-11 有 212,311 Star、18,345 Fork。本文固定在提交 [`84fdeffd`](https://github.com/mattpocock/skills/tree/84fdeffd12f2ee307994d1eb6feb48173b6e0502)：420 次提交，MIT 许可证，版本 1.2.3；本地运行仓库唯一明确的版本一致性检查通过。按 GitHub 贡献统计，420 次计数贡献中 Matt 占 406 次，说明它确实主要由他推动，而不是只承担传播角色。
 
-它处理的真实问题是：Coding Agent 可以很快写出代码，却经常跳过优秀工程师默认会做的动作——先查代码库、澄清真实决策、做最小垂直切片、建立失败测试、验证浏览器行为、记录架构选择、评审改动。把这些原则一次性塞进巨大系统提示，会占用上下文，也很难知道何时执行哪一条。
+### Skills 仓库地图：35 个文件，不等于 35 个成熟产品
 
-Skills 的交付物不是一篇“最佳实践”文章，而是一组带触发条件的短工作流。主线大致是：
+固定版本共有 35 个 `SKILL.md`，但真正位于 `engineering/` 与 `productivity/`、进入 [Claude 插件清单](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/.claude-plugin/plugin.json)、并配有 Codex `agents/openai.yaml` 元数据的是 **25 个正式 Skill**。其余 10 个分别位于 `in-progress/` 和 `misc/`，包括写作实验、loop、迁移与脚手架，不应和正式产品等量齐观。
+
+正式集合又按“谁有权启动”分成两类：
+
+- **14 个用户调用型 Skill**：只有用户明确输入命令才能启动，负责选择流程、做关键确认与编排步骤；
+- **11 个模型调用型 Skill**：用户可以调用，Agent 也可以在任务匹配时自动采用，负责复用 TDD、调试、领域建模等局部纪律。
+
+这个划分不是目录整理，而是产品的控制权设计。[仓库的调用规范](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/.agents/invocation.md)明确规定：人调用型 Skill 可以调用模型型 Skill，却不能自动触发另一个人调用型 Skill。也就是说，模型可以在用户选择的流程内部复用纪律，却不能自行串起另一套高层流程。
+
+![Matt Pocock Skills 的五阶段控制系统：25 个正式 Skill 从进入与路由、澄清与建模、计划与协调，到执行验证和系统连续性，并映射到控制感、不确定性可见、专业身份、完成感与跨会话安全感。](assets/matt-pocock/skills-control-system.svg)
+
+*图 5　Skills 的真实结构不是 25 个平铺命令，而是“人的命令 → 模型纪律 → 持久工件”的控制链。上半部分来自固定版本的正式目录、插件清单和源码；下半部分的心理承诺是本文根据产品机制做的推断，不是用户研究结论。*
+
+### Skills 的总体架构与运行图：不是 Agent 不会写代码，而是过程失控
+
+Coding Agent 可以很快生成代码，却常在四处断掉：还没搞清需求就实现；上下文换一轮就忘记决定；没有建立能打红灯的反馈环；写完后既当运动员又当裁判。传统工程师知道应该访谈、建模、切票、测试和评审，但这些知识通常停留在人的习惯或长篇文档里，Agent 不知道何时加载哪一段。
+
+Matt 没有发明 TDD、DDD、tracer bullet、ADR 或 deep module。他的真实增量，是把这些既有工程方法编译成四类可执行要素：
 
 ```text
-grill-with-docs
-  → to-spec
-  → to-tickets
-  → implement
-  → tdd / verify
-  → code-review
+触发条件：什么时候应该加载这项纪律
+执行步骤：现在按什么顺序行动
+持久工件：哪些结果必须离开聊天窗口
+完成标准：什么证据出现后才能进入下一阶段
 ```
 
-旁支覆盖原型、研究、故障诊断、issue triage、共享术语和 ADR。每个 Skill 尽量说明何时触发、按什么顺序行动、要产生什么工件、到什么状态才算完成；用户可以用插件机制或 `npx skills` 选择安装，而不必接受整套框架。
+主线因此不是“用一句超级 Prompt 一次做完”，而是：
 
-这里的提升不是发明 TDD、DDD、tracer bullet 或 deep module。这些原则都有更早来源。Matt 做的是一层工程转译：
+```text
+setup / ask-matt
+  → grill-with-docs：澄清决策并更新领域语言
+  → to-spec：把已经谈清的内容压成规格
+  → to-tickets：切成带阻塞关系的垂直切片
+  → implement：在新上下文中逐票执行
+      ↳ tdd：先获得红灯，再写最小实现
+      ↳ code-review：把规范审查与需求审查分开
+  → commit / handoff：留下下一会话可恢复的状态
+```
 
-1. 把原则改写成 Agent 可以发现的触发条件；
-2. 把长方法拆成可组合的短协议；
-3. 把一次对话的结果固化为 spec、ticket、测试、ADR、commit 或 context 文档；
-4. 用统一目录和安装入口降低跨 Agent 采用成本。
+### 25 个正式 Skill 的核心代码索引：各自真正亮在哪里
 
-`grilling` 最能说明这种转译。它不是简单要求“多问问题”，而是先构造决策依赖，查清文件系统和公开资料中能够得到的事实，只把真正影响方向的未决项推给人，并附上推荐答案。需求访谈由此从一句提示词变成可重复的控制流程。
+下面不是照抄 README 的一句话简介，而是按固定源码提炼每个 Skill 的**控制机制、产生的工件，以及它命中的具体焦虑**。
 
-Skills 的成功也必须降温看。固定版本 CI 主要覆盖版本和发布，没有看到跨模型、跨仓库的行为回归：同一 Skill 在 Claude、Codex 或其他 Agent 上，是否稳定减少返工、提高测试覆盖或缩短任务时间，目前缺少公开基准。Prompt policy 还会被忽略、误解或过度执行。21.2 万 Star 证明它抓住了强烈需求、命名清楚、分发效率极高；它不能单独证明 35 个 Skill 都有效。
+#### 1. 进入与路由：先消除“我该用哪一个”的选择成本
 
-即便如此，Skills 仍是核心成果，因为它把散落在文章和经验中的操作方法变成了开发者可以安装、修改、组合和讨论的公共工件。它也把 Matt 从 TypeScript 教育者推到了 Agent 工程实践的中心视野。
+| Skill | 核心亮点与真实工件 | 为什么容易命中 |
+|---|---|---|
+| [`setup-matt-pocock-skills`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/setup-matt-pocock-skills/SKILL.md) | 先读取 remote、`AGENTS.md`、领域文档与 monorepo 信号，再让人确认 issue tracker；最终写入 `docs/agents/` 配置，而不是强迫所有仓库采用同一套平台。 | 开发者想获得方法，却不想为方法迁移整个项目。先适配现有仓库，降低了“又来一套框架”的防御心理。 |
+| [`ask-matt`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/ask-matt/SKILL.md) | 它是路由器，不执行具体工程：把 idea-to-ship 主线、bug/triage/wayfinder 入口、独立工具和 context phase boundary 画成可选择的路径。 | 25 个命令本来会制造新的选择焦虑；一个可以直接问“现在该走哪条路”的入口，让复杂系统仍有单一前门。 |
+
+#### 2. 澄清与建模：让 Agent 先理解，再让人作决定
+
+| Skill | 核心亮点与真实工件 | 为什么容易命中 |
+|---|---|---|
+| [`grilling`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/productivity/grilling/SKILL.md) | 把计划建成决策依赖树；每轮只问先决条件已解决的 `frontier`，每题附推荐答案。环境中能查到的事实由 Agent 查，只有方向性决定交给人；frontier 清空才算结束。 | 用户不必一开始就写出“完美 Prompt”，只需回答当前可回答的问题；同时关键决定仍在自己手里，既减轻空白页负担，又保留主导权。 |
+| [`grill-me`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/productivity/grill-me/SKILL.md) | 给 `grilling` 提供一个无仓库、无持久化的人工入口，适合计划、写作和普通决策。 | 一条动词式命令就能获得“有人认真追问我”的体验，没有配置成本；这也是最容易被截图和转述的即时价值。 |
+| [`grill-with-docs`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/grill-with-docs/SKILL.md) | 本体只有一句编排：同时运行 `grilling` 与 `domain-modeling`。短不代表空，它把访谈与领域文档更新锁在同一动作里。 | 很多用户真正怕的不是这一轮没聊清，而是下一轮 Agent 又忘了；边聊边留下文档，比“这次回答不错”更有安全感。 |
+| [`domain-modeling`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/domain-modeling/SKILL.md) | 对照 `CONTEXT.md` 挑出术语冲突，用边界场景逼出精确定义，并与源码交叉检查；术语当场写入 glossary。只有“难逆、缺背景会意外、存在真实权衡”三项同时满足才建 ADR。 | 它承诺 Agent 能逐渐“说团队的语言”，也避免 ADR 泛滥。开发者得到的是组织记忆和一致命名，不只是更顺耳的回答。 |
+| [`research`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/research/SKILL.md) | 把一手资料检索交给后台 Agent，并要求每个结论有来源，最终落成仓库内 Markdown。 | 它把“Agent 可能凭记忆胡说”的担忧转换为可回读的证据文件，同时不阻塞主会话。 |
+| [`prototype`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/prototype/SKILL.md) | 先判断问题是“逻辑是否成立”还是“界面应该怎样”；前者做可操作的单 HTML 状态演示，后者做多种可切换 UI。代码从第一天标记为 throwaway，但保留在独立分支作为决策的一手证据。 | 当抽象讨论开始打转，眼前能点、能比较的东西会迅速恢复进展；同时“原型不会偷偷变生产代码”的边界降低技术债焦虑。 |
+| [`to-questionnaire`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/productivity/to-questionnaire/SKILL.md) | 不追问用户本来就不知道的主题，只追问“发给谁、需要拿回什么”，再为真正掌握信息的人生成异步问卷。 | 它准确承认知识可能在另一个人手里，不把“我不知道”伪装成 Prompt 问题；阻塞被转换成可以发送和等待的对象。 |
+
+#### 3. 计划与协调：把一次聊天压成可接力的工作图
+
+| Skill | 核心亮点与真实工件 | 为什么容易命中 |
+|---|---|---|
+| [`to-spec`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/to-spec/SKILL.md) | 明确禁止重新访谈，只综合已经讨论过的内容；先确认测试 seam，再写 problem、solution、长 user-story 列表、implementation/testing decisions 与 out-of-scope，发布到 tracker。 | 用户最厌烦的是换阶段就被重新问一遍；“把刚才的思考完整收束下来”制造了阶段完成感，也降低了上下文丢失。 |
+| [`to-tickets`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/to-tickets/SKILL.md) | 每张票必须是一个可独立演示的端到端 tracer bullet，适配单个新 context window，并显式声明 blocking edges；宽重构例外地使用 expand–migrate–contract。 | 大任务不再只是长 checklist，而成为“哪些现在可做、哪些真的被阻塞”的可视图。并行空间和下一步因此变得清楚。 |
+| [`wayfinder`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/wayfinder/SKILL.md) | 面向单会话装不下的模糊项目：map 只做低分辨率索引，决策存在独立 ticket；`frontier` 表示当前可解的问题，`fog of war` 只记录尚不能精确成题的区域，每会话原则上只解决一票。 | 它允许计划“不完整但仍可前进”，缓解大型项目必须一次想清的焦虑；进展是迷雾被推远，而不是虚假的完成百分比。 |
+| [`triage`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/triage/SKILL.md) | 把 issue/外部 PR 放进 `needs-triage → needs-info / ready-for-agent / ready-for-human / wontfix` 状态机；先检查是否已实现、是否曾被拒绝，再复现或验证主张，最后写 agent-ready brief。所有外发评论带 AI 声明。 | 待办堆积不再是一片无差别红点；每项工作都有状态、证据和下一责任人，维护者重新获得队列控制。 |
+
+#### 4. 执行与验证：把“我相信模型”改成“我看见红灯变绿”
+
+| Skill | 核心亮点与真实工件 | 为什么容易命中 |
+|---|---|---|
+| [`implement`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/implement/SKILL.md) | 只有十余行：按 spec/ticket 实现，在预先同意的 seam 使用 TDD，频繁 typecheck 和跑单测，最后跑全量测试、调用 code review 并 commit。它刻意是薄编排器。 | 用户得到一条从任务到可审查提交的固定出口；“写完就停”的常见 Agent 行为被替换成明确收尾协议。 |
+| [`tdd`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/tdd/SKILL.md) | 测试必须经过人确认的公开 seam；一次只做一条 vertical slice，先红后绿。它具体排除 implementation-coupled、tautological 和 horizontal-slicing 测试，并把重构移到 review 阶段。 | 代码质量不再依赖模型自我评价。一个能先失败的测试提供独立反馈，正好对冲“Agent 很自信但代码没跑”的不信任。 |
+| [`diagnosing-bugs`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/diagnosing-bugs/SKILL.md) | 在读代码猜原因前，必须先造出一个已运行、能捕捉用户精确症状、快速且可重复的红灯命令；再最小化复现、列 3–5 个可证伪假设、逐一插桩、先写回归测试后修复，并清除带唯一前缀的 debug 日志。 | 它把最令人焦虑的“Agent 在瞎猜”变成一连串可观察关卡。即使还没修好，用户也能知道现在缺的是复现、假设还是证据。 |
+| [`code-review`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/code-review/SKILL.md) | 先固定 merge-base 与 spec，再让两个隔离 context 的子 Agent 并行检查 Standards 与 Spec，最后并排呈现且不跨轴重排：代码可以合规范却做错需求，也可以反过来。 | 它模仿真实团队中“规范审查”和“验收审查”由不同视角承担，降低同一 Agent 给自己作业打分的违和感。 |
+| [`resolving-merge-conflicts`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/resolving-merge-conflicts/SKILL.md) | 不按行数或新旧选择冲突，而是回看两边 commit、PR、issue 的原始意图，逐 hunk 尽量同时保留，再运行项目检查并完成 merge/rebase。 | 冲突从“红色文本块”恢复成两个合理意图的协调问题，符合资深工程师对变更历史的理解。 |
+
+#### 5. 系统与连续性：保护长期架构，也承认 Agent 不能做一切
+
+| Skill | 核心亮点与真实工件 | 为什么容易命中 |
+|---|---|---|
+| [`codebase-design`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/codebase-design/SKILL.md) | 用 module、interface、depth、seam、adapter、leverage、locality 形成统一词汇；以 deletion test 和“一个 adapter 只是想象中的 seam，两个才是真 seam”抑制空抽象。 | 它直接回应开发者对 AI 加速“屎山生成”的恐惧：速度不再是唯一目标，接口深度、可测试性与局部性仍然重要。 |
+| [`improve-codebase-architecture`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/improve-codebase-architecture/SKILL.md) | 优先扫描最近高频变动区域，寻找理解需要来回跳转、接口过浅或无好测试 seam 的地方；输出带 before/after 的 HTML 报告，用户选中一个候选后才进入 grilling。 | 它没有抽象地说“保持架构整洁”，而是给维护者一张可看、可选择的候选清单，满足了“主动治理而非出事后抢救”的愿望。 |
+| [`wizard`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/engineering/wizard/SKILL.md) | 专门处理只有人能做的第三方控制台、凭证、secret、迁移和 cutover；Agent 基于固定模板生成分阶段 Bash，隐藏输入、幂等写 `.env`、不可逆步骤前确认，只静态验证而不擅自执行。 | 它明确承认人的权限与责任边界，而不是假装 Agent 能自动化所有事情；人工操作也因此从临时口述变成可重复程序。 |
+| [`handoff`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/productivity/handoff/SKILL.md) | 把当前对话压成临时 Markdown，只引用已经存在的 spec、ADR、commit 和 diff，不重复复制；按下一会话目标裁剪，附建议 Skill 并脱敏。 | 它直接处理“新会话失忆”：不是把整段聊天硬塞回去，而是让下一位 Agent 找到权威工件。 |
+| [`teach`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/productivity/teach/SKILL.md) | 把目录变成长期学习工作区：`MISSION.md` 固定学习动机，resources、lessons、reference、learning records 和 assets 分担知识、练习与记忆；强调 retrieval、spacing 和恰好够难。 | 学习不再是一次问答，而有成长记录、下一步和可复习资产，满足“我不是只得到一个答案，而是在积累能力”的期待。 |
+| [`wait-what`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/productivity/wait-what/SKILL.md) | 全文只有一个纠错动作：立刻停止，用更多背景、ASD-STE100 简明英语和 `CONTEXT.md` 领域语言重新解释上一条。 | 它给用户一个没有社交负担的“你没讲明白”按钮。短、好记、马上生效，是典型的高传播微体验。 |
+| [`writing-for-agents`](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/skills/productivity/writing-for-agents/SKILL.md) | 系统讨论 context load 与 human cognitive load、指针触发、progressive disclosure、完成标准、leading words、单一事实源和文档沉积，目标是让 Agent 每次采用相同过程而非产出相同答案。 | 它把“Prompt 写作”提升为可维护的信息架构，让工程师熟悉的模块化、缓存失效和接口设计重新成为 Agent 时代的优势。 |
+
+25 个 Skill 中，真正贯穿全套系统的不是某个命令，而是三条共同纪律：**让不确定性先显形，让关键结果离开聊天窗口，让下一阶段只在可检查条件满足后开始。**
+
+### 为什么 `grilling` 特别命中：它替用户解决了“我不知道该怎么提问”
+
+仓库 README 把 `grill-me` 和 `grill-with-docs` 称为最受欢迎的 Skills；这是维护者自述，不是独立使用统计。但从交互设计看，它们确实最容易产生即时“哇”感。
+
+普通 Prompt 把需求质量责任放在用户身上：写得不完整，Agent 就可能认真做错。`grilling` 把这个责任重新分配：Agent 负责发现决策树、调查事实、提出选择和推荐，人只对真正改变方向的事项作决定。每轮 `frontier` 又保证问题按依赖顺序出现，避免在基础概念未定时就追问实现细节。
+
+这同时击中四种心理需求：
+
+1. **被认真理解**：连续追问会让用户感到自己的问题没有被草率压扁；
+2. **不必独自想全**：Agent 提供选项和推荐，用户不面对完全空白的输入框；
+3. **关键权力仍在人**：事实查找被自动化，价值取舍没有被自动代答；
+4. **没有遗漏的完成感**：frontier 清空给出一个可感知的结束条件。
+
+但这也最容易制造“控制剧场”。决策树是 Prompt 中的认知模型，不是机器可验证的完整需求图；Agent 可能漏掉整条分支，用户也可能因为问题排列整齐而高估覆盖度。对低风险、可逆任务，`relentlessly` 追问还可能让成本高于返工。更稳健的扩展应把输入分成：Agent 自查的事实、可记录后继续的可逆假设、必须打断人的不可逆决定。
+
+### 为什么整个仓库命中开发者心理：它卖的是“用 AI，但不放弃工程师身份”
+
+这里的“心理”不是人格判断，而是从产品文案、调用权限和工件设计反推的产品机制。仓库没有用户访谈数据，也没有对照实验；下表是有证据边界的解释，不是测量结论。
+
+| 开发者的潜在不安 | Skills 给出的承诺 | 落地机制 | 仍未证明的部分 |
+|---|---|---|---|
+| Agent 会抢走流程控制 | 小、可组合、可以只装一个；高层流程由人主动调用 | 14 个用户调用型 + 11 个模型调用型；托管插件与可编辑文件两种安装方式 | 用户是否真的更少被意外流程打断 |
+| 我没把需求一次说清 | 不需要完美 Prompt，Agent 会沿决策依赖追问 | `grilling` 的 design tree、frontier、推荐答案；`to-spec` 再收束 | 是否系统降低需求返工率 |
+| 会话一换，所有共识消失 | 决定、术语和任务写回项目 | `CONTEXT.md`、ADR、spec、ticket、research、handoff、commit | 文档多久失效，谁负责更新 |
+| Agent 说得很像对的，但代码没跑 | 以可执行反馈替代语言可信度 | red-capable repro、TDD、typecheck、tests、两轴 review | 在不同模型和仓库上的缺陷率改善 |
+| AI 加快了写码，也加快了架构腐化 | 传统工程纪律仍然有效，而且更重要 | DDD 语言、deep module、seam、code smells、架构巡检 | 这些 Prompt 是否稳定改善长期可维护性 |
+| 使用 AI 会让自己像“vibe coder” | 你可以使用 Agent，同时仍是重视 TDD、设计和评审的“real engineer” | README 首屏的身份文案与整套经典工程词汇 | 身份认同不是工程质量证据 |
+
+其中最强的传播句是 **“Skills For Real Engineers — not vibe coding”**。它非常懂 2026 年开发者的身份冲突：一方面不想错过 AI 带来的速度，另一方面担心专业判断被贬值、代码库快速腐化。Matt 给出的答案不是拒绝 AI，而是“让 AI 执行你已经认同的工程纪律”。这让采用者感觉自己不是把工程交出去，而是在扩大既有能力。
+
+它也有明显的营销代价。“real engineers”制造了清楚的圈内身份，方便转发，却容易把探索性原型、低风险一次性代码或不同流程偏好贬为“不专业”。身份文案解释了关注度，不能替代对每个 Skill 的有效性验证。
+
+另一个关键命中点，是它明确反对让 GSD、BMAD、Spec-Kit 一类大流程“拥有整个过程”，转而承诺小、可改、可组合。用户甚至有两种分发哲学可选：Claude 官方 marketplace 中的托管只读插件负责自动更新；`npx skills@latest add mattpocock/skills` 则把普通文件复制进项目，由用户修改和决定何时更新。原生 Codex 插件在固定版本中仍被推迟，原因不是概念不支持，而是当时 manifest 只能指定单一目录，无法只选正式 bucket；Codex 和其他 Agent 走通用安装器。这种把真实平台限制写成 ADR 的做法，本身也增强了可信度。
+
+### 技术上最值得认可的四个设计
+
+第一，**组合发生在有意义的接缝处**。`grill-with-docs` 不复制访谈与领域建模内容，只调用两个底层 Skill；`implement` 不重写 TDD 和 review，只定义阶段关系。每项纪律有一个权威来源，比一份不断膨胀的超级提示词更容易维护。
+
+第二，**聊天只是控制面，仓库工件才是状态面**。领域语言进入 `CONTEXT.md`，难逆决定进入 ADR，需求进入 tracker，失败进入 test，交付进入 commit。下一位 Agent 不需要相信前一位的摘要，而能回读原始工件。
+
+第三，**用二元反馈压缩推理空间**。`diagnosing-bugs` 的“先有一个能在精确症状上打红的命令”，比“仔细分析 bug”强得多；`to-tickets` 的 blocking edge 也比“合理安排顺序”更可检查。Matt 擅长找到一个 leading word——red、frontier、fog、seam——让 Agent 围绕稳定对象组织行动。
+
+第四，**承认人的不可替代边界**。`wizard` 专门接住凭证、第三方控制台和不可逆操作；`wayfinder` 把 HITL 与 AFK ticket 分开；`triage` 区分 ready-for-agent 与 ready-for-human。它没有在文案里彻底无人化，而是把“哪里必须有人”做成协议。
+
+### 仍需降温：它是高质量 Prompt Policy，不是可靠性证明
+
+固定版本的 `package.json` 只提供 changeset、版本同步和插件版本一致性脚本；本文运行版本检查通过，但仓库没有公开的跨模型行为测试。没有固定任务集回答以下问题：
+
+- 同一 Skill 在 Claude、Codex 和其他模型上是否都能按阶段执行；
+- `grilling` 是否减少返工，还是只是增加对话轮数；
+- TDD Skill 是否提升缺陷发现率，还是生成更多脆弱测试；
+- 两个 review 子 Agent 是否真的提供独立判断，还是复制同一模型偏差；
+- 长流程在 context compaction、工具失败和权限差异下是否仍能恢复。
+
+此外，Prompt 里的“必须”“永不”不是权限边界。`resolving-merge-conflicts` 写着 never abort，模型仍可能误操作；`wizard` 可以提醒在不可逆步骤前确认，却不能替代 sandbox、最小权限和审计日志；同一模型家族的两个 review context 减少相互污染，却不构成真正独立验证。这里正是 Sandcastle 这类 Runtime 和 Evalite 这类行为评测应该接手的地方。
+
+因此，21 万 Star 的准确含义是：这个仓库以极低采用成本、极清楚命名和极强身份表达，抓住了开发者对 Agent 失控的共同焦虑。它证明了问题选择与分发，也证明这些工作流值得被安装、修改和讨论；**它还没有证明 25 个 Skill 都能稳定改善工程结果。**
 
 ## 六、Sandcastle：把 Agent 的安全边界下沉到 Runtime
 
 ![Sandcastle GitHub 仓库页面展示其 TypeScript 代码结构、MIT 许可证、提交活跃度、Star、Fork、Release 与贡献者信息。](assets/matt-pocock/sandcastle-github.png)
 
-*图 5　Sandcastle 官方 GitHub 仓库快照，获取于 2026-08-10。页面展示约 7,300 Star、738 Fork、1,193 次提交、MIT 许可证与 TypeScript 为主的代码结构，支持“项目已获得实质关注并持续实现”的判断；这些指标本身不证明它已达到生产稳定。来源：[mattpocock/sandcastle](https://github.com/mattpocock/sandcastle)。*
+*图 6　Sandcastle 官方 GitHub 仓库快照，获取于 2026-08-10。页面展示约 7,300 Star、738 Fork、1,193 次提交、MIT 许可证与 TypeScript 为主的代码结构，支持“项目已获得实质关注并持续实现”的判断；这些指标本身不证明它已达到生产稳定。来源：[mattpocock/sandcastle](https://github.com/mattpocock/sandcastle)。*
 
 Skills 只能告诉 Agent 应该怎样行动。即使 Prompt 写着“不要影响主分支”“失败后保留现场”，模型仍然拥有当前进程真正授予的权限。多个 Agent 并发修改时，语言约束也无法代替文件系统隔离、分支管理和恢复机制。
 
@@ -450,7 +578,7 @@ Matt 能持续得到结果，更可验证的解释是，他反复完成了下面
 
 我们真正值得学的也不是他的每个结论，而是这套结果约束：**先拿出具体断点和 before / after，再选择最小工件；先证明能改善一次真实任务，再扩大产品和传播；让每个方法都留下可运行、可观察、可回归的证据。**
 
-## 主要证据与固定版本
+## 主要参考证据与固定版本
 
 ### 官方页面
 
@@ -480,6 +608,10 @@ Matt 能持续得到结果，更可验证的解释是，他反复完成了下面
 ### 固定源码版本
 
 - [mattpocock/skills @ `84fdeffd`](https://github.com/mattpocock/skills/tree/84fdeffd12f2ee307994d1eb6feb48173b6e0502) — MIT
+  - [正式插件清单：25 个 promoted Skills](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/.claude-plugin/plugin.json)
+  - [人调用与模型调用的权限规则](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/.agents/invocation.md)
+  - [Claude 插件与 Codex 安装路径的架构决策](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/.agents/adr/0002-ship-as-a-claude-code-plugin.md)
+  - [固定版本 README：定位、安装、失败模式与完整 Skill 索引](https://github.com/mattpocock/skills/blob/84fdeffd12f2ee307994d1eb6feb48173b6e0502/README.md)
 - [mattpocock/sandcastle @ `e99f832f`](https://github.com/mattpocock/sandcastle/tree/e99f832f26dc9d245c019a9ddd19fa5dee792427) — MIT
 - [mattpocock/evalite @ `e18a7937`](https://github.com/mattpocock/evalite/tree/e18a793789400b9292f92465d1084344340aef9b) — MIT
 - [mattpocock/ts-reset @ `81b3b261`](https://github.com/mattpocock/ts-reset/tree/81b3b2614a32e47948cd4b8d5468879c07c2b361) — MIT
