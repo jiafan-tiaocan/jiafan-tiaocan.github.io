@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="950" viewBox="0 0 1440 950">
+  <rect width="1440" height="950" fill="#f8f6f1"/>
+  <text x="70" y="70" font-family="Arial,'PingFang SC'" font-size="34" font-weight="700" fill="#17232d">把经典机构翻译成 FDM：原理保留，几何重写</text>
+  <g font-family="Arial,'PingFang SC'">
+    <text x="330" y="135" text-anchor="middle" font-size="26" font-weight="700" fill="#a34b32">高风险表达</text>
+    <text x="1080" y="135" text-anchor="middle" font-size="26" font-weight="700" fill="#3e7050">更稳健表达</text>
+    <line x1="720" y1="110" x2="720" y2="880" stroke="#c7cdcf" stroke-width="3"/>
+    <g transform="translate(90,190)"><text x="0" y="0" font-size="22" font-weight="700" fill="#17232d">1 截面外扩</text><path d="M180 30 H430 V90 H300 V175 H430 V235 H180 Z" fill="#efc6ba" stroke="#a34b32" stroke-width="5"/><path d="M280 90 H430" stroke="#a34b32" stroke-width="5" stroke-dasharray="12 8"/><text x="305" y="275" text-anchor="middle" font-size="18" fill="#6c5450">宽—窄—宽：上层悬空</text></g>
+    <g transform="translate(810,190)"><text x="0" y="0" font-size="22" font-weight="700" fill="#17232d">1 连续墙或 45° 过渡</text><path d="M180 30 H430 V235 H180 Z" fill="#cfe2d4" stroke="#3e7050" stroke-width="5"/><path d="M180 235 H330 L430 135 V30 H180 Z" fill="#cfe2d4" stroke="#3e7050" stroke-width="5"/><text x="305" y="275" text-anchor="middle" font-size="18" fill="#4c6655">每层都被下层承托</text></g>
+    <g transform="translate(90,525)"><text x="0" y="0" font-size="22" font-weight="700" fill="#17232d">2 向下封闭槽</text><path d="M180 45 H430 V215 H350 V115 H260 V215 H180 Z" fill="#efc6ba" stroke="#a34b32" stroke-width="5"/><path d="M260 115 H350" stroke="#a34b32" stroke-width="8" stroke-dasharray="12 8"/><path d="M275 145 q15 35 30 0 q15 35 30 0" fill="none" stroke="#a34b32" stroke-width="4"/><text x="305" y="255" text-anchor="middle" font-size="18" fill="#6c5450">桥接底面拉丝粗糙</text></g>
+    <g transform="translate(810,525)"><text x="0" y="0" font-size="22" font-weight="700" fill="#17232d">2 贯穿槽与压缩止挡</text><path d="M180 45 H430 V215 H350 V90 H260 V215 H180 Z" fill="#cfe2d4" stroke="#3e7050" stroke-width="5"/><path d="M300 215 l25 -45 l25 45" fill="#d4773b"/><text x="305" y="255" text-anchor="middle" font-size="18" fill="#4c6655">无桥顶，释放空间真实存在</text></g>
+    <rect x="180" y="865" width="1080" height="50" rx="14" fill="#17232d"/><text x="720" y="898" text-anchor="middle" font-size="20" fill="#f8f6f1">主止挡优先走厚实的面接触与压缩载荷；不要让薄层颈承担全部冲击</text>
+  </g>
+</svg>

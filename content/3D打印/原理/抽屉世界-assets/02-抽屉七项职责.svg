@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <rect width="1440" height="900" fill="#f8f6f1"/>
+  <text x="70" y="70" font-family="Arial,'PingFang SC'" font-size="34" font-weight="700" fill="#17232d">一只抽屉，七项机械职责</text>
+  <g transform="translate(300,210)">
+    <path d="M0 130 L500 130 L590 70 L90 70 Z" fill="#b8dce5" stroke="#1e6279" stroke-width="5"/>
+    <path d="M0 130 V390 L500 390 V130" fill="#dceef2" stroke="#1e6279" stroke-width="5"/>
+    <path d="M500 130 L590 70 V330 L500 390" fill="#a8ced8" stroke="#1e6279" stroke-width="5"/>
+    <rect x="-25" y="110" width="35" height="300" fill="#24343d"/>
+    <rect x="490" y="110" width="35" height="300" fill="#24343d"/>
+    <path d="M80 420 H460" stroke="#d4773b" stroke-width="16" stroke-linecap="round"/>
+    <path d="M320 250 H-130" stroke="#d4773b" stroke-width="8" marker-end="url(#a)"/>
+    <text x="160" y="240" font-family="Arial,'PingFang SC'" font-size="24" fill="#17232d">抽拉方向</text>
+  </g>
+  <defs><marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#d4773b"/></marker></defs>
+  <g font-family="Arial,'PingFang SC'" font-size="22" fill="#17232d">
+    <g><circle cx="140" cy="210" r="28" fill="#256d85"/><text x="140" y="218" text-anchor="middle" fill="white">1</text><text x="185" y="218" font-weight="700">承重</text><text x="185" y="249" font-size="17" fill="#5b6870">重量传给柜体</text></g>
+    <g><circle cx="140" cy="355" r="28" fill="#256d85"/><text x="140" y="363" text-anchor="middle" fill="white">2</text><text x="185" y="363" font-weight="700">导向</text><text x="185" y="394" font-size="17" fill="#5b6870">只留前后自由度</text></g>
+    <g><circle cx="140" cy="500" r="28" fill="#256d85"/><text x="140" y="508" text-anchor="middle" fill="white">3</text><text x="185" y="508" font-weight="700">侧向约束</text><text x="185" y="539" font-size="17" fill="#5b6870">阻止左右脱轨</text></g>
+    <g><circle cx="1040" cy="210" r="28" fill="#d4773b"/><text x="1040" y="218" text-anchor="middle" fill="white">4</text><text x="1085" y="218" font-weight="700">抗抬起</text><text x="1085" y="249" font-size="17" fill="#5b6870">正常运动不跳轨</text></g>
+    <g><circle cx="1040" cy="355" r="28" fill="#d4773b"/><text x="1040" y="363" text-anchor="middle" fill="white">5</text><text x="1085" y="363" font-weight="700">止挡</text><text x="1085" y="394" font-size="17" fill="#5b6870">终点承受撞击</text></g>
+    <g><circle cx="1040" cy="500" r="28" fill="#d4773b"/><text x="1040" y="508" text-anchor="middle" fill="white">6</text><text x="1085" y="508" font-weight="700">主动释放</text><text x="1085" y="539" font-size="17" fill="#5b6870">第二动作才拆下</text></g>
+    <g><circle cx="585" cy="760" r="28" fill="#475f50"/><text x="585" y="768" text-anchor="middle" fill="white">7</text><text x="630" y="768" font-weight="700">柜体稳定</text><text x="630" y="799" font-size="17" fill="#5b6870">底座、锚定或互锁防倾覆</text></g>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="850" viewBox="0 0 1440 850">
+  <rect width="1440" height="850" fill="#f8f6f1"/>
+  <text x="70" y="70" font-family="Arial,'PingFang SC'" font-size="34" font-weight="700" fill="#17232d">抽屉打开后，问题从“滑动”升级为“整柜力矩”</text>
+  <defs><marker id="r" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#c55337"/></marker><marker id="g" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#477258"/></marker></defs>
+  <line x1="110" y1="710" x2="1320" y2="710" stroke="#263a45" stroke-width="8"/>
+  <rect x="260" y="160" width="520" height="550" fill="#dceef2" stroke="#256d85" stroke-width="6"/>
+  <rect x="350" y="300" width="710" height="135" fill="#b8dce5" stroke="#1e6279" stroke-width="5"/>
+  <rect x="1010" y="300" width="50" height="135" fill="#d4773b"/>
+  <circle cx="780" cy="710" r="16" fill="#17232d"/><text x="795" y="746" font-family="Arial,'PingFang SC'" font-size="18" fill="#17232d">前支点</text>
+  <line x1="535" y1="500" x2="535" y2="660" stroke="#477258" stroke-width="7" marker-end="url(#g)"/>
+  <text x="480" y="485" font-family="Arial,'PingFang SC'" font-size="23" fill="#477258">柜体重心 Wc</text>
+  <line x1="900" y1="350" x2="900" y2="630" stroke="#c55337" stroke-width="7" marker-end="url(#r)"/>
+  <text x="855" y="335" font-family="Arial,'PingFang SC'" font-size="23" fill="#c55337">抽屉载荷 Wd</text>
+  <line x1="535" y1="675" x2="780" y2="675" stroke="#477258" stroke-width="4"/><text x="657" y="664" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="22" fill="#477258">a</text>
+  <line x1="780" y1="675" x2="900" y2="675" stroke="#c55337" stroke-width="4"/><text x="840" y="664" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="22" fill="#c55337">x</text>
+  <path d="M280 190 L160 120" stroke="#477258" stroke-width="7"/><circle cx="160" cy="120" r="15" fill="#477258"/><text x="90" y="112" font-family="Arial,'PingFang SC'" font-size="22" fill="#477258">墙锚</text>
+  <rect x="890" y="525" width="440" height="155" rx="20" fill="#17232d"/>
+  <text x="925" y="572" font-family="Arial,'PingFang SC'" font-size="23" font-weight="700" fill="#f8f6f1">安全条件（简化）</text>
+  <text x="925" y="620" font-family="Arial" font-size="25" fill="#bcdce5">Wc · a + Manchor ≥ S · Wd · x</text>
+  <text x="925" y="655" font-family="Arial,'PingFang SC'" font-size="17" fill="#c8d2d6">层间卡槽 ≠ 墙锚；S 应大于 1</text>
+</svg>

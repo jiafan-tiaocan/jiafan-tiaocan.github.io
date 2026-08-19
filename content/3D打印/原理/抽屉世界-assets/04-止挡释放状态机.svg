@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760">
+  <rect width="1440" height="760" fill="#f8f6f1"/>
+  <text x="70" y="70" font-family="Arial,'PingFang SC'" font-size="34" font-weight="700" fill="#17232d">安全抽屉的状态机：日常动作不能等于拆卸动作</text>
+  <defs><marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#65737b"/></marker></defs>
+  <g font-family="Arial,'PingFang SC'">
+    <g transform="translate(70,235)"><rect width="250" height="170" rx="22" fill="#dceef2" stroke="#256d85" stroke-width="4"/><text x="125" y="68" text-anchor="middle" font-size="27" font-weight="700" fill="#173848">闭合</text><text x="125" y="108" text-anchor="middle" font-size="18" fill="#52636b">保持件可防自滑</text></g>
+    <g transform="translate(430,235)"><rect width="250" height="170" rx="22" fill="#dceef2" stroke="#256d85" stroke-width="4"/><text x="125" y="68" text-anchor="middle" font-size="27" font-weight="700" fill="#173848">正常抽拉</text><text x="125" y="108" text-anchor="middle" font-size="18" fill="#52636b">只有水平自由度</text></g>
+    <g transform="translate(790,235)"><rect width="250" height="170" rx="22" fill="#f4dfce" stroke="#d4773b" stroke-width="4"/><text x="125" y="68" text-anchor="middle" font-size="27" font-weight="700" fill="#61321f">刚性止挡</text><text x="125" y="108" text-anchor="middle" font-size="18" fill="#74513f">仍保留导向啮合</text></g>
+    <g transform="translate(1150,235)"><rect width="220" height="170" rx="22" fill="#dfe9df" stroke="#4d7257" stroke-width="4"/><text x="110" y="58" text-anchor="middle" font-size="27" font-weight="700" fill="#294432">完全取下</text><text x="110" y="100" text-anchor="middle" font-size="18" fill="#4b6753">清洁或换模块</text></g>
+    <path d="M320 320 H420" stroke="#65737b" stroke-width="6" marker-end="url(#arr)"/><text x="370" y="294" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="17" fill="#52636b">拉</text>
+    <path d="M680 320 H780" stroke="#65737b" stroke-width="6" marker-end="url(#arr)"/><text x="730" y="294" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="17" fill="#52636b">继续拉</text>
+    <path d="M1040 320 H1140" stroke="#65737b" stroke-width="6" marker-end="url(#arr)"/><text x="1090" y="274" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="17" fill="#52636b">抬前端 / 拨杆</text><text x="1090" y="297" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="17" fill="#52636b">再继续拉</text>
+    <path d="M790 440 C680 600 420 600 320 440" fill="none" stroke="#256d85" stroke-width="5" marker-end="url(#arr)"/><text x="555" y="585" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="18" fill="#256d85">推回：仍是同一水平路径</text>
+    <rect x="205" y="645" width="1030" height="56" rx="16" fill="#17232d"/><text x="720" y="681" text-anchor="middle" font-family="Arial,'PingFang SC'" font-size="21" fill="#f8f6f1">禁止：用一次猛拉同时完成“越过止挡 + 完全脱出”</text>
+  </g>
+</svg>

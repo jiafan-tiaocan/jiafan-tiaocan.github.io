@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <rect width="1440" height="900" fill="#f8f6f1"/>
+  <text x="70" y="70" font-family="Arial,'PingFang SC'" font-size="34" font-weight="700" fill="#17232d">药箱：失败如何变成长期规则</text>
+  <defs><marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#78858b"/></marker></defs>
+  <g font-family="Arial,'PingFang SC'">
+    <g transform="translate(90,160)"><rect width="330" height="150" rx="20" fill="#f1d6ce" stroke="#a34b32" stroke-width="4"/><text x="165" y="55" text-anchor="middle" font-size="24" font-weight="700" fill="#713828">宽—窄—宽层裂</text><text x="165" y="95" text-anchor="middle" font-size="18" fill="#72564e">重复发生两次</text></g>
+    <g transform="translate(555,160)"><rect width="330" height="150" rx="20" fill="#f1d6ce" stroke="#a34b32" stroke-width="4"/><text x="165" y="55" text-anchor="middle" font-size="24" font-weight="700" fill="#713828">薄卡扣断 / 小凸点松</text><text x="165" y="95" text-anchor="middle" font-size="18" fill="#72564e">职责与载荷路径错误</text></g>
+    <g transform="translate(1020,160)"><rect width="330" height="150" rx="20" fill="#f1d6ce" stroke="#a34b32" stroke-width="4"/><text x="165" y="55" text-anchor="middle" font-size="24" font-weight="700" fill="#713828">250 mm 大框炒面</text><text x="165" y="95" text-anchor="middle" font-size="18" fill="#72564e">名义范围不等于安全范围</text></g>
+    <path d="M255 310 V410" stroke="#78858b" stroke-width="6" marker-end="url(#a)"/><path d="M720 310 V410" stroke="#78858b" stroke-width="6" marker-end="url(#a)"/><path d="M1185 310 V410" stroke="#78858b" stroke-width="6" marker-end="url(#a)"/>
+    <g transform="translate(90,430)"><rect width="330" height="150" rx="20" fill="#dce9df" stroke="#477258" stroke-width="4"/><text x="165" y="52" text-anchor="middle" font-size="23" font-weight="700" fill="#294432">Z 向连续性门禁</text><text x="165" y="91" text-anchor="middle" font-size="17" fill="#4e6755">连续墙 / 45° 过渡</text><text x="165" y="119" text-anchor="middle" font-size="17" fill="#4e6755">不可人工覆盖</text></g>
+    <g transform="translate(555,430)"><rect width="330" height="150" rx="20" fill="#dce9df" stroke="#477258" stroke-width="4"/><text x="165" y="52" text-anchor="middle" font-size="23" font-weight="700" fill="#294432">刚性双止挡 + 抬起释放</text><text x="165" y="91" text-anchor="middle" font-size="17" fill="#4e6755">贯穿槽取消桥顶</text><text x="165" y="119" text-anchor="middle" font-size="17" fill="#4e6755">主载荷走压缩面</text></g>
+    <g transform="translate(1020,430)"><rect width="330" height="150" rx="20" fill="#dce9df" stroke="#477258" stroke-width="4"/><text x="165" y="52" text-anchor="middle" font-size="23" font-weight="700" fill="#294432">双重板边门禁</text><text x="165" y="91" text-anchor="middle" font-size="17" fill="#4e6755">CAD 居中 + G-code 轨迹</text><text x="165" y="119" text-anchor="middle" font-size="17" fill="#4e6755">计入首层与线宽</text></g>
+    <path d="M420 505 H545" stroke="#78858b" stroke-width="5" marker-end="url(#a)"/><path d="M885 505 H1010" stroke="#78858b" stroke-width="5" marker-end="url(#a)"/>
+    <rect x="250" y="700" width="940" height="110" rx="24" fill="#17232d"/>
+    <text x="720" y="746" text-anchor="middle" font-size="25" font-weight="700" fill="#f8f6f1">结果：真实 P1 抽屉 + P2 框架</text>
+    <text x="720" y="783" text-anchor="middle" font-size="18" fill="#bcdce5">参数、机构、装配路径、切片边界和打印反馈进入同一闭环</text>
+    <path d="M720 580 V690" stroke="#78858b" stroke-width="6" marker-end="url(#a)"/>
+  </g>
+</svg>
