@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">RSI 从执行内反思到改进器跨代进化的因果路线</title>
+  <desc id="desc">四个阶段依次为执行内自纠错、跨任务资产自进化、自动研究代码搜索和改进器元进化。每个阶段标出解决的问题、遗留瓶颈和共同基础设施。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1322"/>
+      <stop offset="1" stop-color="#172238"/>
+    </linearGradient>
+    <linearGradient id="hot" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff5f8f"/>
+      <stop offset="1" stop-color="#ff9f66"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#050812" flood-opacity="0.42"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#84a7ff"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="900" rx="32" fill="url(#bg)"/>
+  <text x="80" y="82" fill="#f6f8ff" font-family="Inter, PingFang SC, sans-serif" font-size="38" font-weight="700">RSI 的真实演进：每一步都在修复上一层 Loop 的断点</text>
+  <text x="80" y="126" fill="#aebbd3" font-family="Inter, PingFang SC, sans-serif" font-size="22">关键变化不是“循环更多”，而是被持久修改的对象从答案、能力资产，逐步上移到改进机制本身。</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="190" width="330" height="390" rx="24" fill="#16233a" stroke="#426aa8" stroke-width="2"/>
+    <rect x="430" y="190" width="330" height="390" rx="24" fill="#16283a" stroke="#3d8b8a" stroke-width="2"/>
+    <rect x="790" y="190" width="330" height="390" rx="24" fill="#22243b" stroke="#8772d8" stroke-width="2"/>
+    <rect x="1150" y="190" width="380" height="390" rx="24" fill="#302238" stroke="#ff6d95" stroke-width="3"/>
+  </g>
+
+  <g font-family="Inter, PingFang SC, sans-serif">
+    <text x="100" y="235" fill="#7faeff" font-size="18" font-weight="700">阶段 1 · 2022–2024</text>
+    <text x="100" y="278" fill="#ffffff" font-size="29" font-weight="700">执行内自纠错</text>
+    <text x="100" y="322" fill="#dce5f7" font-size="21">当前答案 / 计划</text>
+    <text x="100" y="352" fill="#dce5f7" font-size="21">根据上下文再次生成</text>
+    <rect x="98" y="385" width="274" height="66" rx="14" fill="#0d1729"/>
+    <text x="118" y="414" fill="#7ff0c8" font-size="18" font-weight="700">解决</text>
+    <text x="118" y="439" fill="#c9d5e9" font-size="18">一次任务中的局部错误</text>
+    <text x="100" y="492" fill="#ffb1ba" font-size="18" font-weight="700">断点</text>
+    <text x="100" y="520" fill="#c9d5e9" font-size="18">没有外部真值、没有跨任务提交</text>
+    <text x="100" y="548" fill="#c9d5e9" font-size="18">“再想一次”可能把正确答案改错</text>
+
+    <text x="460" y="235" fill="#55d6c3" font-size="18" font-weight="700">阶段 2 · 2023–2026</text>
+    <text x="460" y="278" fill="#ffffff" font-size="29" font-weight="700">资产级 Self-Evolution</text>
+    <text x="460" y="322" fill="#dce5f7" font-size="21">Prompt / Skill / Memory / Tool</text>
+    <text x="460" y="352" fill="#dce5f7" font-size="21">通过 Eval 后持久更新</text>
+    <rect x="458" y="385" width="274" height="66" rx="14" fill="#0e1d27"/>
+    <text x="478" y="414" fill="#7ff0c8" font-size="18" font-weight="700">解决</text>
+    <text x="478" y="439" fill="#c9d5e9" font-size="18">同类任务不再从零开始</text>
+    <text x="460" y="492" fill="#ffb1ba" font-size="18" font-weight="700">断点</text>
+    <text x="460" y="520" fill="#c9d5e9" font-size="18">诊断、搜索、预算与评测方法固定</text>
+    <text x="460" y="548" fill="#c9d5e9" font-size="18">改进的是能力，不是改进能力</text>
+
+    <text x="820" y="235" fill="#b6a3ff" font-size="18" font-weight="700">阶段 3 · 2024–2026</text>
+    <text x="820" y="278" fill="#ffffff" font-size="29" font-weight="700">AutoResearch</text>
+    <text x="820" y="322" fill="#dce5f7" font-size="21">代码空间 + 可执行评价器</text>
+    <text x="820" y="352" fill="#dce5f7" font-size="21">搜索树 / 种群 / 版本血缘</text>
+    <rect x="818" y="385" width="274" height="66" rx="14" fill="#17182b"/>
+    <text x="838" y="414" fill="#7ff0c8" font-size="18" font-weight="700">解决</text>
+    <text x="838" y="439" fill="#c9d5e9" font-size="18">高吞吐、可比较的研发实验</text>
+    <text x="820" y="492" fill="#ffb1ba" font-size="18" font-weight="700">断点</text>
+    <text x="820" y="520" fill="#c9d5e9" font-size="18">搜索策略与 Harness 仍由人预设</text>
+    <text x="820" y="548" fill="#c9d5e9" font-size="18">好算法不等于更好的算法研究者</text>
+
+    <text x="1180" y="235" fill="#ff85a8" font-size="18" font-weight="700">阶段 4 · 2026–</text>
+    <text x="1180" y="278" fill="#ffffff" font-size="29" font-weight="700">RSI / Meta-Harness</text>
+    <text x="1180" y="322" fill="#dce5f7" font-size="21">证据选择 / 归因 / 搜索策略</text>
+    <text x="1180" y="352" fill="#dce5f7" font-size="21">预算分配 / 控制拓扑也版本化</text>
+    <rect x="1178" y="385" width="322" height="66" rx="14" fill="#251624"/>
+    <text x="1198" y="414" fill="#7ff0c8" font-size="18" font-weight="700">新增命题</text>
+    <text x="1198" y="439" fill="#c9d5e9" font-size="18">下一代是否更会制造改进？</text>
+    <text x="1180" y="492" fill="#ffb1ba" font-size="18" font-weight="700">尚未闭合</text>
+    <text x="1180" y="520" fill="#c9d5e9" font-size="18">跨代点火、开放任务泛化</text>
+    <text x="1180" y="548" fill="#c9d5e9" font-size="18">评测完整性与复杂度债务</text>
+  </g>
+
+  <path d="M 400 365 H 422" stroke="#84a7ff" stroke-width="5" marker-end="url(#arrow)"/>
+  <path d="M 760 365 H 782" stroke="#84a7ff" stroke-width="5" marker-end="url(#arrow)"/>
+  <path d="M 1120 365 H 1142" stroke="#84a7ff" stroke-width="5" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="635" width="1460" height="160" rx="24" fill="#0a101e" stroke="#34445f" stroke-width="2"/>
+  <text x="105" y="682" fill="#f7f9ff" font-family="Inter, PingFang SC, sans-serif" font-size="24" font-weight="700">逐层累积、不能被递归吞掉的基础设施</text>
+  <g font-family="Inter, PingFang SC, sans-serif" font-size="20">
+    <rect x="105" y="715" width="230" height="52" rx="26" fill="#17243a"/><text x="148" y="748" fill="#cfe0ff">外部 Oracle / Holdout</text>
+    <rect x="360" y="715" width="210" height="52" rx="26" fill="#17243a"/><text x="407" y="748" fill="#cfe0ff">固定物理预算</text>
+    <rect x="595" y="715" width="230" height="52" rx="26" fill="#17243a"/><text x="640" y="748" fill="#cfe0ff">版本血缘与重放</text>
+    <rect x="850" y="715" width="210" height="52" rx="26" fill="#17243a"/><text x="900" y="748" fill="#cfe0ff">沙箱与最小权限</text>
+    <rect x="1085" y="715" width="200" height="52" rx="26" fill="#17243a"/><text x="1130" y="748" fill="#cfe0ff">回归与回滚</text>
+    <rect x="1310" y="715" width="185" height="52" rx="26" fill="url(#hot)"/><text x="1350" y="748" fill="#111522" font-weight="700">人工晋级权</text>
+  </g>
+  <text x="80" y="850" fill="#8fa0bd" font-family="Inter, PingFang SC, sans-serif" font-size="18">本文归纳：阶段名称不是成熟度证明；只有跨代 Meta-Evaluation 才能把 Self-Evolution 与严格 RSI 分开。</text>
+</svg>
