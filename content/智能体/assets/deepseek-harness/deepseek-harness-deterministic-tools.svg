@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
+  <title id="title">DeepSeek Harness 工具并发的物理顺序与语义顺序</title>
+  <desc id="desc">三个工具调用可以并行执行并乱序完成，但预处理、提交和持久化始终按模型生成顺序推进，因此模型转录保持确定性。</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/><stop offset="1" stop-color="#f0f5fb"/>
+    </linearGradient>
+    <marker id="a2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#49637e"/>
+    </marker>
+    <style>
+      .h1{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#15243a}
+      .sub{font:400 17px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#53677f}
+      .head{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1a2d45}
+      .body{font:400 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#465d78}
+      .mono{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#243b55}
+      .tiny{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#63778e;letter-spacing:.04em}
+      .box{fill:#fff;stroke:#c3d2e3;stroke-width:1.6;rx:14}
+      .blue{fill:#e9f1ff;stroke:#6b91d8;stroke-width:1.8;rx:14}
+      .green{fill:#e9f8f0;stroke:#62a882;stroke-width:1.8;rx:14}
+      .orange{fill:#fff3e3;stroke:#d99c4c;stroke-width:1.8;rx:14}
+      .line{stroke:#49637e;stroke-width:2.2;fill:none;marker-end:url(#a2)}
+      .dash{stroke:#8093a7;stroke-width:1.8;fill:none;stroke-dasharray:7 6;marker-end:url(#a2)}
+    </style>
+  </defs>
+  <rect width="1440" height="860" fill="url(#bg2)"/>
+  <text x="70" y="64" class="h1">并发执行，不等于乱序写入历史</text>
+  <text x="70" y="96" class="sub">DeepSeek Harness 把“身体什么时候结束”与“模型什么时候看见结果”拆成两条时间线</text>
+
+  <text x="70" y="147" class="tiny">模型给出的语义顺序</text>
+  <rect x="70" y="170" width="300" height="78" class="blue"/>
+  <text x="94" y="203" class="head">call #1 · read_file</text><text x="94" y="229" class="body">parallel: true</text>
+  <rect x="400" y="170" width="300" height="78" class="blue"/>
+  <text x="424" y="203" class="head">call #2 · search</text><text x="424" y="229" class="body">parallel: true</text>
+  <rect x="730" y="170" width="300" height="78" class="orange"/>
+  <text x="754" y="203" class="head">call #3 · shell</text><text x="754" y="229" class="body">exclusive barrier</text>
+  <path d="M370 209 H400" class="line"/><path d="M700 209 H730" class="line"/>
+
+  <text x="70" y="310" class="tiny">物理执行时间线：body 可以重叠，完成顺序可以改变</text>
+  <line x1="220" y1="354" x2="1270" y2="354" stroke="#adbdce" stroke-width="2"/>
+  <text x="70" y="361" class="mono">#1</text>
+  <rect x="220" y="332" width="510" height="44" class="green"/>
+  <text x="244" y="360" class="body">prepare → body（较慢）→ finalize</text>
+  <text x="70" y="433" class="mono">#2</text>
+  <rect x="300" y="404" width="250" height="44" class="green"/>
+  <text x="324" y="432" class="body">prepare → body（先完成）</text>
+  <text x="70" y="505" class="mono">#3</text>
+  <rect x="760" y="476" width="330" height="44" class="orange"/>
+  <text x="784" y="504" class="body">等待屏障 → 独占执行</text>
+  <path d="M550 426 C645 426 660 583 430 603" class="dash"/>
+  <text x="566" y="414" class="body">#2 虽先完成，但不能越过 #1 提交</text>
+
+  <text x="70" y="582" class="tiny">确定性提交时间线：只提交连续可用的模型前缀</text>
+  <rect x="70" y="610" width="300" height="90" class="box"/>
+  <text x="94" y="645" class="head">commit #1</text><text x="94" y="674" class="body">写入 tool/result #1</text>
+  <rect x="400" y="610" width="300" height="90" class="box"/>
+  <text x="424" y="645" class="head">commit #2</text><text x="424" y="674" class="body">释放已完成的 #2</text>
+  <rect x="730" y="610" width="300" height="90" class="box"/>
+  <text x="754" y="645" class="head">commit #3</text><text x="754" y="674" class="body">独占工具结束后写入</text>
+  <path d="M370 655 H400" class="line"/><path d="M700 655 H730" class="line"/>
+
+  <rect x="1084" y="610" width="284" height="152" class="blue"/>
+  <text x="1108" y="646" class="head">得到什么？</text>
+  <text x="1108" y="679" class="body">• 吞吐来自 body 并发</text>
+  <text x="1108" y="709" class="body">• 语义来自有序提交</text>
+  <text x="1108" y="739" class="body">• 崩溃恢复可重建前缀</text>
+  <path d="M1030 655 H1084" class="line"/>
+
+  <text x="70" y="798" class="sub">取消时：已启动调用被协作式终止并等待收敛；未启动调用生成带 provenance 的合成结果，转录仍保持配对。</text>
+</svg>

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="920" viewBox="0 0 1440 920" role="img" aria-labelledby="title desc">
+  <title id="title">DeepSeek Harness 运行时架构</title>
+  <desc id="desc">产品入口经过 profile 和 preset 组合进入宿主平面；Agent loop 在事件日志、模型表面、工具运行时、代码模式、子智能体和模型适配器之间协调状态。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7f9ff"/>
+      <stop offset="1" stop-color="#eef4ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#24405f" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4b6786"/>
+    </marker>
+    <style>
+      .h1{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#15243a}
+      .sub{font:400 17px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#53677f}
+      .label{font:700 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#182b43}
+      .small{font:400 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#465d78}
+      .tiny{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#5e7288;letter-spacing:.04em}
+      .box{fill:#fff;stroke:#c8d6e7;stroke-width:1.5;rx:16;filter:url(#shadow)}
+      .accent{fill:#e8f0ff;stroke:#6b91d8;stroke-width:2;rx:16;filter:url(#shadow)}
+      .state{fill:#ecf8f2;stroke:#63aa89;stroke-width:1.8;rx:16;filter:url(#shadow)}
+      .warn{fill:#fff5e8;stroke:#db9f50;stroke-width:1.8;rx:16;filter:url(#shadow)}
+      .line{fill:none;stroke:#4b6786;stroke-width:2.2;marker-end:url(#arrow)}
+      .dash{fill:none;stroke:#8799ad;stroke-width:1.8;stroke-dasharray:7 6;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="920" fill="url(#bg)"/>
+  <text x="70" y="64" class="h1">DeepSeek Harness：插件树上的可恢复 Agent Runtime</text>
+  <text x="70" y="96" class="sub">固定源码 0.1.0-rc.5 · 产品入口、宿主能力、执行循环和持久状态分层</text>
+
+  <text x="70" y="145" class="tiny">产品入口</text>
+  <rect x="70" y="166" width="230" height="90" class="box"/>
+  <text x="95" y="202" class="label">Web / Headless</text>
+  <text x="95" y="229" class="small">ACP · JSON-RPC · Python SDK</text>
+  <rect x="335" y="166" width="260" height="90" class="box"/>
+  <text x="360" y="202" class="label">Profile / Bundle</text>
+  <text x="360" y="229" class="small">配置补丁与插件组合</text>
+  <rect x="630" y="166" width="500" height="90" class="box"/>
+  <text x="655" y="202" class="label">Preset 常驻作用域</text>
+  <text x="655" y="229" class="small">标准 · PTC / Code Mode · 极简 · 创造</text>
+  <path d="M300 211 H335" class="line"/>
+  <path d="M595 211 H630" class="line"/>
+
+  <rect x="70" y="302" width="1298" height="204" rx="24" fill="#f1f5fb" stroke="#aebfd4" stroke-width="2"/>
+  <text x="96" y="340" class="tiny">宿主平面：进程级能力，不进入模型上下文</text>
+  <rect x="96" y="364" width="210" height="102" class="box"/>
+  <text x="121" y="400" class="label">配置与凭证</text>
+  <text x="121" y="429" class="small">动态快照 · last-good</text>
+  <rect x="330" y="364" width="210" height="102" class="box"/>
+  <text x="355" y="400" class="label">会话持久化</text>
+  <text x="355" y="429" class="small">JSONL/Zstd · SQLite</text>
+  <rect x="564" y="364" width="210" height="102" class="box"/>
+  <text x="589" y="400" class="label">工具与能力注册</text>
+  <text x="589" y="429" class="small">Definition/Provider</text>
+  <rect x="798" y="364" width="210" height="102" class="box"/>
+  <text x="823" y="400" class="label">审批与沙箱</text>
+  <text x="823" y="429" class="small">Policy · Local Runner</text>
+  <rect x="1032" y="364" width="310" height="102" class="box"/>
+  <text x="1057" y="400" class="label">生命周期 / Cordis Fiber</text>
+  <text x="1057" y="429" class="small">挂载、重配、回滚、释放</text>
+  <path d="M880 256 V302" class="dash"/>
+
+  <text x="70" y="552" class="tiny">每个会话的执行平面</text>
+  <rect x="70" y="578" width="300" height="142" class="accent"/>
+  <text x="96" y="617" class="label">Agent Loop</text>
+  <text x="96" y="648" class="small">turn → step → model stream</text>
+  <text x="96" y="674" class="small">steer · follow-up · wake · cancel</text>
+  <text x="96" y="700" class="small">request context 冻结</text>
+
+  <rect x="432" y="556" width="330" height="186" class="state"/>
+  <text x="458" y="596" class="label">Append-only Session Log</text>
+  <text x="458" y="628" class="small">事实源：消息、工具、控制与恢复事件</text>
+  <rect x="474" y="659" width="246" height="56" rx="12" fill="#fff" stroke="#77aa91"/>
+  <text x="496" y="683" class="label">Model Surface</text>
+  <text x="496" y="704" class="small">可替换视图 + provenance</text>
+
+  <rect x="824" y="544" width="544" height="210" rx="22" fill="#fff" stroke="#b9c9dc" stroke-width="2" filter="url(#shadow)"/>
+  <text x="850" y="582" class="tiny">可插拔执行能力</text>
+  <rect x="850" y="606" width="146" height="112" class="box"/>
+  <text x="872" y="642" class="label">Tools</text>
+  <text x="872" y="670" class="small">审批 · 调度</text>
+  <text x="872" y="695" class="small">结果归一化</text>
+  <rect x="1018" y="606" width="146" height="112" class="warn"/>
+  <text x="1040" y="642" class="label">Code Mode</text>
+  <text x="1040" y="670" class="small">TypeScript SDK</text>
+  <text x="1040" y="695" class="small">有序驱动通道</text>
+  <rect x="1186" y="606" width="156" height="112" class="box"/>
+  <text x="1208" y="642" class="label">Subagents</text>
+  <text x="1208" y="670" class="small">one-shot / 持续</text>
+  <text x="1208" y="695" class="small">Workflow / Ralph</text>
+
+  <path d="M370 627 H432" class="line"/>
+  <path d="M432 690 H370" class="dash"/>
+  <path d="M370 666 C520 790 710 793 850 684" class="line"/>
+  <path d="M850 628 C705 521 522 520 370 607" class="dash"/>
+
+  <rect x="70" y="798" width="350" height="82" class="box"/>
+  <text x="96" y="833" class="label">LLM Adapter</text>
+  <text x="96" y="860" class="small">DeepSeek SSE · usage · reasoning · errors</text>
+  <rect x="470" y="798" width="350" height="82" class="box"/>
+  <text x="496" y="833" class="label">Compaction</text>
+  <text x="496" y="860" class="small">日志保真，模型表面压缩与替换</text>
+  <rect x="870" y="798" width="498" height="82" class="warn"/>
+  <text x="896" y="833" class="label">信任边界</text>
+  <text x="896" y="860" class="small">模型写的 JS 不是安全沙箱；工具调用仍走统一策略链</text>
+  <path d="M220 798 V720" class="line"/>
+  <path d="M645 798 V742" class="line"/>
+  <path d="M1118 798 V754" class="dash"/>
+</svg>
