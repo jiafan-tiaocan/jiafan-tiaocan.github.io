@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2440" viewBox="0 0 1600 2440">
   <rect width="1600" height="2440" fill="#f8f6f1"/>
   <style>
-    .t{font-family:Arial,'PingFang SC';fill:#17232d}.h{font-size:42px;font-weight:700}.sub{font-size:24px;fill:#5d6b73}.n{font-size:30px;font-weight:700}.b{font-size:21px}.small{font-size:18px;fill:#5d6b73}.solved{font-size:19px;fill:#27758c}.cost{font-size:19px;fill:#a84d32}.box{fill:#dceef2;stroke:#27758c;stroke-width:5}.rail{fill:#263a45}.move{stroke:#dc7835;stroke-width:8;fill:none;marker-end:url(#arr)}
+    .t{font-family:Arial,'PingFang SC';fill:#17232d}.h{font-size:42px;font-weight:700}.sub{font-size:24px;fill:#5d6b73}.n{font-size:30px;font-weight:700}.b{font-size:21px}.small{font-size:18px;fill:#5d6b73}.solved{font-size:19px;fill:#27758c}.cost{font-size:19px;fill:#a84d32}.box{fill:#dceef2;stroke:#27758c;stroke-width:5}.rail{fill:#263a45}.move{stroke:#dc7835;stroke-width:5;fill:none;marker-end:url(#arr)}
   </style>
-  <defs><marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#dc7835"/></marker></defs>
+  <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#dc7835"/></marker></defs>
   <text x="72" y="74" class="t h">抽屉技术演进地图：七代结构究竟长什么样</text>
   <text x="72" y="118" class="t sub">不是严格年代年表，而是“上一代的瓶颈 → 下一代的机械回答”</text>
   <line x1="172" y1="220" x2="172" y2="2220" stroke="#a9b3b8" stroke-width="8"/>
@@ -11,7 +11,7 @@
   <g transform="translate(0,160)">
     <circle cx="172" cy="120" r="44" fill="#27758c"/><text x="172" y="131" text-anchor="middle" class="t n" fill="white">1</text>
     <text x="250" y="65" class="t n">滑动木盒：盒底直接在隔板上摩擦</text>
-    <rect x="260" y="105" width="420" height="105" rx="8" class="box"/><rect x="220" y="210" width="500" height="45" class="rail"/><path d="M420 90 H270" class="move"/>
+    <rect x="260" y="105" width="420" height="105" rx="8" class="box"/><rect x="220" y="210" width="500" height="45" class="rail"/><path d="M405 160 H300" class="move"/>
     <text x="780" y="132" class="t solved">解决：用柜体限制左右与上下运动</text><text x="780" y="170" class="t cost">新增代价：接触面积大，涩、胀、偏拉会卡</text>
     <text x="780" y="212" class="t small">承重、导向、摩擦全部压在同一对表面上</text>
   </g>
@@ -19,7 +19,7 @@
   <g transform="translate(0,465)">
     <circle cx="172" cy="120" r="44" fill="#27758c"/><text x="172" y="131" text-anchor="middle" class="t n" fill="white">2</text>
     <text x="250" y="65" class="t n">木托条与中央槽：把导向从大隔板中分离</text>
-    <path d="M260 100 H680 V180 H545 V245 H395 V180 H260 Z" class="box"/><path d="M370 245 V155 H570 V245" fill="none" stroke="#263a45" stroke-width="25"/><path d="M430 85 H280" class="move"/>
+    <path d="M260 100 H680 V180 H545 V245 H395 V180 H260 Z" class="box"/><path d="M370 245 V155 H570 V245" fill="none" stroke="#263a45" stroke-width="25"/><path d="M405 125 H300" class="move"/>
     <text x="780" y="132" class="t solved">解决：导向更明确；两侧或中央可独立修整</text><text x="780" y="170" class="t cost">新增代价：仍是滑动摩擦；宽抽屉抗扭不足</text>
     <text x="780" y="212" class="t small">燕尾/T 形还能抗抬起，但包络越多也越容易卡</text>
   </g>
@@ -27,7 +27,7 @@
   <g transform="translate(0,770)">
     <circle cx="172" cy="120" r="44" fill="#27758c"/><text x="172" y="131" text-anchor="middle" class="t n" fill="white">3</text>
     <text x="250" y="65" class="t n">双侧滚轮轨：把大面积滑动改成少数滚动接触</text>
-    <path d="M250 115 H690 V175 H320 V240 H250 Z" class="box"/><path d="M220 225 H570 V165 H700" fill="none" stroke="#263a45" stroke-width="24"/><circle cx="330" cy="205" r="32" fill="#dc7835"/><circle cx="620" cy="165" r="32" fill="#dc7835"/><path d="M440 90 H280" class="move"/>
+    <path d="M250 115 H690 V175 H320 V240 H250 Z" class="box"/><path d="M220 225 H570 V165 H700" fill="none" stroke="#263a45" stroke-width="24"/><circle cx="330" cy="205" r="32" fill="#dc7835"/><circle cx="620" cy="165" r="32" fill="#dc7835"/><path d="M430 140 H325" class="move"/>
     <text x="780" y="132" class="t solved">解决：开启更轻快，成本低，结构件较少</text><text x="780" y="170" class="t cost">新增代价：常只能部分拉出；轮轨前后关系固定</text>
     <text x="780" y="212" class="t small">滚轮位置与翻边同时完成承重、导向和抗脱</text>
   </g>
@@ -35,7 +35,7 @@
   <g transform="translate(0,1075)">
     <circle cx="172" cy="120" r="44" fill="#27758c"/><text x="172" y="131" text-anchor="middle" class="t n" fill="white">4</text>
     <text x="250" y="65" class="t n">三节滚珠伸缩轨：中间轨接力换取全拉出</text>
-    <rect x="240" y="110" width="470" height="130" rx="10" fill="none" stroke="#263a45" stroke-width="20"/><rect x="285" y="135" width="390" height="80" rx="8" fill="none" stroke="#81929a" stroke-width="16"/><rect x="330" y="163" width="310" height="25" fill="#b8dce5" stroke="#27758c" stroke-width="5"/><g fill="#dc7835"><circle cx="310" cy="123" r="14"/><circle cx="380" cy="123" r="14"/><circle cx="570" cy="227" r="14"/><circle cx="640" cy="227" r="14"/></g><path d="M430 90 H270" class="move"/>
+    <rect x="240" y="110" width="470" height="130" rx="10" fill="none" stroke="#263a45" stroke-width="20"/><rect x="285" y="135" width="390" height="80" rx="8" fill="none" stroke="#81929a" stroke-width="16"/><rect x="330" y="163" width="310" height="25" fill="#b8dce5" stroke="#27758c" stroke-width="5"/><g fill="#dc7835"><circle cx="310" cy="123" r="14"/><circle cx="380" cy="123" r="14"/><circle cx="570" cy="227" r="14"/><circle cx="640" cy="227" r="14"/></g><path d="M420 270 H315" class="move"/>
     <text x="780" y="132" class="t solved">解决：全拉出、明确载荷等级、重复寿命可测试</text><text x="780" y="170" class="t cost">新增代价：占侧向空间；依赖平行度和规定侧隙</text>
     <text x="780" y="212" class="t small">精密滚动和保持架更适合交给标准五金，而非全部打印</text>
   </g>
@@ -43,7 +43,7 @@
   <g transform="translate(0,1380)">
     <circle cx="172" cy="120" r="44" fill="#27758c"/><text x="172" y="131" text-anchor="middle" class="t n" fill="white">5</text>
     <text x="250" y="65" class="t n">底装隐藏同步轨：把误差调节和左右同步纳入系统</text>
-    <path d="M250 95 H700 V195 H620 V235 H330 V195 H250 Z" class="box"/><rect x="315" y="218" width="320" height="30" rx="12" class="rail"/><g fill="#dc7835"><circle cx="365" cy="233" r="12"/><circle cx="585" cy="233" r="12"/></g><path d="M440 80 H280" class="move"/>
+    <path d="M250 95 H700 V195 H620 V235 H330 V195 H250 Z" class="box"/><rect x="315" y="218" width="320" height="30" rx="12" class="rail"/><g fill="#dc7835"><circle cx="365" cy="233" r="12"/><circle cx="585" cy="233" r="12"/></g><path d="M410 140 H305" class="move"/>
     <text x="780" y="132" class="t solved">解决：隐藏、同步、前脸调节与更稳定的运动手感</text><text x="780" y="170" class="t cost">新增代价：接口规格严格、成本上升、适配复杂</text>
     <text x="780" y="212" class="t small">抽屉箱体与运动五金开始成为两个可独立优化的模块</text>
   </g>
@@ -51,7 +51,7 @@
   <g transform="translate(0,1685)">
     <circle cx="172" cy="120" r="44" fill="#27758c"/><text x="172" y="131" text-anchor="middle" class="t n" fill="white">6</text>
     <text x="250" y="65" class="t n">运动控制模块：缓闭、触开、保持、锁定各自分工</text>
-    <rect x="250" y="110" width="440" height="115" rx="12" class="box"/><path d="M285 168 H550" stroke="#263a45" stroke-width="18"/><path d="M550 168 q45 -65 90 0 q-45 65 -90 0" fill="none" stroke="#dc7835" stroke-width="9"/><path d="M430 90 H280" class="move"/>
+    <rect x="250" y="110" width="440" height="115" rx="12" class="box"/><path d="M285 168 H550" stroke="#263a45" stroke-width="18"/><path d="M550 168 q45 -65 90 0 q-45 65 -90 0" fill="none" stroke="#dc7835" stroke-width="9"/><path d="M420 205 H315" class="move"/>
     <text x="780" y="132" class="t solved">解决：终点冲击、无把手开启、振动自滑与拆卸语义</text><text x="780" y="170" class="t cost">新增代价：零件更多；必须做状态与故障模式验证</text>
     <text x="780" y="212" class="t small">“会滑”升级为“运动过程可控、终点安全、维护明确”</text>
   </g>
@@ -59,7 +59,7 @@
   <g transform="translate(0,1990)">
     <circle cx="172" cy="120" r="44" fill="#dc7835"/><text x="172" y="131" text-anchor="middle" class="t n" fill="white">7</text>
     <text x="250" y="65" class="t n">FDM 与混合制造：打印定制结构，五金承担精密与磨损</text>
-    <path d="M250 100 H510 V235 H440 V165 H320 V235 H250 Z" fill="#dce9df" stroke="#477258" stroke-width="6"/><rect x="530" y="135" width="180" height="55" rx="8" class="rail"/><g fill="#dc7835"><circle cx="570" cy="162" r="13"/><circle cx="670" cy="162" r="13"/></g><path d="M410 80 H280" class="move"/>
+    <path d="M250 100 H510 V235 H440 V165 H320 V235 H250 Z" fill="#dce9df" stroke="#477258" stroke-width="6"/><rect x="530" y="135" width="180" height="55" rx="8" class="rail"/><g fill="#dc7835"><circle cx="570" cy="162" r="13"/><circle cx="670" cy="162" r="13"/></g><path d="M485 215 H380" class="move"/>
     <text x="780" y="132" class="t solved">解决：尺寸定制、低批量、模块变化和快速迭代</text><text x="780" y="170" class="t cost">新增代价：层向、磨损、供应差异和五金孔位适配</text>
     <text x="780" y="212" class="t small">稳健路线：基础纯打印版 + 标准接口 + 可换五金适配条</text>
   </g>
