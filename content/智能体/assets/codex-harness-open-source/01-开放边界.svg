@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920" role="img" aria-labelledby="title desc">
+  <title id="title">Codex Harness 的开放边界</title>
+  <desc id="desc">展示宿主客户端、开源 Harness、模型服务与闭源产品服务的边界。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f8fa}.panel{fill:#fff;stroke:#c9d2df;stroke-width:2}.open{fill:#e9f7f0;stroke:#21845b;stroke-width:3}.closed{fill:#fff2e7;stroke:#c76b27;stroke-width:3}.host{fill:#eef3ff;stroke:#4667b1;stroke-width:3}.t{font:700 30px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#172033}.h{font:700 22px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#172033}.b{font:18px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#344055}.s{font:15px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#5c6779}.arrow{stroke:#53657d;stroke-width:3;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:10 8}.tag{font:700 15px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif}.openTag{fill:#21845b}.closedTag{fill:#c76b27}
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#53657d"/></marker>
+  </defs>
+  <rect class="bg" width="1600" height="920"/>
+  <g id="heading"><text class="t" x="70" y="66">Codex Harness 开源了什么：边界比“一个 Agent Loop”更大，也比“整个 Codex”更小</text><text class="s" x="70" y="98">绿色 = 仓库中可审计、可复用的运行时；橙色 = 仍由服务端或产品团队掌握；蓝色 = 可替换的宿主。</text></g>
+  <g id="host-layer">
+    <rect class="host" x="70" y="150" width="360" height="635" rx="22"/>
+    <text class="tag" x="100" y="190" fill="#4667b1">你的宿主 / OpenAI 客户端</text>
+    <text class="h" x="100" y="235">产品体验与业务工作流</text>
+    <rect class="panel" x="100" y="270" width="300" height="86" rx="14"/><text class="b" x="125" y="306">CLI / TUI / IDE / Desktop</text><text class="s" x="125" y="334">也可以是你自己的客户端</text>
+    <rect class="panel" x="100" y="380" width="300" height="102" rx="14"/><text class="b" x="125" y="416">UI、任务编排、业务规则</text><text class="s" x="125" y="446">展示、输入、组织级集成</text>
+    <rect class="panel" x="100" y="506" width="300" height="126" rx="14"/><text class="b" x="125" y="542">审批交互与能力声明</text><text class="s" x="125" y="572">响应 server→client 请求</text><text class="s" x="125" y="598">订阅 Thread 事件</text>
+    <text class="s" x="100" y="705">IDE 扩展源码并未开放；</text><text class="s" x="100" y="732">但它使用的 Harness 接口已开放。</text>
+  </g>
+  <g id="open-runtime">
+    <rect class="open" x="500" y="125" width="640" height="700" rx="24"/>
+    <text class="tag openTag" x="535" y="165">OPEN SOURCE · Apache-2.0</text>
+    <text class="h" x="535" y="210">Codex Harness：可嵌入的 Agent 运行时</text>
+    <rect class="panel" x="535" y="245" width="570" height="118" rx="14"/><text class="b" x="565" y="282">App Server：稳定的产品集成边界</text><text class="s" x="565" y="313">双向 JSON-RPC-like · stdio / WebSocket / Unix socket</text><text class="s" x="565" y="339">Thread / Turn / Item 生命周期与 UI-ready 通知</text>
+    <rect class="panel" x="535" y="388" width="570" height="145" rx="14"/><text class="b" x="565" y="426">Core：状态机、上下文与 Agent Loop</text><text class="s" x="565" y="457">持久化 / 恢复 / 分叉 · 压缩 · 插件与 Skills 注入</text><text class="s" x="565" y="483">模型流事件 → 工具调用 → 结果回填 → 继续采样</text><text class="s" x="565" y="509">审批、Hook、遥测、取消与并发语义</text>
+    <rect class="panel" x="535" y="558" width="270" height="148" rx="14"/><text class="b" x="565" y="596">工具与扩展</text><text class="s" x="565" y="626">内建工具 / MCP</text><text class="s" x="565" y="652">动态工具 / Plugin / Skill</text><text class="s" x="565" y="678">统一注册与调度</text>
+    <rect class="panel" x="835" y="558" width="270" height="148" rx="14"/><text class="b" x="865" y="596">执行边界</text><text class="s" x="865" y="626">Approval / Sandbox</text><text class="s" x="865" y="652">Filesystem / Network</text><text class="s" x="865" y="678">macOS / Linux / Windows</text>
+    <text class="s" x="535" y="765">同一核心被 CLI、App Server 与 SDK 等入口复用。</text>
+  </g>
+  <g id="service-layer">
+    <rect class="closed" x="1210" y="150" width="320" height="635" rx="22"/>
+    <text class="tag closedTag" x="1240" y="190">SEPARATE / NOT OPEN</text>
+    <text class="h" x="1240" y="235">模型与托管产品服务</text>
+    <rect class="panel" x="1240" y="270" width="260" height="112" rx="14"/><text class="b" x="1265" y="306">模型推理 API</text><text class="s" x="1265" y="336">权重、训练、服务端推理</text><text class="s" x="1265" y="360">不在 Harness 仓库内</text>
+    <rect class="panel" x="1240" y="408" width="260" height="126" rx="14"/><text class="b" x="1265" y="444">Codex Cloud 后端</text><text class="s" x="1265" y="474">云任务调度、产品数据</text><text class="s" x="1265" y="500">托管环境控制面</text>
+    <rect class="panel" x="1240" y="560" width="260" height="116" rx="14"/><text class="b" x="1265" y="596">专有产品 UI</text><text class="s" x="1265" y="626">Web / IDE Extension 等</text><text class="s" x="1265" y="650">不等于开源 Harness</text>
+  </g>
+  <path class="arrow" d="M430 455H492"/><text class="s" x="441" y="440">RPC</text>
+  <path class="arrow" d="M1140 455H1202"/><text class="s" x="1144" y="440">API</text>
+  <path class="arrow dash" d="M1205 720H1145"/><text class="s" x="1149" y="758">流式响应</text>
+  <g id="takeaway"><rect x="280" y="850" width="1040" height="46" rx="23" fill="#172033"/><text x="800" y="881" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif" font-size="18" font-weight="700" fill="#fff">核心判断：开放的是“让模型成为可靠编码 Agent 的运行层与集成协议”，不是模型本身，也不是全部产品。</text></g>
+</svg>
