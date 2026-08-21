@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="title desc">
+  <title id="title">Codex Harness 上下文与安全控制</title><desc id="desc">左侧展示上下文构建与压缩不变量，右侧展示工具审批、沙箱和网络控制。</desc>
+  <defs><style>.bg{fill:#f7f8fa}.panel{fill:#fff;stroke:#ccd5e2;stroke-width:2}.ctx{fill:#eef3ff;stroke:#4c6eb5;stroke-width:3}.safe{fill:#eaf7f0;stroke:#25865f;stroke-width:3}.warn{fill:#fff4e9;stroke:#c66e2c;stroke-width:2}.title{font:700 31px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#172033}.h{font:700 22px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#172033}.b{font:17px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#334056}.s{font:14px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;fill:#606c7d}.arrow{stroke:#53657d;stroke-width:2.5;fill:none;marker-end:url(#a)}.green{stroke:#25865f}.orange{stroke:#c66e2c}</style><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#53657d"/></marker></defs>
+  <rect class="bg" width="1700" height="980"/><text class="title" x="70" y="60">Harness 的两条“隐形主线”：让上下文可持续，让工具执行可控</text>
+  <g id="context"><rect class="ctx" x="60" y="105" width="760" height="800" rx="22"/><text class="h" x="95" y="150">A. 上下文流水线：不是简单拼接聊天记录</text>
+    <rect class="panel" x="100" y="190" width="680" height="90" rx="14"/><text class="b" x="130" y="225">1　捕获 StepContext 快照</text><text class="s" x="130" y="252">模型信息、工具集合、权限、目录、扩展数据在一次采样中保持一致</text>
+    <path class="arrow" d="M440 280V318"/>
+    <rect class="panel" x="100" y="320" width="680" height="112" rx="14"/><text class="b" x="130" y="355">2　增量注入“参考上下文”</text><text class="s" x="130" y="383">AGENTS.md / Skills / Plugins / 环境与 world-state diff</text><text class="s" x="130" y="408">以 baseline 做差分，避免每一步重复塞入整份背景</text>
+    <path class="arrow" d="M440 432V470"/>
+    <rect class="warn" x="100" y="472" width="680" height="128" rx="14"/><text class="b" x="130" y="507">3　规范化历史，维护协议不变量</text><text class="s" x="130" y="535">每个 tool call 必须有 output；孤立 output 被移除</text><text class="s" x="130" y="560">缺失 output 用确定性 UUIDv5 合成，重试/恢复时保持 prompt cache 命中</text><text class="s" x="130" y="585">模型不支持的图片/音频替换为占位文本</text>
+    <path class="arrow" d="M440 600V638"/>
+    <rect class="panel" x="100" y="640" width="680" height="150" rx="14"/><text class="b" x="130" y="675">4　达到阈值时压缩，而非粗暴截断</text><text class="s" x="130" y="703">pre-turn：清空 reference baseline，下一步完整重注入</text><text class="s" x="130" y="730">mid-turn：把初始上下文放回最后一条用户消息之前，再以摘要续跑</text><text class="s" x="130" y="757">删除最旧 item 时同步删除 call/output 配对，保持历史可采样</text>
+    <text class="b" x="100" y="850">目标：长任务持续工作，同时让“给模型看的世界”确定、可恢复、可缓存。</text>
+  </g>
+  <g id="safety"><rect class="safe" x="880" y="105" width="760" height="800" rx="22"/><text class="h" x="915" y="150">B. 工具安全流水线：策略判断和 OS 隔离是两层</text>
+    <rect class="panel" x="930" y="190" width="660" height="88" rx="14"/><text class="b" x="960" y="224">ToolRouter / Registry</text><text class="s" x="960" y="251">统一 payload、查找 handler；外部工具不能覆盖保留工具名</text>
+    <path class="arrow green" d="M1260 278V318"/>
+    <rect class="panel" x="930" y="320" width="660" height="112" rx="14"/><text class="b" x="960" y="355">Approval policy</text><text class="s" x="960" y="382">Skip / Forbidden / NeedsApproval；“本会话批准”按序列化 key 缓存</text><text class="s" x="960" y="407">审批是双向 RPC：运行时提出，宿主负责呈现并返回决策</text>
+    <path class="arrow green" d="M1260 432V470"/>
+    <rect class="panel" x="930" y="472" width="660" height="104" rx="14"/><text class="b" x="960" y="507">SandboxManager</text><text class="s" x="960" y="534">依据权限与平台选择 Seatbelt / Landlock / Windows 隔离等策略</text><text class="s" x="960" y="559">workspace roots 进入有效文件系统权限模型</text>
+    <path class="arrow green" d="M1260 576V614"/>
+    <rect class="warn" x="930" y="616" width="660" height="104" rx="14"/><text class="b" x="960" y="651">Managed network + Attempt</text><text class="s" x="960" y="678">网络批准可附带代理与取消令牌；执行结果与批准生命周期一起收束</text><text class="s" x="960" y="703">沙箱拒绝时，Orchestrator 可按策略升级重试，批准无需重复询问</text>
+    <path class="arrow green" d="M1260 720V758"/>
+    <rect class="panel" x="930" y="760" width="660" height="88" rx="14"/><text class="b" x="960" y="794">Output → History → Model</text><text class="s" x="960" y="821">结构化结果、错误、遥测与 hook 结果重新进入 Agent Loop</text>
+    <text class="b" x="930" y="883">关键：批准回答“能不能做”，沙箱限制“即使做了最多能碰哪里”。</text>
+  </g>
+  <text class="s" x="70" y="950">这两条流水线共同解释了 Harness 的工程价值：把一次模型调用，提升为可长期运行、可审计、可交互、可失败恢复的编码系统。</text>
+</svg>
