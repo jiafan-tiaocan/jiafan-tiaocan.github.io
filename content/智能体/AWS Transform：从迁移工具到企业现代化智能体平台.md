@@ -85,7 +85,21 @@ flowchart LR
 
 **复杂迁移工作台。** 面向项目经理、架构师、开发、安全和合作伙伴，先统一资产与依赖，再生成 TCO、波次和目标环境；用户可以编辑、排序、批准计划，并在同一视图追踪服务器、网络、Landing Zone、测试和切换状态。产品支持第一方 Agent、合作伙伴 Agent 和自带 Agent，工作台负责保持一张共享的迁移全景。[AWS Transform for migrations](https://aws.amazon.com/transform/migrations/)
 
+![AWS Transform 迁移评估工作台：左侧是可追踪的 Job Plan，右侧是 AI 生成的迁移商业案例与协作区](assets/aws-transform/01-migration-assessment-workbench.jpg)
+
+*图 1：迁移评估不是一次聊天，而是围绕 Job Plan、阶段状态、协作记录和可下载商业案例组织的工作台。来源：[AWS 官方迁移评估介绍](https://aws.amazon.com/blogs/migration-and-modernization/accelerate-migration-planning-with-assessments-in-aws-transform/)*
+
 **代码组合治理台。** Continuous modernization 先连接一个组织或工作区，自动发现多个仓库，再进行 Analysis → Finding → Remediation → PR。Finding 有严重级别与 open/dismissed/obsolete 状态，人工驳回必须保留理由；重新分析后已消失的问题自动转为 obsolete，形成可审计历史。[Continuous modernization 用户指南](https://docs.aws.amazon.com/transform/latest/userguide/continuous-modernization.html)
+
+![AWS Transform Continuous modernization 组合看板：展示仓库覆盖、Finding 数量、严重级别和分析类型](assets/aws-transform/02-continuous-modernization-dashboard.png)
+
+*图 2：管理者先看组合级覆盖与风险分布，右侧 Agent 再用自然语言解释当前组合状态并生成报告。来源：[AWS 官方 Continuous modernization 发布介绍](https://aws.amazon.com/blogs/aws/proactively-reduce-tech-debt-autonomously-with-aws-transform-continuous-modernization-preview/)*
+
+下钻后，Finding 不是一段泛化建议，而是带分析类型、严重级别、类别、仓库、自动修复可用性和生命周期状态的结构化对象：
+
+![AWS Transform Continuous modernization Finding 列表：每项包含分析、严重级别、类别、仓库、自动修复和状态](assets/aws-transform/03-continuous-modernization-findings.png)
+
+*图 3：Finding 列表把技术债从“团队自报进度”变成可筛选、可执行、可持续复查的事实清单。来源同上。*
 
 这两种形态共同体现了一个重要原则：**企业 Agent 的最小管理单元不是一次对话，而是一个有输入版本、状态、权限、证据和交付物的工作对象。**
 
@@ -118,6 +132,10 @@ AWS 对外明确披露，系统组合使用基础模型/LLM、机器学习、图
 
 尤其值得注意的是 Mainframe 的 traceability：业务规则关联到原始文件和行号，生成的需求继续保留该关联，最终现代代码也延续这条证据链。它把“代码是唯一真相”落实为**从源代码事实到业务解释、需求和新代码的可追溯派生链** ，而不只是生成一篇代码摘要。[Mainframe FAQ](https://aws.amazon.com/transform/faq/#mainframe)
 
+![AWS Transform Mainframe 现代化证据链：从业务功能与规则摘要进入开发规格，再关联到新代码工作流](assets/aws-transform/04-mainframe-traceability.png)
+
+*图 4：左侧 Web 工作台抽取并汇总业务规则，右侧 Coding Agent 使用带来源证据的需求继续生成和验证现代代码。来源：[AWS Transform 从迁移到持续现代化](https://aws.amazon.com/blogs/migration-and-modernization/aws-transform-from-migration-to-continuous-modernization/)*
+
 ### 4.3 把领域经验封装为可执行 Skill
 
 AWS Transform custom 的 Transformation Definition 本质上就是一个受约束的 Skill 包：
@@ -130,6 +148,10 @@ transformation-definition/
 ```
 
 它具有 Draft/Published 状态、版本、账户级 Registry 和组织内共享能力。团队先在少量代码库上试点并校准，再发布后批量执行。这里的核心资产不是 Prompt，而是**指令、参考知识、脚本、验证方式和运行经验的版本化组合** 。[Custom 用户指南](https://docs.aws.amazon.com/transform/latest/userguide/custom.html)
+
+![AWS Transform custom Campaign 进度：10 个仓库全部验证通过，并汇总代码改动、文件数和验证率](assets/aws-transform/05-custom-campaign-progress.png)
+
+*图 5：Transformation Definition 进入 Campaign 后，平台按仓库汇总执行状态、改动规模和验证率，使一次转换经验可以被规模化运营。来源：[AWS 官方 Lambda 批量升级实践](https://aws.amazon.com/blogs/compute/upgrading-lambda-function-runtimes-at-scale-with-aws-transform-custom/)*
 
 ### 4.4 有边界的持续学习
 
@@ -301,4 +323,3 @@ flowchart LR
 - [AWS Transform GA 发布说明](https://aws.amazon.com/blogs/migration-and-modernization/aws-transform-generally-available/)
 - [多 Agent 现代化参考架构](https://aws.amazon.com/blogs/devops/use-generative-ai-agents-for-application-modernization-at-scale-with-strands-amazon-transform-custom-and-amazon-bedrock-agentcore/)
 - [Experian .NET 现代化案例](https://aws.amazon.com/solutions/case-studies/experian-agenticai/)
-
