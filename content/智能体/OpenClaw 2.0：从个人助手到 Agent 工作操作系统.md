@@ -63,23 +63,9 @@ OpenClaw 2.0 的系统主语从“Agent 回复一条消息”变成了“一个�
 消息 → Gateway → 模型与工具 → 回复
 ```
 
-2.0 的典型链路变成：
+2.0 的典型变化可以概括为：关键正确性不再只靠 Prompt 提醒，而是由 Runtime 和 Harness 在身份、权限、状态、生命周期、恢复与证据边界上强制执行。
 
-```mermaid
-flowchart LR
-    U[人 / IM / API / 邮件 / 外部 Agent] --> G[Gateway 控制平面]
-    G --> S[(持久 Session<br/>目标·成员·进度·分支·仪表盘)]
-    S --> P{执行位置}
-    P --> L[Gateway 本机]
-    P --> D[配对设备]
-    P --> C[临时云 Worker]
-    S --> A[Agent / 子 Agent / Swarm]
-    A --> T[工具·MCP·浏览器·桌面]
-    T --> R[结果·证据·Widget·文件]
-    R --> S
-    S --> M[记忆·Skill Workshop·自动化]
-    M --> S
-```
+![OpenClaw 从软约定升级为运行时硬约束](OpenClaw%202.0%20深度解读.assets/01-openclaw-1-to-2-hard-constraints.svg)
 
 这里真正稳定的是 Gateway 拥有的会话身份、规范化状态、对话记录、凭证、权限与工作区；机器、模型和执行器变成可替换资源。这是本次升级中最有长期价值的架构转向。
 
@@ -87,50 +73,16 @@ flowchart LR
 
 OpenClaw 2.0 的源码责任可以拆成四层。固定版本文档明确把内置 Runtime、可复用 Agent Core、Harness 选择、模型传输和 Plugin SDK 分开：`packages/agent-core/` 提供 Loop 与契约，`src/agents/embedded-agent-runner/` 负责内置尝试循环，`src/agents/harness/` 管理不同 Harness 的选择与生命周期，`src/llm/` 隔离 Provider 传输。[Agent Runtime Architecture](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/agent-runtime-architecture.md)
 
-```mermaid
-flowchart TB
-    subgraph UX[产品表面]
-        CHAT[Chat / IM / API]
-        BOARD[Dashboard / Workboard]
-        CLI[CLI / TUI / Desktop]
-    end
+![Runtime、Harness、Agent Core 与 Model 的责任和信任边界](OpenClaw%202.0%20深度解读.assets/02-runtime-harness-boundary.svg)
 
-    subgraph CONTROL[Gateway 控制与状态平面]
-        ROUTE[Session Routing]
-        POLICY[Role / Scope / Approval]
-        GLOBAL[(Global SQLite<br/>任务·配对·插件·调度)]
-        AGENTDB[(Per-Agent SQLite<br/>会话·轨迹·VFS·记忆)]
-    end
+这四层可以精确定义为：
 
-    subgraph RUNTIME[Agent Runtime 与 Harness]
-        CORE[openclaw agent-core<br/>Loop·Message·Compaction]
-        HARNESS[Harness Registry<br/>OpenClaw / Codex / Plugin]
-        TOOL[Tool Policy / Hooks / Adapters]
-        LLM[Provider Registry / Stream]
-    end
+- **Model** ：对当前上下文做推理，输出文本、工具调用或其他候选动作；它不拥有系统真值和最终提交权。
+- **Agent Core** ：实现 `prompt → model → tool → observation` 的可复用循环、消息与压缩契约。
+- **Harness** ：把某一种 Agent Core、模型协议或外部 Coding Agent 接入宿主系统，完成一次受约束的 Run；它只能使用 Runtime 为这次 Run 投影的能力。
+- **Runtime** ：拥有会话、身份、权限、状态、执行位置、持久化、恢复和审计等系统事实；它接纳 Run、选择 Harness、固定快照，并决定什么结果可以提交。
 
-    subgraph EXEC[可替换执行平面]
-        HOST[Gateway Host]
-        DEVICE[Paired Device]
-        CLOUD[Disposable Cloud Worker]
-        EXT[MCP / A2A / Channel Plugin]
-    end
-
-    UX --> ROUTE
-    ROUTE --> POLICY
-    POLICY --> GLOBAL
-    ROUTE --> AGENTDB
-    GLOBAL --> HARNESS
-    AGENTDB --> CORE
-    HARNESS --> CORE
-    CORE --> TOOL
-    CORE --> LLM
-    TOOL --> HOST
-    TOOL --> DEVICE
-    TOOL --> CLOUD
-    TOOL --> EXT
-    HOST & DEVICE & CLOUD & EXT --> AGENTDB
-```
+一句话说：**模型可以建议，Harness 可以执行，Runtime 才能提交系统事实。** Harness 不是 Runtime 的同义词，也不只是一个 `run()` 包装器；它是 Runtime 与某种 Agent 执行实现之间的版本化能力协议。
 
 这张图解释了一个常见误区：OpenClaw 的增量不主要来自“Loop 变聪明”，而是来自 Loop 外围的状态所有权、运行时快照、调度、权限、迁移、恢复和产品协议。单独复制一个 ReAct Loop，得不到 2.0 的长期工作能力。
 
@@ -648,7 +600,87 @@ flowchart LR
 
 本节对照本地《数字员工—业务专家平台项目总文档》与《数字员工：AI-Coding》给出建议。
 
-### 8.1 P0：立即吸收的架构原则
+### 8.1 先给结论：它还提供了一套“研发操作系统”
+
+OpenClaw 2.0 对 AI-Coding 最值得参考的地方，不是让 Coding Agent 多写一些代码，而是把“Agent 如何理解仓库、如何获得权限、如何证明修复、何时允许重试、何时必须停止”做成了可执行约束。可以把这套系统分成两部分：
+
+1. `AGENTS.md` 把架构判断、仓库地图、修复原则和证据门槛编译成 Agent 可读取的政策与路由层；
+2. Harness / Runtime 把身份、能力、生命周期、副作用和持久化变成代码层无法绕过的硬边界。
+
+这解释了为什么 2.0 体感上“不再像 Toy”：它不再假设模型会一直记得规则、每次重试都没有副作用、旧能力引用永远有效，或成功文本就代表系统已经完成。**软规则负责引导，硬约束负责兜底，持久证据负责证明。**
+
+### 8.2 OpenClaw 的 AGENTS.md 到底怎么写，有什么特别
+
+固定 commit 的根 `AGENTS.md` 约 65 KB、360 行，但它不是一份平铺的编码风格大全。文件开头就规定：根文件只拥有硬政策和路由，具体工作流交给 Skill，进入子树前继续读取最近的 scoped `AGENTS.md`；新增 `AGENTS.md` 还要添加同级 `CLAUDE.md` 符号链接，让不同 Coding Agent 共享同一套事实来源。[根级路由规则](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md#L1-L22)
+
+![OpenClaw 的 AGENTS.md 分层约束栈](OpenClaw%202.0%20深度解读.assets/03-agents-md-policy-stack.svg)
+
+#### A. 它首先写“判断原则”，然后才写命令
+
+根文件最有价值的不是 `pnpm test` 之类命令，而是两组 Doctrine：
+
+- **Repair Doctrine** 要求先复现、追到不变量的所有者、阅读调用者与同类实现、修复生产者而非在消费者堆 guard，并用修复前失败、修复后通过的回归证据闭环；它明确反对用重试、加超时、弱断言、宽泛 mock 或备用路径掩盖根因。[Repair Doctrine](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md#L24-L39)
+- **Product Doctrine** 把“模型体验”视为产品本身：工具描述和结果也是 Prompt；延迟按模型往返次数衡量；不可用能力应被隐藏或给出下一步，不能把 Agent 留在死胡同。[Product Doctrine](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md#L41-L53)
+
+这类规则不是文风偏好，而是对准已经观察到的 Agent 失败模式：局部补丁、静默失败、猜测外部 API、虚假成功、测试替代真实行为、回退路径越堆越多。优秀的 `AGENTS.md` 应该记录“模型最容易在哪里犯系统性错误，以及仓库要求它如何证明自己没有犯错”。
+
+#### B. 根级通用规则上收，所有者特有规则下沉
+
+仓库在 `src/agents/`、`src/gateway/`、`src/plugins/`、`src/agents/harness/`、应用、测试和文档等子树继续放 scoped `AGENTS.md`。例如 `src/agents/AGENTS.md` 不重复根政策，而只强调这一所有者边界的特殊不变量：Agent 测试经常受 import 成本支配；静态 schema、能力和路由测试不应加载完整 Runtime；一次被接纳的 Run 必须在重试和 fallback 间复用同一个 authority；能力在 `await` 后、结果越过动作边界前必须重新验证，生命周期 owner 在 `finally` 关闭授权。[Agents scoped rules](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/AGENTS.md#L1-L40)
+
+这形成了可维护的三层：
+
+| 层级 | 应该放什么 | 不应该放什么 |
+|---|---|---|
+| Root `AGENTS.md` | 全仓硬政策、判断 Doctrine、地图、证据门槛、安全与迁移约束 | 某个模块的细碎实现步骤 |
+| Scoped `AGENTS.md` | 该所有者边界独有的不变量、测试策略、热点与禁区 | 重复整个根文件 |
+| Skill / 脚本 | 可复用工作流、命令编排、发布和验证步骤 | 不可绕过的架构真值 |
+
+#### C. 它把仓库设计成机器可导航的环境
+
+OpenClaw 不只要求 Agent “认真看代码”，还主动降低机器探索成本：根文件给出责任地图；模块有 scoped 指南；要求导出符号使用独特的 2–3 词名称以便 `rg` 精确定位；要求超大文件拆分；需要完整执行的指导必须整体提供，不能让模型误把第一个窗口当成全文；所有进入模型上下文的单项内容都要有边界。这些约束把 Context 当作有限计算资源，而不是无限文本框。
+
+#### D. 它把“完成”定义成证据，而不是修改动作
+
+规则要求在修改前捕获失败复现，修复后验证所有者边界、同类路径和真实用户可见行为；Review 需要 evidence map，至少覆盖入口、所有者、调用者、被调用者、共享不变量的兄弟路径、现有测试和当前行为；脚本崩溃必须非零退出，截断输出不能伪装成功。[验证与工具失败语义](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md#L173-L190)
+
+这对 AI-Coding 的价值很直接：不要只优化“生成补丁”，要优化 `问题证据 → 所有者定位 → 不变量修复 → 边界测试 → 真实行为证明` 的完整链路。
+
+#### E. 两类 AGENTS.md 必须分开理解
+
+OpenClaw 还有一份面向最终用户工作区的 `docs/reference/templates/AGENTS.md`。它定义启动上下文、日记与长期记忆、群聊参与、外部发布前确认、自动化和主动工作方式。它属于 **产品内 Agent 的身份与行为配置** ；仓库根 `AGENTS.md` 属于 **开发 OpenClaw 的 AI-Coding 规则** 。同名不等于同一层，企业项目最好在命名或目录上显式区分 `repo policy` 与 `agent workspace policy`。[Workspace AGENTS template](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/reference/templates/AGENTS.md)
+
+#### F. 不应照抄 65 KB
+
+根文件很长是一个事实，不是最佳实践的自动证明。它能工作，部分原因是内容密度高、有 scoped 路由，并且围绕一个超大、多平台、多插件仓库积累了大量真实失败案例。小型仓库照搬同样体量会稀释注意力、增加规则冲突和每轮成本。更合理的迁移顺序是：
+
+1. 先写一页根规则，只保留目标、所有者地图、五到十条硬不变量、精确验证命令和完成定义；
+2. 只有某个子树出现独有且重复的失败模式时，才增加 scoped 指南；
+3. 可机械执行的流程沉淀为 Skill 或脚本；
+4. 用真实返工和评测数据删除无效规则，而不是只追加。
+
+### 8.3 AI-Coding Harness 上有哪些真正的亮点
+
+OpenClaw 的 `AgentHarnessV2` 不是传统意义上只有 `run()` 的适配器。源码把它建模为一组能力的交集：执行尝试、回合终结、零工具补全、侧问题、分类、压缩、Session reset/delete/fork、运行时制品校验、认证指纹、用量、MCP 与模型目录等；Session 删除甚至显式提供 `commit` / `rollback`。[Harness V2 类型契约](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/types.ts#L374-L445) [完整 V2 组合](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/types.ts#L534-L566)
+
+![Harness 从运行接纳到干净终态提交的可信执行链](OpenClaw%202.0%20深度解读.assets/04-harness-trusted-execution.svg)
+
+其核心亮点有八个：
+
+| 机制 | 源码中的做法 | 对 AI-Coding Harness 的意义 |
+|---|---|---|
+| Harness 是版本化能力协议 | 宿主按能力组合调用，而非假设所有 Harness 行为相同 | Codex、内置 Loop、远端 Agent 可以接入，但差异必须显式建模 |
+| 运行级原子快照 | 一次 Run 绑定完整准备代际，配置、模型目录、插件和后续投影保持一致 | 防止长任务中途读到半更新的配置世界 |
+| 跨 fallback 集选择 | 选择能覆盖整个候选模型链的单一 Harness；语义不一致时回到统一内置执行或 fail closed | 不把“换模型”偷偷变成“换了一套工具、Session 与权限语义” [选择逻辑](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/selection.ts#L177-L235) |
+| 私有能力投影 | 宿主用私有映射把能力只发给精确的 owner plugin，公共字段无法伪造 | 插件拿到的是本次 Run 所需能力，不是宿主内部全部权限 [私有 capability issuer](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/host-private-capabilities.ts#L10-L35) |
+| Authority 闭包化 | 权限捕获精确 Session、Run、放置和生命周期；执行前后、尤其 `await` 后再次校验 | 防止异步等待期间 Session 被替换、授权过期后旧闭包继续行动 [Authority revalidation](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/node-execution-authority.ts#L18-L87) |
+| 零工具终结 | 已经完成工具工作的回合可用 `finalizeSettledTurn` 生成最终答复，且不能再次暴露会重复工作的能力；隔离补全必须真零工具，否则拒绝 | “总结结果”不会意外再次写文件、发消息或执行命令 [Settled turn finalization](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/types.ts#L393-L410) |
+| 副作用感知 fallback | 如果已有工具副作用或渠道投递证据，模型错误后不再自动 fallback，避免重复对外回复或重复执行 | 重试资格由事实决定，不由异常类型单独决定 [Fallback side-effect gate](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/embedded-agent-runner/run-entry.ts#L380-L478) |
+| 干净终态才推进上下文 | 只有完成且可接受的终态才 finalize；失败、abort、yield 或 prompt error 丢弃推进意图；接受后经持久 Outbox 排队与 drain | 解决“模型以为做完了、持久状态却没提交”以及崩溃重放问题 [终态判定](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/embedded-agent-runner/run-entry.ts#L547-L570) [Durable turn outbox](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/context-engine-turn-attempt.ts#L210-L272) |
+
+这套设计对 Coding Agent 尤其重要，因为写文件、运行迁移、创建分支、发评论和部署都存在真实副作用。一个可靠的 AI-Coding Harness 至少应回答：**这次执行是谁接纳的、允许改什么、使用哪一代仓库与配置、什么事实证明副作用已经发生、失败后是否还能重试、谁提交最终状态、旧能力何时失效。** 如果这些答案仍藏在 Prompt 或调用者习惯里，系统规模一大就会重新退化成 Toy。
+
+### 8.4 P0：立即吸收的架构原则
 
 #### A. 将“专家任务”而不是“聊天”设为平台核心对象
 
@@ -686,7 +718,7 @@ LLaP 的 Worker 不应持有平台长期真值，也不应因为某台机器或�
 
 这是可直接进入平台安全基线的设计：Agent 只能请求一个 Secret capability；真人通过独立安全表面提交；执行侧通过目标绑定的代理或 SecretRef 获得临时替换；日志、聊天、模型上下文和普通环境变量均不得获得明文。
 
-### 8.2 P1：结合现有规划增强的能力
+### 8.5 P1：结合现有规划增强的能力
 
 #### A. 将“受控自优化”实现为双环，而非直接照搬 auto Skill
 
@@ -733,7 +765,7 @@ OpenClaw 的分层值得保持：
 
 现有“个人知识—候选知识—全局知识”设计可以补充 `sourceTaskIds`、`participants`、`admissionPolicy`、`promotionReason`、`derivedArtifactIds` 和 `forgetCoverage`。删除派生知识时应报告：已删除、混合来源整体删除、无法归因、保留原始记录、外部副本五类结果，而不是返回一个模糊的成功。
 
-### 8.3 P2：先小规模验证的方向
+### 8.6 P2：先小规模验证的方向
 
 #### A. 远端 Session Placement
 
@@ -788,6 +820,7 @@ OpenClaw 2.0 不是一次普通功能升级，而是一次责任边界重构：
 5. **学习层** 从手工调 Prompt 走向有提案、扫描、hash、回滚和复审的 Skill 生命周期；
 6. **生态层** 从内部插件与 Channel 走向 A2A、MCP 和多种 Agent Bundle 互操作。
 7. **工程范式** 从“模型尽量做对”走向“模型负责提案，Runtime 负责可验证提交与诚实恢复”。
+8. **研发系统** 从“给模型一份说明书”走向“分层仓库政策 + 版本化 Harness + 边界证据”的 AI-Coding 约束栈。
 
 它最值得参考的不是“做一个更全的 Agent 平台”，而是以下方法：**先让工作成为有状态、有权限、有证据的对象，再让模型、工具、机器、人员和其他 Agent 围绕这个对象协作。** 
 
@@ -809,12 +842,16 @@ OpenClaw 2.0 不是一次普通功能升级，而是一次责任边界重构：
 12. [A2A Gateway、Protocol 与 Task Store](https://github.com/openclaw/openclaw/tree/ea806575e6450e4d1efdfc72c19f04be982a1b9b/extensions/a2a/src)
 13. [Operator Scopes 与安全边界](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/gateway/operator-scopes.md)
 14. [`agent exec`：Headless/CI 嵌入入口](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/cli/agent.md)
+15. [根 AGENTS.md：研发 Doctrine、仓库路由与证据门槛](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md)
+16. [Harness 类型与可信执行主链路](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/types.ts)
 
 ## 13. 主要来源
 
 - [OpenClaw 2.0 官方发布说明](https://docs.openclaw.ai/releases/2026.8.1)
 - [OpenClaw v2026.8.1 GitHub Release](https://github.com/openclaw/openclaw/releases/tag/v2026.8.1)
 - [固定 commit 源码树](https://github.com/openclaw/openclaw/tree/ea806575e6450e4d1efdfc72c19f04be982a1b9b)
+- [固定 commit 根 AGENTS.md](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md)
+- [固定 commit Agent Harness V2 契约](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/types.ts)
 - [官方安全边界](https://docs.openclaw.ai/gateway/security)
 - [官方 A2A 限制](https://docs.openclaw.ai/channels/a2a)
 - [官方 Memory Provenance 与删除边界](https://docs.openclaw.ai/concepts/memory-provenance)
