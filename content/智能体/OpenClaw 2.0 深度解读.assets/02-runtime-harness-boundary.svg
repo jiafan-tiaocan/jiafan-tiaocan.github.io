@@ -58,5 +58,5 @@
     <text class="t small white" x="229" y="49" text-anchor="middle">模型可以建议；Harness 可以执行</text>
     <text class="t small white" x="229" y="55" text-anchor="middle">Runtime 才能提交系统事实</text>
   </g>
-  <text class="t small muted" x="16" y="174">图 2｜Runtime / Harness / Agent Core / Model 的责任与信任边界</text>
+  <text class="t small muted" x="16" y="174">图 3｜Runtime / Harness / Agent Core / Model 的责任与信任边界</text>
 </svg>

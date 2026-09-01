@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320mm" height="180mm" viewBox="0 0 320 180" role="img" aria-labelledby="title desc">
+  <title id="title">OpenClaw 记忆巩固与来源治理主链路</title>
+  <desc id="desc">从来源准入、短期证据、Light和REM强化、确定性Deep门槛、零工具模型编排、代码验证到长期记忆，并展示血缘与忘却侧链。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}.node{fill:#fff;stroke:#8ea2b8;stroke-width:.65}.phase{fill:#e7f1fc;stroke:#2f6fb5;stroke-width:.8}.gate{fill:#fff1e6;stroke:#d96b24;stroke-width:.8}.store{fill:#173b5e}.side{fill:#e9f6ef;stroke:#3e9267;stroke-width:.75}.warn{fill:#f8e8e9;stroke:#c45b62;stroke-width:.7}.ink{fill:#142238}.muted{fill:#65758a}.white{fill:#fff}.blue{fill:#2f6fb5}.orange{fill:#d9651b}.red{fill:#ae3f47}.line{stroke:#2f6fb5;stroke-width:.9;fill:none}.side-line{stroke:#3e9267;stroke-width:.8;fill:none;stroke-dasharray:2.5 2}.t{font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif}.h1{font-size:10px;font-weight:700}.h2{font-size:5.3px;font-weight:700}.body{font-size:4.2px}.small{font-size:3.6px}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#2f6fb5"/></marker>
+    <marker id="green-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#3e9267"/></marker>
+  </defs>
+  <rect class="bg" width="320" height="180"/>
+  <text class="t h1 ink" x="17" y="17">主动记忆是一条有准入、晋升与删除边界的证据链</text>
+  <text class="t body muted" x="17" y="26">模型负责受限整理；候选资格、来源血缘、写入验证和忘却围栏由 Runtime 代码拥有</text>
+  <g id="memory-pipeline">
+    <rect class="node" x="15" y="57" width="38" height="43" rx="4"/><text class="t h2 ink" x="34" y="69" text-anchor="middle">来源准入</text><text class="t small muted" x="34" y="78" text-anchor="middle">私人交互 Session</text><text class="t small muted" x="34" y="85" text-anchor="middle">日记 / 受信文件</text><text class="t small red" x="34" y="91" text-anchor="middle">排除 cron / 子 Agent</text><text class="t small red" x="34" y="97" text-anchor="middle">unknown / taint</text>
+    <rect class="node" x="61" y="57" width="39" height="43" rx="4"/><text class="t h2 ink" x="80.5" y="69" text-anchor="middle">短期证据</text><text class="t small muted" x="80.5" y="78" text-anchor="middle">去重 · 脱敏</text><text class="t small muted" x="80.5" y="85" text-anchor="middle">消息 hash · 来源行号</text><text class="t small muted" x="80.5" y="92" text-anchor="middle">origin / session kind</text>
+    <rect class="phase" x="108" y="48" width="42" height="61" rx="4"/><text class="t h2 blue" x="129" y="62" text-anchor="middle">LIGHT → REM</text><text class="t small muted" x="129" y="72" text-anchor="middle">整理近期信号</text><text class="t small muted" x="129" y="80" text-anchor="middle">主题与反思</text><text class="t small muted" x="129" y="88" text-anchor="middle">记录强化信号</text><text class="t small blue" x="129" y="100" text-anchor="middle">不写 MEMORY.md</text>
+    <rect class="gate" x="158" y="48" width="45" height="61" rx="4"/><text class="t h2 orange" x="180.5" y="62" text-anchor="middle">DEEP 硬门槛</text><text class="t small muted" x="180.5" y="72" text-anchor="middle">score + recall count</text><text class="t small muted" x="180.5" y="80" text-anchor="middle">query diversity</text><text class="t small muted" x="180.5" y="88" text-anchor="middle">实时文件 rehydrate</text><text class="t small orange" x="180.5" y="100" text-anchor="middle">三项必须同时通过</text>
+    <rect class="phase" x="211" y="48" width="45" height="61" rx="4"/><text class="t h2 blue" x="233.5" y="62" text-anchor="middle">受限模型编排</text><text class="t small muted" x="233.5" y="72" text-anchor="middle">tools = 0</text><text class="t small muted" x="233.5" y="80" text-anchor="middle">逐字复制候选条目</text><text class="t small muted" x="233.5" y="88" text-anchor="middle">added / merged /</text><text class="t small muted" x="233.5" y="95" text-anchor="middle">superseded</text>
+    <rect class="store" x="264" y="52" width="41" height="53" rx="4"/><text class="t h2 white" x="284.5" y="66" text-anchor="middle">MEMORY.md</text><text class="t small white" x="284.5" y="76" text-anchor="middle">Source 行号</text><text class="t small white" x="284.5" y="84" text-anchor="middle">trigger / importance</text><text class="t small white" x="284.5" y="92" text-anchor="middle">promotion marker</text>
+    <path class="line" d="M53 78H61" marker-end="url(#arrow)"/><path class="line" d="M100 78H108" marker-end="url(#arrow)"/><path class="line" d="M150 78H158" marker-end="url(#arrow)"/><path class="line" d="M203 78H211" marker-end="url(#arrow)"/><path class="line" d="M256 78H264" marker-end="url(#arrow)"/>
+  </g>
+  <g id="validation-and-forget">
+    <rect class="warn" x="158" y="119" width="98" height="28" rx="4"/><text class="t h2 red" x="207" y="129" text-anchor="middle">代码验证：不让模型拥有真值</text><text class="t small muted" x="207" y="137" text-anchor="middle">旧条目损失率 · 精确操作数 · 项目边界 · 来源 · 文件预算</text><text class="t small red" x="207" y="144" text-anchor="middle">任一失败 → append-only fallback</text>
+    <path class="side-line" d="M233 109V119" marker-end="url(#green-arrow)"/>
+    <rect class="side" x="15" y="119" width="130" height="28" rx="4"/><text class="t h2" fill="#2f8157" x="80" y="129" text-anchor="middle">血缘与 Forget 侧链</text><text class="t small muted" x="80" y="137" text-anchor="middle">entry origin → 合并继承 → tombstone → corpus / index / cache / preimage 清理</text><text class="t small muted" x="80" y="144" text-anchor="middle">不删除原 Transcript、无来源旧记忆、自由改写和外部副本</text>
+    <path class="side-line" d="M80 100V119" marker-end="url(#green-arrow)"/>
+  </g>
+  <text class="t small muted" x="16" y="171">图 4｜主动记忆的核心不是“多记”，而是让每次晋升和忘却都能解释其证据覆盖</text>
+</svg>

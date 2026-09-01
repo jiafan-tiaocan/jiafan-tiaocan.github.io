@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320mm" height="180mm" viewBox="0 0 320 180" role="img" aria-labelledby="title desc">
+  <title id="title">个人助理从聊天工具演进为长期工作主体</title>
+  <desc id="desc">展示个人助理从回答问题、调用工具、持有状态、主动运行到形成个人工作操作系统的五阶段趋势。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}.card{fill:#fff;stroke:#d4dde8;stroke-width:.7}.active{fill:#e7f1fc;stroke:#2f6fb5;stroke-width:.9}.final{fill:#173b5e}.chip{fill:#eef2f6}.ink{fill:#142238}.muted{fill:#65758a}.white{fill:#fff}.blue{fill:#2f6fb5}.orange{fill:#d9651b}.line{stroke:#8a9bb0;stroke-width:.9;fill:none}.t{font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif}.h1{font-size:10px;font-weight:700}.h2{font-size:6.2px;font-weight:700}.body{font-size:4.5px}.small{font-size:3.8px}.num{font-size:9px;font-weight:700}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#8a9bb0"/></marker>
+  </defs>
+  <rect class="bg" width="320" height="180"/>
+  <text class="t h1 ink" x="17" y="17">个人助理的竞争焦点：从“回答得好”转向“持续替你工作”</text>
+  <text class="t body muted" x="17" y="26">OpenClaw 2.0 是这一趋势的工程化样本：入口仍是聊天，核心却变成持久工作关系</text>
+  <g id="trend-spine">
+    <path class="line" d="M49 96H270" marker-end="url(#arrow)"/>
+    <rect class="card" x="16" y="52" width="51" height="82" rx="5"/>
+    <text class="t num muted" x="25" y="67">01</text><text class="t h2 ink" x="25" y="78">会回答</text>
+    <text class="t small muted" x="25" y="88">一次请求</text><text class="t small muted" x="25" y="95">一次回复</text>
+    <rect class="chip" x="25" y="108" width="33" height="13" rx="2.5"/><text class="t small ink" x="41.5" y="116" text-anchor="middle">聊天机器人</text>
+    <rect class="card" x="74" y="52" width="51" height="82" rx="5"/>
+    <text class="t num muted" x="83" y="67">02</text><text class="t h2 ink" x="83" y="78">会行动</text>
+    <text class="t small muted" x="83" y="88">模型 + 工具</text><text class="t small muted" x="83" y="95">完成短任务</text>
+    <rect class="chip" x="83" y="108" width="33" height="13" rx="2.5"/><text class="t small ink" x="99.5" y="116" text-anchor="middle">Action Agent</text>
+    <rect class="active" x="132" y="46" width="54" height="94" rx="5"/>
+    <text class="t num blue" x="141" y="63">03</text><text class="t h2 ink" x="141" y="75">会持续</text>
+    <text class="t small muted" x="141" y="85">身份 · Session</text><text class="t small muted" x="141" y="92">状态 · 记忆</text><text class="t small muted" x="141" y="99">跨重启恢复</text>
+    <rect fill="#d5e8fb" x="141" y="112" width="36" height="14" rx="2.5"/><text class="t small blue" x="159" y="120.5" text-anchor="middle">Persistent Agent</text>
+    <rect class="active" x="193" y="46" width="54" height="94" rx="5"/>
+    <text class="t num blue" x="202" y="63">04</text><text class="t h2 ink" x="202" y="75">会主动</text>
+    <text class="t small muted" x="202" y="85">自动化 · Goal</text><text class="t small muted" x="202" y="92">Dreaming</text><text class="t small muted" x="202" y="99">后台复盘与跟进</text>
+    <rect fill="#d5e8fb" x="202" y="112" width="36" height="14" rx="2.5"/><text class="t small blue" x="220" y="120.5" text-anchor="middle">Proactive Agent</text>
+    <rect class="final" x="254" y="40" width="50" height="106" rx="5"/>
+    <text class="t num white" x="263" y="58">05</text><text class="t h2 white" x="263" y="70">会经营工作</text>
+    <text class="t small white" x="263" y="82">任务与看板</text><text class="t small white" x="263" y="90">多人 / 多 Agent</text><text class="t small white" x="263" y="98">可迁移执行</text><text class="t small white" x="263" y="106">经验变成 Skill</text>
+    <rect fill="#eb7f36" x="260" y="119" width="38" height="14" rx="2.5"/><text class="t small white" x="279" y="127.5" text-anchor="middle">Personal Work OS</text>
+  </g>
+  <g id="trend-shifts">
+    <text class="t small orange" x="75" y="154">交互入口 → 工作环境</text>
+    <text class="t small orange" x="140" y="154">即时响应 → 长期连续性</text>
+    <text class="t small orange" x="215" y="154">被动调用 → 主动经营</text>
+  </g>
+  <text class="t small muted" x="16" y="171">图 1｜趋势不是聊天消失，而是聊天退居为持久工作系统的一种入口</text>
+</svg>

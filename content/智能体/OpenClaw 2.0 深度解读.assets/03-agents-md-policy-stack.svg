@@ -51,5 +51,5 @@
     <circle fill="#2f6fb5" cx="230" cy="153" r="1.4"/><text class="t small muted" x="235" y="154.5">仓库结构可被机器导航</text>
     <circle fill="#2f6fb5" cx="230" cy="161" r="1.4"/><text class="t small muted" x="235" y="162.5">完成定义包含验证证据</text>
   </g>
-  <text class="t small muted" x="16" y="174">图 3｜AGENTS.md 的价值在“分层约束 + 所有者路由 + 证据闭环”，不在字数</text>
+  <text class="t small muted" x="16" y="174">图 6｜AGENTS.md 的价值在“分层约束 + 所有者路由 + 证据闭环”，不在字数</text>
 </svg>

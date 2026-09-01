@@ -52,5 +52,5 @@
     </g>
     <text class="t small" fill="#2f6fb5" x="241" y="152" text-anchor="middle">越界即拒绝，失败有类型，完成必须可证明</text>
   </g>
-  <text class="t small muted" x="16" y="171">图 1｜成熟度的分水岭：关键行为从“建议”升级为“运行时不变量”</text>
+  <text class="t small muted" x="16" y="171">图 2｜成熟度的分水岭：关键行为从“建议”升级为“运行时不变量”</text>
 </svg>
