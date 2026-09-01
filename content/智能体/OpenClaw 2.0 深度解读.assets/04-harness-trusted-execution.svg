@@ -56,5 +56,5 @@
     <rect fill="#163a5d" x="28" y="151" width="264" height="13" rx="3"/>
     <text class="t body" fill="#fff" x="160" y="159.5" text-anchor="middle">同一快照 · 最小能力 · 关闭即失效 · 副作用感知 · 干净终态才推进上下文</text>
   </g>
-  <text class="t small muted" x="16" y="174">图 7｜可信执行链：成功路径可提交，危险路径显式 fail closed</text>
+  <text class="t small muted" x="16" y="174">图 8｜可信执行链：成功路径可提交，危险路径显式 fail closed</text>
 </svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320mm" height="180mm" viewBox="0 0 320 180" role="img" aria-labelledby="title desc">
+  <title id="title">Rubric 驱动的 Skill 版本实验闭环</title>
+  <desc id="desc">区分 OpenClaw 已提供的版本化评估接缝与仍需外接的 Rubric、测试集、对照实验和发布判据，展示每次失败如何转化为永久回归案例。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}.ink{fill:#142238}.muted{fill:#65758a}.white{fill:#fff}.blue{fill:#2f6fb5}.orange{fill:#d9651b}.green{fill:#2f8157}.node{fill:#fff;stroke:#8fa2b8;stroke-width:.65}.provided{fill:#e7f1fc;stroke:#2f6fb5;stroke-width:.75}.needed{fill:#fff1e6;stroke:#d96b24;stroke-width:.75}.pass{fill:#e8f5ee;stroke:#3e9267;stroke-width:.75}.store{fill:#173b5e}.line{stroke:#2f6fb5;stroke-width:.85;fill:none}.loop{stroke:#3e9267;stroke-width:.8;stroke-dasharray:2.5 2;fill:none}.t{font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif}.h1{font-size:9.6px;font-weight:700}.h2{font-size:5.2px;font-weight:700}.body{font-size:4.15px}.small{font-size:3.5px}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#2f6fb5"/></marker>
+    <marker id="green-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#3e9267"/></marker>
+  </defs>
+  <rect class="bg" width="320" height="180"/>
+  <g id="title-block">
+    <text class="t h1 ink" x="17" y="16">Skill 版本只有经过同一 Rubric 的对照实验，才算真正学会</text>
+    <text class="t body muted" x="17" y="25">版本化解决“改了什么”；实验契约必须继续回答“是否变好、代价是什么、旧能力有没有退化”</text>
+  </g>
+  <g id="capability-boundary">
+    <rect class="provided" x="15" y="34" width="137" height="25" rx="4"/>
+    <text class="t h2 blue" x="24" y="44">OpenClaw 已提供的评估接缝</text>
+    <text class="t small muted" x="24" y="51">candidate + baseline｜revision / tree hash</text>
+    <text class="t small muted" x="24" y="56">evaluator hook｜metrics / events / correlation</text>
+    <rect class="needed" x="160" y="34" width="145" height="25" rx="4"/>
+    <text class="t h2 orange" x="169" y="44">仍需外接的能力增益协议</text>
+    <text class="t small muted" x="169" y="52">Rubric｜版本化 Suite｜冻结环境｜配对重复实验｜阈值、灰度与停止条件</text>
+  </g>
+  <g id="experiment-flow">
+    <rect class="node" x="15" y="76" width="45" height="48" rx="4"/>
+    <text class="t h2 ink" x="37.5" y="88" text-anchor="middle">累积测试资产</text>
+    <text class="t small muted" x="37.5" y="97" text-anchor="middle">历史失败 / 黄金案例</text>
+    <text class="t small muted" x="37.5" y="105" text-anchor="middle">use / avoid / 对抗案例</text>
+    <text class="t small green" x="37.5" y="115" text-anchor="middle">每轮至少新增一个反例</text>
+    <rect class="provided" x="70" y="72" width="48" height="56" rx="4"/>
+    <text class="t h2 blue" x="94" y="85" text-anchor="middle">配对候选</text>
+    <text class="t small muted" x="94" y="96" text-anchor="middle">Baseline Skill vN</text>
+    <text class="t small muted" x="94" y="104" text-anchor="middle">Candidate Skill vN+1</text>
+    <text class="t small muted" x="94" y="114" text-anchor="middle">同模型 · 同工具 · 同输入</text>
+    <text class="t small blue" x="94" y="122" text-anchor="middle">绑定两个 tree hash</text>
+    <rect class="needed" x="128" y="68" width="59" height="64" rx="4"/>
+    <text class="t h2 orange" x="157.5" y="81" text-anchor="middle">Experiment Contract</text>
+    <text class="t small muted" x="157.5" y="91" text-anchor="middle">rubricVersion + suiteVersion</text>
+    <text class="t small muted" x="157.5" y="99" text-anchor="middle">Provider / Model / Prompt snapshot</text>
+    <text class="t small muted" x="157.5" y="107" text-anchor="middle">重复次数 / 成本预算 / 随机性</text>
+    <text class="t small muted" x="157.5" y="115" text-anchor="middle">最小增益 + 不退化 Guardrail</text>
+    <text class="t small orange" x="157.5" y="125" text-anchor="middle">缺任一项则不可比较</text>
+    <rect class="node" x="197" y="72" width="50" height="56" rx="4"/>
+    <text class="t h2 ink" x="222" y="85" text-anchor="middle">Rubric 双轨评分</text>
+    <text class="t small muted" x="222" y="96" text-anchor="middle">结果：任务成功 / 正确性</text>
+    <text class="t small muted" x="222" y="104" text-anchor="middle">过程：遵循 / 工具序列</text>
+    <text class="t small muted" x="222" y="112" text-anchor="middle">Guardrail：安全 / 回归</text>
+    <text class="t small muted" x="222" y="120" text-anchor="middle">效率：轮次 / 成本 / 延迟</text>
+    <rect class="store" x="257" y="76" width="48" height="48" rx="4"/>
+    <text class="t h2 white" x="281" y="89" text-anchor="middle">版本决策</text>
+    <text class="t small white" x="281" y="99" text-anchor="middle">净改善 → 灰度</text>
+    <text class="t small white" x="281" y="107" text-anchor="middle">不确定 → pending</text>
+    <text class="t small white" x="281" y="115" text-anchor="middle">退化 → revise / block</text>
+    <path class="line" d="M60 100H70" marker-end="url(#arrow)"/><path class="line" d="M118 100H128" marker-end="url(#arrow)"/><path class="line" d="M187 100H197" marker-end="url(#arrow)"/><path class="line" d="M247 100H257" marker-end="url(#arrow)"/>
+  </g>
+  <g id="evidence-loop">
+    <path class="loop" d="M281 124C281 170 46 174 38 124" marker-end="url(#green-arrow)"/>
+    <rect class="pass" x="70" y="143" width="177" height="20" rx="4"/>
+    <text class="t h2 green" x="158.5" y="152" text-anchor="middle">ExperimentRun 是版本证据，不是一次自由文本点评</text>
+    <text class="t small muted" x="158.5" y="159" text-anchor="middle">case-level 结果 + 聚合指标 + evaluator version + variance + 失败样本 + correlation id</text>
+    <text class="t small green" x="276" y="172" text-anchor="end">线上失败与人工纠正进入下一版永久回归集：验证资产随 Skill 一起增长</text>
+  </g>
+  <text class="t small muted" x="16" y="176">图 6｜发布闭环保证 Skill 可安全变更；Rubric 对照实验才证明版本能力净改善</text>
+</svg>

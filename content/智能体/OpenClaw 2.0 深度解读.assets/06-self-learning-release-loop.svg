@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="320mm" height="180mm" viewBox="0 0 320 180" role="img" aria-labelledby="title desc">
-  <title id="title">OpenClaw 自学习的资产发布闭环</title>
-  <desc id="desc">展示真实运行证据经资格门槛、隔离复盘、单次提案、不可变代际、扫描和哈希校验后成为技能，并通过回滚与集合复审持续治理。</desc>
+  <title id="title">OpenClaw Skill 变更的资产发布闭环</title>
+  <desc id="desc">展示真实运行证据经资格门槛、隔离复盘、单次提案、不可变代际、扫描和哈希校验后成为技能版本；此流程保证可治理发布，不单独证明能力提升。</desc>
   <defs>
     <style>
       .bg{fill:#f7f9fc}.node{fill:#fff;stroke:#8fa2b8;stroke-width:.65}.gate{fill:#fff1e6;stroke:#d96b24;stroke-width:.8}.review{fill:#e7f1fc;stroke:#2f6fb5;stroke-width:.8}.store{fill:#173b5e}.safe{fill:#e8f5ee;stroke:#3e9267;stroke-width:.75}.fail{fill:#f8e8e9;stroke:#c45b62;stroke-width:.7}.ink{fill:#142238}.muted{fill:#65758a}.white{fill:#fff}.blue{fill:#2f6fb5}.orange{fill:#d9651b}.green{fill:#2f8157}.red{fill:#ae3f47}.line{stroke:#2f6fb5;stroke-width:.9;fill:none}.loop{stroke:#3e9267;stroke-width:.8;stroke-dasharray:2.5 2;fill:none}.t{font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif}.h1{font-size:10px;font-weight:700}.h2{font-size:5.3px;font-weight:700}.body{font-size:4.2px}.small{font-size:3.6px}
@@ -9,8 +9,8 @@
     <marker id="green-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#3e9267"/></marker>
   </defs>
   <rect class="bg" width="320" height="180"/>
-  <text class="t h1 ink" x="17" y="17">自学习是受治理的 Skill 发布事务，不是“模型改自己”</text>
-  <text class="t body muted" x="17" y="26">学习发生在运行之后，只有可复用程序能进入 Proposal；在线 Skill 只能通过 Apply 提交</text>
+  <text class="t h1 ink" x="17" y="17">Skill 变更首先是受治理的发布事务，不等于能力提升</text>
+  <text class="t body muted" x="17" y="26">经验只能通过 Proposal 与 Apply 进入在线 Skill；新版是否更好仍需 Rubric 对照实验</text>
   <g id="release-pipeline">
     <rect class="node" x="15" y="54" width="39" height="46" rx="4"/><text class="t h2 ink" x="34.5" y="67" text-anchor="middle">真实运行证据</text><text class="t small muted" x="34.5" y="76" text-anchor="middle">纠正 · 恢复</text><text class="t small muted" x="34.5" y="84" text-anchor="middle">稳定多步程序</text><text class="t small muted" x="34.5" y="92" text-anchor="middle">runtime skill receipt</text>
     <rect class="gate" x="62" y="48" width="43" height="58" rx="4"/><text class="t h2 orange" x="83.5" y="62" text-anchor="middle">资格门槛</text><text class="t small muted" x="83.5" y="72" text-anchor="middle">≥10 model iterations</text><text class="t small muted" x="83.5" y="80" text-anchor="middle">30 秒 quiet</text><text class="t small muted" x="83.5" y="88" text-anchor="middle">非 cron / memory /</text><text class="t small muted" x="83.5" y="95" text-anchor="middle">subagent / provider error</text>
@@ -27,5 +27,5 @@
     <path class="loop" d="M287 100C287 154 236 159 216 145" marker-end="url(#green-arrow)"/>
     <text class="t small green" x="280" y="154" text-anchor="end">每周集合复审：keep / rewrite / merge / drop</text>
   </g>
-  <text class="t small muted" x="16" y="171">图 5｜经验只有在“证据、所有权、版本与回滚”同时成立时，才成为未来行为能力</text>
+  <text class="t small muted" x="16" y="171">图 5｜证据、所有权、版本与回滚只保证安全发布；能力增量仍需图 6 的实验举证</text>
 </svg>

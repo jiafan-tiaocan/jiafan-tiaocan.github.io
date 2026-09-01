@@ -2,7 +2,7 @@
 title: OpenClaw 2.0 深度解读：从个人助手到 Agent 工作操作系统
 aliases:
   - OpenClaw 2.0 深度解读
-description: 基于 OpenClaw v2026.8.1 固定版本的发布说明、官方文档与源码，拆解个人助理的范式迁移、运行时硬约束、主动记忆与自学习、关键 Prompt 和代码实现，以及对数字员工与 AI-Coding 的参考价值。
+description: 基于 OpenClaw v2026.8.1 固定版本的发布说明、官方文档与源码，拆解任务看板、经验到 Skill、Rubric 版本实验、运行时硬约束、主动记忆与自学习，以及对数字员工与 AI-Coding 的参考价值。
 type: research
 status: complete
 owner: 贾凡
@@ -25,7 +25,7 @@ tags:
 # OpenClaw 2.0 深度解读：从个人助手到 Agent 工作操作系统
 
 > [!summary]
-> **OpenClaw 2.0 最重要的变化，不是新增了多少模型、渠道或界面，而是把“聊天中的一次 Agent 调用”升级为“可持久、可迁移、可协作、可治理、可恢复、可持续学习的工作会话”。** 
+> **OpenClaw 2.0 最重要的变化，不是新增了多少模型、渠道或界面，而是把“聊天中的一次 Agent 调用”升级为“可持久、可迁移、可协作、可治理、可恢复、可沉淀经验的工作会话”。**
 >
 > 如果说此前的 OpenClaw 更像一个连接模型、工具和消息渠道的个人 Gateway，2.0 则开始具备 Agent 工作操作系统的雏形：Gateway 保存身份、会话、凭证和状态，执行可以被调度到本机、配对设备或临时云机器；人、Agent、子 Agent 和外部 Agent 围绕同一会话协作；仪表盘、目标、自动化、工作看板和记忆系统把一次性对话延伸为长期工作。
 
@@ -86,7 +86,19 @@ OpenClaw 2.0 可以看作这条演进路线的工程化样本：它仍然从 IM�
 
 OpenClaw 2.0 还不能被直接等同于成熟的“个人工作操作系统”：其 Fleet、Swarm、A2A、自学习和隔离模型仍有明确边界。但它已经把产品中心从“模型入口”推向“持久工作关系”，这比单纯增加模型能力更接近个人助理下一阶段的方向。
 
-### 2.2 工程分水岭：软约定开始变成运行时硬约束
+### 2.2 从执行到经营需要跨过三个台阶
+
+“Agent 开始经营”不能只用主动触发频率来定义。真正的经营意味着工作可管理、经验可资本化、能力增长可证明，依次对应三个台阶：
+
+| 台阶 | 对象变化 | 经营价值 | OpenClaw 2.0 完成度 |
+|---|---|---|---|
+| 任务变成看板 | 对话中的请求 → 有目标、状态、责任人、证据和待决策项的 Workboard / Dashboard | Agent 不只是完成动作，而是持续掌握工作组合、进度、阻塞与结果 | **基本成立** ：Session、Goal、Progress、Dashboard、Automation、成员和子任务形成持久工作对象 |
+| 经验变成 Skill 的来源 | 一次运行轨迹 → 可形成 Skill Proposal 或现有 Skill 的最小修正 | 每次工作都可能沉淀未来可复用的程序，经营开始积累能力资产 | **基本成立** ：Experience Review、Skill receipt、Proposal、版本、扫描、Apply 与回滚已形成发布链 |
+| 版本增量必须被实验论证 | “Skill 文件变了” → 在固定 Rubric 和测试集下证明候选版本优于基线 | 能力资产不只累积数量，还能防止回归、比较净增益并形成复利 | **尚未成立** ：已有 baseline/candidate bundle、evaluator hook、hash、metrics 和事件账本，但 Rubric、Suite、对照实验、阈值和停止条件需外部实现 |
+
+这三个台阶之间不是并列功能，而是递进关系：**看板让 Agent 能经营工作，Skill 让 Agent 能经营经验，Rubric 驱动的版本实验才让 Agent 能经营自己的能力增长。** OpenClaw 2.0 最重要的前进是完成了前两步，并在第三步预留了正确的工程接缝；它的剩余缺口不是“再加一个评测命令”，而是把每次能力变更都变成必须举证的实验事件。
+
+### 2.3 工程分水岭：软约定开始变成运行时硬约束
 
 宏观产品趋势最终必须落到工程上。2.0 的关键变化是：正确性不再只靠 Prompt 提醒，而是由 Runtime 和 Harness 在身份、权限、状态、生命周期、恢复与证据边界上强制执行。
 
@@ -94,7 +106,7 @@ OpenClaw 2.0 还不能被直接等同于成熟的“个人工作操作系统”�
 
 这里真正稳定的是 Gateway 拥有的会话身份、规范化状态、对话记录、凭证、权限与工作区；机器、模型和执行器变成可替换资源。这是本次升级中最有长期价值的架构转向。
 
-### 2.3 四层架构：不要把 Agent Loop 等同于完整产品
+### 2.4 四层架构：不要把 Agent Loop 等同于完整产品
 
 OpenClaw 2.0 的源码责任可以拆成四层。固定版本文档明确把内置 Runtime、可复用 Agent Core、Harness 选择、模型传输和 Plugin SDK 分开：`packages/agent-core/` 提供 Loop 与契约，`src/agents/embedded-agent-runner/` 负责内置尝试循环，`src/agents/harness/` 管理不同 Harness 的选择与生命周期，`src/llm/` 隔离 Provider 传输。[Agent Runtime Architecture](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/agent-runtime-architecture.md)
 
@@ -398,9 +410,11 @@ OpenClaw 同时记录三类 provenance：
 
 OpenClaw 2.0 的自学习不是修改模型权重，也不是把一段复盘追加到系统 Prompt。它选择 **Skill 作为可发现、可版本化、可回滚的长期行为单元** ：运行证据先形成 Proposal，只有 Apply 才能写入在线 `SKILL.md`。[Self-learning 固定版本说明](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/tools/self-learning.md) [Skill Workshop 生命周期](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/tools/skill-workshop.md)
 
+但需要先修正一个容易高估它的说法：**OpenClaw 已经建立了 Skill 的安全发布闭环，还没有建立默认的能力增益闭环。** Proposal 能证明“版本被完整、可追溯地修改”，不能自动证明“新版本比旧版本更好”。
+
 ![OpenClaw 将运行经验发布成受治理 Skill 的主链路](OpenClaw%202.0%20深度解读.assets/06-self-learning-release-loop.svg)
 
-#### 3.6.1 它其实有三种学习回路
+#### 3.6.1 它其实有三种经验回流机制
 
 | 回路 | 何时触发 | 适合学什么 | 写入权限 |
 |---|---|---|---|
@@ -461,9 +475,62 @@ Apply 前还要重新检查：
 - 写 live Skill 之前保存旧正文和 support files 作为 rollback metadata；
 - Running Session 保持启动时 Skill snapshot，只有新 Session 看见新版本。
 
-Scanner 只解决已知危险模式，不判断业务正确性。这是当前实现最重要的剩余风险：错误但“看起来安全”的方法仍可能通过。因此企业场景还应在 Proposal 与 Apply 之间接入离线 Eval、黄金案例、责任人和灰度；OpenClaw 已提供 `skill_proposal_evaluate`、revision hash、correlation id 与 append-only event ledger 作为外部优化环的接缝，但不会替外部控制器决定何时停止。
+Scanner 只解决已知危险模式，不判断业务正确性。错误但“看起来安全”的方法仍可能通过；即使 Proposal 有版本、来源和 rollback，也不能据此推断能力发生净改善。
 
-#### 3.6.5 三种 Mode 的真实权限差异
+#### 3.6.5 `evaluate` 的准确边界：有实验接缝，没有默认实验系统
+
+OpenClaw 的 `skill_proposal_evaluate` 设计其实为第三个台阶铺了很好的底座：
+
+- Evaluator 获得精确 candidate bundle；Update Proposal 还会得到完整 baseline Skill；两者都带文件 hash 与 tree hash；
+- 插件可以运行静态分析、安全扫描、Benchmark 或 Model-based Grader，返回 attributed findings、metrics，以及可选的 `pass`、`revise`、`block`；
+- Evaluation 绑定 exact proposal revision，记录 evaluator、plugin/version、correlation id、时间和结果，并写入 append-only event ledger；
+- Apply 会在锁内重新验证目标 tree，Skill 发生漂移就要求重新评估。[Evaluation Hook 契约](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/plugins/hooks.md#skill-lifecycle-and-evaluation) [Evaluation 快照与持久化](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/service-evaluation.ts#L50-L175)
+
+但源码与官方测试文档同时暴露了完整边界：
+
+1. **没有内建 Rubric 和 Skill Eval Suite。** 官方测试文档明确将 Skill decisioning、`SKILL.md` 遵循度和多轮 Workflow contract 列为仍缺失的 Agent reliability eval；建议的 mock-provider scenario runner 仍属于 Future Evals。[Skills Eval 缺口](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/help/testing.md#agent-reliability-evals-skills)
+2. **没有 evaluator 也能继续。** `hasSkillProposalEvaluators()` 为 false 时，candidate/baseline bundle 不构建，`outcomes` 直接是空数组，但仍记录一次 `evaluation_completed`。[空评估路径](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/service-evaluation.ts#L50-L143)
+3. **只有 `block` 是硬否决。** Apply 只查找 completed 且 `decision === "block"` 的 outcome；`revise`、evaluator timeout/error 或空结果不会天然阻止提交。[Apply 的评估门禁](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/apply-transition.ts#L181-L189)
+4. **没有自动实验迭代器。** OpenClaw 明确表示自己不负责自动 revise、不调度无界 evaluation loop，也不决定循环何时停止；它只提供外部 Controller 可以接入的 revision hash、event sequence 和 correlation id。
+
+因此当前最准确的评价是：
+
+```text
+OpenClaw 2.0 已完成：Learning-as-versioned-release infrastructure
+OpenClaw 2.0 尚未完成：Rubric-driven capability improvement system
+```
+
+#### 3.6.6 每次 Skill 版本迭代应增加什么实验与校验
+
+![Rubric 驱动的 Skill 版本对照实验闭环](OpenClaw%202.0%20深度解读.assets/07-rubric-version-eval-loop.svg)
+
+不是每一版临时设计一套新题，而是让 **验证资产与 Skill 一起累积** ：每次导致 Proposal 的真实失败、用户纠正或新能力意图，至少转化为一个不可变的新 Case；候选版本必须跑“旧回归集 + 本轮新增 Case + 邻近负例”，并与上一 Live Skill 在同一实验契约下配对比较。这样第 N 次迭代不只是多一个 Skill 版本，也会多一份更难被遗忘的反例证据。
+
+建议把一次 `ExperimentRun` 固定为以下契约：
+
+| 组成 | 必须绑定的内容 | 解决的问题 |
+|---|---|---|
+| Change intent | 来源 Run、失败类型、目标行为、非目标行为 | 这次为什么改，哪些能力不应被波及 |
+| Artifact pair | baseline tree hash、candidate tree hash、Proposal revision | 比较对象是否精确，结果能否复现 |
+| Rubric | `rubricVersion`、逐项定义、权重、硬 Guardrail | “更好”到底意味着什么，哪些退化绝不接受 |
+| Eval suite | `suiteVersion`、Case ID、来源、类型、预期工具序列或输出属性 | 测了哪些场景，新增反例是否进入永久回归 |
+| Runtime snapshot | Provider、Model、Prompt、Tool schema、Sandbox、数据快照 | 分数变化来自 Skill，还是环境漂移 |
+| Sampling plan | 重复次数、随机性设置、预算、超时与失败处理 | 如何处理模型方差和偶然成功 |
+| Decision rule | 最小实际增益、置信要求、成本上限、零退化项 | 什么证据允许灰度，什么情况保持 pending |
+| Evidence bundle | case-level trajectory、评分、差异、失败样本、evaluator version、correlation id | 决策是否可审计，下一轮从哪里继续学习 |
+
+Rubric 至少应同时覆盖四类维度：
+
+1. **结果品质** ：任务是否真正完成，事实、代码或业务结果是否正确；
+2. **过程遵循** ：是否读了 Skill、是否按要求使用工具、关键步骤与顺序是否满足 Workflow contract；
+3. **负向 Guardrail** ：是否误触发无关 Skill、越权、泄密、重复副作用，旧能力是否回归；
+4. **经营效率** ：模型迭代数、工具往返、延迟、Token 和人工介入是否下降。
+
+版本判定也不能只看一个总分。一个更稳妥的门禁是：主指标达到最小实际增益；所有硬 Guardrail 零退化；新增反例通过；历史回归集不劣于容忍线；成本或延迟没有越界；方差过大或 Judge 不一致时保持 pending 并进入人工抽检。只有这些同时成立，`pass` 才有资格进入灰度，而不是直接把“评估执行过”当作“评估通过”。
+
+这里可以直接复用本地 BrainstormBench 的双轨思想：结果品质和过程品质分开评分，自动指标、LLM-as-Judge 与人工校准分层；但 Skill 评测应进一步强化 **baseline/candidate 配对** 、确定性工具轨迹和负例 Guardrail，因为它评的是行为程序，不只是最终文本质量。
+
+#### 3.6.7 三种 Mode 的真实权限差异
 
 | Mode | Experience Capture | 自动 Apply | Weekly Collection Review |
 |---|---|---|---|
@@ -475,7 +542,7 @@ Scanner 只解决已知危险模式，不判断业务正确性。这是当前实
 
 Weekly Collection Review 也不是“按年龄自动删除 Skill”。它把 usage count 与 last-used 作为支持证据，不能仅因没被记录使用就 drop；只读取计划修改的 Skill，未列出的保持原样；共享 Workspace 只有在 Provider、Model 和 Auth Identity 一致时才合并 Agent 可见集合，而且必须保证每个共享 Agent 至少剩一个可见 Skill。一次 Review 最多 200 个 Skill、总正文 240,000 bytes，Workspace lease 下原子 reconciliation，并保留一个可恢复 Collection backup。
 
-#### 3.6.6 容易忽略但很关键的实现细节
+#### 3.6.8 容易忽略但很关键的实现细节
 
 - **被用户中断不等于失败。** 深度 Turn 被中断往往包含“错误路径 + 用户纠正”的高价值证据，所以仍可 Review；Provider/Prompt error 则被视为环境噪声，不学习。
 - **Compaction 后不复盘。** 当前实现要求 `compacted !== true`，避免 Reviewer 把已经压缩、可能缺证据的轨迹当作完整事实。
@@ -486,8 +553,10 @@ Weekly Collection Review 也不是“按年龄自动删除 Skill”。它把 usa
 - **Proposal 生成与 Live Apply 是两次不同提交。** Reviewer 完成不代表 Skill 已生效，Apply 才是唯一 live-write edge。
 - **历史扫描不复制 Transcript 到扫描状态。** 共享数据库只保存 cursor 与 coverage；实际 Transcript 在每次受限窗口中读取、脱敏并交给模型。
 - **年龄治理已退役。** Skill Curator 不再因为“老”而 pin/unpin/drop，集合质量由受证据支持的 Model Review 管理。
+- **`evaluation_completed` 不等于通过。** 它只说明评估调用被记录；必须检查 evaluator 是否存在、是否成功、Rubric/Suite 版本以及决策结果。
+- **Evaluator error 默认不是 fail closed。** 如果企业平台要求“没有证据不得发布”，需要外部策略把空 outcome、timeout、error 和 `revise` 都升级为阻断条件。
 
-#### 3.6.7 按问题快速定位代码
+#### 3.6.9 按问题快速定位代码
 
 | 想查的问题 | 入口文件 / 符号 |
 |---|---|
@@ -497,10 +566,14 @@ Weekly Collection Review 也不是“按年龄自动删除 Skill”。它把 usa
 | 自动 Apply 为什么停在 pending | [`autonomous-apply.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/autonomous-apply.ts#L16-L67)；`isWorkshopOwnedSkillDir` |
 | Proposal bundle 如何防半写入 | [`proposal-generation.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/proposal-generation.ts#L41-L94)；`stageSkillProposalGeneration` |
 | Scanner 具体检查哪些文件 | [`proposal-scan.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/proposal-scan.ts#L1-L49)；`scanProposalBundle` |
+| Evaluation 为什么可能为空 | [`service-evaluation.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/service-evaluation.ts#L50-L143)；`hasSkillProposalEvaluators`、`evaluateSkillProposal` |
+| 为什么只有 block 阻止 Apply | [`apply-transition.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/apply-transition.ts#L181-L189) |
+| Evaluator 能拿到哪些 baseline/candidate 数据 | [`plugin hooks`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/plugins/hooks.md#skill-lifecycle-and-evaluation)、[`proposal-bundle.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/proposal-bundle.ts) |
+| OpenClaw 尚缺哪些 Skill Reliability Eval | [`testing.md`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/help/testing.md#agent-reliability-evals-skills) |
 | Agent Tool 的 read / prepare_patch / patch / apply 语义 | [`skill-workshop-tool.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/tools/skill-workshop-tool.ts) 与 [`skill-workshop-tool-schema.ts`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/tools/skill-workshop-tool-schema.ts) |
 | Product 级完整流程、CLI 与存储 | [`self-learning.md`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/tools/self-learning.md)、[`skill-workshop.md`](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/tools/skill-workshop.md) |
 
-这里最值得迁移的不是默认 `auto`，而是把学习建模为：**真实运行提供证据，隔离 Reviewer 提出最小修改，Proposal 固定版本，Scanner 与 Eval 负责门禁，Apply 提交 Live Skill，Rollback 和 Collection Review 管理长期质量。**
+这里最值得迁移的不是默认 `auto`，而是把两条闭环分开实现：**OpenClaw 的发布内环负责证据、最小修改、版本、扫描、提交和回滚；Rubric 实验外环负责基线对照、增量证明、回归资产累积、灰度和停止条件。** 缺少外环时，系统只能证明“越来越会改自己”，不能证明“自己越来越好”。
 
 ### 3.7 权限与凭证：开始把安全从 Prompt 约束下沉到运行时
 
@@ -663,9 +736,9 @@ Gateway 保持身份、状态、凭证和策略，Worker 只获得完成当前�
 
 Structured Question、Goal、Permission Mode、Credential Request、Progress Card、Workboard 和 Widget Grant 都把关键协作意图变成结构化状态。模型负责理解和建议，系统负责权限与生命周期。
 
-### 亮点四：自学习第一次有了工程闭环
+### 亮点四：Skill 变更第一次有了发布闭环
 
-其价值不在“自动写 Skill”，而在来源、受限目标、Proposal、hash 绑定、扫描、一次 Apply、回滚、集合治理这些约束。它证明自学习可以被设计为资产发布流程，而不是让 Agent 随意修改自己。
+其价值不在“自动写 Skill”，而在来源、受限目标、Proposal、hash 绑定、扫描、一次 Apply、回滚、集合治理这些约束。它证明 Agent 的行为资产可以走正式发布流程，而不是被随意覆写；但由于缺少默认 Rubric、版本对照实验和回归集，这一亮点不能被表述为完整的“能力持续提升闭环”。
 
 ### 亮点五：交互式结果成为 Agent 的新产品表面
 
@@ -683,9 +756,9 @@ OpenClaw 明确把一个 Gateway 定义为一个可信控制域。Session owners
 
 因此不能仅凭“有团队角色和共享凭证”就判断它具备企业级租户隔离。
 
-### 6.2 默认自动学习对企业场景过于激进
+### 6.2 自动 Skill 发布缺少默认的增量证明
 
-安全 Scanner 只能拦截已知危险模式，不能判断结论是否符合业务真值、法规或责任边界。对个人工作区，自动吸收经验可能收益大于风险；对理赔、测试发布或企业知识，任何自动写入生产 Skill 的路径都必须再加 Eval、Reviewer、版本、灰度和发布门禁。
+安全 Scanner 只能拦截已知危险模式，不能判断结论是否符合业务真值、法规或责任边界。OpenClaw 虽有 Evaluation Hook，但没有默认 Rubric、Suite 和 baseline/candidate 对照实验；空 Evaluation、Evaluator error 和 `revise` 也不会天然阻止 Apply。对个人工作区，这可能是可以接受的可用性取舍；对理赔、测试发布或企业知识，任何自动写入生产 Skill 的路径都必须改成“无实验增益证据则 fail closed”，并加入版本化 Rubric、回归集、灰度和责任人门禁。
 
 ### 6.3 Dreaming 是概率性记忆整理，不是事实治理
 
@@ -765,9 +838,11 @@ Grant = Principal × Capability × Resource × Revision × Context × Expiry
 
 这对生成式系统格外重要，因为模型会不断生成新代码、新参数和新目标；仅按用户或 Agent ID 授权过于粗糙。
 
-### 7.5 范式五：Learning-as-release，而不是 Memory-as-write
+### 7.5 范式五：Learning-as-release 是起点，不是终点
 
-OpenClaw 把经验学习拆成证据筛选、受限 Reviewer、Proposal、Hash、扫描、一次 Apply、回滚和集合复审。这意味着学习不是“往长期记忆追加一段文本”，而是一次资产发布。企业级实现应在此基础上继续加入离线 Eval、黄金集、责任人、灰度、线上回归和撤回门槛。
+OpenClaw 把经验学习拆成证据筛选、受限 Reviewer、Proposal、Hash、扫描、一次 Apply、回滚和集合复审。这意味着学习不是“往长期记忆追加一段文本”，而是一次资产发布；它解决了 change control，却没有自动解决 improvement proof。
+
+真正完整的范式应是 `Learning-as-versioned-experiment-and-release`：每个新版本都绑定旧版基线、固定 Rubric、版本化测试集、冻结运行环境、配对实验和决策阈值；每次真实失败再沉淀为永久回归案例。只有这样，经验才能从“触发一次修改”升级为“持续增加可验证能力”。
 
 ### 7.6 范式六：Migration 是产品能力，不是运维脚本
 
@@ -920,9 +995,9 @@ LLaP 的 Worker 不应持有平台长期真值，也不应因为某台机器或�
 
 ### 8.5 P1：结合现有规划增强的能力
 
-#### A. 将“受控自优化”实现为双环，而非直接照搬 auto Skill
+#### A. 将“受控自优化”实现为发布内环 + Rubric 实验外环
 
-OpenClaw 的 Workshop 很适合做内环参考，但企业平台还需要外环验证：
+OpenClaw 的 Workshop 很适合做发布内环参考，但企业平台还需要 Rubric 实验外环：
 
 ```mermaid
 flowchart LR
@@ -936,7 +1011,7 @@ flowchart LR
     O --> E
 ```
 
-OpenClaw 解决了“如何安全写入工作区 Skill”，我们还必须解决“如何证明新版业务专家比旧版更好”。因此生产知识、权限、结果真值和硬门禁继续禁止自动修改，这与当前项目总文档是一致的。
+OpenClaw 解决了“如何安全写入工作区 Skill”，我们还必须解决“如何证明新版业务专家比旧版更好”。外环至少固定 `rubricVersion`、`suiteVersion`、baseline/candidate hash、Provider/Model/Prompt 快照、重复次数、最小增益和零退化 Guardrail；每次失败或人工纠正都要新增 Case，再强制重跑累积回归集。因此生产知识、权限、结果真值和硬门禁继续禁止自动修改，这与当前项目总文档是一致的。
 
 #### B. Dashboard 作为结果与运营的共同载体
 
@@ -983,7 +1058,7 @@ AI-Coding 的 Worktree 适合先验证“状态由平台持有、执行可迁移
 
 | OpenClaw 做法 | 不直接照搬的原因 | 建议调整 |
 |---|---|---|
-| 自学习默认 `auto` | 企业知识和业务流程的错误成本远高于个人 Workspace | 默认 `propose`，只有低风险、可回滚、Eval 净改善的 Skill 允许自动灰度 |
+| 自学习默认 `auto` | 企业知识和业务流程的错误成本远高于个人 Workspace，且默认 Eval 不证明版本增量 | 默认 `propose`；只有绑定 Rubric/Suite、对照实验净改善、硬 Guardrail 零退化的 Skill 允许自动灰度 |
 | 同 Gateway 可信团队模型 | 公司内仍有租户、客户、项目和敏感数据隔离要求 | 以租户/客户建立独立信任域，OS/容器/凭证和数据库共同隔离 |
 | 一个产品覆盖大量 Channel、模型和媒体 | 能力面扩张会稀释垂直任务的可靠性和运营投入 | 围绕首个专家场景建立最小能力集，再以插件扩张 |
 | 用模型 Dreaming 直接巩固长期记忆 | 业务事实与个人偏好不是同一类记忆 | 个人经验可模型整理；权威知识必须走来源、Owner、版本、冲突和 Eval 治理 |
@@ -1003,7 +1078,14 @@ AI-Coding 的 Worktree 适合先验证“状态由平台持有、执行可迁移
 
 ### 实验二：受控 Skill 改进闭环
 
-从一次真实失败生成 Skill Patch，要求完成：来源绑定、完整旧版本读取、hash 校验、安全扫描、回放 Eval、新旧版本比较、人工批准、灰度、回滚。用“更新后净改善率”和“误吸收率”评价，不以生成 Proposal 数量评价。
+从一次真实失败生成 Skill Patch，但把验收对象从“Proposal 是否生成”改成“Candidate 是否经实验优于 Baseline”：
+
+1. 将原失败固化为 `case-new`，并选择 `use`、`avoid`、历史回归和对抗 Case 组成版本化 Suite；
+2. 固定 Rubric、Provider、Model、Prompt、Tool schema、数据快照、重复次数和预算；
+3. 让 Live Skill vN 与 Candidate vN+1 在同一 Case 上配对运行，保存 case-level 结果、工具轨迹、成本和方差；
+4. 要求新增 Case 通过、主指标达到最小实际增益、硬 Guardrail 零退化、历史回归不越线；
+5. 不确定或 Judge 分歧时保持 pending，人工抽检；通过后小流量灰度，线上失败继续进入下一版 Suite；
+6. 用“版本净改善率、回归逃逸率、误吸收率、单位增益成本和回滚率”评价，不以 Proposal 数量或 Apply 次数评价。
 
 ### 实验三：任务 Dashboard 与结构化人工介入
 
@@ -1017,12 +1099,12 @@ OpenClaw 2.0 不是一次普通功能升级，而是一次责任边界重构：
 2. **运行层** 从单机 Agent Loop 走向 Gateway 控制平面与可迁移执行平面；
 3. **协作层** 从聊天消息走向目标、问题、审批、进度、成员和任务看板；
 4. **交付层** 从文本回答走向持久、可交互、受权限约束的 Dashboard；
-5. **学习层** 从手工调 Prompt 走向有提案、扫描、hash、回滚和复审的 Skill 生命周期；
+5. **学习层** 从手工调 Prompt 走向有提案、扫描、hash、回滚和复审的 Skill 生命周期，但版本增量仍缺少默认 Rubric 与对照实验；
 6. **生态层** 从内部插件与 Channel 走向 A2A、MCP 和多种 Agent Bundle 互操作。
 7. **工程范式** 从“模型尽量做对”走向“模型负责提案，Runtime 负责可验证提交与诚实恢复”。
 8. **研发系统** 从“给模型一份说明书”走向“分层仓库政策 + 版本化 Harness + 边界证据”的 AI-Coding 约束栈。
 
-它最值得参考的不是“做一个更全的 Agent 平台”，而是以下方法：**先让工作成为有状态、有权限、有证据的对象，再让模型、工具、机器、人员和其他 Agent 围绕这个对象协作。** 
+它最值得参考的不是“做一个更全的 Agent 平台”，而是以下递进方法：**先让任务成为可经营的看板，再让经验成为可发布的 Skill，最后让每次 Skill 变化成为必须用 Rubric 和对照实验举证的能力增量。** OpenClaw 2.0 已经完成前两步，并为第三步提供了工程接缝，但没有替使用者完成实验系统。
 
 对于当前数字员工与 AI-Coding 项目，这一方向与“知识 + 工作契约 + 执行 + 评测”的版本化专家产品高度一致；OpenClaw 可以补强运行时、会话产品化、凭证隔离、交互式结果和经验回流机制。但在企业场景中，仍需比 OpenClaw 更严格地加入租户隔离、权威知识治理、独立评测、灰度发布和责任人审批。
 
@@ -1040,12 +1122,15 @@ OpenClaw 2.0 不是一次普通功能升级，而是一次责任边界重构：
 10. [Memory Provenance：来源继承、Forget 语义与证明边界](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/concepts/memory-provenance.md)
 11. [Self-learning：Skill Proposal 生命周期](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/tools/self-learning.md)
 12. [Experience Review Prompt：真正的学习判据与 abstain 设计](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/experience-review-prompt.ts#L100-L125)
-13. [Swarm：程序化多 Agent 编排](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/tools/swarm.md)
-14. [A2A Gateway、Protocol 与 Task Store](https://github.com/openclaw/openclaw/tree/ea806575e6450e4d1efdfc72c19f04be982a1b9b/extensions/a2a/src)
-15. [Operator Scopes 与安全边界](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/gateway/operator-scopes.md)
-16. [`agent exec`：Headless/CI 嵌入入口](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/cli/agent.md)
-17. [根 AGENTS.md：研发 Doctrine、仓库路由与证据门槛](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md)
-18. [Harness 类型与可信执行主链路](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/types.ts)
+13. [Skill Evaluation 实现：空 Evaluator 路径与 exact revision 持久化](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/service-evaluation.ts#L50-L175)
+14. [Apply Transition：只有 `decision: block` 构成硬否决](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/skills/workshop/apply-transition.ts#L181-L189)
+15. [Skill Reliability Eval 缺口：Decisioning、Compliance 与 Workflow Contracts](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/help/testing.md#agent-reliability-evals-skills)
+16. [Swarm：程序化多 Agent 编排](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/tools/swarm.md)
+17. [A2A Gateway、Protocol 与 Task Store](https://github.com/openclaw/openclaw/tree/ea806575e6450e4d1efdfc72c19f04be982a1b9b/extensions/a2a/src)
+18. [Operator Scopes 与安全边界](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/gateway/operator-scopes.md)
+19. [`agent exec`：Headless/CI 嵌入入口](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/docs/cli/agent.md)
+20. [根 AGENTS.md：研发 Doctrine、仓库路由与证据门槛](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/AGENTS.md)
+21. [Harness 类型与可信执行主链路](https://github.com/openclaw/openclaw/blob/ea806575e6450e4d1efdfc72c19f04be982a1b9b/src/agents/harness/types.ts)
 
 ## 13. 主要来源
 
