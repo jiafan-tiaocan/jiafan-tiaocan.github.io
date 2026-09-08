@@ -1,71 +1,107 @@
-"""Editable, example-led role map for chapter 10; Python standard library only."""
+"""Editable paper figures with shared geometry; Python standard library only.
+Coordinates are CSS pixels; physical dimensions use the equivalent at 96 dpi.
+"""
 from html import escape
 from pathlib import Path
-
-OUT = Path(__file__).with_name('05-knowledge-relationships.svg')
-INK, GREEN, MUTED = '#243c36', '#2f6657', '#53695f'
-
-def text(x, y, value, size=14, weight=400, anchor='start', fill=INK):
-    return f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-size="{size}" font-weight="{weight}" fill="{fill}">{escape(value)}</text>'
-
-def rect(x, y, w, h, fill='#fff'):
-    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" fill="{fill}" stroke="#bdcfc3"/>'
-
-def arrow(d, dashed=False, both=False):
-    return (f'<path d="{d}" fill="none" stroke="{GREEN}" stroke-width="1.7" marker-end="url(#arrow)"'
-        + (' marker-start="url(#arrow)"' if both else '')
-        + (' stroke-dasharray="4 3"' if dashed else '') + '/>')
-
-body = '<rect width="560" height="468" rx="14" fill="#f7f5ef"/>'
-body += text(20, 28, '9 月线上净收入：同一案例，六种职责', 18, 600)
-body += '<rect x="8" y="42" width="544" height="418" rx="10" fill="none" stroke="#93ad9c"/>'
-body += text(22, 66, '知识管理｜复核 P1：退款按发生月扣减', 16, 600)
-
-body += rect(24, 82, 512, 54, '#e8f1ea')
-body += text(36, 103, '本体｜先定义对象与关系', 16, 600)
-body += text(36, 124, '退款事件关联订单；退款发生月与业务归属月是不同属性')
-body += arrow('M139 136V152', True) + arrow('M421 136V152', True)
-
-body += rect(24, 154, 230, 98)
-body += text(36, 176, 'OKF｜交付知识文件', 16, 600)
-body += text(36, 197, 'metrics/net-revenue.md')
-body += text(36, 218, '链接政策 P1 与计算文件')
-body += text(36, 239, '保存口径、来源、复核记录')
-
-body += rect(306, 154, 230, 98)
-body += text(318, 176, '知识图谱｜连接具体对象', 16, 600)
-body += text(318, 197, '退款 R：20 元，confirmed')
-body += arrow('M328 202V225')
-body += text(340, 218, '关联订单')
-body += text(318, 242, '订单 B：200 元，paid，线上')
-body += arrow('M139 252V277') + arrow('M421 252V277')
-body += text(280, 270, '读取定义与关系', anchor='middle', fill=MUTED)
-
-body += rect(24, 279, 512, 58, '#e8f1ea')
-body += text(36, 301, '知识检索｜问题：9 月线上净收入？', 16, 600)
-body += text(36, 324, '取齐：P1 口径、计算入口、订单与退款表定义')
-body += arrow('M139 337V370')
-body += text(157, 359, '本轮依据', fill=MUTED)
-body += arrow('M449 370V339')
-body += text(466, 359, '下次召回', fill=MUTED)
-
-body += rect(24, 372, 232, 78)
-body += text(36, 394, 'Agent｜读取数据并执行', 16, 600)
-body += text(36, 416, '核验：100 + 200 − 20 = 280')
-body += text(36, 438, '取消 50 不计；结果附执行依据')
-
-body += rect(322, 372, 214, 78, '#fbefe6')
-body += text(334, 394, '记忆系统｜保留这次经历', 16, 600)
-body += text(334, 416, '记住：9 月线上 280 元')
-body += text(334, 438, '连同 P1 与本次执行依据')
-body += text(289, 398, '写入', anchor='middle')
-body += arrow('M258 416H320')
-
-svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="560" height="468" viewBox="0 0 560 468" role="img" aria-labelledby="title desc">
-<title id="title">用 9 月线上净收入 280 元的教学案例解释六种知识职责</title>
-<desc id="desc">教学政策 P1 将符合条件的退款按发生月扣减。知识管理复核该口径，本体区分退款发生月与业务归属月。OKF 用 metrics/net-revenue.md 链接政策与计算文件，图谱记录退款 R 关联订单 B 的关系。检索取齐口径、计算入口和表定义；Agent 读取数据、执行并核验 100 加 200 减 20 得 280，取消订单的 50 元不计。记忆保留范围、政策及执行依据供下次按需召回。虚线表示可选语义约束，并非必须部署的流水线；旧结果不能替代下次的口径与数据核验。</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="{GREEN}"/></marker></defs>
-<g font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">{body}</g>
-</svg>'''
-OUT.write_text(svg, encoding='utf-8')
-print(OUT.name)
+HERE=Path(__file__).parent
+FONT='Arial, PingFang SC, Microsoft YaHei, Noto Sans CJK SC, sans-serif'
+INK,MUTED,RULE,BLUE,ORANGE='#17202a','#52606d','#cbd2d9','#0072b2','#b76800'
+class Figure:
+    def __init__(self,name,title,desc,height):
+        self.name,self.title,self.desc,self.height=name,title,desc,height
+        self.background=[];self.connectors=[];self.shapes=[];self.labels=[]
+    def line(self,ident,d,color=RULE,dashed=False,arrow=False):
+        marker='blue' if color==BLUE else 'orange' if color==ORANGE else 'ink'
+        self.connectors.append(f'<path id="{ident}" d="{d}" fill="none" stroke="{color}" stroke-width="1.3"'+(' stroke-dasharray="4 3"' if dashed else '')+(f' marker-end="url(#{marker}-arrow)"' if arrow else '')+'/>')
+    def box(self,ident,x,y,w,h,fill='#fff',stroke=RULE,radius=0):
+        self.shapes.append(f'<rect id="{ident}" x="{x}" y="{y}" width="{w}" height="{h}" rx="{radius}" fill="{fill}" stroke="{stroke}" stroke-width="1"/>')
+    def text(self,ident,x,y,value,region,size=14,weight=400,color=INK,anchor='start'):
+        allocation=','.join(str(n) for n in region)
+        self.labels.append(f'<text id="{ident}" x="{x}" y="{y}" data-region="{allocation}" font-family="{FONT}" font-size="{size}" font-weight="{weight}" fill="{color}" text-anchor="{anchor}">{escape(value)}</text>')
+    def write(self):
+        defs=''.join(f'<marker id="{name}-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8Z" fill="{color}"/></marker>' for name,color in [('blue',BLUE),('orange',ORANGE),('ink',INK)])
+        groups=''.join(f'<g id="{key}">{"".join(items)}</g>' for key,items in [('background',[f'<rect width="560" height="{self.height}" fill="#fff"/>',*self.background]),('connectors',self.connectors),('objects',self.shapes),('annotations',self.labels)])
+        svg=f'<svg xmlns="http://www.w3.org/2000/svg" width="148.1667mm" height="{self.height*25.4/96:.4f}mm" viewBox="0 0 560 {self.height}" role="img" aria-labelledby="figure-title figure-desc">\n<title id="figure-title">{escape(self.title)}</title>\n<desc id="figure-desc">{escape(self.desc)}</desc>\n<defs>{defs}</defs>\n{groups}\n</svg>\n'
+        (HERE/self.name).write_text(svg,encoding='utf-8');print(self.name)
+a=Figure('05-knowledge-relationships.svg','知识的文件表达与派生关系视图','本例以采用 OKF 的知识快照 K1 为输入，在本体约定与显式关系映射下构建图投影 G1。图谱只包含知识文件支持的净收入、政策 P1 和退款规则，不包含订单实例。知识管理贯穿来源核验、版本固定和依赖更新。这是一种应用构建路径，不规定所有图谱依赖 OKF。',466)
+a.text('panel-a',20,29,'a',(20,10,18,26),20,700)
+a.text('heading-a',46,29,'知识的文件表达与派生关系视图',(46,10,494,26),18,600)
+a.text('scope-a',20,54,'本例选择：OKF 知识快照 → 显式映射 → 图投影',(20,37,520,22),color=MUTED)
+a.line('top-rule-a','M20 68H540')
+a.text('governance-label',20,92,'知识管理',(20,74,94,23),15,600)
+a.text('governance-action',126,92,'核验 P1 依据 · 固定版本 · 变更后检查依赖',(126,74,414,23))
+a.line('governance-rule','M20 105H540')
+a.text('ontology-label',20,130,'本体约定',(20,112,94,23),15,600)
+a.text('ontology-example',126,130,'Metric —遵循→ Policy —定义→ Rule',(126,112,414,23))
+a.text('ontology-note',126,152,'约定类型与关系含义；不代替来源核验',(126,136,414,21),color=MUTED)
+a.box('okf-snapshot',82,179,446,102,'#f7f9fb','#9aabb8')
+a.text('okf-title',98,202,'采用 OKF 的知识快照 K1',(98,186,414,23),16,600)
+a.text('okf-format',98,225,'文件交换约定：Markdown + YAML + 链接',(98,209,414,22))
+a.text('okf-file',98,247,'metrics/net-revenue.md → 政策 P1 与计算文件',(98,231,414,22))
+a.text('okf-policy',98,269,'P1：符合条件的退款按发生月扣减；保留来源与复核',(98,253,414,22))
+a.line('source-to-mapping','M305 281V301',BLUE,arrow=True)
+a.box('mapping-process',178,303,254,34,'#fff','#9aabb8')
+a.text('mapping-title',305,325,'解析文件 + 显式关系映射',(193,308,224,24),14,500,anchor='middle')
+a.line('ontology-to-mapping','M62 155V320H176',MUTED,dashed=True,arrow=True)
+a.text('ontology-constraint',78,298,'约束映射',(78,281,90,23),color=MUTED)
+a.line('mapping-to-graph','M305 337V353',BLUE,arrow=True)
+a.background.append('<rect id="graph-view" x="12" y="355" width="536" height="87" fill="#fff" stroke="#9aabb8" stroke-width="1"/>')
+a.text('graph-title',20,380,'知识图谱 G1：K1 的派生关系视图',(20,364,520,22),16,600)
+a.box('metric-node',20,398,114,34,'#fff',BLUE,2)
+a.box('policy-node',228,398,94,34,'#fff',BLUE,2)
+a.box('rule-node',410,398,130,34,'#fff',BLUE,2)
+a.text('metric-node-label',77,420,'净收入指标',(33,404,88,24),anchor='middle')
+a.text('policy-node-label',275,420,'政策 P1',(240,404,70,24),anchor='middle')
+a.text('rule-node-label',475,420,'退款发生月规则',(421,404,108,24),anchor='middle')
+a.line('follows-relation','M134 415H226',INK,arrow=True)
+a.line('defines-relation','M322 415H408',INK,arrow=True)
+a.text('follows-label',181,406,'遵循',(154,387,54,23),anchor='middle')
+a.text('defines-label',365,406,'定义',(338,387,54,23),anchor='middle')
+a.text('source-trace',20,456,'G1 保留源路径与版本；图中的边也需要依据',(20,439,520,23),color=MUTED)
+a.write()
+b=Figure('06-agent-knowledge-memory.svg','Agent 的知识读取、记忆读取与记忆写入','时序图自上而下：Agent 向知识检索服务查询 P1、来源和计算入口；向记忆管理逻辑请求历史经历，后者读取存储 M 并返回 M1。Agent 读取本轮交易数据 D1，执行并核验净收入 280，得到运行依据 T1，再提交记忆 M2，由记忆管理逻辑按策略检查后写入存储。蓝色实线为读取请求、蓝色虚线为返回，橙色为写入请求。没有对知识检索服务的写入。所有版本标识为教学设定。',478)
+b.text('panel-b',20,29,'b',(20,10,18,26),20,700)
+b.text('heading-b',46,29,'知识读取、记忆读取与记忆写入',(46,10,494,26),18,600)
+b.text('question-b',20,54,'问题：9 月线上净收入？',(20,37,254,22),color=MUTED)
+b.background.append('<rect x="286" y="65" width="258" height="373" fill="#fafbfc" stroke="#cbd2d9" stroke-width="1"/>')
+b.text('memory-system-label',415,60,'记忆系统',(350,42,130,23),15,600,anchor='middle')
+for ident,cx in [('agent',48),('retrieval',181),('memory-manager',346),('memory-store',499)]:
+    end=184 if ident=='retrieval' else 434
+    b.line(ident+'-lifeline',f'M{cx} 116V{end}','#9aabb8',dashed=True)
+b.box('agent-head',16,78,64,38,'#fff','#9aabb8')
+b.box('retrieval-head',122,78,118,38,'#fff','#9aabb8')
+b.box('memory-manager-head',295,78,102,38,'#fff','#9aabb8')
+b.box('memory-store-head',459,78,80,38,'#fff','#9aabb8')
+b.text('agent-head-label',48,102,'Agent',(22,84,52,26),15,600,anchor='middle')
+b.text('retrieval-head-label',181,102,'知识检索服务',(132,84,98,26),15,600,anchor='middle')
+b.text('manager-head-label',346,102,'记忆管理',(305,84,82,26),15,600,anchor='middle')
+b.text('store-head-label',499,102,'存储 M',(467,84,64,26),15,600,anchor='middle')
+b.line('query-knowledge','M48 145H179',BLUE,arrow=True)
+b.text('query-knowledge-label',65,136,'① 检索口径',(58,119,116,22),color=BLUE)
+b.line('return-knowledge','M181 178H50',BLUE,dashed=True,arrow=True)
+b.text('return-knowledge-label',64,169,'P1、来源、计算',(58,152,116,22),color=BLUE)
+b.line('query-memory','M48 210H344',BLUE,arrow=True)
+b.text('query-memory-label',65,201,'② 召回相关历史经历',(58,184,275,22),color=BLUE)
+b.line('read-store','M346 234H497',BLUE,arrow=True)
+b.text('read-store-label',370,225,'读取 M1',(356,208,133,22),color=BLUE)
+b.line('return-store','M499 260H348',BLUE,dashed=True,arrow=True)
+b.text('return-store-label',370,251,'历史记录',(356,234,133,22),color=BLUE)
+b.line('return-memory','M346 290H50',BLUE,dashed=True,arrow=True)
+b.text('return-memory-label',65,281,'M1：历史范围、政策与运行依据',(58,264,275,22),color=BLUE)
+b.line('local-execution','M48 313H68V359H50',INK,arrow=True)
+b.box('execution-note',82,303,197,72,'#f7f9fb','#9aabb8')
+b.text('execution-label',93,324,'③ 读 D1，执行并核验',(93,307,175,22),14,600)
+b.text('execution-result',93,345,'100 + 200 − 20 = 280',(93,328,175,22))
+b.text('execution-receipt',93,366,'取消 50 不计；回执 T1',(93,349,175,22))
+b.line('submit-memory','M48 409H344',ORANGE,arrow=True)
+b.text('submit-memory-label',65,400,'④ M2：280 / P1 / D1 / T1',(58,383,275,22),color=ORANGE)
+b.line('write-store','M346 429H497',ORANGE,arrow=True)
+b.text('write-store-label',365,420,'按策略校验后写入',(356,403,133,22),color=ORANGE)
+b.line('legend-read','M20 457H45',BLUE,arrow=True)
+b.text('legend-read-label',53,462,'读取请求',(53,444,74,23),color=MUTED)
+b.line('legend-return','M150 457H175',BLUE,dashed=True,arrow=True)
+b.text('legend-return-label',183,462,'返回',(183,444,52,23),color=MUTED)
+b.line('legend-write','M254 457H279',ORANGE,arrow=True)
+b.text('legend-write-label',287,462,'写入请求',(287,444,74,23),color=MUTED)
+b.text('legend-time',398,462,'自上而下为时序',(398,444,142,23),color=MUTED)
+b.write()
